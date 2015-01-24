@@ -60,7 +60,6 @@ UpgradeLog*.htm
 
 # Non-distributable and private local stuff
 NonDist/
-Deployment/
 
 # =========================
 # Operating System Files
