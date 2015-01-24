@@ -1,0 +1,409 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="7cf6fc2e-bab8-4bf4-bf76-c1db9e2d342a" revisionNumber="1">
+	<developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+		<introduction>
+			<autoOutline lead="This topic describes the Extended Tree View control and its features."
+        excludeRelatedTopics="true" />
+		</introduction>
+
+		<section address="Info">
+			<title>General Information</title>
+			<content>
+				<para>The <codeInline>ExtendedTreeView</codeInline> control is a fully owner-drawn tree view control that
+overcomes some limitations in the way the default tree view is drawn.  It also provides several additional
+features to make it easier to use than the standard tree view control.  Below is a list of the additional
+features and differences:</para>
+
+				<list class="bullet">
+					<listItem>
+						<para>The node background color draws all the way across the node, not just behind the text.</para>
+					</listItem>
+
+					<listItem>
+						<para><codeInline>FullRowSelect</codeInline> works with <codeInline>ShowLines</codeInline> enabled.</para>
+					</listItem>
+
+					<listItem>
+						<para>Unthemed checkboxes do not have the thick black border and look like normal unthemed flat
+checkboxes.</para>
+					</listItem>
+
+					<listItem>
+						<para>The checkboxes are correctly vertically centered based on the item height.</para>
+					</listItem>
+
+					<listItem>
+						<para>Hot tracking works on nodes with their own font.</para>
+					</listItem>
+
+					<listItem>
+						<para>The tree view can be set to not draw the default images for nodes without an image.  When it
+does not draw the default image, the text is flush left with no gap.</para>
+					</listItem>
+
+					<listItem>
+						<para>When using a state image list without checkboxes, a new <codeInline>ChangeStateImage</codeInline>
+event is raised when the image is clicked or the space bar is hit.  This allows you to implement custom check
+states on the tree nodes by using different images for the various states.</para>
+					</listItem>
+
+					<listItem>
+						<para>The <codeInline>DrawNode</codeInline> event is suppressed.  In its place two new events are
+raised that give better control over how the node is drawn.  <codeInline>TreeNodeDrawing</codeInline> is raised
+prior to the node being drawn and lets you customize the default appearance.  <codeInline>TreeNodeDrawn</codeInline>
+is raised after the node has been drawn and lets you customize the appearance of the fully drawn node.</para>
+					</listItem>
+
+					<listItem>
+						<para>When <codeInline>LabelEdit</codeInline> is true, hitting F2 initiates label editing on the
+selected node.</para>
+					</listItem>
+
+					<listItem>
+						<para><legacyBold>Ctrl+E</legacyBold> can be used to expand all child nodes of the selected node.
+<legacyBold>Ctrl+K</legacyBold> can be used to collapse the selected node.  <legacyBold>Ctrl+Shift+E</legacyBold>
+can be used to expand all nodes in the tree.  <legacyBold>Ctrl+Shift+K</legacyBold> can be used to collapse all
+nodes in the tree.</para>
+					</listItem>
+
+					<listItem>
+						<para>The <codeInline>SelectOnRightOfLabelClick</codeInline> property allows you to specify whether
+or not a node is selected when the blank area to the right of its label is clicked.</para>
+					</listItem>
+
+					<listItem>
+						<para>The expando (+/-) images can be replaced with custom images.</para>
+					</listItem>
+
+					<listItem>
+						<para>The <codeInline>AllowCollapse</codeInline> property can be used to specify whether or not nodes
+can be collapsed when <codeInline>ShowPlusMinus</codeInline> is false.</para>
+					</listItem>
+
+					<listItem>
+						<para>The control implements <codeInline>IEnumerable</codeInline> and <codeInline>IEnumerable&lt;T&gt;</codeInline>
+so that you can enumerate all of its nodes recursively using a simple for/each loop.  You can also use
+<codeInline>TreeNodeEnumerator</codeInline> to enumerate the nodes in one branch and, optionally, its subsequent
+siblings.  This saves you from having to write recursive methods to handle child nodes.</para>
+					</listItem>
+
+					<listItem>
+						<para>The <codeInline>SyncParentChildCheckedState</codeInline> property can be set to true to ensure
+that the checked state of parent and child nodes is synchronized.  If a child node is checked, all parent nodes
+are marked as checked too.  If a parent is checked or unchecked, all child nodes are checked or unchecked as
+well.  The checkbox on parent nodes with a mix of checked and unchecked children are drawn as a mixed checkbox to
+make them easy to pick out when collapsed.</para>
+					</listItem>
+
+					<listItem>
+						<para>An item indexer property is available to retrieve nodes from the tree view by node name
+including child nodes at any level.</para>
+					</listItem>
+
+					<listItem>
+						<para>Methods have been added to allow setting or getting the check state of a node by name as well
+as for checking and unchecking all nodes in the tree view.</para>
+					</listItem>
+
+					<listItem>
+						<para>The <codeInline>CheckedNodes</codeInline> property can be used to obtain a collection
+containing the current set of checked nodes.</para>
+					</listItem>
+
+				</list>
+
+			</content>
+		</section>
+
+		<section address="ClearTree">
+			<title>Clearing The Tree Node Collection</title>
+			<content>
+				<para>Under certain circumstances, it is possible for the tree view to throw a null reference exception
+when clearing the tree node collection.  This is caused by a redraw event that occurs as the tree nodes are
+cleared.  The base tree view will only suspend redrawing if there are more than two hundred items.
+Unfortunately, there is no way to tell whether or not a node is in the process of being removed.  As such, it may
+be necessary to manually suspend updates when calling the node collection's <codeInline>Clear</codeInline> method
+and resume updates afterwards.  For example:</para>
+
+<code language="cs" title="C#">
+// Suspend updates while clearing the tree nodes
+tvExtTree.BeginUpdate();
+
+// Clear the nodes
+tvExtTree.Nodes.Clear();
+
+// Resume updates
+tvExtTree.EndUpdate();
+</code>
+
+<code language="vbnet" title="VB.NET">
+' Suspend updates while clearing the tree nodes
+tvExtTree.BeginUpdate()
+
+' Clear the nodes
+tvExtTree.Nodes.Clear()
+
+' Resume updates
+tvExtTree.EndUpdate()
+</code>
+
+			</content>
+		</section>
+
+		<section address="Usage">
+			<title>ExtendedTreeView Usage</title>
+			<content>
+				<para>The <codeInline>ExtendedTreeView</codeInline> is similar in nature to the standard
+<codeInline>TreeView</codeInline> control but is much more flexible as it allows better support for customizing
+its appearance and has more options for node retrieval and enumeration.  It provides a set of properties and
+events similar to those of the <codeInline>TreeView</codeInline>.  The extended tree view also provides the
+<codeInline>GetNodeChecked</codeInline>, <codeInline>GetNodeCheckedState</codeInline>, and
+<codeInline>SetNodeChecked</codeInline> methods to get or set the check state of nodes in the tree.  Each method
+identifies the node by the name assigned to the node's <codeInline>Name</codeInline> property.  If the
+<codeInline>SyncParentChildCheckedState</codeInline> property is set to true, the checked state of parent nodes
+is kept in synch with the child nodes.  For example, if a child node is checked, all parent nodes are marked as
+checked too.  If a parent is checked or unchecked, all child nodes are checked or unchecked as well.  The
+checkbox on parent nodes with a mix of checked and unchecked children are drawn as a mixed checkbox to make them
+easy to pick out when collapsed.</para>
+
+<code language="cs" title="C#">
+// Get a list of IDs to mark as checked.  Each node's Name property will match one of the IDs
+string[] ids = currentItems.Split(',');
+
+// Turn off synchronization while setting the check states
+tvMenu.SyncParentChildCheckedState = false;
+
+// Check each named node
+foreach(string id in ids)
+    tvMenu.SetNodeChecked(id.Trim(), true);
+
+// Turn check state synchronization back on
+tvMenu.SyncParentChildCheckedState = true;
+</code>
+
+<code language="vbnet" title="VB.NET">
+' Get a list of IDs to mark as checked.  Each node's Name property will match one of the IDs
+Dim ids As String() = currentItems.Split(",")
+
+' Turn off synchronization while setting the check states
+tvMenu.SyncParentChildCheckedState = False
+
+' Check each named node
+For Each id in ids
+    tvMenu.SetNodeChecked(id.Trim(), True)
+Next
+
+' Turn check state synchronization back on
+tvMenu.SyncParentChildCheckedState = True
+</code>
+
+				<para>If you assign a name to each node using its <codeInline>Name</codeInline> property, you can use the
+extended tree view's item indexer to retrieve the nodes.  This will return the named node regardless of whether
+it is a root node or a child nested at any level within the tree.</para>
+
+<code language="cs" title="C#">
+// Set the named node's text
+tvGroups["Folder2Book3Page5"].Text = "New Text Value";
+</code>
+
+<code language="vbnet" title="VB.NET">
+// Set the named node's text
+tvGroups("Folder2Book3Page5").Text = "New Text Value";
+</code>
+
+				<para>If the tree view's <codeInline>CheckBoxes</codeInline> property is set to true, the
+<codeInline>CheckedNodes</codeInline> property can be used to obtain a collection that contains the actual nodes
+in the tree that have a check state of <codeInline>Checked</codeInline> or <codeInline>Mixed</codeInline>.  This
+collection has some helper methods that you will find useful.</para>
+
+				<table>
+					<tableHeader>
+						<row>
+							<entry>
+								<para>Method</para>
+							</entry>
+							<entry>
+								<para>Description</para>
+							</entry>
+						</row>
+					</tableHeader>
+					<row>
+						<entry>
+							<para><codeInline>CheckStateOf</codeInline></para>
+						</entry>
+						<entry>
+							<para>This method can be used to get the check state of the node in the collection.</para>
+						</entry>
+					</row>
+					<row>
+						<entry>
+							<para><codeInline>ContainsName</codeInline></para>
+						</entry>
+						<entry>
+							<para>This method can be used to determine whether or not the collection contains a node with the
+specified name.</para>
+						</entry>
+					</row>
+					<row>
+						<entry>
+							<para><codeInline>ToNameString</codeInline></para>
+						</entry>
+						<entry>
+							<para>This method returns the checked nodes' names in a comma-separated list.</para>
+						</entry>
+					</row>
+					<row>
+						<entry>
+							<para><codeInline>ToTextValueString</codeInline></para>
+						</entry>
+						<entry>
+							<para>This method returns the checked nodes' text values in a comma-separated list.</para>
+						</entry>
+					</row>
+				</table>
+
+<code language="cs" title="C#">
+CheckedNodesCollection checkedNodes = tvGroups.CheckedNodes;
+
+// Display the check state of each checked node
+for(int idx = 0; idx &lt; checkedNodes.Count; idx++)
+    Debug.WriteLine(checkedNodes.CheckStateOf(idx));
+
+// See if the collection contains a node named "Folder1Book2Page5"
+Debug.WriteLine(checkedNodes.Contains("Folder1Book2Page5"));
+
+// Get the checked node names into a string ready to store in a database field
+string groupNames = checkedNodes.ToNameString();
+
+// Show the node text values in a message box
+MessageBox.Show("You chose: " + checkedNodes.ToTextValueString());
+</code>
+
+<code language="vbnet" title="VB.NET">
+Dim idx As Integer
+Dim checkedNodes As CheckedNodesCollection = tvGroups.CheckedNodes
+
+' Display the check state of each checked node
+For idx = 0 To checkedNodes.Count
+    Debug.WriteLine(checkedNodes.CheckStateOf(idx))
+Next idx
+
+' See if the collection contains a node named "Folder1Book2Page5"
+Debug.WriteLine(checkedNodes.Contains("Folder1Book2Page5"))
+
+' Get the checked node names into a string ready to store in a database field
+Dim groupNames As String = checkedNodes.ToNameString()
+
+' Show the node text values in a message box
+MessageBox.Show("You chose: " &amp; checkedNodes.ToTextValueString())
+</code>
+
+			</content>
+		</section>
+
+		<section address="Enum">
+			<title>Node Enumeration</title>
+			<content>
+				<para>One of the most useful features of the extended tree view is its support for node enumeration.
+With a simple for/each loop, you can enumerate all nodes in the tree view including all child nodes to however
+deep they are nested.  This saves you from having to write recursive functions to handle child node collections.</para>
+
+				<para>When enumerating the entire tree, enumeration starts at the first root node.  If it has children,
+they are enumerated.  As each is enumerated, if they have children, they are enumerated as well.  This process
+repeats until all nodes have been enumerated.</para>
+
+				<code language="cs" source="..\Demos\ListControlDemoCS\ExtendedTreeViewTestForm.cs"
+					region="Enumerate ExtendedTreeView control" title="C# - Enumerate the entire tree" />
+
+				<code language="vbnet" source="..\Demos\ListControlDemoVB\ExtendedTreeViewTestForm.vb"
+					region="Enumerate ExtendedTreeView control" title="VB.NET - Enumerate the entire tree" />
+
+				<para>You can also use the <codeInline>TreeNodeEnumerator</codeInline> directly to enumerate a single
+branch of the tree and all of its children.  The option is also given to enumerate all subsequent sibling nodes
+of the starting node if so desired.</para>
+
+				<code language="cs" source="..\Demos\ListControlDemoCS\ExtendedTreeViewTestForm.cs"
+					region="TreeNodeEnumerator Example" title="C# - Enumerate starting at a selected node"></code>
+
+				<code language="vbnet" source="..\Demos\ListControlDemoVB\ExtendedTreeViewTestForm.vb"
+					region="TreeNodeEnumerator Example" title="VB.NET - Enumerate starting at a selected node"></code>
+
+			</content>
+		</section>
+
+		<section address="CustomDraw">
+			<title>Customizing the Tree View's Appearance</title>
+			<content>
+				<para>The following additional properties allow you to customize the tree view's appearance without
+having to handle the drawing events.</para>
+
+				<table>
+					<tableHeader>
+						<row>
+							<entry>
+								<para>Property</para>
+							</entry>
+							<entry>
+								<para>Description</para>
+							</entry>
+						</row>
+					</tableHeader>
+					<row>
+						<entry>
+							<para><codeInline>DrawDefaultImages</codeInline></para>
+						</entry>
+						<entry>
+							<para>This property is used to set or get whether or not the tree view will draw default images for
+tree nodes without images.  If not drawn, the node text is drawn flush left with no gap.  The default setting is
+true to match the standard tree view control.</para>
+						</entry>
+					</row>
+					<row>
+						<entry>
+							<para><codeInline>ExpandoImageList</codeInline></para>
+						</entry>
+						<entry>
+							<para>This property is used to set or get the expando image list used to show the +/- images when
+the <codeInline>ShowPlusMinus</codeInline> property is set to true.  See the property help for information on how
+to set up the image list.</para>
+						</entry>
+					</row>
+					<row>
+						<entry>
+							<para><codeInline>UseThemedImages</codeInline></para>
+						</entry>
+						<entry>
+							<para>This is used to set or get whether or not to use the themed versions of the expando and
+checkbox images even when themes are not being used.  The default is false and the images are based on the
+system's current visual style setting.</para>
+						</entry>
+					</row>
+				</table>
+
+				<para>To further customize the tree view's appearance you can handle the
+<codeEntityReference qualifyHint="false">E:EWSoftware.ListControls.ExtendedTreeView.TreeNodeDrawing</codeEntityReference> and/or
+<codeEntityReference qualifyHint="false">E:EWSoftware.ListControls.ExtendedTreeView.TreeNodeDrawn</codeEntityReference>
+events.  Each event receives a <codeEntityReference qualifyHint="false">T:EWSoftware.ListControls.DrawTreeNodeExtendedEventArgs</codeEntityReference>
+instance that contains drawing state information for the node.  The <codeInline>TreeNodeDrawing</codeInline>
+event occurs prior to the node being drawn.  In your event handler, you can choose to alter the various
+properties of the event arguments object and let the tree view draw the node based on your changes or you can
+choose to draw the node yourself and suppress the default drawing of one or more parts of the node.  The
+<codeInline>TreeNodeDrawn</codeInline> event occurs after the node has been fully drawn and allows you to
+customize its appearance after all other drawing has taken place.</para>
+
+				<para>See the <codeEntityReference qualifyHint="false">T:EWSoftware.ListControls.DrawTreeNodeExtendedEventArgs</codeEntityReference>
+property help topics for information on what each of them does.  The demo application supplied with the library
+contains a simple example of handling each event.</para>
+
+			</content>
+		</section>
+
+		<relatedTopics>
+			<link xlink:href="ce5cb77a-44a9-4629-aec3-6a8435cd8e53" />
+		</relatedTopics>
+
+	</developerConceptualDocument>
+</topic>

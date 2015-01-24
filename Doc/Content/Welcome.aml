@@ -1,0 +1,475 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="ca3b503d-654e-4fe6-8ca3-ec3ea8fb9a1a" revisionNumber="1">
+	<developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+		<introduction>
+			<autoOutline lead="Welcome to the EWSoftware List Controls Library.  This topic contains an overview of the controls and their features." />
+		</introduction>
+
+		<section address="CommonFeatures">
+			<title>Common Features</title>
+			<content>
+				<para>All of the list controls in this library share a common set of features:</para>
+
+				<list class="bullet">
+					<listItem>
+						<para>The controls supports various data source types just like other .NET controls such as the
+standard combo box (data sets, data views, data tables, array lists or any other collection object that implement
+the <codeInline>IList</codeInline> interface, and simple strings).</para>
+					</listItem>
+
+					<listItem>
+						<para>The controls have item indexer properties that allow you to retrieve any column value by name
+from the data source for the currently selected item or any row in the data source.  Any column value from the
+data source can be retrieved, not just those used as the display and value members.</para>
+					</listItem>
+
+					<listItem>
+						<para>A simple <codeInline>ListItem</codeInline> object is supplied that can be used with an array
+list as the data source for the list controls.</para>
+					</listItem>
+
+					<listItem>
+						<para>For the combo box controls, the <codeInline>Items</codeInline> collection is sortable in
+ascending or descending order if not using a data source (i.e. items are added directly to the
+<codeInline>Items</codeInline> collection).</para>
+					</listItem>
+
+					<listItem>
+						<para>All of the controls are Windows XP theme-aware and will utilize the current theme by default if
+the application has a manifest file or if <codeInline>Application.EnableVisualStyles()</codeInline> has been
+called.</para>
+					</listItem>
+
+					<listItem>
+						<para>Design-time support is included for defining formatting, layout, data source, and many other
+control properties.</para>
+					</listItem>
+
+				</list>
+
+			</content>
+		</section>
+
+		<section address="RBLFeatures">
+			<title>The Radio Button List Control and Its Features</title>
+			<content>
+					<para>The <codeInline>RadioButtonList</codeInline> control provides a single-selection radio button
+group that supports data binding, layout options, and data source indexers.  It provides a similar set of
+properties as the combo box control for working with the selected item (i.e. <codeInline>SelectedIndex</codeInline>,
+<codeInline>SelectedValue</codeInline>, etc.).  It also provides the following features:</para>
+
+				<list class="bullet">
+					<listItem>
+						<para>The radio button list supports four different layout methods (single column, single row, down
+then across, and across then down).  For the last two, the control will automatically lay out the radio buttons
+in columns using a best fit algorithm. Properties are also provided to let you modify the padding around the list
+and between columns and rows.</para>
+					</listItem>
+
+					<listItem>
+						<para>The radio button list is resizable at runtime and can scroll both vertically and horizontally
+when necessary to display items that exceed the bounds of the control.</para>
+					</listItem>
+
+					<listItem>
+						<para>The control supports an image list to display images for each radio button entry.  Images can
+be displayed with or without text.</para>
+					</listItem>
+
+					<listItem>
+						<para>Alignment properties are provided for the checkmark, image, and text so that you can define the
+layout of the radio button entries in the list.</para>
+					</listItem>
+
+					<listItem>
+						<para>The control supports displaying entries as normal radio buttons or as button controls without
+the checkmark.</para>
+					</listItem>
+
+					<listItem>
+						<para>An optional title can be displayed on the border above the list.</para>
+					</listItem>
+				</list>
+
+			</content>
+		</section>
+
+		<section address="CBLFeatures">
+			<title>The Checkbox List Control and Its Features</title>
+			<content>
+				<para>The <codeInline>CheckBoxList</codeInline> control provides a multi-selection checkbox group that
+supports data binding, layout options, and data source indexers. It provides the same set of properties and
+features as the <codeInline>RadioButtonList</codeInline> control shown above (using checkboxes instead) and
+provides the following additional features:</para>
+
+				<list class="bullet">
+					<listItem>
+						<para>The <codeInline>Checked</codeInline> and <codeInline>CheckState</codeInline> properties of any
+checkbox in the list can be retrieved or set by index (numeric) position or by key (<codeInline>ValueMember</codeInline>)
+value.</para>
+					</listItem>
+
+					<listItem>
+						<para>The indices of the checked items or the values of the checked items from the data source can be
+returned using the <codeInline>CheckedIndices</codeInline> and <codeInline>CheckedItems</codeInline> properties.</para>
+					</listItem>
+
+					<listItem>
+						<para>The checkbox list can use three-state checkboxes (checked, unchecked, and indeterminate).</para>
+					</listItem>
+
+					<listItem>
+						<para>Each checkbox in the list can be bound to an individual field in another data source using the
+<codeInline>BindingMembers</codeInline> and <codeInline>BindingMembersDataSource</codeInline> properties.</para>
+					</listItem>
+
+					<listItem>
+						<para>By setting the <codeInline>BorderStyle</codeInline> to <codeInline>Sunken</codeInline>, the
+<codeInline>ListBackColor</codeInline> to <codeInline>Window</codeInline>, and the <codeInline>FlatStyle</codeInline>
+to <codeInline>Flat</codeInline> you can simulate a <codeInline>CheckedListBox</codeInline> control's appearance
+but gain access to all of the additional features of the <codeInline>CheckBoxList</codeInline> control such as
+data binding, layout options, formatting, an image list, data source indexers, setting the check state of items
+by key, etc.</para>
+					</listItem>
+				</list>
+
+			</content>
+		</section>
+
+		<section address="CBFeatures">
+			<title>The Combo Box Controls and Their Features</title>
+			<content>
+				<para>The <codeInline>AutoCompleteComboBox</codeInline> is identical to the standard combo box control
+with the addition of auto-completion to select matching entries as the user types text. The auto-complete feature
+is available in all combo box styles (<codeInline>DropDown</codeInline>, <codeInline>DropDownList</codeInline>,
+and <codeInline>Simple</codeInline>).</para>
+
+				<para>The <codeInline>MultiColumnComboBox</codeInline> provides the same features as the standard combo
+box control but with a drop-down list that is capable of showing multiple columns of information.  It also
+provides the following features:</para>
+
+				<list class="bullet">
+					<listItem>
+						<para>The control supports auto-completion in all combo box styles to select matching entries as the
+user types text.</para>
+					</listItem>
+
+					<listItem>
+						<para>Various new events have been added and behavior changes made to fix problems that are present
+in the standard combo box control.  See the tutorial for more information.</para>
+					</listItem>
+
+					<listItem>
+						<para>Unlike other implementations of multi-column combo boxes, the form hosting the control will not
+lose focus.  Instead, the control acts like the normal combo box allowing the parent form to retain focus and the
+text box portion to retain the keyboard cursor.</para>
+					</listItem>
+
+					<listItem>
+						<para>The drop-down portion auto-sizes itself when first displayed based on the defined settings.  It
+also positions itself correctly on the screen either below or above the combo box to show the maximum number of
+items based on its defined settings.</para>
+					</listItem>
+
+					<listItem>
+						<para>The drop-down portion is resizable at runtime and can scroll both vertically and horizontally
+when necessary.  The <codeInline>Simple</codeInline> combo box style is also supported.</para>
+					</listItem>
+
+					<listItem>
+						<para>If no column settings are defined, the drop-down will display all columns from the data source
+with basic formatting.</para>
+					</listItem>
+
+					<listItem>
+						<para>If type information is available in the data source, the drop-down will automatically show
+Boolean values using a checkbox column.</para>
+					</listItem>
+
+					<listItem>
+						<para>A <codeInline>ColumnFilter</codeInline> property allows you to let the drop-down add the data
+source columns automatically but limits them to the ones that you specify.</para>
+					</listItem>
+
+					<listItem>
+						<para>For finer control over the columns displayed as well as their formatting options, column style
+definitions can be used to specify the columns to display in the drop-down as well as their format (alignment,
+column header text, format string, null text, width, etc).</para>
+					</listItem>
+
+					<listItem>
+						<para>When defining column styles, you can use the standard text box or boolean data grid columns
+supplied with .NET or you can use custom third-party column types such as label columns, image columns, progress
+bar columns, etc (all drop-down data is read-only).</para>
+					</listItem>
+
+					<listItem>
+						<para>If you define drop-down column styles, setting the <codeInline>Width</codeInline> property to
+-1 will cause the drop-down to size the column to the preferred width.  Setting the width to zero will cause the
+drop-down to size the column to the longest value in the data source for the column. Setting the width to any
+other positive value will size the column to the specified width.</para>
+					</listItem>
+
+				</list>
+
+				<para>The <codeInline>UserControlComboBox</codeInline> provides the same features as the standard combo
+box control but with a drop-down that is capable of showing any user control that you define.  It also provides
+the following features:</para>
+
+				<list class="bullet">
+					<listItem>
+						<para>Various new events have been added and behavior changes made to fix problems that are present
+in the standard combo box control.  See below for more information.</para>
+					</listItem>
+
+					<listItem>
+						<para>The control supports auto-completion in all combo box styles to select matching entries as the
+user types text.</para>
+					</listItem>
+
+					<listItem>
+						<para>The drop-down portion displays a user control that you create and derive from the supplied
+<codeInline>DropDownControl</codeInline> class.  This allows it to show non-standard lists such as tree views,
+list views, or any combination of controls that you can imagine.  For this control, the parent form will lose the
+focus when the drop-down is displayed so that controls within the drop-down can gain the focus.</para>
+					</listItem>
+
+					<listItem>
+						<para>The drop-down portion auto-sizes itself when first displayed based on the defined user control.
+It also positions itself correctly on the screen either below or above the combo box to show as much of the user
+control as possible.</para>
+					</listItem>
+
+					<listItem>
+						<para>The drop-down portion is resizable at runtime and can scroll both vertically and horizontally
+when necessary.  The <codeInline>Simple</codeInline> combo box style is also supported.</para>
+					</listItem>
+				</list>
+
+			</content>
+		</section>
+
+		<section address="DLFeatures">
+			<title>The Data List Controls and Their Features</title>
+			<content>
+				<para>The <codeInline>DataList</codeInline> control allows you to specify a user control template that is
+used to display and edit information from a data source similar in nature to the <codeInline>DataList</codeInline>
+web server control, the subform control or continuous forms detail section in a Microsoft Access form, or the
+<codeInline>DataRepeater</codeInline> control from Visual Basic 6.  It provides the following features:</para>
+
+				<list class="bullet">
+					<listItem>
+						<para>Add, update, and delete behavior is detected based on the data source and each behavior can
+also be disabled via properties on the control.</para>
+					</listItem>
+
+					<listItem>
+						<para>If additions are allowed, the data list will display a "new row" placeholder at the end of the
+list.  A new row is automatically added to the data source if you modify any of the controls in the placeholder
+row template.</para>
+					</listItem>
+
+					<listItem>
+						<para>The control will refresh the displayed rows automatically if it detects changes to its data
+source such as rows directly added to or removed from the data source or direct changes made to fields in a row
+in the data source rather than through the row template.</para>
+					</listItem>
+
+					<listItem>
+						<para>The control supports data set relationships so you can use it to edit information displayed in
+a master/detail format.</para>
+					</listItem>
+
+					<listItem>
+						<para>Navigation controls are provided that let you move from record to record, jump to a specific
+record, delete a row, and jump to the new row item.</para>
+					</listItem>
+
+					<listItem>
+						<para>A caption area can be displayed at the top of the data list similar to the caption option in
+the <codeInline>DataGrid</codeInline> control.</para>
+					</listItem>
+
+					<listItem>
+						<para>A customizable separator can be shown to provide a dividing line between rows in the list.</para>
+					</listItem>
+
+					<listItem>
+						<para>A row header can be shown to indicate the currently selected row.  An indicator is also
+displayed on the new row item when it does not have the focus.</para>
+					</listItem>
+
+					<listItem>
+						<para>If row headers are visible, one or more rows can be selected by clicking on a row header and
+dragging the mouse.  Shift-clicking the mouse on a row header can be used to extend the selection up or down.
+Methods and properties are also provided to set the row selection range.</para>
+					</listItem>
+
+					<listItem>
+						<para>Clicking and dragging in the row headers within the current selection will fire the
+<codeInline>BeginDrag</codeInline> event so that you can initiate a drag and drop operation.</para>
+					</listItem>
+
+					<listItem>
+						<para>Various events are provided to let you add functionality for occurrences such as rows being
+data bound, adding a row, deleting a row, a row being made the current row, etc.</para>
+					</listItem>
+
+					<listItem>
+						<para>A user control derived from the supplied <codeInline>TemplateControl</codeInline> class is used
+to provide a means for displaying and editing rows from the data source.  This template can contain any controls
+in any layout that you need to display and edit information (text boxes, combo boxes, list boxes, radio buttons,
+etc).</para>
+					</listItem>
+
+					<listItem>
+						<para>The template controls for each row are initialized and bound as they are scrolled into view to
+save time and resources.  This makes it ideal for small data sets and still makes it responsive when dealing with
+much larger data sets.  It also lets you customize the formatting of elements on a row-by-row basis (i.e.
+color-code fields in each row based on their value, etc).</para>
+					</listItem>
+
+					<listItem>
+						<para>User controls derived from the <codeInline>TemplateControl</codeInline> class can also be
+specified to provide a header and/or footer for the data list.  The header and footer are placed in fixed
+positions vertically but will scroll horizontally with the data rows if necessary.  As with the data rows, the
+header and footer templates can contain any controls in any layout that you need to display and edit information
+(text boxes, combo boxes, list boxes, radio buttons, etc). Since the header and footer templates are fixed, they
+are bound to the data source as a whole rather than to individual rows within the data source.  Information in
+bound fields in the header and footer will update as you move from row to row in the detail section.</para>
+					</listItem>
+
+					<listItem>
+						<para>Definable shortcut keys are provided to let you delete rows in the data source, jump to the new
+row item, jump to the row number navigation text box, and to switch between the header, detail, and footer
+sections.</para>
+					</listItem>
+
+					<listItem>
+						<para>Hitting the Escape key will cancel changes to the current row.</para>
+					</listItem>
+
+					<listItem>
+						<para>Ctrl+Tab and Ctrl+Shift+Tab let you tab out of the data list to the following or preceding
+control on the form.  When tabbing back into the data list, the last focused row will regain the focus.</para>
+					</listItem>
+
+					<listItem>
+						<para>A <codeInline>ClickableLabel</codeInline> control is provided so that clicking a label in a row
+template will give it the focus.  This can also be used in other forms to focus a control when its associated
+label is clicked.</para>
+					</listItem>
+
+				</list>
+
+			</content>
+		</section>
+
+		<section address="DNFeatures">
+			<title>The Data Navigator Control and Its Features</title>
+			<content>
+				<para>The <codeInline>DataNavigator</codeInline> control allows you to navigate through a data source
+using a set of VCR-style buttons displaying one row at a time.</para>
+
+				<list class="bullet">
+					<listItem>
+						<para>Add, update, and delete behavior is detected based on the data source and each behavior can
+also be disabled via properties on the control.</para>
+					</listItem>
+
+					<listItem>
+						<para>The control supports data set relationships so you can use it to edit information displayed in
+a master/detail format.</para>
+					</listItem>
+
+					<listItem>
+						<para>Navigation controls are provided that let you move from record to record, jump to a specific
+record, delete a row, and add a new row.</para>
+					</listItem>
+
+					<listItem>
+						<para>Various events are provided to let you add functionality for occurrences such as adding a row,
+deleting a row, a row being made the current row, etc.</para>
+					</listItem>
+
+					<listItem>
+						<para>Definable shortcut keys are provided to let you delete rows in the data source, add a new row
+to the data source, and jump to the row number navigation text box.</para>
+					</listItem>
+
+					<listItem>
+						<para>Hitting the Escape key will cancel changes to the current row.</para>
+					</listItem>
+				</list>
+
+			</content>
+		</section>
+
+		<section address="ETVFeatures">
+			<title>The Extended Tree View Control and Its Features</title>
+			<content>
+				<para>The <codeInline>ExtendedTreeView</codeInline> control is a fully owner-drawn tree view control that
+overcomes some limitations in the way the default tree view is drawn.  It also provides several additional
+features to make it easier to use than the standard tree view control.</para>
+
+				<list class="bullet">
+					<listItem>
+						<para>Several visual changes have been made to make it look better (the node background color draws
+all the way across, unthemed checkboxes do not have the thick black border, hot tracking works on nodes with
+their own font, and many more).</para>
+					</listItem>
+					<listItem>
+						<para>Two new draw events, <codeInline>TreeNodeDrawing</codeInline> and <codeInline>TreeNodeDrawn</codeInline>
+are raised in place of the standard <codeInline>DrawNode</codeInline> event to give you more options to customize
+the tree node appearance before and after it has been drawn.</para>
+					</listItem>
+					<listItem>
+						<para>When using a state image list without checkboxes, a new <codeInline>ChangeStateImage</codeInline>
+event is raised when the image is clicked or the space bar is hit.</para>
+					</listItem>
+					<listItem>
+						<para>When <codeInline>LabelEdit</codeInline> is set to true, F2 initiates editing on the selected
+node.  Additional hot keys are also supported to expand and collapse the nodes in the tree.</para>
+					</listItem>
+					<listItem>
+						<para>The <codeInline>AllowCollapse</codeInline> property can be used to specify whether or not nodes
+can be collapsed when <codeInline>ShowPlusMinus</codeInline> is false.</para>
+					</listItem>
+					<listItem>
+						<para>The control implements <codeInline>IEnumerable</codeInline> and <codeInline>IEnumerable&lt;T&gt;</codeInline>
+so that you can enumerate all of its nodes recursively using a simple for/each loop.  You can also use
+<codeInline>TreeNodeEnumerator</codeInline> to enumerate the nodes in one branch and, optionally, its subsequent
+siblings.  This saves you from having to write recursive methods to handle child nodes.</para>
+					</listItem>
+					<listItem>
+						<para>The <codeInline>SyncParentChildCheckedState</codeInline> property can be set to true to ensure
+that the checked state of parent and child nodes is synchronized.</para>
+					</listItem>
+					<listItem>
+						<para>An item indexer property is available to retrieve nodes from the tree view by node name.</para>
+					</listItem>
+					<listItem>
+						<para>Methods have been added to allow setting or getting the check state of a node by name as well
+as for checking and unchecking all nodes in the tree view.</para>
+					</listItem>
+					<listItem>
+						<para>The <codeInline>CheckedNodes</codeInline> property can be used to obtain a collection
+containing the current set of checked nodes.</para>
+					</listItem>
+				</list>
+
+			</content>
+		</section>
+
+		<relatedTopics>
+			<link xlink:href="a3a3d71f-2d20-4506-bab1-638af4a36f4b" />
+			<link xlink:href="ce5cb77a-44a9-4629-aec3-6a8435cd8e53" />
+			<link xlink:href="31916411-7c9d-40b1-a1f5-fef539e21783" />
+			<link xlink:href="4466344c-0933-476c-9743-63008a2d8659" />
+		</relatedTopics>
+
+	</developerConceptualDocument>
+</topic>

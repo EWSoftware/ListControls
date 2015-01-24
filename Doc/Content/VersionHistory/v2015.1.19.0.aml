@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="c12469c0-01ff-4d97-ae22-4ccc676250c3" revisionNumber="1">
+	<developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+		<introduction>
+			<para>Release notes for version 2015.1.19.0</para>
+		</introduction>
+
+		<section>
+			<title>Changes in This Release</title>
+			<content>
+
+				<list class="bullet">
+					<listItem>
+						<para>Cleaned up the code and rebuilt the projects for use with .NET 4.0 and later.</para>
+					</listItem>
+
+					<listItem>
+						<para>Added code <codeInline>ExtendedTreeView</codeInline> to fix a bug in the base <codeInline>TreeView</codeInline>
+control that was causing inconsistent checked states when double-clicking on checkboxes on tree view nodes.  The
+extended tree view now handles the double click message to ensure the checked state is properly maintained.</para>
+					</listItem>
+
+					<listItem>
+						<para>Converted the project from shareware to open source and released it on GitHub.</para>
+					</listItem>
+
+				</list>
+
+			</content>
+		</section>
+
+		<relatedTopics>
+			<link xlink:href="4466344c-0933-476c-9743-63008a2d8659" />
+		</relatedTopics>
+
+	</developerConceptualDocument>
+</topic>

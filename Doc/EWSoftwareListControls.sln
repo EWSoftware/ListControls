@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "EWSoftwareListControls", "EWSoftwareListControls.shfbproj", "{EE0B458F-D1A2-48C0-A876-C81314D59FA2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		ReleaseNoDoc|Any CPU = ReleaseNoDoc|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EE0B458F-D1A2-48C0-A876-C81314D59FA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE0B458F-D1A2-48C0-A876-C81314D59FA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE0B458F-D1A2-48C0-A876-C81314D59FA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE0B458F-D1A2-48C0-A876-C81314D59FA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE0B458F-D1A2-48C0-A876-C81314D59FA2}.ReleaseNoDoc|Any CPU.ActiveCfg = ReleaseNoDoc|Any CPU
+		{EE0B458F-D1A2-48C0-A876-C81314D59FA2}.ReleaseNoDoc|Any CPU.Build.0 = ReleaseNoDoc|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

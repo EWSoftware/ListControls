@@ -1,0 +1,305 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{351DC52F-73B9-4D0E-98C5-1D56760628F8}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>App.ico</ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>ListControlDemoCS</AssemblyName>
+    <AssemblyOriginatorKeyFile>ListControlDemoCS.snk</AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>ListControlDemoCS</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <FileAlignment>4096</FileAlignment>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>..\EWSListControlsDemos.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <Optimize>true</Optimize>
+    <FileAlignment>4096</FileAlignment>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EWSoftware.ListControls">
+      <HintPath>..\..\Deployment\EWSoftware.ListControls.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AddressFooter.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="AddressFooter.Designer.cs">
+      <DependentUpon>AddressFooter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AddressHeader.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="AddressHeader.Designer.cs">
+      <DependentUpon>AddressHeader.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AddressRow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="AddressRow.Designer.cs">
+      <DependentUpon>AddressRow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CheckBoxListTestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CheckBoxListTestForm.Designer.cs">
+      <DependentUpon>CheckBoxListTestForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ComboBoxTestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ComboBoxTestForm.Designer.cs">
+      <DependentUpon>ComboBoxTestForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataListTestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataListTestForm.Designer.cs">
+      <DependentUpon>DataListTestForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataNavigatorTestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataNavigatorTestForm.Designer.cs">
+      <DependentUpon>DataNavigatorTestForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ExtendedTreeViewTestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ExtendedTreeViewTestForm.Designer.cs">
+      <DependentUpon>ExtendedTreeViewTestForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MenuRow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MenuRow.Designer.cs">
+      <DependentUpon>MenuRow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PhoneRow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PhoneRow.Designer.cs">
+      <DependentUpon>PhoneRow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RadioButtonListTestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RadioButtonListTestForm.Designer.cs">
+      <DependentUpon>RadioButtonListTestForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RelationTestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RelationTestForm.Designer.cs">
+      <DependentUpon>RelationTestForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TreeViewDropDown.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TreeViewDropDown.Designer.cs">
+      <DependentUpon>TreeViewDropDown.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControlComboTestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserControlComboTestForm.Designer.cs">
+      <DependentUpon>UserControlComboTestForm.cs</DependentUpon>
+    </Compile>
+    <Content Include="Images\Audio.bmp" />
+    <Content Include="Images\Bitmap.bmp" />
+    <Content Include="Images\BookClosed.bmp" />
+    <Content Include="Images\BookOpen.bmp" />
+    <Content Include="Images\Collapse.bmp" />
+    <Content Include="Images\Disk.bmp" />
+    <Content Include="Images\Document.bmp" />
+    <Content Include="Images\Expand.bmp" />
+    <Content Include="Images\Folder.bmp" />
+    <Content Include="Images\FolderClosed.bmp" />
+    <Content Include="Images\FolderOpen.bmp" />
+    <Content Include="Images\StateCritical.bmp" />
+    <Content Include="Images\StateNo.bmp" />
+    <Content Include="Images\StateSerious.bmp" />
+    <Content Include="Images\StateWarning.bmp" />
+    <Content Include="Images\StateYes.bmp" />
+    <Content Include="Images\Waste.bmp" />
+    <None Include="ListControlDemoCS.snk" />
+    <EmbeddedResource Include="AddressFooter.resx">
+      <DependentUpon>AddressFooter.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AddressHeader.resx">
+      <DependentUpon>AddressHeader.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AddressRow.resx">
+      <DependentUpon>AddressRow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CheckBoxListTestForm.resx">
+      <DependentUpon>CheckBoxListTestForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ComboBoxTestForm.resx">
+      <DependentUpon>ComboBoxTestForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataListTestForm.resx">
+      <DependentUpon>DataListTestForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataNavigatorTestForm.resx">
+      <DependentUpon>DataNavigatorTestForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ExtendedTreeViewTestForm.resx">
+      <DependentUpon>ExtendedTreeViewTestForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MenuRow.resx">
+      <DependentUpon>MenuRow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PhoneRow.resx">
+      <DependentUpon>PhoneRow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RadioButtonListTestForm.resx">
+      <DependentUpon>RadioButtonListTestForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RelationTestForm.resx">
+      <DependentUpon>RelationTestForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TreeViewDropDown.resx">
+      <DependentUpon>TreeViewDropDown.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControlComboTestForm.resx">
+      <DependentUpon>UserControlComboTestForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Content Include="App.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>IF NOT EXIST $(TargetDir)TestData.mdb COPY $(ProjectDir)..\TestData.mdb $(TargetDir)</PostBuildEvent>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,377 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8B77E8DD-A857-4A6E-BCA3-93AC56B80F57}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>EWSoftware.ListControls</AssemblyName>
+    <AssemblyOriginatorKeyFile>EWSListControls.snk</AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <RootNamespace>EWSoftware.ListControls</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <SignAssembly>true</SignAssembly>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DocumentationFile>bin\Debug\EWSoftware.ListControls.xml</DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>1699</NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>EWSListControls.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>bin\Release\EWSoftware.ListControls.xml</DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>1699</NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseNoDoc|AnyCPU'">
+    <OutputPath>bin\ReleaseNoDoc\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <DocumentationFile>bin\Release\EWSoftware.ListControls.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <FileAlignment>4096</FileAlignment>
+    <NoWarn>1699</NoWarn>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ChangePolicyEventArgs.cs" />
+    <Compile Include="DataListCancelEventArgs.cs" />
+    <Compile Include="DataListEventArgs.cs" />
+    <Compile Include="DataListHitType.cs" />
+    <Compile Include="DataNavigatorCancelEventArgs.cs" />
+    <Compile Include="DataNavigatorEventArgs.cs" />
+    <Compile Include="DragMode.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="ItemCheckStateEventArgs.cs" />
+    <Compile Include="LayoutMethod.cs" />
+    <Compile Include="ListSortOrder.cs" />
+    <Compile Include="NodeParts.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="AutoCompleteComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BaseButtonList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BaseComboBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataGridViewControls\AutoCompleteTextBoxCell.cs" />
+    <Compile Include="DataGridViewControls\AutoCompleteTextBoxColumn.cs">
+    </Compile>
+    <Compile Include="DataGridViewControls\BaseComboBoxCell.cs" />
+    <Compile Include="DataGridViewControls\BaseComboBoxColumn.cs" />
+    <Compile Include="DataGridViewControls\BaseDataGridViewCell.cs" />
+    <Compile Include="BaseListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ChangePolicy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CheckBoxList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CheckedIndicesCollection.cs" />
+    <Compile Include="CheckedItemsCollection.cs" />
+    <Compile Include="CheckedNodesCollection.cs" />
+    <Compile Include="ClickableLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DataGridHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataGridViewControls\BaseImageCell.cs" />
+    <Compile Include="DataGridViewControls\DataGridViewHelper.cs" />
+    <Compile Include="DataGridViewControls\ImageListCell.cs">
+    </Compile>
+    <Compile Include="DataGridViewControls\ImageListColumn.cs" />
+    <Compile Include="DataGridViewControls\IndicatorCell.cs" />
+    <Compile Include="DataGridViewControls\IndicatorClickEventArgs.cs" />
+    <Compile Include="DataGridViewControls\IndicatorColumn.cs" />
+    <Compile Include="DataGridViewControls\MapIndicatorEventArgs.cs" />
+    <Compile Include="DataGridViewControls\MapRatingEventArgs.cs" />
+    <Compile Include="DataGridViewControls\MapIndexEventArgs.cs" />
+    <Compile Include="DataGridViewControls\MultiColumnComboBoxCell.cs" />
+    <Compile Include="DataGridViewControls\MultiColumnComboBoxColumn.cs">
+    </Compile>
+    <Compile Include="DataGridViewControls\MultiColumnComboBoxEditingControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataGridViewControls\RatingCell.cs" />
+    <Compile Include="DataGridViewControls\RatingColumn.cs" />
+    <Compile Include="DataGridViewControls\UserControlComboBoxCell.cs" />
+    <Compile Include="DataGridViewControls\UserControlComboBoxColumn.cs" />
+    <Compile Include="DataGridViewControls\UserControlComboBoxEditingControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataListHitTestInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataNavigator.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Design\BaseComboBoxDesigner.cs" />
+    <Compile Include="Design\ListPaddingTypeConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DrawTreeNodeExtendedEventArgs.cs" />
+    <Compile Include="DropDownControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DropDownDataGrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DropDownTableStyle.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="NodeCheckState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataListBeginDragEventArgs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExtendedTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="IDropDown.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ListItem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ListPadding.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="LocalizedResources.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MultiColumnComboBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MultiColumnDropDown.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UnsafeNative\NativeToolTipWindow.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NumericTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="RadioButtonList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UnsafeNative\RECT.cs" />
+    <Compile Include="RowControlCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RowPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="RowPosition.cs" />
+    <Compile Include="Separator.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="StringCollection.cs" />
+    <Compile Include="TemplateControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TreeNodeEnumerator.cs" />
+    <Compile Include="UnsafeNative\UnsafeNativeMethods.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UnsafeNative\SCROLLINFO.cs" />
+    <Compile Include="UnsafeNative\TOOLINFO.cs" />
+    <Compile Include="UserControlComboBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControlDropDown.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserControlSimple.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <EmbeddedResource Include="AutoCompleteComboBox.bmp" />
+    <EmbeddedResource Include="CheckBoxList.bmp" />
+    <EmbeddedResource Include="ClickableLabel.bmp" />
+    <EmbeddedResource Include="DataList.bmp" />
+    <EmbeddedResource Include="DataList.resx">
+      <DependentUpon>DataList.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataNavigator.bmp" />
+    <EmbeddedResource Include="DataNavigator.resx">
+      <DependentUpon>DataNavigator.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MultiColumnComboBox.bmp" />
+    <EmbeddedResource Include="MultiColumnDropDown.resx">
+      <DependentUpon>MultiColumnDropDown.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RadioButtonList.bmp" />
+    <EmbeddedResource Include="ResFile.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControlComboBox.bmp" />
+    <EmbeddedResource Include="ExtendedTreeView.bmp" />
+    <EmbeddedResource Include="DataGridViewControls\MultiColumnComboBoxColumn.bmp" />
+    <EmbeddedResource Include="DataGridViewControls\ImageListColumn.bmp" />
+    <EmbeddedResource Include="DataGridViewControls\IndicatorColumn.bmp" />
+    <EmbeddedResource Include="DataGridViewControls\RatingColumn.bmp" />
+    <EmbeddedResource Include="DataGridViewControls\UserControlComboBoxColumn.bmp" />
+    <Content Include="Images\Delete.bmp" />
+    <Content Include="Images\First.bmp" />
+    <Content Include="Images\Last.bmp" />
+    <Content Include="Images\New.bmp" />
+    <Content Include="Images\Next.bmp" />
+    <Content Include="Images\Prev.bmp" />
+    <EmbeddedResource Include="Images\RatingStarEmpty.png" />
+    <EmbeddedResource Include="Images\RatingStarFilled.png" />
+    <EmbeddedResource Include="Images\RatingStarHot.png" />
+    <EmbeddedResource Include="Images\ThemedChecked.bmp" />
+    <EmbeddedResource Include="Images\ThemedCollapse.bmp" />
+    <EmbeddedResource Include="Images\ThemedExpand.bmp" />
+    <EmbeddedResource Include="Images\ThemedMixed.bmp" />
+    <EmbeddedResource Include="Images\ThemedUnchecked.bmp" />
+    <EmbeddedResource Include="Images\UnthemedChecked.bmp" />
+    <EmbeddedResource Include="Images\UnthemedCollapse.bmp" />
+    <EmbeddedResource Include="Images\UnthemedExpand.bmp" />
+    <EmbeddedResource Include="Images\UnthemedMixed.bmp" />
+    <EmbeddedResource Include="Images\UnthemedUnchecked.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="EWSListControls.snk" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>IF NOT EXIST "$(SolutionDir)..\Deployment" MD "$(SolutionDir)..\Deployment"
+
+COPY "$(SolutionDir)bin\$(Configuration)\*.dll" "$(SolutionDir)..\Deployment"
+COPY "$(SolutionDir)bin\$(Configuration)\*.xml" "$(SolutionDir)..\Deployment"
+</PostBuildEvent>
+  </PropertyGroup>
+</Project>

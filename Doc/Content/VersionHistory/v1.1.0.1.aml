@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="9ad46511-f965-4549-8acb-2dd528a267d2" revisionNumber="1">
+	<developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+		<introduction>
+			<para>Version 1.1.0.1 was released on December 20th, 2005.</para>
+		</introduction>
+
+		<section address="BreakingChanges">
+			<title>Breaking Changes</title>
+			<content>
+				<list class="bullet">
+					<listItem>
+						<para>The <codeInline>Padding</codeInline> class and the <codeInline>Padding</codeInline> property on
+the <codeInline>BaseButtonList</codeInline> class have been renamed <codeInline>ListPadding</codeInline> to avoid
+a conflict with the new .NET 2.0 <codeInline>Padding</codeInline> class.  This change affects the
+<codeInline>RadioButtonList</codeInline> and <codeInline>CheckBoxList</codeInline> controls.</para>
+					</listItem>
+
+					<listItem>
+						<para>The <codeInline>BorderStyle</codeInline> property and <codeInline>BorderStyleChanged</codeInline>
+event were removed from the <codeInline>BaseComboBox</codeInline> class.  The drawing style is now determined by
+the <codeInline>FlatStyle</codeInline> property to be consistent with the standard .NET combo box control.  This
+change affects the <codeInline>MultiColumnComboBox</codeInline> and <codeInline>UserControlComboBox</codeInline>
+controls.</para>
+					</listItem>
+
+					<listItem>
+						<para>The <codeInline>TemplateControl.ChangePolicyModified</codeInline> method now has no parameter.
+It was redundant to pass it the values as it can simply look at the allow additions/edits/deletions properties on
+its parent.</para>
+					</listItem>
+
+				</list>
+			</content>
+		</section>
+
+		<section address="OtherChanges">
+			<title>Other Changes in This Release</title>
+			<content>
+				<list class="bullet">
+					<listItem>
+						<para>Fixed a problem with the <codeInline>MultiColumnComboBox</codeInline> that could cause it to
+access its drop-down after it was disposed due to changes being committed to bound controls during the drop-down
+process.</para>
+					</listItem>
+
+					<listItem>
+						<para>Fixed the <codeInline>UserControlDropDown</codeInline> so that the parent form always regains
+the focus when it is modal.</para>
+					</listItem>
+
+					<listItem>
+						<para>Fixed the <codeInline>DataList</codeInline> so that when you tab into it and there are no rows,
+the new row template gains the focus.</para>
+					</listItem>
+
+					<listItem>
+						<para>Fixed mnemonic processing so that when the <codeInline>DataList</codeInline> does not have the
+focus it processes mnemonics in the selected row rather than the first row.  If the selected row does not handle
+the mnemonic, then the header and footer controls are given a chance to handle it if they have been defined.</para>
+					</listItem>
+
+					<listItem>
+						<para>Fixed mnemonic processing within the row template so that focus goes to the control in the
+current row template rather than the next row when the focus is past the control associated with the mnemonic.</para>
+					</listItem>
+
+					<listItem>
+						<para>Suppressed scaling of row templates in the <codeInline>DataList</codeInline> control to prevent
+issues with odd sizing behavior when the data list is bound before the form becomes visible and the form was
+developed on a system using large fonts but runs on a system using small fonts and vice versa.</para>
+					</listItem>
+
+					<listItem>
+						<para>Added the property <codeInline>IsUndoing</codeInline> to the <codeInline>DataList</codeInline>
+control.  Row templates can check this to see if they need to suppress event handlers such as
+<codeInline>SelectedIndexChanged</codeInline> when changes are being canceled.</para>
+					</listItem>
+
+					<listItem>
+						<para>Added code to clear the data bindings in all controls when a template is disposed.  It would
+appear that data bindings hang around after disposal and can cause problems due to accessing disposed controls
+when data is written to the data source under certain circumstances.</para>
+					</listItem>
+
+					<listItem>
+						<para>Added an <codeInline>AutoEllipsis</codeInline> property to <codeInline>ClickableLabel</codeInline>
+to allow displaying text without wrapping it.  This is similar to the identically named property in the .NET 2.0
+label control that has a similar purpose.</para>
+					</listItem>
+
+					<listItem>
+						<para>Added data source indexers to the <codeInline>AutoCompleteComboBox</codeInline> to make it
+consistent with the other controls in the library.</para>
+					</listItem>
+
+					<listItem>
+						<para>Added support for the <codeInline>RightToLeft</codeInline> property to the
+<codeInline>MultiColumnComboBox</codeInline> and <codeInline>UserControlComboBox</codeInline> controls.</para>
+					</listItem>
+
+					<listItem>
+						<para>The <codeInline>MultiColumnComboBox</codeInline> and <codeInline>UserControlComboBox</codeInline>
+controls now draw using the current Windows XP theme if the application supports themes and the
+<codeInline>FlatStyle</codeInline> property is set to <codeInline>Standard</codeInline> or <codeInline>System</codeInline>.
+In addition, the <codeInline>Flat</codeInline> and <codeInline>Popup</codeInline> styles now match the flat
+drawing style of the .NET 2.0 combo box control.</para>
+					</listItem>
+
+					<listItem>
+						<para>Several changes have been implemented to make the development of row templates simpler, to
+minimize the chances of making some of the common errors, and to greatly reduce the amount of code that you need
+to write.  See the <codeInline>DataList</codeInline> control tutorial for more information on the following
+changes:</para>
+
+						<list class="bullet">
+							<listItem>
+								<para>Added a new <codeInline>SharedDataSources</codeInline> property to the
+<codeInline>DataList</codeInline> control. This can be used to hold common data sources shared amongst all
+template instances for controls that they contain such as combo boxes.  This saves having to add static
+properties and code to the template to maintain the shared data sources as in past versions.</para>
+							</listItem>
+
+							<listItem>
+								<para>Added a new overloaded <codeInline>AddBinding</codeInline> method to
+<codeInline>TemplateControl</codeInline> to make it simpler to create data bindings on controls.  You no longer
+have to clear each control's bindings and then recreate them as the <codeInline>AddBinding</codeInline> method
+will do it for you.  Overloads are given to add additional bindings to the same control and to add bindings with
+<codeInline>Parse</codeInline> and/or <codeInline>Format</codeInline> event handlers.</para>
+							</listItem>
+
+							<listItem>
+								<para>Added a <codeInline>DeleteRow</codeInline> method to <codeInline>TemplateControl</codeInline>
+to make it easier to delete the row related to the template.</para>
+							</listItem>
+
+						</list>
+					</listItem>
+
+				</list>
+
+			</content>
+		</section>
+
+		<relatedTopics>
+			<link xlink:href="4466344c-0933-476c-9743-63008a2d8659" />
+		</relatedTopics>
+	</developerConceptualDocument>
+</topic>

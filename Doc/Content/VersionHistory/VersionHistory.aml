@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="4466344c-0933-476c-9743-63008a2d8659" revisionNumber="1">
+	<developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+		<introduction>
+			<para>The topics in this section describe the various changes made to the <legacyBold>EWSoftware List
+Control Library</legacyBold> over the life of the project.</para>
+		</introduction>
+
+		<section>
+			<title>Version History</title>
+			<content>
+				<para>Select a version below to see a description of its changes.</para>
+				<list class="bullet">
+					<listItem>
+						<para>
+							<link xlink:href="c12469c0-01ff-4d97-ae22-4ccc676250c3" />
+						</para>
+					</listItem>
+					<listItem>
+						<para>
+							<link xlink:href="d9ee097a-5a83-4549-921c-83fb22c413e4" />
+						</para>
+					</listItem>
+					<listItem>
+						<para>
+							<link xlink:href="ed07194b-6f39-437a-8c1b-0541ad0af913" />
+						</para>
+					</listItem>
+					<listItem>
+						<para>
+							<link xlink:href="503e28a2-9ea8-4e06-ae3b-76104110eff4" />
+						</para>
+					</listItem>
+					<listItem>
+						<para>
+							<link xlink:href="9b3a2158-fe5b-4502-a322-613bf4c7fa6b" />
+						</para>
+					</listItem>
+					<listItem>
+						<para>
+							<link xlink:href="dd82c187-8190-4a3b-9965-fcc54a89708d" />
+						</para>
+					</listItem>
+					<listItem>
+						<para>
+							<link xlink:href="9ad46511-f965-4549-8acb-2dd528a267d2" />
+						</para>
+					</listItem>
+					<listItem>
+						<para>
+							<link xlink:href="298d9451-746a-41e3-a439-1284135a13dc" />
+						</para>
+					</listItem>
+				</list>
+			</content>
+		</section>
+
+		<relatedTopics>
+			<link xlink:href="ca3b503d-654e-4fe6-8ca3-ec3ea8fb9a1a" />
+		</relatedTopics>
+	</developerConceptualDocument>
+</topic>

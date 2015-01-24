@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="dd82c187-8190-4a3b-9965-fcc54a89708d" revisionNumber="1">
+	<developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+		<introduction>
+			<para>Version 1.1.0.2 was released on January 2nd, 2006.</para>
+		</introduction>
+
+		<section>
+			<title>Changes in This Release</title>
+			<content>
+				<list class="bullet">
+					<listItem>
+						<para>Fixed the <codeInline>DataList</codeInline> control so that it works correctly with related
+data sources.  The demo has been modified to include an example of using the data navigator in conjunction with a
+data list to edit addresses and phone numbers using a data set with a relationship between the two tables that it
+contains.</para>
+					</listItem>
+
+					<listItem>
+						<para>Added <codeInline>CaptionVisible</codeInline>, <codeInline>CaptionText</codeInline>,
+<codeInline>CaptionBackColor</codeInline>, <codeInline>CaptionForeColor</codeInline>, and
+<codeInline>CaptionFont</codeInline> properties to the <codeInline>DataList</codeInline> control so that a
+caption can be displayed in the list similar to the caption in a <codeInline>DataGrid</codeInline> control.</para>
+					</listItem>
+
+				</list>
+
+			</content>
+		</section>
+
+		<relatedTopics>
+			<link xlink:href="4466344c-0933-476c-9743-63008a2d8659" />
+		</relatedTopics>
+
+	</developerConceptualDocument>
+</topic>

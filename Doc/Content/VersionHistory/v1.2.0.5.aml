@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="503e28a2-9ea8-4e06-ae3b-76104110eff4" revisionNumber="1">
+	<developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+		<introduction>
+			<para>Version 1.2.0.5 was released on May 1st, 2006.</para>
+		</introduction>
+
+		<section>
+			<title>Changes in This Release</title>
+			<content>
+				<list class="bullet">
+					<listItem>
+						<para>Fixed height calculation in <codeInline>BaseButtonList</codeInline> in .NET 2.0 so that it
+does not clip the items.</para>
+					</listItem>
+
+					<listItem>
+						<para>Fixed the <codeInline>MultiColumnComboBox</codeInline> so that when the mouse wheel is used to
+scroll the drop-down in <codeInline>DropDown</codeInline> and <codeInline>DropDownList</codeInline> mode, it does
+not change the current selection until an item is clicked.</para>
+					</listItem>
+
+					<listItem>
+						<para>Added the <codeInline>MouseTracking</codeInline> property to <codeInline>MultiColumnComboBox</codeInline>
+to allow disabling the selection tracking with the mouse cursor in the drop-down in <codeInline>DropDown</codeInline>
+and <codeInline>DropDownList</codeInline> modes.</para>
+					</listItem>
+
+					<listItem>
+						<para>Added a <codeInline>UseMnemonic</codeInline> property to <codeInline>BaseButtonList</codeInline>
+so that you can specify whether items in the <codeInline>CheckBoxList</codeInline> and <codeInline>RadioButtonList</codeInline>
+interpret the ampersand (&amp;) character in the display text as a mnemonic or as a literal.</para>
+					</listItem>
+
+					<listItem>
+						<para>Added <codeInline>ClearSelections</codeInline> and <codeInline>SelectAll</codeInline> methods
+to <codeInline>CheckBoxList</codeInline> to clear all checked items and to check all items respectively.</para>
+					</listItem>
+
+				</list>
+
+			</content>
+		</section>
+
+		<relatedTopics>
+			<link xlink:href="4466344c-0933-476c-9743-63008a2d8659" />
+		</relatedTopics>
+
+	</developerConceptualDocument>
+</topic>

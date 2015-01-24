@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="ed07194b-6f39-437a-8c1b-0541ad0af913" revisionNumber="1">
+	<developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+		<introduction>
+			<para>Version 1.2.0.8 was released on September 10th, 2006.</para>
+		</introduction>
+
+		<section>
+			<title>Changes in This Release</title>
+			<content>
+				<list class="bullet">
+					<listItem>
+						<para>Added the <codeInline>IsBinding</codeInline> property to the <codeInline>DataList</codeInline>
+control which can be checked to see if binding is currently taking place so that you can suppress event handlers
+that may have unwanted results when binding is happening.</para>
+					</listItem>
+
+					<listItem>
+						<para>Fixed the <codeInline>DataList</codeInline> control so that if you scroll the list and then
+click on a row header when the <codeInline>DataList</codeInline> control does not have the focus, the row
+associated with the header correctly received the focus.</para>
+					</listItem>
+
+					<listItem>
+						<para>Fixed the <codeInline>BaseComboBox</codeInline> control so that it correctly raises all
+key-related events.</para>
+					</listItem>
+
+				</list>
+			</content>
+		</section>
+
+		<relatedTopics>
+			<link xlink:href="4466344c-0933-476c-9743-63008a2d8659" />
+		</relatedTopics>
+
+	</developerConceptualDocument>
+</topic>

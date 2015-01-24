@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="9b3a2158-fe5b-4502-a322-613bf4c7fa6b" revisionNumber="1">
+	<developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+		<introduction>
+			<para>Version 1.2.0.4 was released on March 6th, 2006.</para>
+		</introduction>
+
+		<section>
+			<title>Changes in This Release</title>
+			<content>
+				<list class="bullet">
+					<listItem>
+						<para>A separate build is now available for .NET 2.0 / Visual Studio 2005.</para>
+					</listItem>
+
+					<listItem>
+						<para>Fixed several problems that were discovered with the support for related data sources when used
+in conjunction with <codeInline>DataList</codeInline> controls.  See the tutorial for a couple of known issues
+and their workarounds.</para>
+					</listItem>
+
+					<listItem>
+						<para>Fixed the <codeInline>DefaultSelection</codeInline> property on the drop-down controls so that
+it could be set at design time.</para>
+					</listItem>
+
+					<listItem>
+						<para>Fixed the <codeInline>MultiColumnComboBox</codeInline> so that if its data source is a data set
+and its value member property references a relationship in it the information is correctly loaded into its
+drop-down.</para>
+					</listItem>
+
+					<listItem>
+						<para>Fixed a bug that caused an exception when the combo box controls where dropped on the form at
+design-time.</para>
+					</listItem>
+
+					<listItem>
+						<para>Made some more modifications to the combo boxes to fix a problem with them disposing of their
+drop-downs when updates are pushed into their data source while the drop-down is being displayed.</para>
+					</listItem>
+
+					<listItem>
+						<para>Prevented the mouse wheel event from propagating to the parent in the combo box controls so
+that the parent doesn't scroll too if it can.</para>
+					</listItem>
+
+					<listItem>
+						<para>Fully qualified the designer attribute values again to allow their use from within the demo
+application forms.</para>
+					</listItem>
+
+					<listItem>
+						<para>Significantly improved <codeInline>DataList</codeInline> redraws when scrolling.  It now
+scrolls by row height which reduces the number of times it redraws during repeated scroll events.  Items are also
+initialized and bound during the scroll before they become visible which also helps during the initial scroll
+through the list.</para>
+					</listItem>
+
+					<listItem>
+						<para>When dragging the <codeInline>DataList</codeInline>'s vertical scrollbar thumb, a tool tip now
+appears under the mouse cursor showing the row number of the topmost visible row and the total number of rows as
+you scroll through them.</para>
+					</listItem>
+
+					<listItem>
+						<para>Page up and Page Down can now be used to scroll through the rows in a
+<codeInline>DataList</codeInline>.  Ctrl+Page Up and Ctrl+Page Down can be used to jump to the start and end of
+the list.  If a multi-line textbox has the focus and all of its text is not selected, the data list will ignore
+the key and let the textbox handle it instead which is more likely the desired behavior in that case.</para>
+					</listItem>
+
+					<listItem>
+						<para>Added <codeInline>Find</codeInline>, <codeInline>FindString</codeInline>, and
+<codeInline>FindStringExact</codeInline> methods to the <codeInline>DataList</codeInline> and
+<codeInline>DataNavigator</codeInline> controls to allow for searching for an item or a string in a member of the
+data source.  The demos have been updated with an incremental search feature to show an example use of the
+<codeInline>FindString</codeInline> method.</para>
+					</listItem>
+
+				</list>
+			</content>
+		</section>
+
+		<relatedTopics>
+			<link xlink:href="4466344c-0933-476c-9743-63008a2d8659" />
+		</relatedTopics>
+
+	</developerConceptualDocument>
+</topic>

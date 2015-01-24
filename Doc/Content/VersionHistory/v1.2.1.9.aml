@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="d9ee097a-5a83-4549-921c-83fb22c413e4" revisionNumber="1">
+	<developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+		<introduction>
+			<para>Version 1.2.1.9 was released on August 19th, 2008.</para>
+		</introduction>
+
+
+		<section address="BreakingChanges">
+			<title>Breaking Changes</title>
+			<content>
+				<para>The following event handler delegates have been removed.  Use the noted .NET 2.0 generic event
+handler syntax instead:</para>
+
+				<list class="bullet">
+					<listItem>
+						<para><codeInline>ChangePolicyEventHandler</codeInline> - Replace with
+<codeInline>EventHandler&lt;ChangePolicyEventArgs&gt;</codeInline>.</para>
+					</listItem>
+					<listItem>
+						<para><codeInline>DataNavigatorEventHandler</codeInline> - Replace with
+<codeInline>EventHandler&lt;DataNavigatorEventArgs&gt;</codeInline>.</para>
+					</listItem>
+					<listItem>
+						<para><codeInline>DataNavigatorCancelEventHandler</codeInline> - Replace with
+<codeInline>EventHandler&lt;DataNavigatorCancelEventArgs&gt;</codeInline>.</para>
+					</listItem>
+					<listItem>
+						<para><codeInline>DataListEventHandler</codeInline> - Replace with
+<codeInline>EventHandler&lt;DataListEventArgs&gt;</codeInline>.</para>
+					</listItem>
+					<listItem>
+						<para><codeInline>DataListCancelEventHandler</codeInline> - Replace with
+<codeInline>EventHandler&lt;DataListCancelEventArgs&gt;</codeInline>.</para>
+					</listItem>
+					<listItem>
+						<para><codeInline>DataListBeginDragEventHandler</codeInline> - Replace with
+<codeInline>EventHandler&lt;DataListBeginDragEventArgs&gt;</codeInline>.</para>
+					</listItem>
+					<listItem>
+						<para><codeInline>ItemCheckStateEventHandler</codeInline> - Replace with
+<codeInline>EventHandler&lt;ItemCheckStateEventArgs&gt;</codeInline>.</para>
+					</listItem>
+				</list>
+
+			</content>
+		</section>
+
+		<section>
+			<title>Changes in This Release</title>
+			<content>
+				<list class="bullet">
+					<listItem>
+						<para>Added a new <codeInline>ExtendedTreeView</codeInline> control.</para>
+					</listItem>
+
+					<listItem>
+						<para>Added the following <codeInline>DataGridView</codeInline> column controls in the
+<codeEntityReference qualifyHint="false">N:EWSoftware.ListControls.DataGridViewControls</codeEntityReference>
+namespace:</para>
+
+						<list class="bullet">
+							<listItem>
+								<para><codeInline>AutoCompleteTextBoxColumn</codeInline> - A textbox column that exposes the
+textbox's auto-complete properties.</para>
+							</listItem>
+
+							<listItem>
+								<para><codeInline>ImageListColumn</codeInline> - A column that displays an image from an image
+list based on the cell's underlying value.  The cells are also editable and can cycle through the images/values
+when clicked or space is pressed.</para>
+							</listItem>
+
+							<listItem>
+								<para><codeInline>IndicatorColumn</codeInline> - A column that displays a set of images from an
+image list.  Each image can represent an on/off state for a value at the given index.  Events are supplied to
+notify you when an image is clicked or digits 0 through 9 are pressed so that you can take action or edit the
+underlying value.</para>
+							</listItem>
+
+							<listItem>
+								<para><codeInline>MultiColumnComboBoxColumn</codeInline> - A column in which the cells contain a
+<codeInline>MultiColumnComboBox</codeInline> edit control.</para>
+							</listItem>
+							<listItem>
+								<para><codeInline>RatingColumn</codeInline> - A column in which the cells display a set of images
+(stars by default) that represent a rating similar to the one found in Windows Media Player.</para>
+							</listItem>
+
+							<listItem>
+								<para><codeInline>UserControlComboBoxColumn</codeInline> - A column in which the cells contain a
+<codeInline>UserControlComboBox</codeInline> edit control.</para>
+							</listItem>
+
+						</list>
+					</listItem>
+
+					<listItem>
+						<para>Changed the base class on <codeInline>CheckedIndicesCollection</codeInline> and
+<codeInline>CheckedItemsCollection</codeInline> to <codeInline>ReadOnlyCollection&lt;T&gt;</codeInline>.</para>
+					</listItem>
+					<listItem>
+						<para>The <codeInline>MultiColumnComboBox.ColumnFilter</codeInline> property now uses a
+<codeInline>StringCollection</codeInline> type derived from <codeInline>Collection&lt;T&gt;</codeInline>.</para>
+					</listItem>
+
+					<listItem>
+						<para>Fixed the <codeInline>MultiColumnDropDown</codeInline> and <codeInline>UserControlDropDown</codeInline>
+so that they take into account the working area of all screens when positioning the dropdown.</para>
+					</listItem>
+
+					<listItem>
+						<para>Fixed a bug that caused the <codeInline>DataList</codeInline> to crash if it was clicked prior
+to setting the row template.</para>
+					</listItem>
+
+					<listItem>
+						<para>Fixed a bug in the <codeInline>DataList</codeInline> that caused it to behave incorrectly if
+bound to a child data source and a row was added or deleted from the parent data source.</para>
+					</listItem>
+
+					<listItem>
+						<para>Fixed the combo box controls so that they clear the selected index when in
+<codeInline>DropDown</codeInline> or <codeInline>Simple</codeInline> mode when Backspace or Delete is hit.</para>
+					</listItem>
+
+					<listItem>
+						<para>Fixed a bug in <codeInline>BaseButtonList</codeInline> that caused scrollbars to appear
+unnecessarily under certain conditions when <codeInline>LayoutMethod</codeInline> was set to
+<codeInline>AcrossThenDown</codeInline> or <codeInline>DownThenAcross</codeInline>.</para>
+					</listItem>
+
+					<listItem>
+						<para>Pressing F4 will now show and hide the drop-down in the combo box controls.</para>
+					</listItem>
+
+					<listItem>
+						<para>The <codeInline>DisplayMember</codeInline> and <codeInline>ValueMember</codeInline> properties
+of the list controls are now case-insensitive with regard to the member name specified.</para>
+					</listItem>
+
+					<listItem>
+						<para>Added <codeInline>DisplayTextOf</codeInline> and <codeInline>ToDisplayTextString</codeInline>
+to the <codeInline>CheckedItemsCollection</codeInline> to get the display text of an item in the collection and
+to convert the checked items to a comma-separated list of their display text values.</para>
+					</listItem>
+
+					<listItem>
+						<para>The following properties were added to the <codeInline>CheckBoxList</codeInline> control:</para>
+
+						<list class="bullet">
+							<listItem>
+								<para><codeInline>BindingMembersDataSource</codeInline> - This allows you to specify a data
+source used for data binding each checkbox in the list.</para>
+							</listItem>
+
+							<listItem>
+								<para><codeInline>BindingMembersBindingContext</codeInline> - This allows you to specify a
+binding context for the binding members data source.</para>
+							</listItem>
+
+							<listItem>
+								<para><codeInline>BindingMembers</codeInline> - This allows you to specify a list of members in
+the binding members data source to be used for data binding each checkbox in the list.</para>
+							</listItem>
+						</list>
+
+						<para>See the <link xlink:href="3af969ee-6757-4660-9cc9-5bd518c24e05" /> for more information.</para>
+					</listItem>
+
+					<listItem>
+						<para>The <codeInline>Find</codeInline> method in <codeInline>BaseListControl</codeInline> was
+changed so that if not bound to a data source with a <codeInline>ValueMember</codeInline>, (i.e. strings stored
+in the items collection), it searches the item text for the specified key.</para>
+					</listItem>
+
+					<listItem>
+						<para>The <codeInline>ButtonPanel</codeInline> property on <codeInline>BaseButtonList</codeInline>
+has been made public so that it is easier to access the button controls to modify their appearance based on
+conditions in a <codeInline>SubControlsRefreshed</codeInline> event handler.</para>
+					</listItem>
+
+					<listItem>
+						<para>The default event for the <codeInline>CheckBoxList</codeInline> control was changed to
+<codeInline>ItemCheckStateChanged</codeInline> which is more useful for it.</para>
+					</listItem>
+
+					<listItem>
+						<para>Support for the <codeInline>AutoSize</codeInline> and <codeInline>AutoSizeMode</codeInline>
+properties was added to <codeInline>BaseButtonList</codeInline>.</para>
+					</listItem>
+
+					<listItem>
+						<para>The <codeInline>LayoutMethod</codeInline> and <codeInline>ListPadding</codeInline> properties
+for the checkbox list and radio button list now appear in the <ui>Layout</ui> category to group them with the
+properties to which they relate.</para>
+					</listItem>
+
+				</list>
+
+			</content>
+		</section>
+
+		<relatedTopics>
+			<link xlink:href="4466344c-0933-476c-9743-63008a2d8659" />
+		</relatedTopics>
+
+	</developerConceptualDocument>
+</topic>

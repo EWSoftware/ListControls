@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="a3a3d71f-2d20-4506-bab1-638af4a36f4b" revisionNumber="1">
+	<developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+		<introduction>
+			<autoOutline lead="This topic contains general usage notes for the control library." />
+		</introduction>
+
+		<section address="GAC">
+			<title>Installing the Assemblies in the Global Assembly Cache</title>
+			<content>
+				<para>The <codeInline>EWSoftware.ListControls</codeInline> assembly has a strong name.  As such, you can
+install the assembly in the Global Assembly Cache (GAC) if so desired.  To do so, use the
+<application>GACUTIL</application> command line tool as follows replacing the path to the assemblies to match the
+installed location on your system:</para>
+
+				<code language="none">
+					gacutil -i \GH\ListControls\Deployment\EWSoftware.ListControls.dll
+				</code>
+
+				<para>To remove the assembly from the Global Assembly Cache, use the <application>GACUTIL</application>
+command line tool as follows:</para>
+
+				<code language="none">
+					gacutil -u EWSoftware.ListControls
+				</code>
+
+			</content>
+		</section>
+
+		<section address="Install">
+			<title>Installing the Controls in the Visual Studio Toolbox</title>
+			<content>
+				<para>Installing the controls in the Visual Studio toolbox will allow you to use the controls at design
+time by dragging them from the toolbox and dropping them on to your form.  To install them for the first time or
+to refresh the toolbox after the control assemblies have been updated, do the following:</para>
+
+				<list class="bullet">
+					<listItem>
+						<para>Open the toolbox window.  Right click on it and select the <ui>Show All</ui> option.</para>
+					</listItem>
+
+					<listItem>
+						<para>If you do not currently have a tab for the control library, create one by right clicking on the
+toolbox window, selecting <ui>Add Tab</ui>, and then typing in a name for the tab such as <legacyBold>EWSoftware
+List Controls</legacyBold>.</para>
+					</listItem>
+
+					<listItem>
+						<para>Click on the tab for the control library so that it is selected.</para>
+					</listItem>
+
+					<listItem>
+						<para>If the tab is not empty, remove the existing controls by doing the following:</para>
+
+						<list class="bullet">
+							<listItem>
+								<para>Right click on the toolbox tab and select <ui>Choose Items...</ui>.</para>
+							</listItem>
+
+							<listItem>
+								<para>In the dialog box that opens, select the <ui>.NET Framework Components</ui> tab.  Click on
+the <ui>Namespace</ui> header to sort the list of controls by namespace.</para>
+							</listItem>
+
+							<listItem>
+								<para>Locate the <codeInline>EWSoftware.ListControls</codeInline> namespaces and uncheck all of
+the controls in those namespaces.</para>
+							</listItem>
+
+							<listItem>
+								<para>Click the <ui>OK</ui> button and the controls will be removed from the toolbox.  You are
+now ready to add the new version of the control library.</para>
+							</listItem>
+						</list>
+					</listItem>
+
+					<listItem>
+						<para>To add the controls to the toolbox tab, do the following:</para>
+
+						<list class="bullet">
+							<listItem>
+								<para>Right click on the toolbox tab and select <ui>Choose Items...</ui>.</para>
+							</listItem>
+
+							<listItem>
+								<para>In the dialog box that opens, select the <ui>.NET Framework Components</ui> tab.  Click on
+the <ui>Namespace</ui> header to sort the list of controls by namespace.</para>
+							</listItem>
+
+							<listItem>
+								<para>Click on the <ui>Browse</ui> button and navigate to where the <localUri>EWSoftware.ListControls.dll</localUri>
+assembly is stored.  Select it and click the <ui>Open</ui> button.  This will add the controls in the assembly to
+the list in the dialog box.  They will all be selected and checked by default.</para>
+							</listItem>
+
+							<listItem>
+								<para>Click the <ui>OK</ui> button to complete the process and the new controls will appear in
+the toolbox tab.</para>
+							</listItem>
+						</list>
+					</listItem>
+				</list>
+
+			</content>
+		</section>
+
+		<section address="UseAsm">
+			<title>Using the Assembly in Your Projects</title>
+			<content>
+				<alert class="tip">
+					<para>A NuGet package is available for the controls.  Search for the package name
+<localUri>EWSoftware.ListControls</localUri>.</para>
+				</alert>
+
+				<para>The classes can be found in the assembly <localUri>EWSoftware.ListControls.dll</localUri>.  In
+order to use the classes, add a reference to the assembly in your project.  To add the reference, open your
+project in Visual Studio, open the <ui>Solution Explorer</ui> pane of the project, right click on the
+<ui>References</ui> folder, select <ui>Add Reference...</ui>, click the <ui>Browse</ui> button and navigate to
+the folder in which you placed the assembly, and finally select the <localUri>EWSoftware.ListControls.dll</localUri>
+assembly and click <ui>OK</ui> to close the dialogs and add the reference.</para>
+
+				<para>In code modules that use classes from the <codeInline>EWSoftware.ListControls</codeInline>
+namespace, you will have to add a <codeInline>using</codeInline> statement (<codeInline>Imports</codeInline>
+in VB.NET) for the <codeInline>EWSoftware.ListControls</codeInline> namespace.</para>
+
+			</content>
+		</section>
+
+		<section address="Design">
+			<title>Design-time Support</title>
+			<content>
+				<para>All controls provide rich design-time support.  They appear on the design surface as they do at
+runtime.  Their properties can be edited using the normal <ui>Properties</ui> window.</para>
+
+			</content>
+		</section>
+
+		<section address="Demos">
+			<title>Demonstration Applications</title>
+			<content>
+				<para>Windows Forms applications in C# and VB.NET are provided that demonstrate the basic use of the
+various list controls. For the combo box demos, the form presents an auto-complete and a multi-column or user
+control combo box control.  A property grid can be used to modify the multi-column/user control combo box's
+properties at runtime to try out its various features.  The radio button list and checkbox list demos work in a
+similar fashion.  The data list demo provide a simple template for editing rows in the supplied name and address
+database and provides an example of how to implement templates for your own data list needs.  It also contains
+examples of drag and drop operations utilizing the data list.  The data navigator demo uses the same name and
+address database but displays the information one row at a time using the data navigator control.  An example is
+also provided that shows the use of the data navigator in conjunction with a data list to edit names and
+addresses and related phone number information.  The extended tree view demo contains examples of the various
+drawing enhancements and its additional features such as node enumeration.</para>
+
+				<para>For additional information on the features of each control and how to use them, see the
+<link xlink:href="ce5cb77a-44a9-4629-aec3-6a8435cd8e53" /> section of this help file.</para>
+
+			</content>
+		</section>
+
+		<relatedTopics>
+			<link xlink:href="ca3b503d-654e-4fe6-8ca3-ec3ea8fb9a1a" />
+			<link xlink:href="ce5cb77a-44a9-4629-aec3-6a8435cd8e53" />
+		</relatedTopics>
+	</developerConceptualDocument>
+</topic>

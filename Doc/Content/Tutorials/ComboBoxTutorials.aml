@@ -1,0 +1,497 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="ea1601a4-68aa-4ad2-92f9-8c78fbf67512" revisionNumber="1">
+	<developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+		<introduction>
+			<autoOutline lead="This topic describes the Combo Box controls and their features."
+        excludeRelatedTopics="true" />
+		</introduction>
+
+		<section address="AutoComp">
+			<title>AutoCompleteComboBox Usage</title>
+			<content>
+				<para>This control is derived from the standard .NET <codeInline>ComboBox</codeInline> control. The only
+differences are the addition of the auto-completion feature that selects items as you type and the data source
+indexer properties.  Use this control when you want auto-completion but do not need the extra functionality of
+the other combo box classes such as multi-column drop-down support.  To use it, simply drag the control from the
+toolbox, drop it on the form, and use the <legacyBold>Properties</legacyBold> window to adjust its settings.</para>
+
+			</content>
+		</section>
+
+		<section address="Features">
+			<title>Common Features</title>
+			<content>
+				<para>The <codeInline>MultiColumnComboBox</codeInline> and <codeInline>UserControlComboBox</codeInline>
+are quite similar with regard to creation and usage.  Simply drag the control from the toolbox, drop it on the
+form, and use the <legacyBold>Properties</legacyBold> window to adjust its settings.  For simple lists, you can
+enter text strings in the designer by selecting the <codeInline>Items</codeInline> property and entering the
+values one per line in the collection editor.  When items are added directly to the <codeInline>Items</codeInline>
+collection, the <codeInline>SortOrder</codeInline> property can be used to sort the items in ascending or
+descending order.  The default sort order is <codeInline>None</codeInline>.</para>
+
+				<para>A simple <codeInline>ListItem</codeInline> object is supplied that can be used with an array list
+as the data source for the list controls.  It contains a <codeInline>Display</codeInline> property for the
+display text and a <codeInline>Value</codeInline> property for the value of the item.  The demo application
+contains examples of its use.  A simple example is shown below:</para>
+
+<code language="cs" title="C#">
+ArrayList alRelevance = new ArrayList();
+
+// Add list items to the array list containing a value and a description
+alRelevance.Add(new ListItem(1, "Remote"));
+alRelevance.Add(new ListItem(10, "Low"));
+alRelevance.Add(new ListItem(30, "Medium"));
+alRelevance.Add(new ListItem(80, "High"));
+
+// Tell the combo box the value and display members and set the array list as the data source
+cboMinRel.ValueMember = "Value";
+cboMinRel.DisplayMember = "Display";
+cboMinRel.DataSource = alRelevance;
+</code>
+
+<code language="vbnet" title="VB.NET">
+Dim alRelevance As New ArrayList()
+
+' Add list items to the array list containing a value and a description
+alRelevance.Add(New ListItem(1, "Remote"))
+alRelevance.Add(New ListItem(10, "Low"))
+alRelevance.Add(New ListItem(30, "Medium"))
+alRelevance.Add(New ListItem(80, "High"))
+
+' Tell the combo box the value and display members and set the array list as the data source
+cboMinRel.ValueMember = "Value"
+cboMinRel.DisplayMember = "Display"
+cboMinRel.DataSource = alRelevance
+</code>
+
+				<para>The controls also support the same complex data sources that any other standard .NET control can
+use (i.e. data sets, data views, data tables, arrays, etc).  Assigning a more complex data source is done in a
+manner similar to the example above.  You set the <codeInline>DisplayMember</codeInline> and
+<codeInline>ValueMember</codeInline> properties to members of the data source and then set the
+<codeInline>DataSource</codeInline> property to the complex data source (i.e. a data set, data view, etc).  If
+assigning these three properties in code, always assign the <codeInline>DataSource</codeInline> property last to
+improve performance.  This is true of all .NET controls as assigning a new display or value member forces the
+control to reevaluate its data source.  By assigning the data source last, it will only have to evaluate the data
+source once.</para>
+
+				<para>The properties in the <legacyBold>Appearance</legacyBold> category can be used to alter the visual
+style of the control.  To modify the drop-down style, its width, the default number of items to show, and the
+control-specific properties, see the options in the <codeInline>DropDown</codeInline> category.  The
+control-specific properties are described in more detail in the sections below.</para>
+
+				<para>Both controls have an <codeInline>EnforceDefaultSelection</codeInline> property that allows you to
+specify whether a default selection will be set if an attempt is made to set the selected index to -1.  In
+<codeInline>DropDownList</codeInline> mode, if this property is true (the default), a <codeInline>SelectedIndex</codeInline>
+of -1 (no selection) is not allowed.  Instead, the index specified by the <codeInline>DefaultSelection</codeInline>
+property is used instead.  For the <codeInline>DropDown</codeInline> and <codeInline>Simple</codeInline> modes,
+this property is ignored as values can be entered that are not in the list of valid items.</para>
+
+				<para>Once the drop-down has been displayed, it will retain the size and settings in effect until the
+form closes or properties are changed that force it to get recreated.  If you need to force the drop-down portion
+to get reset, you can call the <codeInline>RefreshSubControls</codeInline> method.  This destroys the current
+instance of the drop-down and causes it to get recreated the next time the drop-down is displayed.</para>
+
+				<para>Unlike the standard .NET list controls, all of the controls in the
+<codeInline>EWSoftware.ListControls</codeInline> namespace allow you to index their data source to extract
+values.  This allows you to obtain the value of a field in the current selection or a field in any row even if it
+is not the selected item and regardless of whether or not the field is used as the display or value member.</para>
+
+<code language="cs" title="C#">
+// Get the vendor name from the current selection
+string vendorName = (string)cboVendors["VendorName"];
+
+// Get the item quantity from the sixth row
+int itemQty = (int)cboItems[5, "ItemQty"];
+</code>
+
+<code language="vbnet" title="VB.NET">
+' Get the vendor name from the current selection
+Dim vendorName As String = CType(cboVendors("VendorName"), String)
+
+' Get the item quantity from the sixth row
+Dim itemQty As Integer = CType(cboItems(5, "ItemQty"), Integer)
+</code>
+
+				<para>The <codeInline>MultiColumnComboBox</codeInline> and <codeInline>UserControlComboBox</codeInline>
+contain a <codeInline>DrawImage</codeInline> property.  If set to true, the controls will raise the
+<codeInline>DrawItemImage</codeInline> event so that you can draw an image to the left of the text value in the
+textbox portion of the control.  The event receives a reference to the combo box and a
+<codeInline>DrawItemEventArgs</codeInline> object that defines the item and its state.</para>
+
+<code language="cs" title="C#">
+// Draw an image for the demo.  They aren't representative of the items, they're just
+// something to show.
+private void cboMultiCol_DrawItemImage(object sender, DrawItemEventArgs e)
+{
+    if(e.Index == -1)
+        e.DrawBackground();
+    else
+        e.Graphics.DrawImage(ilImages.Images[e.Index % ilImages.Images.Count], e.Bounds);
+}
+</code>
+
+<code language="vbnet" title="VB.NET">
+' Draw an image for the demo.  They aren't representative of the items, they're just
+' something to show.
+Private Sub cboMultiCol_DrawItemImage(sender As Object, e As DrawItemEventArgs) _
+  Handles cboMultiCol.DrawItemImage
+    If e.Index = -1 Then
+        e.DrawBackground()
+    Else
+        e.Graphics.DrawImage(ilImages.Images(e.Index Mod ilImages.Images.Count), e.Bounds)
+    End If
+End Sub
+</code>
+
+			</content>
+		</section>
+
+		<section address="Differences">
+			<title>Combo Box Behavior Differences</title>
+			<content>
+				<para>The <codeInline>MultiColumnComboBox</codeInline> and <codeInline>UserControlComboBox</codeInline>
+have a few differences in behavior compared to the standard .NET combo box control.  These are mostly to fix bugs
+present in the standard combo box control and to add extra features not present in it.  They are as follows:</para>
+
+				<list class="bullet">
+					<listItem>
+						<para>You can bind almost any data source to the multi-column and user control combo boxes with the
+exception of non-value-type objects added directly to the <codeInline>Items</codeInline> collection.  The
+workaround is to add the objects to an <codeInline>ArrayList</codeInline> and use that as the data source.
+Simple value types such as integers and strings can be added directly to the <codeInline>Items</codeInline>
+collection and displayed correctly.  All other standard data source types such as data sets, data views, and data
+tables will work as expected.</para>
+					</listItem>
+
+					<listItem>
+						<para>A new <codeInline>OnCloseUp</codeInline> event is fired when the drop-down portion is closed.
+Note that unlike the standard Windows combo box, the <codeInline>SelectedIndexChanged</codeInline> event will
+always fire before the <codeInline>OnCloseUp</codeInline> event.</para>
+					</listItem>
+
+					<listItem>
+						<para><codeInline>SelectionChangeCommitted</codeInline> is fired correctly when the drop-down portion
+is closed and the item was changed.  A new <codeInline>SelectionChangeCanceled</codeInline> event is raised if
+the drop-down is closed without changing the selection. The correct event is always fired after the
+<codeInline>OnCloseUp</codeInline> event.</para>
+					</listItem>
+
+					<listItem>
+						<para>A new <codeInline>NotInList</codeInline> event is fired just prior to the
+<codeInline>Validating</codeInline> event if the text in the control does not match anything in the item list.
+This event gives you the opportunity to cancel the attempt to update the value or take some other action (i.e.
+add the value as a valid item, force it to a valid selection, etc).</para>
+					</listItem>
+
+					<listItem>
+						<para>The <codeInline>Text</codeInline> property of the combo box controls always returns whatever is
+in the text portion of the combo box.  There is a bug in the standard combo box control that causes it to not
+work correctly if bound to a data source.</para>
+					</listItem>
+
+					<listItem>
+						<para>Setting the <codeInline>Text</codeInline> property of the combo box controls will correctly
+synchronize the <codeInline>SelectedIndex</codeInline> property with the new text.  If the text is not found, the
+selected index is correctly set to -1.  A bug in the standard combo box prevents this from happening.</para>
+					</listItem>
+
+					<listItem>
+						<para>Setting the <codeInline>SelectedIndex</codeInline> property to -1 in a data-bound combo box
+will always clear the selected item and the text. A bug in the standard combo box control causes this to fail
+occasionally.</para>
+					</listItem>
+
+					<listItem>
+						<para>In the standard combo box control, when the data source properties are modified, it will force
+the <codeInline>SelectedIndex</codeInline> property to the current position in the data source rather than
+keeping the default -1 (no selection) value.  Many people consider this to be a bug but others consider it to be
+valid behavior.</para>
+
+						<para>For the <codeInline>MultiColumnComboBox</codeInline> and <codeInline>UserControlComboBox</codeInline>
+in <codeInline>DropDownList</codeInline> mode, the <codeInline>EnforceDefaultSelection</codeInline> property can
+be used to alter the behavior to suit your own preferences.  For example, it may be considered valid to force a
+selection in this mode so that it contains a valid selection from the start. The property defaults to true which
+makes it work like the standard combo box control (the selection is always changed).  If set to false and the
+current <codeInline>SelectedIndex</codeInline> value is -1 when a data source property changes, the "no
+selection" state (-1) is retained.  In <codeInline>DropDown</codeInline> and <codeInline>Simple</codeInline>
+mode, the <codeInline>EnforceDefaultSelection</codeInline> property is ignored and the "no selection" state will
+be retained when the data source is changed.  This is because those two modes do allow entry of text that does
+not appear in the list of values.</para>
+					</listItem>
+				</list>
+
+			</content>
+		</section>
+
+		<section address="MCCombo">
+			<title>MultiColumnComboBox Usage</title>
+			<content>
+				<para>By default, the <codeInline>MultiColumnComboBox</codeInline> will display all columns from its data
+source with some default formatting.  You can use the properties in the <codeInline>DropDown</codeInline>
+category to customize the appearance of the drop-down and the columns that are displayed in it.  A simple way to
+limit the columns displayed is to use the <codeInline>ColumnFilter</codeInline> property to let it know which
+columns should appear in the drop-down.  The columns will be auto-sized based on the longest value in each
+column.  Note that even though a column filter is in place for the drop-down you can still access any field in
+the data source using the item indexer as shown earlier.  You can set the filter at design-time by selecting the
+property and entering the column names to display one per line using the collection editor.  You can also specify
+the column filter at runtime using code similar to the following:</para>
+
+<code language="cs" title="C#">
+// Limit the drop-down to the vendor name and contact name
+cboVendor.ColumnFilter.AddRange(new string[] { "VendorName", "Contact" });
+</code>
+
+<code language="vbnet" title="VB.NET">
+' Limit the drop-down to the vendor name and contact name
+cboVendor.ColumnFilter.AddRange(New String() { "VendorName", "Contact" })
+</code>
+
+				<para>For full control over the visual style of the drop-down along with which columns are displayed,
+their order, and their individual styles, you can use the <codeInline>DropDownFormat</codeInline> property.  The
+basic properties in it allows you to specify the color and grid line settings and whether or not column and row
+headers are visible. By selecting the <codeInline>GridColumnStyles</codeInline> property of
+<codeInline>DropDownFormat</codeInline> you can also specify the columns to display in the drop-down along with
+their formatting options such as alignment, column header text, width, etc.  When specifying column definitions
+in this manner, there is no need to use the <codeInline>ColumnFilter</codeInline> property.</para>
+
+				<para>When defining grid column styles, you can use the standard text box or boolean data grid columns
+supplied with .NET or you can use custom third-party column types such as label columns, image columns, progress
+bar columns, etc (all drop-down data is read-only).  At design-time, only the standard text box and boolean
+columns are accessible.  To use third-party column types, you should add them to the
+<codeInline>DropDownFormat.GridColumnStyles</codeInline> collection using code.</para>
+
+				<para>When specifying column definitions using grid column styles, setting their <codeInline>Width</codeInline>
+property to -1 will cause the drop-down to size the column to the preferred width. Setting the width to zero will
+cause the drop-down to size the column to the longest value in the data source for the column.  Setting the width
+to any other positive value will size the column to the specified width.  As with the column filter, you can set
+the grid column styles at runtime using code.  An example is shown below.</para>
+
+<code language="cs" title="C#">
+// These can be created and set at design-time too
+DataGridTextBoxColumn dgtbItemName = new DataGridTextBoxColumn();
+DataGridTextBoxColumn dgtbExpireDate = new DataGridTextBoxColumn();
+DataGridBoolColumn dgbcInStock = new DataGridBoolColumn();
+
+// Set the column properties
+dgtbItemName.HeaderText = "Item Name";
+dgtbItemName.MappingName = "ItemName";
+dgtbItemName.Width = 0;     // Size to widest item
+
+dgtbExpireDate.Format = "MM/dd/yyyy";
+dgtbExpireDate.HeaderText = "Expiration Date";
+dgtbExpireDate.MappingName = "ExpireDate";
+dgtbExpireDate.Width = -1;  // Size to preferred width
+
+dgbcInStock.Alignment = HorizontalAlignment.Center;
+dgbcInStock.HeaderText = "In Stock";
+dgbcInStock.MappingName = "InStockYN";
+dgtbExpireDate.Width = 100; // Fixed width
+
+// Add the column definitions to the combo box control
+cboItems.DropDownFormat.GridColumnStyles.AddRange(new DataGridColumnStyle[] {
+    dgtbItemName, dgtbExpireDate, dgbcInStock });
+</code>
+
+<code language="vbnet" title="VB.NET">
+' These can be created and set at design-time too
+Dim dgtbItemName As New DataGridTextBoxColumn()
+Dim dgtbExpireDate As New DataGridTextBoxColumn()
+Dim dgbcInStock As New DataGridBoolColumn()
+
+' Set the column properties
+dgtbItemName.HeaderText = "Item Name"
+dgtbItemName.MappingName = "ItemName"
+dgtbItemName.Width = 0      ' Size to widest item
+
+dgtbExpireDate.Format = "MM/dd/yyyy";
+dgtbExpireDate.HeaderText = "Expiration Date";
+dgtbExpireDate.MappingName = "ExpireDate";
+dgtbExpireDate.Width = -1   ' Size to preferred width
+
+dgbcInStock.Alignment = HorizontalAlignment.Center;
+dgbcInStock.HeaderText = "In Stock";
+dgbcInStock.MappingName = "InStockYN";
+dgtbExpireDate.Width = 100  ' Fixed width
+
+' Add the column definitions to the combo box control
+cboItems.DropDownFormat.GridColumnStyles.AddRange(new DataGridColumnStyle() {
+    dgtbItemName, dgtbExpireDate, dgbcInStock })
+</code>
+
+			</content>
+		</section>
+
+		<section address="UCCombo">
+			<title>UserControlComboBox Usage</title>
+			<content>
+				<para>The <codeInline>UserControlComboBox</codeInline> is similar in nature to other combo box controls
+but it displays a user control that you create as its drop-down.  This allows you to create drop-downs that use
+non-standard lists such as tree views, list views, or just about any other combination of controls that you can
+imagine.  The drop-down will gain the focus when displayed so you can also put checkboxes, text boxes, buttons,
+and other controls in the drop-down as well.</para>
+
+				<para>For this combo box, the <codeInline>MaxDropDownItems</codeInline> property has no effect on the
+drop-down size.  However, it is used to control how many items are skipped when you press page up or page down in
+the textbox portion of the control.</para>
+
+				<para>The drop-down control type cannot be set at design-time so it must be assigned using code.  This is
+most often done in the form's constructor after the <codeInline>InitializeComponent</codeInline> method has been
+called.  To do so, simply assign the drop-down control type to the <codeInline>DropDownControl</codeInline>
+property.</para>
+
+<code language="cs" title="C#">
+// TreeViewDropDown is a user control derived from DropDownControl
+ucCombo.DropDownControl = typeof(TreeViewDropDown);
+</code>
+
+<code language="vbnet" title="VB.NET">
+' TreeViewDropDown is a user control derived from DropDownControl
+ucCombo.DropDownControl = GetType(TreeViewDropDown)
+</code>
+
+				<para>The <codeInline>UserControlComboBox</codeInline> exposes two events that you can use to customize
+the settings of the drop-down control before it is displayed.  For example, you might need to hide certain
+controls in the drop-down based on a condition in the form containing the combo box.  The
+<codeInline>DropDownControlCreated</codeInline> event is fired after the drop-down has been created but before it
+has been initialized.  The <codeInline>DropDownControlInitialized</codeInline> event is fired after the drop-down
+has been created and initialized but just prior to it being displayed.  The <codeInline>sender</codeInline>
+parameter will be a reference to the drop-down control.</para>
+
+<code language="cs" title="C#">
+// Hide the "exclude terminated" checkbox for this form
+private void cboAssignTo_DropDownControlCreated(object sender, EventArgs e)
+{
+    EmployeeDropDown dd = (EmployeeDropDown)sender;
+
+    // This is a custom property on the drop-down user control
+    dd.ShowExcludeTerminated = false;
+}
+</code>
+
+<code language="vbnet" title="VB.NET">
+' Hide the "exclude terminated" checkbox for this form
+Private Sub cboAssignTo_DropDownControlCreated(sender As Object, e As EventArgs) _
+	Handles cboAssignTo.DropDownControlCreated
+    Dim dd As EmployeeDropDown = CType(sender, EmployeeDropDown)
+
+    ' This is a custom property on the drop-down user control
+    dd.ShowExcludeTerminated = False
+End Sub
+</code>
+
+			</content>
+		</section>
+
+		<section address="DDCtrl">
+			<title>Creating a Dropdown Control</title>
+			<content>
+				<para>The drop-down controls used by the <codeInline>UserControlComboBox</codeInline> are all derived
+from the supplied <codeInline>DropDownControl</codeInline> class.  To create a new drop-down control, follow
+these steps:</para>
+
+				<list class="ordered">
+					<listItem>
+						<para>Right click on the project in the <legacyBold>Solution Explorer</legacyBold>, select
+<legacyBold>Add</legacyBold>, <legacyBold>Add User Control</legacyBold>, enter a name for the new user control,
+and click <legacyBold>Open</legacyBold> to add it to the project.</para>
+					</listItem>
+
+					<listItem>
+						<para>Open the new user control in the designer and view the code for it.</para>
+					</listItem>
+
+					<listItem>
+						<para>Change the base class of the user control to <codeInline>EWSoftware.ListControls.DropDownControl</codeInline>.</para>
+
+<code language="cs" title="C#">
+public class TreeViewDropDown : EWSoftware.ListControls.DropDownControl
+</code>
+
+<code language="vbnet" title="VB.NET">
+Public Class TreeViewDropDown
+  Inherits EWSoftware.ListControls.DropDownControl
+</code>
+					</listItem>
+
+					<listItem>
+						<para>Add controls to the template and any required event handlers for them as you would for any
+other user control.  You can also define public properties and methods if necessary to let forms containing combo
+boxes utilizing the drop-down control make changes to it using the events described in the prior section.</para>
+					</listItem>
+
+					<listItem>
+						<para>More likely than not, you will need to override the <codeInline>InitializeDropdown</codeInline>
+method to populate the controls and obtain data from the combo box that owns the drop-down.  The drop-down's
+<codeInline>ComboBox</codeInline> property can be used to obtain a reference to the <codeInline>UserControlComboBox</codeInline>
+that owns it.  The demo application contains an example of this.</para>
+					</listItem>
+
+					<listItem>
+						<para>You can also override the <codeInline>ShowDropDown</codeInline> method if necessary to make
+adjustments to the drop-down just prior to it being displayed.  For example, you might want to synchronize the
+item displayed in the drop-down with the current selected index in the combo box.  The demo application contains
+an example of this.</para>
+					</listItem>
+
+					<listItem>
+						<para>Once the drop-down has been created, you can assign its type to the
+<codeInline>DropDownControl</codeInline> property of the <codeInline>UserControlComboBox</codeInline> as shown in
+the prior section.</para>
+					</listItem>
+				</list>
+
+				<para>The user can close the drop-down by hitting Escape or clicking outside of the drop-down just like a
+normal combo box.  To cancel the selection process and close the drop-down from within your user control, you can
+set the combo box's <codeInline>DroppedDown</codeInline> property to false.</para>
+
+<code language="cs" title="C#">
+private void btnCancel_Click(object sender, EventArgs e)
+{
+    this.ComboBox.DroppedDown = false;
+}
+</code>
+
+<code language="vbnet" title="VB.NET">
+Private Sub btnCancel_Click(sender As Object, e As EventArgs) _
+  Handles btnCancel.Click
+    Me.ComboBox.DroppedDown = False
+End Sub
+</code>
+
+				<para>To commit a selection making it the selected item in the combo box and close the drop-down from
+within your user control, you can use the <codeInline>CommitSelection</codeInline> method.  This method has two
+versions: one to commit the selection by index and another to commit the selection by value (the
+<codeInline>ValueMember</codeInline> value of an item).</para>
+
+<code language="cs" title="C#">
+private void btnSelect_Click(object sender, EventArgs e)
+{
+    // The tree view node tag contains the item value
+    this.CommitSelection(tvItems.SelectedNode.Tag);
+}
+</code>
+
+<code language="vbnet" title="VB.NET">
+Private Sub btnSelect_Click(sender As Object, e As EventArgs) _
+  Handles btnSelect.Click
+    ' The tree view node tag contains the item value
+    Me.CommitSelection(tvItems.SelectedNode.Tag)
+End Sub
+</code>
+
+				<para>Note that it is also possible to set the <codeInline>SelectedIndex</codeInline> property from
+within the user control to modify the selection (i.e. to track the selected item as you move through the nodes in
+a tree view control).  The demo application contains an example of this.</para>
+
+			</content>
+		</section>
+
+		<relatedTopics>
+			<link xlink:href="ce5cb77a-44a9-4629-aec3-6a8435cd8e53" />
+		</relatedTopics>
+
+	</developerConceptualDocument>
+</topic>
