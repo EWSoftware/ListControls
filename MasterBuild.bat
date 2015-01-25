@@ -1,8 +1,6 @@
 @ECHO OFF
 CLS
 
-DEL /Q .\Deployment\*.*
-
 "%WINDIR%\Microsoft.Net\Framework\v4.0.30319\msbuild.exe" /nologo /v:m /m "Source\EWSListControls.sln" /t:Clean;Build "/p:Configuration=Release;Platform=Any CPU"
 
 "%WINDIR%\Microsoft.Net\Framework\v4.0.30319\msbuild.exe" /nologo /v:m /m "Demos\ListControlDemo.sln" /t:Clean;Build "/p:Configuration=Release;Platform=x86"
