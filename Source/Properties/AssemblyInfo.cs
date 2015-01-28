@@ -2,7 +2,7 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : AssemblyInfo.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/19/2015
+// Updated : 01/27/2015
 // Note    : Copyright 2005-2015, Eric Woodruff, All rights reserved
 // Compiler: Microsoft Visual C#
 //
@@ -64,16 +64,16 @@ using System.Runtime.InteropServices;
 // This is used to set the assembly version in the strong name.  This should remain unchanged to maintain binary
 // compatibility with prior releases.  It should only be changed if a breaking change is made that requires
 // assemblies that reference older versions to be recompiled against the newer version.
-[assembly: AssemblyVersion("2015.1.19.0")]
+[assembly: AssemblyVersion("2015.1.27.0")]
 
 // Common assembly file version
 //
 // This is used to set the assembly file version.  This will change with each new release.  MSIs only support a
 // Major value between 0 and 255 so we drop the century from the year on this one.
-[assembly: AssemblyFileVersion("15.1.19.0")]
+[assembly: AssemblyFileVersion("15.1.27.0")]
 
 // Common product version
 //
 // This may contain additional text to indicate Alpha or Beta states.  The version number will always match the
 // file version above but includes the century on the year.
-[assembly: AssemblyInformationalVersion("2015.1.19.0")]
+[assembly: AssemblyInformationalVersion("2015.1.27.0")]

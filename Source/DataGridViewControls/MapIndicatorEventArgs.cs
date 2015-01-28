@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : MapIndicatorEventArgs.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/24/2014
-// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
+// Updated : 01/27/2015
+// Note    : Copyright 2007-2015, Eric Woodruff, All rights reserved
 // Compiler: Microsoft Visual C#
 //
 // This file contains an event arguments class used to map a cell value to a set of on/off states for drawing
@@ -53,7 +53,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// </summary>
         /// <value>This will contain one entry for each image in the image list.  By default, they are all false.
         /// Set an entry to true to draw the corresponding image index in the on/enable state.</value>
-        public IEnumerable<bool> ImageStates { get; private set; }
+        public IList<bool> ImageStates { get; private set; }
 
         /// <summary>
         /// Constructor
@@ -62,7 +62,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="rowIndex">The row in which the event occurred</param>
         /// <param name="value">The cell value</param>
         /// <param name="states">An enumerable list of the image index states</param>
-        public MapIndicatorEventArgs(int columnIndex, int rowIndex, object value, IEnumerable<bool> states)
+        public MapIndicatorEventArgs(int columnIndex, int rowIndex, object value, IList<bool> states)
         {
             this.Column = columnIndex;
             this.Row = rowIndex;
