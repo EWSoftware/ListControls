@@ -6,7 +6,7 @@
 		<title>EWSoftware List Controls Library</title>
 		<authors>Eric Woodruff</authors>
 		<owners>Eric Woodruff</owners>
-		<licenseUrl>https://github.com/EWSoftware/ListControls/blob/master/LICENSE</licenseUrl>
+        <license type="expression">MS-PL</license>
 		<projectUrl>https://github.com/EWSoftware/ListControls</projectUrl>
 		<iconUrl>https://raw.githubusercontent.com/EWSoftware/ListControls/master/NuGet/EWSListControls.png</iconUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
