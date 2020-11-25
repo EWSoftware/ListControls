@@ -82,7 +82,6 @@ Partial Class RadioButtonListTestForm
         'btnGetValue
         '
         Me.btnGetValue.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnGetValue.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.btnGetValue.Location = New System.Drawing.Point(350, 52)
         Me.btnGetValue.Name = "btnGetValue"
         Me.btnGetValue.Size = New System.Drawing.Size(75, 28)
@@ -155,7 +154,6 @@ Partial Class RadioButtonListTestForm
         Me.rblDemo.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                     Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.rblDemo.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.rblDemo.Location = New System.Drawing.Point(384, 8)
         Me.rblDemo.Name = "rblDemo"
         Me.rblDemo.Size = New System.Drawing.Size(440, 304)
@@ -164,7 +162,6 @@ Partial Class RadioButtonListTestForm
         'chkShowImages
         '
         Me.chkShowImages.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.chkShowImages.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.chkShowImages.Location = New System.Drawing.Point(8, 436)
         Me.chkShowImages.Name = "chkShowImages"
         Me.chkShowImages.Size = New System.Drawing.Size(136, 24)

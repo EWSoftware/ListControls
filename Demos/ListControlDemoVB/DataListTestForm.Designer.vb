@@ -48,7 +48,6 @@ Partial Class DataListTestForm
         'btnLoad
         '
         Me.btnLoad.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnLoad.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.btnLoad.Location = New System.Drawing.Point(12, 456)
         Me.btnLoad.Name = "btnLoad"
         Me.btnLoad.Size = New System.Drawing.Size(104, 28)
@@ -72,7 +71,6 @@ Partial Class DataListTestForm
         'btnSave
         '
         Me.btnSave.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnSave.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.btnSave.Location = New System.Drawing.Point(122, 456)
         Me.btnSave.Name = "btnSave"
         Me.btnSave.Size = New System.Drawing.Size(104, 28)
@@ -93,7 +91,6 @@ Partial Class DataListTestForm
         'btnAddDSRow
         '
         Me.btnAddDSRow.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnAddDSRow.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.btnAddDSRow.Location = New System.Drawing.Point(280, 456)
         Me.btnAddDSRow.Name = "btnAddDSRow"
         Me.btnAddDSRow.Size = New System.Drawing.Size(104, 28)
@@ -104,7 +101,6 @@ Partial Class DataListTestForm
         'btnDelDSRow
         '
         Me.btnDelDSRow.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnDelDSRow.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.btnDelDSRow.Location = New System.Drawing.Point(572, 456)
         Me.btnDelDSRow.Name = "btnDelDSRow"
         Me.btnDelDSRow.Size = New System.Drawing.Size(104, 28)
@@ -115,7 +111,6 @@ Partial Class DataListTestForm
         'btnModRow
         '
         Me.btnModRow.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnModRow.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.btnModRow.Location = New System.Drawing.Point(682, 456)
         Me.btnModRow.Name = "btnModRow"
         Me.btnModRow.Size = New System.Drawing.Size(104, 28)
@@ -126,7 +121,6 @@ Partial Class DataListTestForm
         'btnGetValue
         '
         Me.btnGetValue.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnGetValue.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.btnGetValue.Location = New System.Drawing.Point(346, 422)
         Me.btnGetValue.Name = "btnGetValue"
         Me.btnGetValue.Size = New System.Drawing.Size(75, 28)
@@ -215,7 +209,6 @@ Partial Class DataListTestForm
         Me.chkShowHeader.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.chkShowHeader.Checked = True
         Me.chkShowHeader.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkShowHeader.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.chkShowHeader.Location = New System.Drawing.Point(723, 426)
         Me.chkShowHeader.Name = "chkShowHeader"
         Me.chkShowHeader.Size = New System.Drawing.Size(104, 24)
@@ -227,7 +220,6 @@ Partial Class DataListTestForm
         Me.chkShowFooter.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.chkShowFooter.Checked = True
         Me.chkShowFooter.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkShowFooter.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.chkShowFooter.Location = New System.Drawing.Point(835, 426)
         Me.chkShowFooter.Name = "chkShowFooter"
         Me.chkShowFooter.Size = New System.Drawing.Size(104, 24)

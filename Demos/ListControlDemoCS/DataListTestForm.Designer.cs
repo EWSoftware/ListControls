@@ -58,7 +58,6 @@ namespace ListControlDemoCS
             // btnLoad
             // 
             this.btnLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnLoad.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnLoad.Location = new System.Drawing.Point(12, 445);
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(104, 28);
@@ -88,7 +87,6 @@ namespace ListControlDemoCS
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSave.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnSave.Location = new System.Drawing.Point(122, 445);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(104, 28);
@@ -111,7 +109,6 @@ namespace ListControlDemoCS
             // btnAddDSRow
             // 
             this.btnAddDSRow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAddDSRow.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnAddDSRow.Location = new System.Drawing.Point(280, 445);
             this.btnAddDSRow.Name = "btnAddDSRow";
             this.btnAddDSRow.Size = new System.Drawing.Size(104, 28);
@@ -123,7 +120,6 @@ namespace ListControlDemoCS
             // btnDelDSRow
             // 
             this.btnDelDSRow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDelDSRow.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnDelDSRow.Location = new System.Drawing.Point(572, 445);
             this.btnDelDSRow.Name = "btnDelDSRow";
             this.btnDelDSRow.Size = new System.Drawing.Size(104, 28);
@@ -135,7 +131,6 @@ namespace ListControlDemoCS
             // btnModRow
             // 
             this.btnModRow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnModRow.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnModRow.Location = new System.Drawing.Point(682, 445);
             this.btnModRow.Name = "btnModRow";
             this.btnModRow.Size = new System.Drawing.Size(104, 28);
@@ -147,7 +142,6 @@ namespace ListControlDemoCS
             // btnGetValue
             // 
             this.btnGetValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnGetValue.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnGetValue.Location = new System.Drawing.Point(343, 408);
             this.btnGetValue.Name = "btnGetValue";
             this.btnGetValue.Size = new System.Drawing.Size(75, 28);
@@ -271,7 +265,6 @@ namespace ListControlDemoCS
             this.chkShowHeader.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.chkShowHeader.Checked = true;
             this.chkShowHeader.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkShowHeader.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkShowHeader.Location = new System.Drawing.Point(720, 411);
             this.chkShowHeader.Name = "chkShowHeader";
             this.chkShowHeader.Size = new System.Drawing.Size(104, 24);
@@ -284,7 +277,6 @@ namespace ListControlDemoCS
             this.chkShowFooter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.chkShowFooter.Checked = true;
             this.chkShowFooter.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkShowFooter.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkShowFooter.Location = new System.Drawing.Point(832, 411);
             this.chkShowFooter.Name = "chkShowFooter";
             this.chkShowFooter.Size = new System.Drawing.Size(104, 24);

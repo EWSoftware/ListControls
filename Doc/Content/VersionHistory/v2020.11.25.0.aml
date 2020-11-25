@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="ee30a16f-43b6-4c64-b196-2a2036a261dc" revisionNumber="1">
+	<developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+		<introduction>
+			<para>Release notes for version 2020.11.25.0.</para>
+		</introduction>
+
+		<section>
+			<title>Changes in This Release</title>
+			<content>
+
+				<list class="bullet">
+					<listItem>
+						<para>Fixed <codeInline>BaseComboBoxCell</codeInline> so that it correctly obtains the graphics
+object from the owning data grid view.</para>
+					</listItem>
+
+					<listItem>
+						<para>Fixed the layout of images when an image list is used with a
+<codeLine>BaseButtonList</codeLine>-derived control.</para>
+					</listItem>
+
+					<listItem>
+						<para>Added the <codeEntityReference qualifyHint="false" autoUpgrade="true">M:EWSoftware.ListControls.BaseButtonList.SetImageIndex(System.Int32,System.Int32)</codeEntityReference>
+method to <codeInline>BaseButtonList</codeInline> to allow modifying the image index of items in the list control when
+using an image list with it.</para>
+					</listItem>
+				</list>
+
+			</content>
+		</section>
+
+		<relatedTopics>
+			<link xlink:href="4466344c-0933-476c-9743-63008a2d8659" />
+		</relatedTopics>
+
+	</developerConceptualDocument>
+</topic>

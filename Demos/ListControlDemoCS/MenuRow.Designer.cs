@@ -57,7 +57,6 @@ namespace ListControlDemoCS
             // btnDemo
             // 
             this.btnDemo.BackColor = System.Drawing.SystemColors.Control;
-            this.btnDemo.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnDemo.Location = new System.Drawing.Point(618, 62);
             this.btnDemo.Name = "btnDemo";
             this.btnDemo.Size = new System.Drawing.Size(75, 32);

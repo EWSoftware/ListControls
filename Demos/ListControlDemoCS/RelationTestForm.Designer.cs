@@ -67,7 +67,6 @@ namespace ListControlDemoCS
             // btnLoad
             // 
             this.btnLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnLoad.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnLoad.Location = new System.Drawing.Point(12, 387);
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(104, 28);
@@ -92,7 +91,6 @@ namespace ListControlDemoCS
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSave.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnSave.Location = new System.Drawing.Point(122, 387);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(104, 28);

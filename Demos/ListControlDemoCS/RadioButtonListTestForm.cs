@@ -239,12 +239,7 @@ namespace ListControlDemoCS
                 rblDemo.ImageList = ilImages;
             }
             else
-            {
-                if(rblDemo.FlatStyle == FlatStyle.Standard)
-                    rblDemo.FlatStyle = FlatStyle.System;
-
                 rblDemo.ImageList = null;
-            }
         }
         #endregion
     }

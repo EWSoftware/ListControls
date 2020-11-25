@@ -42,7 +42,6 @@ Partial Class PhoneRow
         '
         'btnDelete
         '
-        Me.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.btnDelete.Location = New System.Drawing.Point(176, 8)
         Me.btnDelete.Name = "btnDelete"
         Me.btnDelete.Size = New System.Drawing.Size(75, 25)

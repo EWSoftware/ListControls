@@ -53,8 +53,8 @@ namespace ListControlDemoCS
             // 
             // pgProps
             // 
-            this.pgProps.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.pgProps.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.pgProps.LineColor = System.Drawing.SystemColors.ScrollBar;
             this.pgProps.Location = new System.Drawing.Point(6, 0);
             this.pgProps.Name = "pgProps";
@@ -64,8 +64,8 @@ namespace ListControlDemoCS
             // 
             // grpOptions
             // 
-            this.grpOptions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpOptions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpOptions.Controls.Add(this.btnCheckedItemsText);
             this.grpOptions.Controls.Add(this.btnCheckedIndices);
             this.grpOptions.Controls.Add(this.btnCheckedItems);
@@ -87,7 +87,6 @@ namespace ListControlDemoCS
             // btnCheckedItemsText
             // 
             this.btnCheckedItemsText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnCheckedItemsText.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnCheckedItemsText.Location = new System.Drawing.Point(287, 21);
             this.btnCheckedItemsText.Name = "btnCheckedItemsText";
             this.btnCheckedItemsText.Size = new System.Drawing.Size(70, 28);
@@ -98,7 +97,6 @@ namespace ListControlDemoCS
             // btnCheckedIndices
             // 
             this.btnCheckedIndices.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnCheckedIndices.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnCheckedIndices.Location = new System.Drawing.Point(362, 21);
             this.btnCheckedIndices.Name = "btnCheckedIndices";
             this.btnCheckedIndices.Size = new System.Drawing.Size(70, 28);
@@ -109,7 +107,6 @@ namespace ListControlDemoCS
             // btnCheckedItems
             // 
             this.btnCheckedItems.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnCheckedItems.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnCheckedItems.Location = new System.Drawing.Point(211, 21);
             this.btnCheckedItems.Name = "btnCheckedItems";
             this.btnCheckedItems.Size = new System.Drawing.Size(70, 28);
@@ -122,13 +119,12 @@ namespace ListControlDemoCS
             this.cboColumns.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboColumns.Location = new System.Drawing.Point(104, 56);
             this.cboColumns.Name = "cboColumns";
-            this.cboColumns.Size = new System.Drawing.Size(132, 24);
+            this.cboColumns.Size = new System.Drawing.Size(132, 28);
             this.cboColumns.TabIndex = 6;
             // 
             // btnGetValue
             // 
             this.btnGetValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnGetValue.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnGetValue.Location = new System.Drawing.Point(362, 53);
             this.btnGetValue.Name = "btnGetValue";
             this.btnGetValue.Size = new System.Drawing.Size(70, 28);
@@ -146,7 +142,7 @@ namespace ListControlDemoCS
             0,
             0});
             this.txtRowNumber.Name = "txtRowNumber";
-            this.txtRowNumber.Size = new System.Drawing.Size(56, 22);
+            this.txtRowNumber.Size = new System.Drawing.Size(56, 26);
             this.txtRowNumber.TabIndex = 8;
             this.txtRowNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -172,12 +168,12 @@ namespace ListControlDemoCS
             // 
             // txtValue
             // 
-            this.txtValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtValue.Location = new System.Drawing.Point(8, 88);
             this.txtValue.Name = "txtValue";
             this.txtValue.ReadOnly = true;
-            this.txtValue.Size = new System.Drawing.Size(424, 22);
+            this.txtValue.Size = new System.Drawing.Size(424, 26);
             this.txtValue.TabIndex = 10;
             this.txtValue.TabStop = false;
             // 
@@ -193,7 +189,7 @@ namespace ListControlDemoCS
             "Strings"});
             this.cboDataSource.Location = new System.Drawing.Point(104, 24);
             this.cboDataSource.Name = "cboDataSource";
-            this.cboDataSource.Size = new System.Drawing.Size(101, 24);
+            this.cboDataSource.Size = new System.Drawing.Size(101, 28);
             this.cboDataSource.TabIndex = 1;
             this.cboDataSource.SelectedIndexChanged += new System.EventHandler(this.cboDataSource_SelectedIndexChanged);
             // 
@@ -209,25 +205,24 @@ namespace ListControlDemoCS
             // 
             // cblDemo
             // 
-            this.cblDemo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.cblDemo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cblDemo.BindingMembersBindingContext = null;
-            this.cblDemo.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.cblDemo.Location = new System.Drawing.Point(384, 8);
             this.cblDemo.Name = "cblDemo";
             this.cblDemo.Size = new System.Drawing.Size(440, 320);
             this.cblDemo.TabIndex = 0;
-            this.cblDemo.SelectedIndexChanged += new System.EventHandler(this.cblDemo_SelectedIndexChanged);
+            this.cblDemo.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.cblDemo.ItemCheckStateChanged += new System.EventHandler<EWSoftware.ListControls.ItemCheckStateEventArgs>(this.cblDemo_ItemCheckStateChanged);
+            this.cblDemo.SelectedIndexChanged += new System.EventHandler(this.cblDemo_SelectedIndexChanged);
             // 
             // chkShowImages
             // 
             this.chkShowImages.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.chkShowImages.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkShowImages.Location = new System.Drawing.Point(8, 444);
             this.chkShowImages.Name = "chkShowImages";
-            this.chkShowImages.Size = new System.Drawing.Size(136, 24);
+            this.chkShowImages.Size = new System.Drawing.Size(171, 24);
             this.chkShowImages.TabIndex = 2;
             this.chkShowImages.Text = "Use &Image List";
             this.chkShowImages.CheckedChanged += new System.EventHandler(this.chkShowImages_CheckedChanged);
@@ -282,6 +277,5 @@ namespace ListControlDemoCS
         private System.Windows.Forms.Button btnCheckedIndices;
         private System.Windows.Forms.Button btnCheckedItemsText;
         private System.Windows.Forms.ComboBox cboDataSource;
-
     }
 }

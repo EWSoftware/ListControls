@@ -42,7 +42,6 @@ Partial Class TreeViewDropDown
         'chkExcludeDiscontinued
         '
         Me.chkExcludeDiscontinued.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.chkExcludeDiscontinued.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.chkExcludeDiscontinued.Location = New System.Drawing.Point(8, 218)
         Me.chkExcludeDiscontinued.Name = "chkExcludeDiscontinued"
         Me.chkExcludeDiscontinued.Size = New System.Drawing.Size(216, 24)
@@ -52,7 +51,6 @@ Partial Class TreeViewDropDown
         'btnSelect
         '
         Me.btnSelect.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnSelect.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.btnSelect.Location = New System.Drawing.Point(108, 244)
         Me.btnSelect.Name = "btnSelect"
         Me.btnSelect.Size = New System.Drawing.Size(64, 25)
@@ -62,7 +60,6 @@ Partial Class TreeViewDropDown
         'btnCancel
         '
         Me.btnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.btnCancel.Location = New System.Drawing.Point(178, 244)
         Me.btnCancel.Name = "btnCancel"
         Me.btnCancel.Size = New System.Drawing.Size(64, 25)

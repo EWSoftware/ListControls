@@ -57,7 +57,6 @@ Partial Class RelationTestForm
         'btnLoad
         '
         Me.btnLoad.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnLoad.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.btnLoad.Location = New System.Drawing.Point(12, 387)
         Me.btnLoad.Name = "btnLoad"
         Me.btnLoad.Size = New System.Drawing.Size(104, 28)
@@ -75,7 +74,6 @@ Partial Class RelationTestForm
         'btnSave
         '
         Me.btnSave.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnSave.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.btnSave.Location = New System.Drawing.Point(122, 387)
         Me.btnSave.Name = "btnSave"
         Me.btnSave.Size = New System.Drawing.Size(104, 28)

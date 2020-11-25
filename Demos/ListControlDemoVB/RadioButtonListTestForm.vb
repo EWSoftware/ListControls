@@ -203,10 +203,6 @@ Public Partial Class RadioButtonListTestForm
 
             rblDemo.ImageList = ilImages
         Else
-            If rblDemo.FlatStyle = FlatStyle.Standard Then
-                rblDemo.FlatStyle = FlatStyle.System
-            End If
-
             rblDemo.ImageList = Nothing
         End If
     End Sub

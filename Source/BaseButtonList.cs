@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : BaseButtonList.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/24/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 11/25/2020
+// Note    : Copyright 2005-2020, Eric Woodruff, All rights reserved
 //
 // This file contains an abstract base button list control that supports data binding, layout options, and data
 // source indexers and serves as the base class for the RadioButtonList and CheckBoxList controls.
@@ -39,22 +38,22 @@ namespace EWSoftware.ListControls
         //====================================================================
 
         // This is for laying out the controls and indicates the size of the checkmark part of the control
-        private static int CheckmarkSize = 20;
+        private const int CheckmarkSize = 20;
 
         // Alignment combinations
-        private static int LeftAlignments = (int)(ContentAlignment.TopLeft | ContentAlignment.MiddleLeft |
+        private const int LeftAlignments = (int)(ContentAlignment.TopLeft | ContentAlignment.MiddleLeft |
             ContentAlignment.BottomLeft);
 
-        private static int RightAlignments = (int)(ContentAlignment.TopRight | ContentAlignment.MiddleRight |
+        private const int RightAlignments = (int)(ContentAlignment.TopRight | ContentAlignment.MiddleRight |
             ContentAlignment.BottomRight);
 
         private System.Windows.Forms.Panel pnlButtons;
 
         // Title properties
-        private SolidBrush brBackground, brTitleBack, brTitleFore;
+        private readonly SolidBrush brBackground, brTitleBack, brTitleFore;
+        private readonly StringFormat sfTitle;
         private Pen penTitleBorder;
         private Font fontTitle;
-        private StringFormat sfTitle;
         private string titleText;
 
         // Border style, border width, and image list
@@ -668,9 +667,12 @@ namespace EWSoftware.ListControls
             brTitleFore = new SolidBrush(SystemColors.ControlText);
             penTitleBorder = new Pen(Color.Black);
             fontTitle = new Font(Control.DefaultFont, Control.DefaultFont.Style);
-            sfTitle = new StringFormat();
-			sfTitle.Alignment = StringAlignment.Center;
-			sfTitle.LineAlignment = StringAlignment.Center;
+
+            sfTitle = new StringFormat
+            {
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center
+            };
 
             this.InitializeComponent();
         }
@@ -685,20 +687,18 @@ namespace EWSoftware.ListControls
 		/// </summary>
         private void InitializeComponent()
         {
-            this.pnlButtons = new System.Windows.Forms.Panel();
-            //
-            // pnlButtons
-            //
-            this.pnlButtons.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right;
-            this.pnlButtons.AutoScroll = true;
-            this.pnlButtons.Location = new System.Drawing.Point(0, 0);
-            this.pnlButtons.Name = "pnlButtons";
-            this.pnlButtons.Size = new System.Drawing.Size(150, 23);
-            this.pnlButtons.TabIndex = 0;
+            this.pnlButtons = new System.Windows.Forms.Panel
+            {
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right,
+                AutoScroll = true,
+                Location = new System.Drawing.Point(0, 0),
+                Name = "pnlButtons",
+                Size = new System.Drawing.Size(150, 23),
+                TabIndex = 0
+            };
+
             this.pnlButtons.MouseDown += pnlButtons_MouseDown;
-            //
-            // BaseButtonList
-            //
+
             this.Controls.Add(this.pnlButtons);
             this.Size = new System.Drawing.Size(150, 23);
         }
@@ -1254,7 +1254,9 @@ namespace EWSoftware.ListControls
 
                 // The buttons don't layout the text correctly when an image is used.  Pad the text on each item
                 // to compensate.
-                spaceWidth = (ilImages.ImageSize.Width / TextRenderer.MeasureText(" ", this.Font).Width) + 2;
+                spaceWidth = (ilImages.ImageSize.Width / TextRenderer.MeasureText(" ", this.Font).Width) + 4;
+
+                itemHeight += 6;
             }
 
             if(ilImages != null || sizeAllToWidest || layoutMethod == LayoutMethod.SingleColumn)
@@ -1360,6 +1362,21 @@ namespace EWSoftware.ListControls
             base.PerformLayout();
             base.OnFontChanged(e);
         }
+
+        /// <summary>
+        /// This can be used to alter the image index of an item in the button list
+        /// </summary>
+        /// <param name="itemIndex">The item index to modify</param>
+        /// <param name="imageIndex">The image index to use</param>
+        public void SetImageIndex(int itemIndex, int imageIndex)
+        {
+            if(this.ImageList != null && imageIndex > -1 && imageIndex < this.ImageList.Images.Count &&
+              itemIndex > -1 && itemIndex < pnlButtons.Controls.Count)
+            {
+                ((ButtonBase)pnlButtons.Controls[itemIndex]).ImageIndex = imageIndex;
+            }
+        }
+
         #endregion
     }
 }

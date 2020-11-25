@@ -40,7 +40,6 @@ Partial Class MenuRow
         'btnDemo
         '
         Me.btnDemo.BackColor = System.Drawing.SystemColors.Control
-        Me.btnDemo.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.btnDemo.Location = New System.Drawing.Point(618, 62)
         Me.btnDemo.Name = "btnDemo"
         Me.btnDemo.Size = New System.Drawing.Size(75, 32)

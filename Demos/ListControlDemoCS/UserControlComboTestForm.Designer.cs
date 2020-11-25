@@ -141,7 +141,6 @@ namespace ListControlDemoCS
             // btnGetValue
             // 
             this.btnGetValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnGetValue.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnGetValue.Location = new System.Drawing.Point(350, 55);
             this.btnGetValue.Name = "btnGetValue";
             this.btnGetValue.Size = new System.Drawing.Size(75, 28);

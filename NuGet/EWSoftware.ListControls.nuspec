@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
 	<metadata>
 		<id>EWSoftware.ListControls</id>
-		<version>2015.1.27.0</version>
+		<version>2020.11.25.0</version>
 		<title>EWSoftware List Controls Library</title>
 		<authors>Eric Woodruff</authors>
 		<owners>Eric Woodruff</owners>
@@ -11,7 +11,7 @@
 		<iconUrl>https://raw.githubusercontent.com/EWSoftware/ListControls/master/NuGet/EWSListControls.png</iconUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>This library contains several Windows Forms controls: combo box controls with extra abilities, a radio button list control, a checkbox list control, a data navigator control, and a template-based data list control.  See the project website for the code, a help file, and demos.</description>
-		<copyright>Eric Woodruff (c) 2005-2015</copyright>
+		<copyright>Eric Woodruff (c) 2005-2020</copyright>
 		<tags>Windows Forms controls template data list checkbox radio button combo box radiobutton combobox</tags>
 		<frameworkAssemblies>
 			<frameworkAssembly assemblyName="System.Drawing" />

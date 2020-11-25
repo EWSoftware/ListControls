@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : DataGridViewHelper.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/24/2014
-// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 11/25/2020
+// Note    : Copyright 2007-2020, Eric Woodruff, All rights reserved
 //
 // This is a static class that contains various helper methods for use with DataGridView objects
 //
@@ -46,20 +45,6 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 type = type.BaseType;
 
             return type;
-        }
-
-        /// <summary>
-        /// This can be used to get the cached graphics object from the specified <see cref="DataGridView"/>
-        /// control.
-        /// </summary>
-        /// <param name="dgv">The data grid view from which to get the cached graphics object</param>
-        /// <returns>The cached graphics object</returns>
-        internal static Graphics CachedGraphics(DataGridView dgv)
-        {
-            PropertyInfo pi = DataGridViewHelper.DataGridViewType(dgv).GetProperty("CachedGraphics",
-                BindingFlags.NonPublic | BindingFlags.Instance);
-
-            return (Graphics)pi.GetValue(dgv, null);
         }
 
         /// <summary>

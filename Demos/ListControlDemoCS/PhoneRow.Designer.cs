@@ -48,7 +48,6 @@ namespace ListControlDemoCS
             // 
             // btnDelete
             // 
-            this.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnDelete.Location = new System.Drawing.Point(176, 8);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(75, 25);

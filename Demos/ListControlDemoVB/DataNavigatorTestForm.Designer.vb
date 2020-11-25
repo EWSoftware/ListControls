@@ -66,7 +66,6 @@ Partial Class DataNavigatorTestForm
         'btnLoad
         '
         Me.btnLoad.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnLoad.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.btnLoad.Location = New System.Drawing.Point(12, 375)
         Me.btnLoad.Name = "btnLoad"
         Me.btnLoad.Size = New System.Drawing.Size(104, 28)
@@ -84,7 +83,6 @@ Partial Class DataNavigatorTestForm
         'btnSave
         '
         Me.btnSave.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnSave.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.btnSave.Location = New System.Drawing.Point(122, 375)
         Me.btnSave.Name = "btnSave"
         Me.btnSave.Size = New System.Drawing.Size(104, 28)
@@ -103,7 +101,6 @@ Partial Class DataNavigatorTestForm
         'btnAddDSRow
         '
         Me.btnAddDSRow.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnAddDSRow.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.btnAddDSRow.Location = New System.Drawing.Point(284, 375)
         Me.btnAddDSRow.Name = "btnAddDSRow"
         Me.btnAddDSRow.Size = New System.Drawing.Size(104, 28)
@@ -114,7 +111,6 @@ Partial Class DataNavigatorTestForm
         'btnDelDSRow
         '
         Me.btnDelDSRow.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnDelDSRow.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.btnDelDSRow.Location = New System.Drawing.Point(565, 375)
         Me.btnDelDSRow.Name = "btnDelDSRow"
         Me.btnDelDSRow.Size = New System.Drawing.Size(104, 28)
@@ -125,7 +121,6 @@ Partial Class DataNavigatorTestForm
         'btnModRow
         '
         Me.btnModRow.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnModRow.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.btnModRow.Location = New System.Drawing.Point(675, 375)
         Me.btnModRow.Name = "btnModRow"
         Me.btnModRow.Size = New System.Drawing.Size(104, 28)
@@ -158,7 +153,6 @@ Partial Class DataNavigatorTestForm
         'btnGetValue
         '
         Me.btnGetValue.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnGetValue.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.btnGetValue.Location = New System.Drawing.Point(346, 341)
         Me.btnGetValue.Name = "btnGetValue"
         Me.btnGetValue.Size = New System.Drawing.Size(75, 28)

@@ -22,33 +22,33 @@ Partial Class CheckBoxListTestForm
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.components = New System.ComponentModel.Container
+        Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(CheckBoxListTestForm))
-        Me.pgProps = New System.Windows.Forms.PropertyGrid
-        Me.grpOptions = New System.Windows.Forms.GroupBox
-        Me.btnCheckedItemsText = New System.Windows.Forms.Button
-        Me.btnCheckedIndices = New System.Windows.Forms.Button
-        Me.btnCheckedItems = New System.Windows.Forms.Button
-        Me.cboColumns = New System.Windows.Forms.ComboBox
-        Me.btnGetValue = New System.Windows.Forms.Button
-        Me.txtRowNumber = New System.Windows.Forms.NumericUpDown
-        Me.label6 = New System.Windows.Forms.Label
-        Me.label5 = New System.Windows.Forms.Label
-        Me.txtValue = New System.Windows.Forms.TextBox
-        Me.cboDataSource = New System.Windows.Forms.ComboBox
-        Me.label1 = New System.Windows.Forms.Label
-        Me.cblDemo = New EWSoftware.ListControls.CheckBoxList
-        Me.chkShowImages = New System.Windows.Forms.CheckBox
+        Me.pgProps = New System.Windows.Forms.PropertyGrid()
+        Me.grpOptions = New System.Windows.Forms.GroupBox()
+        Me.btnCheckedItemsText = New System.Windows.Forms.Button()
+        Me.btnCheckedIndices = New System.Windows.Forms.Button()
+        Me.btnCheckedItems = New System.Windows.Forms.Button()
+        Me.cboColumns = New System.Windows.Forms.ComboBox()
+        Me.btnGetValue = New System.Windows.Forms.Button()
+        Me.txtRowNumber = New System.Windows.Forms.NumericUpDown()
+        Me.label6 = New System.Windows.Forms.Label()
+        Me.label5 = New System.Windows.Forms.Label()
+        Me.txtValue = New System.Windows.Forms.TextBox()
+        Me.cboDataSource = New System.Windows.Forms.ComboBox()
+        Me.label1 = New System.Windows.Forms.Label()
+        Me.cblDemo = New EWSoftware.ListControls.CheckBoxList()
+        Me.chkShowImages = New System.Windows.Forms.CheckBox()
         Me.ilImages = New System.Windows.Forms.ImageList(Me.components)
-        Me.grpOptions.SuspendLayout()
-        CType(Me.txtRowNumber, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.cblDemo, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.SuspendLayout()
+        Me.grpOptions.SuspendLayout
+        CType(Me.txtRowNumber,System.ComponentModel.ISupportInitialize).BeginInit
+        CType(Me.cblDemo,System.ComponentModel.ISupportInitialize).BeginInit
+        Me.SuspendLayout
         '
         'pgProps
         '
-        Me.pgProps.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.pgProps.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom)  _
+            Or System.Windows.Forms.AnchorStyles.Left),System.Windows.Forms.AnchorStyles)
         Me.pgProps.LineColor = System.Drawing.SystemColors.ScrollBar
         Me.pgProps.Location = New System.Drawing.Point(6, 0)
         Me.pgProps.Name = "pgProps"
@@ -57,8 +57,8 @@ Partial Class CheckBoxListTestForm
         '
         'grpOptions
         '
-        Me.grpOptions.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.grpOptions.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left)  _
+            Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
         Me.grpOptions.Controls.Add(Me.btnCheckedItemsText)
         Me.grpOptions.Controls.Add(Me.btnCheckedIndices)
         Me.grpOptions.Controls.Add(Me.btnCheckedItems)
@@ -74,13 +74,12 @@ Partial Class CheckBoxListTestForm
         Me.grpOptions.Name = "grpOptions"
         Me.grpOptions.Size = New System.Drawing.Size(440, 120)
         Me.grpOptions.TabIndex = 1
-        Me.grpOptions.TabStop = False
+        Me.grpOptions.TabStop = false
         Me.grpOptions.Text = "Options"
         '
         'btnCheckedItemsText
         '
-        Me.btnCheckedItemsText.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnCheckedItemsText.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.btnCheckedItemsText.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left),System.Windows.Forms.AnchorStyles)
         Me.btnCheckedItemsText.Location = New System.Drawing.Point(287, 21)
         Me.btnCheckedItemsText.Name = "btnCheckedItemsText"
         Me.btnCheckedItemsText.Size = New System.Drawing.Size(70, 28)
@@ -89,8 +88,7 @@ Partial Class CheckBoxListTestForm
         '
         'btnCheckedIndices
         '
-        Me.btnCheckedIndices.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnCheckedIndices.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.btnCheckedIndices.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left),System.Windows.Forms.AnchorStyles)
         Me.btnCheckedIndices.Location = New System.Drawing.Point(362, 21)
         Me.btnCheckedIndices.Name = "btnCheckedIndices"
         Me.btnCheckedIndices.Size = New System.Drawing.Size(70, 28)
@@ -99,8 +97,7 @@ Partial Class CheckBoxListTestForm
         '
         'btnCheckedItems
         '
-        Me.btnCheckedItems.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnCheckedItems.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.btnCheckedItems.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left),System.Windows.Forms.AnchorStyles)
         Me.btnCheckedItems.Location = New System.Drawing.Point(211, 21)
         Me.btnCheckedItems.Name = "btnCheckedItems"
         Me.btnCheckedItems.Size = New System.Drawing.Size(70, 28)
@@ -112,13 +109,12 @@ Partial Class CheckBoxListTestForm
         Me.cboColumns.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboColumns.Location = New System.Drawing.Point(104, 56)
         Me.cboColumns.Name = "cboColumns"
-        Me.cboColumns.Size = New System.Drawing.Size(132, 24)
+        Me.cboColumns.Size = New System.Drawing.Size(132, 28)
         Me.cboColumns.TabIndex = 6
         '
         'btnGetValue
         '
-        Me.btnGetValue.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnGetValue.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.btnGetValue.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left),System.Windows.Forms.AnchorStyles)
         Me.btnGetValue.Location = New System.Drawing.Point(362, 53)
         Me.btnGetValue.Name = "btnGetValue"
         Me.btnGetValue.Size = New System.Drawing.Size(70, 28)
@@ -127,17 +123,17 @@ Partial Class CheckBoxListTestForm
         '
         'txtRowNumber
         '
-        Me.txtRowNumber.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.txtRowNumber.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left),System.Windows.Forms.AnchorStyles)
         Me.txtRowNumber.Location = New System.Drawing.Point(288, 56)
         Me.txtRowNumber.Maximum = New Decimal(New Integer() {999, 0, 0, 0})
         Me.txtRowNumber.Name = "txtRowNumber"
-        Me.txtRowNumber.Size = New System.Drawing.Size(56, 22)
+        Me.txtRowNumber.Size = New System.Drawing.Size(56, 26)
         Me.txtRowNumber.TabIndex = 8
         Me.txtRowNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'label6
         '
-        Me.label6.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.label6.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left),System.Windows.Forms.AnchorStyles)
         Me.label6.Location = New System.Drawing.Point(240, 56)
         Me.label6.Name = "label6"
         Me.label6.Size = New System.Drawing.Size(48, 23)
@@ -147,7 +143,7 @@ Partial Class CheckBoxListTestForm
         '
         'label5
         '
-        Me.label5.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.label5.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left),System.Windows.Forms.AnchorStyles)
         Me.label5.Location = New System.Drawing.Point(9, 55)
         Me.label5.Name = "label5"
         Me.label5.Size = New System.Drawing.Size(89, 23)
@@ -157,28 +153,28 @@ Partial Class CheckBoxListTestForm
         '
         'txtValue
         '
-        Me.txtValue.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.txtValue.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left)  _
+            Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
         Me.txtValue.Location = New System.Drawing.Point(8, 88)
         Me.txtValue.Name = "txtValue"
-        Me.txtValue.ReadOnly = True
-        Me.txtValue.Size = New System.Drawing.Size(424, 22)
+        Me.txtValue.ReadOnly = true
+        Me.txtValue.Size = New System.Drawing.Size(424, 26)
         Me.txtValue.TabIndex = 10
-        Me.txtValue.TabStop = False
+        Me.txtValue.TabStop = false
         '
         'cboDataSource
         '
-        Me.cboDataSource.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.cboDataSource.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left),System.Windows.Forms.AnchorStyles)
         Me.cboDataSource.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboDataSource.Items.AddRange(New Object() {"Data Table", "Data View", "Data Set", "Array List", "Strings"})
         Me.cboDataSource.Location = New System.Drawing.Point(104, 24)
         Me.cboDataSource.Name = "cboDataSource"
-        Me.cboDataSource.Size = New System.Drawing.Size(101, 24)
+        Me.cboDataSource.Size = New System.Drawing.Size(101, 28)
         Me.cboDataSource.TabIndex = 1
         '
         'label1
         '
-        Me.label1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.label1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left),System.Windows.Forms.AnchorStyles)
         Me.label1.Location = New System.Drawing.Point(6, 24)
         Me.label1.Name = "label1"
         Me.label1.Size = New System.Drawing.Size(92, 23)
@@ -188,19 +184,19 @@ Partial Class CheckBoxListTestForm
         '
         'cblDemo
         '
-        Me.cblDemo.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cblDemo.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.cblDemo.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom)  _
+            Or System.Windows.Forms.AnchorStyles.Left)  _
+            Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
+        Me.cblDemo.BindingMembersBindingContext = Nothing
         Me.cblDemo.Location = New System.Drawing.Point(384, 8)
         Me.cblDemo.Name = "cblDemo"
         Me.cblDemo.Size = New System.Drawing.Size(440, 320)
         Me.cblDemo.TabIndex = 0
+        Me.cblDemo.TitleFont = New System.Drawing.Font("Microsoft Sans Serif", 8!)
         '
         'chkShowImages
         '
-        Me.chkShowImages.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.chkShowImages.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.chkShowImages.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left),System.Windows.Forms.AnchorStyles)
         Me.chkShowImages.Location = New System.Drawing.Point(8, 444)
         Me.chkShowImages.Name = "chkShowImages"
         Me.chkShowImages.Size = New System.Drawing.Size(136, 24)
@@ -209,7 +205,7 @@ Partial Class CheckBoxListTestForm
         '
         'ilImages
         '
-        Me.ilImages.ImageStream = CType(resources.GetObject("ilImages.ImageStream"), System.Windows.Forms.ImageListStreamer)
+        Me.ilImages.ImageStream = CType(resources.GetObject("ilImages.ImageStream"),System.Windows.Forms.ImageListStreamer)
         Me.ilImages.TransparentColor = System.Drawing.Color.Lime
         Me.ilImages.Images.SetKeyName(0, "")
         Me.ilImages.Images.SetKeyName(1, "")
@@ -227,17 +223,17 @@ Partial Class CheckBoxListTestForm
         Me.MaximumSize = New System.Drawing.Size(2000, 2000)
         Me.MinimumSize = New System.Drawing.Size(840, 360)
         Me.Name = "CheckBoxListTestForm"
-        Me.ShowInTaskbar = False
+        Me.ShowInTaskbar = false
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Checkbox List Test"
-        Me.grpOptions.ResumeLayout(False)
-        Me.grpOptions.PerformLayout()
-        CType(Me.txtRowNumber, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.cblDemo, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.ResumeLayout(False)
+        Me.grpOptions.ResumeLayout(false)
+        Me.grpOptions.PerformLayout
+        CType(Me.txtRowNumber,System.ComponentModel.ISupportInitialize).EndInit
+        CType(Me.cblDemo,System.ComponentModel.ISupportInitialize).EndInit
+        Me.ResumeLayout(false)
 
-    End Sub
+End Sub
 
     Friend WithEvents pgProps As System.Windows.Forms.PropertyGrid
     Friend WithEvents grpOptions As System.Windows.Forms.GroupBox

@@ -50,7 +50,6 @@ namespace ListControlDemoCS
             // chkExcludeDiscontinued
             // 
             this.chkExcludeDiscontinued.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.chkExcludeDiscontinued.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkExcludeDiscontinued.Location = new System.Drawing.Point(8, 218);
             this.chkExcludeDiscontinued.Name = "chkExcludeDiscontinued";
             this.chkExcludeDiscontinued.Size = new System.Drawing.Size(216, 24);
@@ -61,7 +60,6 @@ namespace ListControlDemoCS
             // btnSelect
             // 
             this.btnSelect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSelect.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnSelect.Location = new System.Drawing.Point(108, 244);
             this.btnSelect.Name = "btnSelect";
             this.btnSelect.Size = new System.Drawing.Size(64, 25);
@@ -72,7 +70,6 @@ namespace ListControlDemoCS
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnCancel.Location = new System.Drawing.Point(178, 244);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(64, 25);

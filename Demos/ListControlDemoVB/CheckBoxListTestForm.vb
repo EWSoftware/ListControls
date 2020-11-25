@@ -209,10 +209,6 @@ Public Partial Class CheckBoxListTestForm
 
             cblDemo.ImageList = ilImages
         Else
-            If cblDemo.FlatStyle = FlatStyle.Standard Then
-                cblDemo.FlatStyle = FlatStyle.System
-            End If
-
             cblDemo.ImageList = Nothing
         End If
     End Sub

@@ -78,9 +78,6 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EWSoftware.ListControls">
-      <HintPath>..\..\Deployment\EWSoftware.ListControls.dll</HintPath>
-    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -282,7 +279,12 @@
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\Source\EWSListControls.csproj">
+      <Project>{8b77e8dd-a857-4a6e-bca3-93ac56b80f57}</Project>
+      <Name>EWSListControls</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>

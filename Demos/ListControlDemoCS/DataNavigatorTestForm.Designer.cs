@@ -76,7 +76,6 @@ namespace ListControlDemoCS
             // btnLoad
             // 
             this.btnLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnLoad.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnLoad.Location = new System.Drawing.Point(12, 375);
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(104, 28);
@@ -91,17 +90,16 @@ namespace ListControlDemoCS
             this.dnNav.Name = "dnNav";
             this.dnNav.Size = new System.Drawing.Size(282, 22);
             this.dnNav.TabIndex = 1;
-            this.dnNav.DeletingRow += new System.EventHandler<EWSoftware.ListControls.DataNavigatorCancelEventArgs>(this.dnNav_DeletingRow);
-            this.dnNav.Validating += new System.ComponentModel.CancelEventHandler(this.dnNav_Validating);
             this.dnNav.AddedRow += new System.EventHandler<EWSoftware.ListControls.DataNavigatorEventArgs>(this.dnNav_AddedRow);
-            this.dnNav.ChangePolicyModified += new System.EventHandler<EWSoftware.ListControls.ChangePolicyEventArgs>(this.dnNav_ChangePolicyModified);
+            this.dnNav.DeletingRow += new System.EventHandler<EWSoftware.ListControls.DataNavigatorCancelEventArgs>(this.dnNav_DeletingRow);
             this.dnNav.CanceledEdits += new System.EventHandler<EWSoftware.ListControls.DataNavigatorEventArgs>(this.dnNav_CanceledEdits);
             this.dnNav.NoRows += new System.EventHandler(this.dnNav_NoRows);
+            this.dnNav.ChangePolicyModified += new System.EventHandler<EWSoftware.ListControls.ChangePolicyEventArgs>(this.dnNav_ChangePolicyModified);
+            this.dnNav.Validating += new System.ComponentModel.CancelEventHandler(this.dnNav_Validating);
             // 
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSave.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnSave.Location = new System.Drawing.Point(122, 375);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(104, 28);
@@ -112,8 +110,8 @@ namespace ListControlDemoCS
             // 
             // pgProps
             // 
-            this.pgProps.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.pgProps.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pgProps.LineColor = System.Drawing.SystemColors.ScrollBar;
             this.pgProps.Location = new System.Drawing.Point(512, 12);
             this.pgProps.Name = "pgProps";
@@ -124,7 +122,6 @@ namespace ListControlDemoCS
             // btnAddDSRow
             // 
             this.btnAddDSRow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAddDSRow.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnAddDSRow.Location = new System.Drawing.Point(284, 375);
             this.btnAddDSRow.Name = "btnAddDSRow";
             this.btnAddDSRow.Size = new System.Drawing.Size(104, 28);
@@ -136,7 +133,6 @@ namespace ListControlDemoCS
             // btnDelDSRow
             // 
             this.btnDelDSRow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDelDSRow.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnDelDSRow.Location = new System.Drawing.Point(565, 375);
             this.btnDelDSRow.Name = "btnDelDSRow";
             this.btnDelDSRow.Size = new System.Drawing.Size(104, 28);
@@ -148,7 +144,6 @@ namespace ListControlDemoCS
             // btnModRow
             // 
             this.btnModRow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnModRow.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnModRow.Location = new System.Drawing.Point(675, 375);
             this.btnModRow.Name = "btnModRow";
             this.btnModRow.Size = new System.Drawing.Size(104, 28);
@@ -172,7 +167,7 @@ namespace ListControlDemoCS
             0,
             0});
             this.udcRowNumber.Name = "udcRowNumber";
-            this.udcRowNumber.Size = new System.Drawing.Size(64, 22);
+            this.udcRowNumber.Size = new System.Drawing.Size(64, 26);
             this.udcRowNumber.TabIndex = 12;
             this.udcRowNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udcRowNumber.Value = new decimal(new int[] {
@@ -194,7 +189,6 @@ namespace ListControlDemoCS
             // btnGetValue
             // 
             this.btnGetValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnGetValue.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnGetValue.Location = new System.Drawing.Point(346, 341);
             this.btnGetValue.Name = "btnGetValue";
             this.btnGetValue.Size = new System.Drawing.Size(75, 28);
@@ -218,17 +212,17 @@ namespace ListControlDemoCS
             "SumValue"});
             this.cboColumns.Location = new System.Drawing.Point(100, 345);
             this.cboColumns.Name = "cboColumns";
-            this.cboColumns.Size = new System.Drawing.Size(132, 24);
+            this.cboColumns.Size = new System.Drawing.Size(132, 28);
             this.cboColumns.TabIndex = 3;
             // 
             // txtValue
             // 
-            this.txtValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtValue.Location = new System.Drawing.Point(427, 345);
             this.txtValue.Name = "txtValue";
             this.txtValue.ReadOnly = true;
-            this.txtValue.Size = new System.Drawing.Size(352, 22);
+            this.txtValue.Size = new System.Drawing.Size(352, 26);
             this.txtValue.TabIndex = 7;
             this.txtValue.TabStop = false;
             // 
@@ -247,7 +241,7 @@ namespace ListControlDemoCS
             0,
             0});
             this.txtRowNumber.Name = "txtRowNumber";
-            this.txtRowNumber.Size = new System.Drawing.Size(56, 22);
+            this.txtRowNumber.Size = new System.Drawing.Size(56, 26);
             this.txtRowNumber.TabIndex = 5;
             this.txtRowNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtRowNumber.Value = new decimal(new int[] {
@@ -300,16 +294,17 @@ namespace ListControlDemoCS
             this.txtZip.Location = new System.Drawing.Point(296, 108);
             this.txtZip.MaxLength = 10;
             this.txtZip.Name = "txtZip";
-            this.txtZip.Size = new System.Drawing.Size(77, 22);
+            this.txtZip.Size = new System.Drawing.Size(77, 26);
             this.txtZip.TabIndex = 11;
             // 
             // cboState
             // 
+            this.cboState.DropDownFont = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.cboState.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboState.Location = new System.Drawing.Point(228, 108);
             this.cboState.MaxDropDownItems = 16;
             this.cboState.Name = "cboState";
-            this.cboState.Size = new System.Drawing.Size(57, 24);
+            this.cboState.Size = new System.Drawing.Size(57, 28);
             this.cboState.TabIndex = 10;
             // 
             // txtCity
@@ -317,7 +312,7 @@ namespace ListControlDemoCS
             this.txtCity.Location = new System.Drawing.Point(92, 108);
             this.txtCity.MaxLength = 20;
             this.txtCity.Name = "txtCity";
-            this.txtCity.Size = new System.Drawing.Size(125, 22);
+            this.txtCity.Size = new System.Drawing.Size(125, 26);
             this.txtCity.TabIndex = 9;
             // 
             // txtAddress
@@ -325,7 +320,7 @@ namespace ListControlDemoCS
             this.txtAddress.Location = new System.Drawing.Point(92, 76);
             this.txtAddress.MaxLength = 50;
             this.txtAddress.Name = "txtAddress";
-            this.txtAddress.Size = new System.Drawing.Size(389, 22);
+            this.txtAddress.Size = new System.Drawing.Size(389, 26);
             this.txtAddress.TabIndex = 7;
             // 
             // txtLName
@@ -333,7 +328,7 @@ namespace ListControlDemoCS
             this.txtLName.Location = new System.Drawing.Point(92, 44);
             this.txtLName.MaxLength = 30;
             this.txtLName.Name = "txtLName";
-            this.txtLName.Size = new System.Drawing.Size(160, 22);
+            this.txtLName.Size = new System.Drawing.Size(160, 26);
             this.txtLName.TabIndex = 3;
             // 
             // txtFName
@@ -341,7 +336,7 @@ namespace ListControlDemoCS
             this.txtFName.Location = new System.Drawing.Point(344, 44);
             this.txtFName.MaxLength = 20;
             this.txtFName.Name = "txtFName";
-            this.txtFName.Size = new System.Drawing.Size(137, 22);
+            this.txtFName.Size = new System.Drawing.Size(137, 26);
             this.txtFName.TabIndex = 5;
             // 
             // label1
@@ -423,7 +418,7 @@ namespace ListControlDemoCS
             this.txtFindName.Location = new System.Drawing.Point(126, 12);
             this.txtFindName.MaxLength = 30;
             this.txtFindName.Name = "txtFindName";
-            this.txtFindName.Size = new System.Drawing.Size(136, 22);
+            this.txtFindName.Size = new System.Drawing.Size(136, 26);
             this.txtFindName.TabIndex = 18;
             this.txtFindName.TextChanged += new System.EventHandler(this.txtFindName_TextChanged);
             // 

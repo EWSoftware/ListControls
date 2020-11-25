@@ -69,9 +69,6 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EWSoftware.ListControls">
-      <HintPath>..\..\Deployment\EWSoftware.ListControls.dll</HintPath>
-    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -296,10 +293,17 @@
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Source\EWSListControls.csproj">
+      <Project>{8b77e8dd-a857-4a6e-bca3-93ac56b80f57}</Project>
+      <Name>EWSListControls</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>IF NOT EXIST $(TargetDir)TestData.mdb COPY $(ProjectDir)..\TestData.mdb $(TargetDir)</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

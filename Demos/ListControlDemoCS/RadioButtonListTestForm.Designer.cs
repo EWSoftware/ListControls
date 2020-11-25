@@ -89,7 +89,6 @@ namespace ListControlDemoCS
             // btnGetValue
             // 
             this.btnGetValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnGetValue.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnGetValue.Location = new System.Drawing.Point(350, 52);
             this.btnGetValue.Name = "btnGetValue";
             this.btnGetValue.Size = new System.Drawing.Size(75, 28);
@@ -173,7 +172,6 @@ namespace ListControlDemoCS
             this.rblDemo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.rblDemo.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.rblDemo.Location = new System.Drawing.Point(384, 8);
             this.rblDemo.Name = "rblDemo";
             this.rblDemo.Size = new System.Drawing.Size(440, 304);
@@ -183,7 +181,6 @@ namespace ListControlDemoCS
             // chkShowImages
             // 
             this.chkShowImages.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.chkShowImages.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.chkShowImages.Location = new System.Drawing.Point(8, 436);
             this.chkShowImages.Name = "chkShowImages";
             this.chkShowImages.Size = new System.Drawing.Size(136, 24);

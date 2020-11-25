@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : BaseComboBoxCell.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/22/2014
-// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 11/25/2020
+// Note    : Copyright 2007-2020, Eric Woodruff, All rights reserved
 //
 // This file contains an data grid view cell object that acts as an abstract base class for the combo box cells
 // derived from it.
@@ -944,19 +943,25 @@ namespace EWSoftware.ListControls.DataGridViewControls
             Size size = base.GetSize(rowIndex);
             Size size2 = new Size((size.Width - r.X) - r.Width, (size.Height - r.Y) - r.Height);
 
-            int num = Math.Min(this.GetDropDownButtonHeight(DataGridViewHelper.CachedGraphics(base.DataGridView),
-                cellStyle), size2.Height - 2);
-            int num2 = Math.Min(SystemInformation.HorizontalScrollBarThumbWidth, (size2.Width - 6) - 1);
+            using(Graphics g = base.DataGridView.CreateGraphics())
+            {
+                int num = Math.Min(this.GetDropDownButtonHeight(g, cellStyle), size2.Height - 2);
+                int num2 = Math.Min(SystemInformation.HorizontalScrollBarThumbWidth, (size2.Width - 6) - 1);
 
-            if(num > 0 && num2 > 0 && y >= r.Y + 1 && y <= r.Y + num + 1)
-                if(base.DataGridView.RightToLeft == RightToLeft.Yes)
+                if(num > 0 && num2 > 0 && y >= r.Y + 1 && y <= r.Y + num + 1)
                 {
-                    if(x >= r.X + 1 && x <= r.X + num2 + 1)
-                        this.EditingComboBox.DroppedDown = true;
+                    if(base.DataGridView.RightToLeft == RightToLeft.Yes)
+                    {
+                        if(x >= r.X + 1 && x <= r.X + num2 + 1)
+                            this.EditingComboBox.DroppedDown = true;
+                    }
+                    else
+                    {
+                        if(x >= size.Width - r.Width - num2 - 1 && x <= size.Width - r.Width - 1)
+                            this.EditingComboBox.DroppedDown = true;
+                    }
                 }
-                else
-                    if(x >= size.Width - r.Width - num2 - 1 && x <= size.Width - r.Width - 1)
-                        this.EditingComboBox.DroppedDown = true;
+            }
         }
 
         /// <summary>
@@ -2341,10 +2346,12 @@ namespace EWSoftware.ListControls.DataGridViewControls
                     DataGridViewElementStates rowState = base.DataGridView.Rows.GetRowState(rowIndex);
                     DataGridViewElementStates elementState = this.CellStateFromColumnRowStates(rowState);
 
-                    this.PaintPrivate(DataGridViewHelper.CachedGraphics(base.DataGridView), clipBounds,
-                        clipBounds, rowIndex, elementState, null, null,
-                        base.GetInheritedStyle(null, rowIndex, false), borderStyle, out buttonRect,
-                        DataGridViewPaintParts.ContentForeground, false, false, false);
+                    using(Graphics g = base.DataGridView.CreateGraphics())
+                    {
+                        this.PaintPrivate(g, clipBounds, clipBounds, rowIndex, elementState, null, null,
+                            base.GetInheritedStyle(null, rowIndex, false), borderStyle, out buttonRect,
+                            DataGridViewPaintParts.ContentForeground, false, false, false);
+                    }
 
                     bool inButton = buttonRect.Contains(base.DataGridView.PointToClient(Control.MousePosition));
 

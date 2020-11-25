@@ -252,12 +252,7 @@ namespace ListControlDemoCS
                 cblDemo.ImageList = ilImages;
             }
             else
-            {
-                if(cblDemo.FlatStyle == FlatStyle.Standard)
-                    cblDemo.FlatStyle = FlatStyle.System;
-
                 cblDemo.ImageList = null;
-            }
         }
 
         /// <summary>

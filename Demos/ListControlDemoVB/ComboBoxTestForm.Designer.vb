@@ -136,7 +136,6 @@ Partial Class ComboBoxTestForm
         'btnGetValue
         '
         Me.btnGetValue.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnGetValue.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.btnGetValue.Location = New System.Drawing.Point(352, 99)
         Me.btnGetValue.Name = "btnGetValue"
         Me.btnGetValue.Size = New System.Drawing.Size(75, 28)
