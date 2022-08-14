@@ -17,7 +17,7 @@ object from the owning data grid view.</para>
 
 					<listItem>
 						<para>Fixed the layout of images when an image list is used with a
-<codeLine>BaseButtonList</codeLine>-derived control.</para>
+<codeInline>BaseButtonList</codeInline>-derived control.</para>
 					</listItem>
 
 					<listItem>
