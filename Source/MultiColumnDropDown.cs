@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : MultiColumnDropDown.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/19/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/05/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a multi-column combo box drop-down form that handles the display of the multiple columns
 // in the data source.
@@ -29,12 +28,12 @@ using EWSoftware.ListControls.UnsafeNative;
 
 namespace EWSoftware.ListControls
 {
-	/// <summary>
-	/// This is a drop-down list form that shows when the down arrow is clicked on the multi-column combo box
-	/// </summary>
-	[ToolboxItem(false)]
-	internal class MultiColumnDropDown : System.Windows.Forms.UserControl, IDropDown
-	{
+    /// <summary>
+    /// This is a drop-down list form that shows when the down arrow is clicked on the multi-column combo box
+    /// </summary>
+    [ToolboxItem(false)]
+    internal class MultiColumnDropDown : UserControl, IDropDown
+    {
         #region Value item class
         //=====================================================================
 
@@ -65,7 +64,7 @@ namespace EWSoftware.ListControls
         //=====================================================================
 
         private DropDownDataGrid dgDropDown;
-        private MultiColumnComboBox owner;
+        private readonly MultiColumnComboBox owner;
         private Point dragOffset;
         private Cursor priorCursor;
         private bool transferringFocus, isCreating, hasInitialized;
@@ -85,7 +84,7 @@ namespace EWSoftware.ListControls
             {
                 CreateParams cp = base.CreateParams;
 
-                cp.Style = cp.Style | 0x00800000;   // WS_BORDER
+                cp.Style |= 0x00800000;   // WS_BORDER
 
                 // WS_EX_TOPMOST | WS_EX_TOOLWINDOW
                 if(owner != null && owner.DropDownStyle != ComboBoxStyle.Simple)
@@ -100,30 +99,25 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <value>The combo box uses this to determine whether to fire the selection change committed or
         /// selection change canceled event when the drop-down is closed.</value>
-        public int StartIndex
-        {
-            get { return startIndex; }
-        }
+        public int StartIndex => startIndex;
 
         /// <summary>
         /// This returns a flag indicating whether or not the drop-down is currently being created
         /// </summary>
         /// <value>The combo box uses this to determine whether or not to refresh the sub-controls in certain
         /// situations.</value>
-        public bool IsCreating
-        {
-            get { return isCreating; }
-        }
+        public bool IsCreating => isCreating;
+
         #endregion
 
         #region Constructor
         //=====================================================================
 
         /// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="cb">The owner of the drop-down</param>
-		internal MultiColumnDropDown(MultiColumnComboBox cb)
+        /// Constructor
+        /// </summary>
+        /// <param name="cb">The owner of the drop-down</param>
+        internal MultiColumnDropDown(MultiColumnComboBox cb)
         {
             owner = cb;
 
@@ -132,7 +126,7 @@ namespace EWSoftware.ListControls
                 ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw, true);
             this.UpdateStyles();
 
-			InitializeComponent();
+            InitializeComponent();
 
             dgDropDown.MouseTracking = owner.MouseTracking;
 
@@ -143,7 +137,7 @@ namespace EWSoftware.ListControls
                 dgDropDown.Height = this.Height - 1;
                 dgDropDown.TabStop = false;
             }
-		}
+        }
         #endregion
 
         #region Windows Form Designer generated code
@@ -154,27 +148,25 @@ namespace EWSoftware.ListControls
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent()
-		{
-            this.dgDropDown = new EWSoftware.ListControls.DropDownDataGrid();
-            ((System.ComponentModel.ISupportInitialize)(this.dgDropDown)).BeginInit();
+        {
+            this.dgDropDown = new DropDownDataGrid();
+            ((ISupportInitialize)(this.dgDropDown)).BeginInit();
             this.SuspendLayout();
             //
             // dgDropDown
             //
             this.dgDropDown.AllowNavigation = false;
             this.dgDropDown.AllowSorting = false;
-            this.dgDropDown.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                | System.Windows.Forms.AnchorStyles.Left)
-                | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgDropDown.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgDropDown.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            this.dgDropDown.BorderStyle = BorderStyle.None;
             this.dgDropDown.CaptionVisible = false;
             this.dgDropDown.DataMember = "";
-            this.dgDropDown.HeaderForeColor = System.Drawing.SystemColors.ControlText;
-            this.dgDropDown.Location = new System.Drawing.Point(0, 0);
+            this.dgDropDown.HeaderForeColor = SystemColors.ControlText;
+            this.dgDropDown.Location = new Point(0, 0);
             this.dgDropDown.Name = "dgDropDown";
             this.dgDropDown.ParentRowsVisible = false;
             this.dgDropDown.ReadOnly = true;
-            this.dgDropDown.Size = new System.Drawing.Size(326, 192);
+            this.dgDropDown.Size = new Size(326, 192);
             this.dgDropDown.TabIndex = 0;
             this.dgDropDown.MouseUp += this.dgDropDown_MouseUp;
             // 
@@ -182,12 +174,12 @@ namespace EWSoftware.ListControls
             // 
             this.Controls.Add(this.dgDropDown);
             this.Name = "MultiColumnDropDown";
-            this.Size = new System.Drawing.Size(328, 208);
-            ((System.ComponentModel.ISupportInitialize)(this.dgDropDown)).EndInit();
+            this.Size = new Size(328, 208);
+            ((ISupportInitialize)(this.dgDropDown)).EndInit();
             this.ResumeLayout(false);
 
         }
-		#endregion
+        #endregion
 
         #region Methods
         //=====================================================================
@@ -225,8 +217,7 @@ namespace EWSoftware.ListControls
         private void InitDropDown()
         {
             DropDownTableStyle ddts = owner.DropDownFormat;
-
-            int rowCount, rowHeight, headerHeight = 0, idx = 0, totalSize = 0, rowHeaderWidth = ddts.RowHeaderWidth;
+            int rowCount, rowHeight, headerHeight = 0, totalSize = 0, rowHeaderWidth = ddts.RowHeaderWidth;
 
             // Must check this before we set the data source otherwise, columns are added by default
             bool autoSize = (ddts.GridColumnStyles.Count == 0);
@@ -256,6 +247,7 @@ namespace EWSoftware.ListControls
                 }
             }
             else
+            {
                 if(ddts.MappingName == "ValueType" || ddts.MappingName == "String")
                 {
                     // Value and string types require a wrapper or they don't show up correctly
@@ -270,21 +262,29 @@ namespace EWSoftware.ListControls
                 }
                 else    // It must be an object collection
                     dgDropDown.DataSource = owner.Items;
+            }
 
             // Filter the columns if necessary and clear the headers if auto-sizing and they aren't visible.
             // Clearing the header text is necessary so that we get an accurate size.
             StringCollection filter = owner.ColumnFilter;
+            int idx;
 
             if(filter.Count != 0 || (autoSize && !ddts.ColumnHeadersVisible))
+            {
                 for(idx = 0; idx < ddts.GridColumnStyles.Count; idx++)
+                {
                     if(filter.Count != 0 && !filter.Contains(ddts.GridColumnStyles[idx].MappingName))
                     {
                         ddts.GridColumnStyles.RemoveAt(idx);
                         idx--;
                     }
                     else
+                    {
                         if(autoSize && !ddts.ColumnHeadersVisible)
                             ddts.GridColumnStyles[idx].HeaderText = String.Empty;
+                    }
+                }
+            }
 
             // Row Header Width and Column Headers Visible seem to get overridden so restore them
             ddts.RowHeaderWidth = rowHeaderWidth;
@@ -326,10 +326,12 @@ namespace EWSoftware.ListControls
                     totalSize = owner.Width;
                 }
                 else
+                {
                     if(idx == 0)
                         totalSize = owner.Width;
                     else
                         totalSize += 2;
+                }
             }
 
             // Enforce a minimum width
@@ -348,15 +350,17 @@ namespace EWSoftware.ListControls
 
             // Figure out column header height if visible.  This is a little ugly but it works.
             if(ddts.ColumnHeadersVisible)
+            {
                 while(dgDropDown.HitTest(rowHeaderWidth + 2, headerHeight).Type == DataGrid.HitTestType.ColumnHeader)
                     headerHeight++;
+            }
 
             if(rowCount > owner.MaxDropDownItems)
             {
                 rowHeight = (rowHeight * owner.MaxDropDownItems) + headerHeight;
 
                 // Adjust width to account for the scrollbar
-                this.Width += MultiColumnComboBox.DropDownButtonWidth;
+                this.Width += BaseComboBox.DropDownButtonWidth;
             }
             else
                 rowHeight = (rowHeight * rowCount) + headerHeight;
@@ -451,6 +455,7 @@ namespace EWSoftware.ListControls
                 // if we moved the form above the combo box or left it where it is at below the combo box and
                 // shrink it to fit.
                 if(idx < screen.Y)
+                {
                     if(this.Height + idx > this.Height - (pOwner.Y - p.Y))
                     {
                         this.Height += idx;
@@ -461,6 +466,7 @@ namespace EWSoftware.ListControls
                         this.Height -= (pOwner.Y - p.Y);
                         idx = pOwner.Y;
                     }
+                }
 
                 p.Y = idx;
             }
@@ -582,7 +588,7 @@ namespace EWSoftware.ListControls
                 Rectangle r = new Rectangle(this.Size.Width - 16, this.Size.Height - 16, 16, 16);
 
                 if(e.Button == MouseButtons.Left && r.Contains(p))
-        			dragOffset = new Point(this.Width - p.X, this.Height - p.Y);
+                    dragOffset = new Point(this.Width - p.X, this.Height - p.Y);
                 else
                     dragOffset = Point.Empty;
             }
@@ -603,7 +609,7 @@ namespace EWSoftware.ListControls
                 Point p = this.PointToClient(Cursor.Position);
 
                 // Only resize if dragging and enforce a minimum size
-    			if(e.Button == MouseButtons.Left && dragOffset != Point.Empty)
+                if(e.Button == MouseButtons.Left && dragOffset != Point.Empty)
                 {
                     width = Cursor.Position.X - this.Location.X + dragOffset.X;
                     height = Cursor.Position.Y - this.Location.Y + dragOffset.Y;
@@ -611,15 +617,18 @@ namespace EWSoftware.ListControls
                     if(width < owner.Width)
                         width = owner.Width;
                     else
+                    {
                         if(width < 30)
                             width = 30;
+                    }
 
                     if(height < 30)
                         height = 30;
 
-        			this.Size = new Size(width, height);
+                    this.Size = new Size(width, height);
                 }
                 else
+                {
                     if(dgDropDown.ClientRectangle.Contains(p))
                     {
                         base.OnMouseMove(e);
@@ -630,6 +639,7 @@ namespace EWSoftware.ListControls
                         dgDropDown.Focus();
                         return;
                     }
+                }
 
                 Rectangle r = new Rectangle(this.Size.Width - 16, this.Size.Height - 16, 16, 16);
 
@@ -642,8 +652,10 @@ namespace EWSoftware.ListControls
                     }
                 }
                 else
+                {
                     if(this.Cursor == Cursors.SizeNWSE)
                         this.Cursor = priorCursor;
+                }
             }
 
             base.OnMouseMove(e);
@@ -665,10 +677,12 @@ namespace EWSoftware.ListControls
 
             // Don't recapture the mouse if transferring focus to the grid
             if(owner.DropDownStyle != ComboBoxStyle.Simple)
+            {
                 if(!transferringFocus)
                     this.Capture = this.Visible;
                 else
                     transferringFocus = false;
+            }
         }
 
         /// <summary>
@@ -680,7 +694,7 @@ namespace EWSoftware.ListControls
         {
             if(e.Button == MouseButtons.Left)
             {
-                DataGrid.HitTestInfo hti = dgDropDown.HitTest(e.X, e.Y);
+                var hti = dgDropDown.HitTest(e.X, e.Y);
 
                 if(hti.Type == DataGrid.HitTestType.Cell)
                     owner.CommitSelection(hti.Row);

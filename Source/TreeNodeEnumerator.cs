@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : TreeNodeEnumerator.cs
 // Author  : Eric Woodruff
-// Updated : 10/29/2014
-// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a type-safe enumerator used to enumerate the nodes in a tree view or a branch of a tree
 // view recursively.
@@ -51,8 +50,10 @@ namespace EWSoftware.ListControls
         #region Private data members
         //=====================================================================
 
-        private TreeNode root, current;
-        private bool enumSibs;
+        private readonly TreeNode root;
+        private TreeNode current;
+        private readonly bool enumSibs;
+
         #endregion
 
         #region Constructor
@@ -92,18 +93,12 @@ namespace EWSoftware.ListControls
         /// Type-safe enumerator Current method
         /// </summary>
         /// <returns>The current item or null if there are no items</returns>
-        public TreeNode Current
-        {
-            get { return current; }
-        }
+        public TreeNode Current => current;
 
         /// <summary>
         /// Type-unsafe IEnumerator.Current
         /// </summary>
-        object System.Collections.IEnumerator.Current
-        {
-            get { return current; }
-        }
+        object IEnumerator.Current => current;
 
         /// <summary>
         /// Move to the next element

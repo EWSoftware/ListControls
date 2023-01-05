@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : BaseComboBoxCell.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 11/25/2020
-// Note    : Copyright 2007-2020, Eric Woodruff, All rights reserved
+// Updated : 01/04/2023
+// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
 //
 // This file contains an data grid view cell object that acts as an abstract base class for the combo box cells
 // derived from it.
@@ -45,7 +45,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         {
             //=================================================================
 
-            private BaseComboBoxCell owner;
+            private readonly BaseComboBoxCell owner;
 
             //=================================================================
 
@@ -110,7 +110,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
 
             private IComparer comparer;
             private ArrayList innerList;
-            private BaseComboBoxCell owner;
+            private readonly BaseComboBoxCell owner;
+
             #endregion
 
             #region Properties
@@ -119,28 +120,19 @@ namespace EWSoftware.ListControls.DataGridViewControls
             /// This is used to get whether or not the collection is synchronized
             /// </summary>
             /// <value>Always returns false (not synchronized)</value>
-            bool ICollection.IsSynchronized
-            {
-                get { return false; }
-            }
+            bool ICollection.IsSynchronized => false;
 
             /// <summary>
             /// Returns an object that can be used to synchronize the collection
             /// </summary>
             /// <value>Always returns a reference to itself.</value>
-            object ICollection.SyncRoot
-            {
-                get { return this; }
-            }
+            object ICollection.SyncRoot => this;
 
             /// <summary>
             /// This is used to get whether or not the collection is of a fixed size
             /// </summary>
             /// <value>Always returns false as the collection size varies</value>
-            bool IList.IsFixedSize
-            {
-                get { return false; }
-            }
+            bool IList.IsFixedSize => false;
 
             /// <summary>
             /// This is used to get an <see cref="IComparer"/> instance that can be used to sort the collection
@@ -150,7 +142,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 get
                 {
                     if(comparer == null)
-                        comparer = new BaseComboBoxCell.ItemComparer(owner);
+                        comparer = new ItemComparer(owner);
 
                     return comparer;
                 }
@@ -159,10 +151,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
             /// <summary>
             /// This is used to get a count of the items in the collection
             /// </summary>
-            public int Count
-            {
-                get { return this.InnerList.Count; }
-            }
+            public int Count => this.InnerList.Count;
 
             /// <summary>
             /// This is used to get a reference to the inner list
@@ -184,10 +173,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
             /// </summary>
             /// <value>Always returns false as the collection is always
             /// editable</value>
-            public bool IsReadOnly
-            {
-                get { return false; }
-            }
+            public bool IsReadOnly => false;
 
             /// <summary>
             /// This is used to set or get items by index position
@@ -204,7 +190,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 get
                 {
                     if(index < 0 || index >= this.InnerList.Count)
-                        throw new ArgumentOutOfRangeException("index", index, LR.GetString("ExItemIndexOutOfRange"));
+                        throw new ArgumentOutOfRangeException(nameof(index), index, LR.GetString("ExItemIndexOutOfRange"));
 
                     return this.InnerList[index];
                 }
@@ -212,13 +198,10 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 {
                     this.CheckNoDataSource();
 
-                    if(value == null)
-                        throw new ArgumentNullException("value", LR.GetString("ExNullParameter"));
-
                     if(index < 0 || index >= this.InnerList.Count)
-                        throw new ArgumentOutOfRangeException("index", index, LR.GetString("ExItemIndexOutOfRange"));
+                        throw new ArgumentOutOfRangeException(nameof(index), index, LR.GetString("ExItemIndexOutOfRange"));
 
-                    this.InnerList[index] = value;
+                    this.InnerList[index] = value ?? throw new ArgumentNullException(nameof(value), LR.GetString("ExNullParameter"));
                     this.owner.OnItemsCollectionChanged();
                 }
             }
@@ -278,7 +261,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 this.CheckNoDataSource();
 
                 if(item == null)
-                    throw new ArgumentNullException("item", LR.GetString("ExNullParameter"));
+                    throw new ArgumentNullException(nameof(item), LR.GetString("ExNullParameter"));
 
                 this.InnerList.Add(item);
 
@@ -335,11 +318,11 @@ namespace EWSoftware.ListControls.DataGridViewControls
             internal void AddRangeInternal(IList items)
             {
                 if(items == null)
-                    throw new ArgumentNullException("items", LR.GetString("ExNullItems"));
+                    throw new ArgumentNullException(nameof(items), LR.GetString("ExNullItems"));
 
                 foreach(object o in items)
                     if(o == null)
-                        throw new ArgumentNullException("items", LR.GetString("ExNullItems"));
+                        throw new ArgumentNullException(nameof(items), LR.GetString("ExNullItems"));
 
                 this.InnerList.AddRange(items);
 
@@ -408,7 +391,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
             public int IndexOf(object value)
             {
                 if(value == null)
-                    throw new ArgumentNullException("value", LR.GetString("ExNullParameter"));
+                    throw new ArgumentNullException(nameof(value), LR.GetString("ExNullParameter"));
 
                 return this.InnerList.IndexOf(value);
             }
@@ -430,10 +413,10 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 this.CheckNoDataSource();
 
                 if(value == null)
-                    throw new ArgumentNullException("value", LR.GetString("ExNullParameter"));
+                    throw new ArgumentNullException(nameof(value), LR.GetString("ExNullParameter"));
 
                 if(index < 0 || index > this.InnerList.Count)
-                    throw new ArgumentOutOfRangeException("index", index, LR.GetString("ExItemIndexOutOfRange"));
+                    throw new ArgumentOutOfRangeException(nameof(index), index, LR.GetString("ExItemIndexOutOfRange"));
 
                 if(owner.SortOrder != ListSortOrder.None)
                     this.Add(value);
@@ -469,7 +452,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 this.CheckNoDataSource();
 
                 if(index < 0 || index >= this.InnerList.Count)
-                    throw new ArgumentOutOfRangeException("index", index, LR.GetString("ExItemIndexOutOfRange"));
+                    throw new ArgumentOutOfRangeException(nameof(index), index, LR.GetString("ExItemIndexOutOfRange"));
 
                 this.InnerList.RemoveAt(index);
                 this.owner.OnItemsCollectionChanged();
@@ -492,8 +475,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
         //=====================================================================
 
         // Static type values and flags
-        private static Type defaultFormattedValueType = typeof(string);
-        private static Type defaultValueType = typeof(object);
+        private static readonly Type defaultFormattedValueType = typeof(string);
+        private static readonly Type defaultValueType = typeof(object);
 
         private static bool mouseInDropDownButtonBounds;
 
@@ -513,7 +496,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
         private ObjectCollection cellItems;
 
         // This is used to call an internal method in the base class
-        private MethodInfo miParseFormattedValueInternal;
+        private readonly MethodInfo miParseFormattedValueInternal;
+
         #endregion
 
         #region Properties
@@ -526,8 +510,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// data-bound control, the default is a null reference. </remarks>
         protected CurrencyManager DataManager
         {
-            get { return this.GetDataManager(base.DataGridView); }
-            set { dataManager = value; }
+            get => this.GetDataManager(base.DataGridView);
+            set => dataManager = value;
         }
 
         /// <summary>
@@ -545,7 +529,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// source.</exception>
         public string DisplayMember
         {
-            get { return displayMember; }
+            get => displayMember;
             set
             {
                 this.DisplayMemberInternal = value;
@@ -569,7 +553,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// source.</exception>
         public string ValueMember
         {
-            get { return valueMember; }
+            get => valueMember;
             set
             {
                 this.ValueMemberInternal = value;
@@ -599,7 +583,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <see cref="IList"/> interface.</exception>
         public object DataSource
         {
-            get { return dataSource; }
+            get => dataSource;
             set
             {
                 if(value != null && !(value is IList) && !(value is IListSource))
@@ -651,18 +635,12 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <summary>
         /// This can be used to determine whether or not the cell has an items collection
         /// </summary>
-        public bool HasItemCollection
-        {
-            get { return cellItems != null; }
-        }
+        public bool HasItemCollection => cellItems != null;
 
         /// <summary>
         /// Gets the objects that represent the selection displayed in the drop-down list
         /// </summary>
-        public ObjectCollection Items
-        {
-            get { return this.GetItems(base.DataGridView); }
-        }
+        public ObjectCollection Items => this.GetItems(base.DataGridView);
 
         /// <summary>
         /// Gets or sets a value that determines how the combo box is displayed when it is not in edit mode
@@ -670,7 +648,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <value>The default is to show a drop-down button</value>
         public DataGridViewComboBoxDisplayStyle DisplayStyle
         {
-            get { return displayStyle; }
+            get => displayStyle;
             set
             {
                 if(displayStyle != value)
@@ -692,7 +670,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <value>The default is false and the style applies to all cells.</value>
         public bool DisplayStyleForCurrentCellOnly
         {
-            get { return dispStyleCurrentCellOnly; }
+            get => dispStyleCurrentCellOnly;
             set
             {
                 if(dispStyleCurrentCellOnly != value)
@@ -714,7 +692,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <value>The default is <c>Standard</c></value>
         public FlatStyle FlatStyle
         {
-            get { return flatStyle; }
+            get => flatStyle;
             set
             {
                 if(flatStyle != value)
@@ -735,11 +713,11 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <exception cref="ArgumentOutOfRangeException">This is thrown if the value is not between 1 and 100.</exception>
         public int MaxDropDownItems
         {
-            get { return maxDropDownItems; }
+            get => maxDropDownItems;
             set
             {
                 if(value < 1 || value > 100)
-                    throw new ArgumentOutOfRangeException("value", value, LR.GetString("ExInvalidMaxDropDownItems"));
+                    throw new ArgumentOutOfRangeException(nameof(value), value, LR.GetString("ExInvalidMaxDropDownItems"));
 
                 maxDropDownItems = value;
 
@@ -762,7 +740,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// than <c>None</c> when a data source is in use.</exception>
         public ListSortOrder SortOrder
         {
-            get { return sortOrder; }
+            get => sortOrder;
             set
             {
                 if(sortOrder != value)
@@ -788,10 +766,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// Gets the class type of the formatted value associated with the cell
         /// </summary>
         /// <value>This always returns <see cref="String"/>.</value>
-        public override Type FormattedValueType
-        {
-            get { return defaultFormattedValueType; }
-        }
+        public override Type FormattedValueType => defaultFormattedValueType;
 
         /// <summary>
         /// Gets or sets the data type of the values in the cell
@@ -825,13 +800,10 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// </summary>
         private string DisplayMemberInternal
         {
-            get { return displayMember; }
+            get => displayMember;
             set
             {
-                if(value == null)
-                    value = String.Empty;
-
-                displayMember = value;
+                displayMember = value ?? String.Empty;
                 this.InitializeDisplayMemberPropertyDescriptor(displayMember);
             }
         }
@@ -841,13 +813,10 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// </summary>
         private string ValueMemberInternal
         {
-            get { return valueMember; }
+            get => valueMember;
             set
             {
-                if(value == null)
-                    value = String.Empty;
-
-                valueMember = value;
+                valueMember = value ?? String.Empty;
                 this.InitializeValueMemberPropertyDescriptor(valueMember);
             }
         }
@@ -857,8 +826,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// </summary>
         internal DataGridViewComboBoxDisplayStyle DisplayStyleInternal
         {
-            get { return displayStyle; }
-            set { displayStyle = value; }
+            get => displayStyle;
+            set => displayStyle = value;
         }
 
         /// <summary>
@@ -866,8 +835,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// </summary>
         internal bool DisplayStyleForCurrentCellOnlyInternal
         {
-            get { return dispStyleCurrentCellOnly; }
-            set { dispStyleCurrentCellOnly = value; }
+            get => dispStyleCurrentCellOnly;
+            set => dispStyleCurrentCellOnly = value;
         }
 
         /// <summary>
@@ -875,8 +844,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// </summary>
         internal FlatStyle FlatStyleInternal
         {
-            get { return flatStyle; }
-            set { flatStyle = value; }
+            get => flatStyle;
+            set => flatStyle = value;
         }
 
         /// <summary>
@@ -904,8 +873,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
         {
             get
             {
-                if(base.DataGridView != null)
-                    return DataGridViewHelper.GetCachedTypeConverter(base.DataGridView, this.DisplayType);
+                if(this.DataGridView != null)
+                    return DataGridViewHelper.GetCachedTypeConverter(this.DataGridView, this.DisplayType);
 
                 return TypeDescriptor.GetConverter(this.DisplayType);
             }
@@ -982,9 +951,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="e">The event arguments</param>
         private void DataSource_Initialized(object sender, EventArgs e)
         {
-            ISupportInitializeNotification notification = dataSource as ISupportInitializeNotification;
-
-            if(notification != null)
+            if(dataSource is ISupportInitializeNotification notification)
                 notification.Initialized -= this.DataSource_Initialized;
 
             dataSourceNeedsInitializing = false;
@@ -1003,9 +970,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
             if(dataManager == null && dataSource != null && dataGridView != null &&
               dataGridView.BindingContext != null && dataSource != Convert.DBNull)
             {
-                ISupportInitializeNotification notification = dataSource as ISupportInitializeNotification;
-
-                if(notification != null && !notification.IsInitialized)
+                if(dataSource is ISupportInitializeNotification notification && !notification.IsInitialized)
                 {
                     if(!dataSourceNeedsInitializing)
                     {
@@ -1186,19 +1151,20 @@ namespace EWSoftware.ListControls.DataGridViewControls
             PropertyDescriptor pd;
 
             if(this.DataManager != null)
+            {
                 if(String.IsNullOrEmpty(displayMember))
                     displayPropDesc = null;
                 else
                 {
                     bmi = new BindingMemberInfo(displayMember);
-                    this.DataManager = base.DataGridView.BindingContext[dataSource, bmi.BindingPath] as CurrencyManager;
+                    
+                    this.DataManager = this.DataGridView.BindingContext[dataSource, bmi.BindingPath] as CurrencyManager;
+
                     pd = this.DataManager.GetItemProperties().Find(bmi.BindingField, true);
 
-                    if(pd == null)
-                        throw new ArgumentException(LR.GetString("ExFieldNotFound", displayMember));
-
-                    displayPropDesc = pd;
+                    displayPropDesc = pd ?? throw new ArgumentException(LR.GetString("ExFieldNotFound", displayMember));
                 }
+            }
         }
 
         /// <summary>
@@ -1211,19 +1177,20 @@ namespace EWSoftware.ListControls.DataGridViewControls
             PropertyDescriptor pd;
 
             if(this.DataManager != null)
+            {
                 if(String.IsNullOrEmpty(valueMember))
                     valuePropDesc = null;
                 else
                 {
                     bmi = new BindingMemberInfo(valueMember);
-                    this.DataManager = base.DataGridView.BindingContext[dataSource, bmi.BindingPath] as CurrencyManager;
+
+                    this.DataManager = this.DataGridView.BindingContext[dataSource, bmi.BindingPath] as CurrencyManager;
+                    
                     pd = this.DataManager.GetItemProperties().Find(bmi.BindingField, true);
-
-                    if(pd == null)
-                        throw new ArgumentException(LR.GetString("ExFieldNotFound", valueMember));
-
-                    valuePropDesc = pd;
+                    
+                    valuePropDesc = pd ?? throw new ArgumentException(LR.GetString("ExFieldNotFound", valueMember));
                 }
+            }
         }
 
         /// <summary>
@@ -1240,7 +1207,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
             int idx;
 
             if(key == null)
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
 
             cm = this.DataManager;
             bl = cm.List as IBindingList;
@@ -1345,10 +1312,10 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <returns>True if found, false if not</returns>
         private bool LookupDisplayValue(int rowIndex, object value, out object displayValue)
         {
-            object item = null;
+            object item;
 
             if(displayPropDesc != null || valuePropDesc != null)
-                item = this.ItemFromComboBoxDataSource(valuePropDesc != null ? valuePropDesc : displayPropDesc, value);
+                item = this.ItemFromComboBoxDataSource(valuePropDesc ?? displayPropDesc, value);
             else
                 item = this.ItemFromComboBoxItems(rowIndex, String.IsNullOrEmpty(valueMember) ? displayMember :
                         valueMember, value);
@@ -1369,8 +1336,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// </summary>
         private void OnItemsCollectionChanged()
         {
-            if(this.TemplateComboBoxColumn != null)
-                this.TemplateComboBoxColumn.OnItemsCollectionChanged();
+            this.TemplateComboBoxColumn?.OnItemsCollectionChanged();
 
             if(this.OwnsEditingComboBox(base.RowIndex))
                 this.InitializeComboBoxText();
@@ -1754,9 +1720,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="dataSource">The data source that is in use</param>
         private void WireDataSource(object dataSource)
         {
-            IComponent component = dataSource as IComponent;
-
-            if(component != null)
+            if(dataSource is IComponent component)
                 component.Disposed += this.DataSource_Disposed;
         }
 
@@ -1765,14 +1729,10 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// </summary>
         private void UnwireDataSource()
         {
-            IComponent component = dataSource as IComponent;
-
-            if(component != null)
+            if(dataSource is IComponent component)
                 component.Disposed -= this.DataSource_Disposed;
 
-            ISupportInitializeNotification notification = dataSource as ISupportInitializeNotification;
-
-            if(notification != null && dataSourceNeedsInitializing)
+            if(dataSource is ISupportInitializeNotification notification && dataSourceNeedsInitializing)
             {
                 notification.Initialized -= this.DataSource_Initialized;
                 dataSourceNeedsInitializing = false;
@@ -1784,8 +1744,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// </summary>
         private bool CreateItemsFromDataSource
         {
-            get { return createItemsFromDataSource; }
-            set { createItemsFromDataSource = value; }
+            get => createItemsFromDataSource;
+            set => createItemsFromDataSource = value;
         }
         #endregion
 
@@ -1854,23 +1814,22 @@ namespace EWSoftware.ListControls.DataGridViewControls
         protected override Rectangle GetContentBounds(Graphics graphics, DataGridViewCellStyle cellStyle,
           int rowIndex)
         {
-            DataGridViewAdvancedBorderStyle dgvabsEffective = new DataGridViewAdvancedBorderStyle();
-            DataGridViewElementStates cellState = DataGridViewElementStates.Displayed |
-                DataGridViewElementStates.Visible;
-            Rectangle cellBounds;
-            Rectangle dropDownButtonRect;
+            if(graphics == null)
+                throw new ArgumentNullException(nameof(graphics));
 
             if(cellStyle == null)
-                throw new ArgumentNullException("cellStyle");
+                throw new ArgumentNullException(nameof(cellStyle));
 
-            if(base.DataGridView == null || rowIndex < 0 || base.OwningColumn == null)
+            if(this.DataGridView == null || rowIndex < 0 || this.OwningColumn == null)
                 return Rectangle.Empty;
 
-            object formattedValue = base.GetEditedFormattedValue(rowIndex, DataGridViewDataErrorContexts.Formatting);
-            this.ComputeBorderStyleCellStateAndCellBounds(rowIndex, out dgvabsEffective, out cellState, out cellBounds);
+            object formattedValue = this.GetEditedFormattedValue(rowIndex, DataGridViewDataErrorContexts.Formatting);
+
+            this.ComputeBorderStyleCellStateAndCellBounds(rowIndex, out DataGridViewAdvancedBorderStyle dgvabsEffective,
+                out DataGridViewElementStates cellState, out Rectangle cellBounds);
 
             return this.PaintPrivate(graphics, cellBounds, cellBounds, rowIndex, cellState, formattedValue, null,
-                cellStyle, dgvabsEffective, out dropDownButtonRect, DataGridViewPaintParts.ContentForeground,
+                cellStyle, dgvabsEffective, out _, DataGridViewPaintParts.ContentForeground,
                 true, false, false);
         }
 
@@ -1881,9 +1840,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <returns>True if it owns the control, false if it does not</returns>
         protected bool OwnsEditingComboBox(int rowIndex)
         {
-            IDataGridViewEditingControl editControl = this.EditingComboBox as IDataGridViewEditingControl;
-
-            return (rowIndex != -1 && editControl != null && rowIndex == editControl.EditingControlRowIndex);
+            return (rowIndex != -1 && this.EditingComboBox is IDataGridViewEditingControl editControl &&
+                rowIndex == editControl.EditingControlRowIndex);
         }
 
         /// <summary>
@@ -1969,22 +1927,23 @@ namespace EWSoftware.ListControls.DataGridViewControls
         protected override Rectangle GetErrorIconBounds(Graphics graphics, DataGridViewCellStyle cellStyle,
           int rowIndex)
         {
-            DataGridViewAdvancedBorderStyle dgvabsEffective = new DataGridViewAdvancedBorderStyle();
-            DataGridViewElementStates cellState = DataGridViewElementStates.Displayed | DataGridViewElementStates.Visible;
-            Rectangle cellBounds;
-            Rectangle dropDownButtonRect;
+            if(graphics == null)
+                throw new ArgumentNullException(nameof(graphics));
 
             if(cellStyle == null)
-                throw new ArgumentNullException("cellStyle");
+                throw new ArgumentNullException(nameof(cellStyle));
 
-            if(base.DataGridView == null || rowIndex < 0 || base.OwningColumn == null ||
-              !base.DataGridView.ShowCellErrors || String.IsNullOrEmpty(base.GetErrorText(rowIndex)))
+            if(this.DataGridView == null || rowIndex < 0 || this.OwningColumn == null ||
+              !this.DataGridView.ShowCellErrors || String.IsNullOrEmpty(base.GetErrorText(rowIndex)))
+            {
                 return Rectangle.Empty;
+            }
 
-            this.ComputeBorderStyleCellStateAndCellBounds(rowIndex, out dgvabsEffective, out cellState, out cellBounds);
+            this.ComputeBorderStyleCellStateAndCellBounds(rowIndex, out DataGridViewAdvancedBorderStyle dgvabsEffective,
+                out DataGridViewElementStates cellState, out Rectangle cellBounds);
 
             return this.PaintPrivate(graphics, cellBounds, cellBounds, rowIndex, cellState, null,
-                base.GetErrorText(rowIndex), cellStyle, dgvabsEffective, out dropDownButtonRect,
+                base.GetErrorText(rowIndex), cellStyle, dgvabsEffective, out _,
                 DataGridViewPaintParts.ContentForeground, false, true, false);
         }
 
@@ -2009,14 +1968,17 @@ namespace EWSoftware.ListControls.DataGridViewControls
           TypeConverter formattedValueTypeConverter, DataGridViewDataErrorContexts context)
         {
             string text;
-            object displayValue;
 
             if(valueTypeConverter == null)
+            {
                 if(valuePropDesc != null)
                     valueTypeConverter = valuePropDesc.Converter;
                 else
+                {
                     if(displayPropDesc != null)
                         valueTypeConverter = displayPropDesc.Converter;
+                }
+            }
 
             if(value == null || (this.ValueType != null && !this.ValueType.IsAssignableFrom(value.GetType()) &&
               value != DBNull.Value))
@@ -2045,7 +2007,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
             if((this.DataManager != null && (valuePropDesc != null || displayPropDesc != null)) ||
               !String.IsNullOrEmpty(valueMember) || !String.IsNullOrEmpty(displayMember))
             {
-                if(!this.LookupDisplayValue(rowIndex, value, out displayValue))
+                if(!this.LookupDisplayValue(rowIndex, value, out object displayValue))
                 {
                     if(value == DBNull.Value)
                         displayValue = DBNull.Value;
@@ -2122,7 +2084,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 return new Size(-1, -1);
 
             if(cellStyle == null)
-                throw new ArgumentNullException("cellStyle");
+                throw new ArgumentNullException(nameof(cellStyle));
 
             if(constraintSize.Width == 0)
             {
@@ -2194,14 +2156,14 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <returns>True to enter edit mode, false to not enter edit mode</returns>
         public override bool KeyEntersEditMode(KeyEventArgs e)
         {
-            return (((Char.IsLetterOrDigit((char)((ushort)e.KeyCode)) &&
+            return e != null && ((((Char.IsLetterOrDigit((char)((ushort)e.KeyCode)) &&
                 (e.KeyCode < Keys.F1 || e.KeyCode > Keys.F24)) ||
                 (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.Divide) ||
                 (e.KeyCode >= Keys.OemSemicolon && e.KeyCode <= Keys.OemBackslash) ||
                 (e.KeyCode == Keys.Space && !e.Shift) || e.KeyCode == Keys.F4 ||
                 ((e.KeyCode == Keys.Down || e.KeyCode == Keys.Up) && e.Alt)) &&
                 (!e.Alt || e.KeyCode == Keys.Down || e.KeyCode == Keys.Up) &&
-                !e.Control) || base.KeyEntersEditMode(e);
+                !e.Control) || base.KeyEntersEditMode(e));
         }
 
         /// <summary>
@@ -2251,19 +2213,25 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="e">The event arguments</param>
         protected override void OnMouseClick(DataGridViewCellMouseEventArgs e)
         {
-            if(base.DataGridView != null)
+            if(e != null && this.DataGridView != null)
             {
                 Point currentCellAddress = base.DataGridView.CurrentCellAddress;
 
                 if(currentCellAddress.X == e.ColumnIndex && currentCellAddress.Y == e.RowIndex)
+                {
                     if(ignoreNextClick)
                         ignoreNextClick = false;
                     else
+                    {
                         if((this.EditingComboBox == null || !this.EditingComboBox.DroppedDown) &&
-                          base.DataGridView.EditMode != DataGridViewEditMode.EditProgrammatically &&
-                          base.DataGridView.BeginEdit(true) && this.EditingComboBox != null &&
+                          this.DataGridView.EditMode != DataGridViewEditMode.EditProgrammatically &&
+                          this.DataGridView.BeginEdit(true) && this.EditingComboBox != null &&
                           displayStyle != DataGridViewComboBoxDisplayStyle.Nothing)
+                        {
                             this.CheckDropDownList(e.X, e.Y, e.RowIndex);
+                        }
+                    }
+                }
             }
         }
 
@@ -2315,7 +2283,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="e">The event arguments</param>
         protected override void OnMouseMove(DataGridViewCellMouseEventArgs e)
         {
-            if(base.DataGridView != null)
+            if(e != null && this.DataGridView != null)
             {
                 if((flatStyle == FlatStyle.Standard || flatStyle == FlatStyle.System) &&
                   Application.RenderWithVisualStyles)
@@ -2326,39 +2294,39 @@ namespace EWSoftware.ListControls.DataGridViewControls
                     DataGridViewAdvancedBorderStyle borderStylePlaceHolder = new DataGridViewAdvancedBorderStyle();
 
                     DataGridViewAdvancedBorderStyle borderStyle = this.AdjustCellBorderStyle(
-                            base.DataGridView.AdvancedCellBorderStyle, borderStylePlaceHolder,
-                            !base.DataGridView.RowHeadersVisible &&
-                                base.DataGridView.AdvancedCellBorderStyle.All == DataGridViewAdvancedCellBorderStyle.Single,
-                            !base.DataGridView.ColumnHeadersVisible &&
-                                base.DataGridView.AdvancedCellBorderStyle.All == DataGridViewAdvancedCellBorderStyle.Single,
-                            base.OwningColumn.Index == base.FirstDisplayedColumnIndex,
-                            rowIndex == base.DataGridView.FirstDisplayedScrollingRowIndex);
+                        this.DataGridView.AdvancedCellBorderStyle, borderStylePlaceHolder,
+                        !this.DataGridView.RowHeadersVisible &&
+                            this.DataGridView.AdvancedCellBorderStyle.All == DataGridViewAdvancedCellBorderStyle.Single,
+                        !this.DataGridView.ColumnHeadersVisible &&
+                            this.DataGridView.AdvancedCellBorderStyle.All == DataGridViewAdvancedCellBorderStyle.Single,
+                        this.OwningColumn.Index == this.FirstDisplayedColumnIndex,
+                        rowIndex == this.DataGridView.FirstDisplayedScrollingRowIndex);
 
-                    Rectangle clipBounds = base.DataGridView.GetCellDisplayRectangle(base.OwningColumn.Index,
+                    Rectangle clipBounds = this.DataGridView.GetCellDisplayRectangle(this.OwningColumn.Index,
                         rowIndex, false);
 
-                    if(base.OwningColumn.Index == base.DataGridView.FirstDisplayedScrollingColumnIndex)
+                    if(this.OwningColumn.Index == this.DataGridView.FirstDisplayedScrollingColumnIndex)
                     {
-                        clipBounds.X -= base.DataGridView.FirstDisplayedScrollingColumnHiddenWidth;
-                        clipBounds.Width += base.DataGridView.FirstDisplayedScrollingColumnHiddenWidth;
+                        clipBounds.X -= this.DataGridView.FirstDisplayedScrollingColumnHiddenWidth;
+                        clipBounds.Width += this.DataGridView.FirstDisplayedScrollingColumnHiddenWidth;
                     }
 
-                    DataGridViewElementStates rowState = base.DataGridView.Rows.GetRowState(rowIndex);
+                    DataGridViewElementStates rowState = this.DataGridView.Rows.GetRowState(rowIndex);
                     DataGridViewElementStates elementState = this.CellStateFromColumnRowStates(rowState);
 
-                    using(Graphics g = base.DataGridView.CreateGraphics())
+                    using(Graphics g = this.DataGridView.CreateGraphics())
                     {
                         this.PaintPrivate(g, clipBounds, clipBounds, rowIndex, elementState, null, null,
-                            base.GetInheritedStyle(null, rowIndex, false), borderStyle, out buttonRect,
+                            this.GetInheritedStyle(null, rowIndex, false), borderStyle, out buttonRect,
                             DataGridViewPaintParts.ContentForeground, false, false, false);
                     }
 
-                    bool inButton = buttonRect.Contains(base.DataGridView.PointToClient(Control.MousePosition));
+                    bool inButton = buttonRect.Contains(this.DataGridView.PointToClient(Control.MousePosition));
 
                     if(inButton != mouseInDropDownButtonBounds)
                     {
                         mouseInDropDownButtonBounds = inButton;
-                        base.DataGridView.InvalidateCell(e.ColumnIndex, rowIndex);
+                        this.DataGridView.InvalidateCell(e.ColumnIndex, rowIndex);
                     }
                 }
 
@@ -2385,13 +2353,14 @@ namespace EWSoftware.ListControls.DataGridViewControls
           string errorText, DataGridViewCellStyle cellStyle, DataGridViewAdvancedBorderStyle advancedBorderStyle,
           DataGridViewPaintParts paintParts)
         {
-            Rectangle buttonRect;
+            if(graphics == null)
+                throw new ArgumentNullException(nameof(graphics));
 
             if(cellStyle == null)
-                throw new ArgumentNullException("cellStyle");
+                throw new ArgumentNullException(nameof(cellStyle));
 
             this.PaintPrivate(graphics, clipBounds, cellBounds, rowIndex, cellState, formattedValue, errorText,
-                cellStyle, advancedBorderStyle, out buttonRect, paintParts, false, false, true);
+                cellStyle, advancedBorderStyle, out _, paintParts, false, false, true);
         }
 
         /// <summary>
@@ -2433,13 +2402,12 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 return cellValue;
 
             if(displayPropDesc != null || valuePropDesc != null)
-            {
-                item = this.ItemFromComboBoxDataSource(displayPropDesc != null ? displayPropDesc : valuePropDesc,
-                    cellValue);
-            }
+                item = this.ItemFromComboBoxDataSource(displayPropDesc ?? valuePropDesc, cellValue);
             else
-                item = this.ItemFromComboBoxItems(base.RowIndex,
+            {
+                item = this.ItemFromComboBoxItems(this.RowIndex,
                     String.IsNullOrEmpty(displayMember) ? valueMember : displayMember, cellValue);
+            }
 
             if(item == null)
             {

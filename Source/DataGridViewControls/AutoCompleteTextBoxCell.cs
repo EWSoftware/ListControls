@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : AutoCompleteTextBoxCell.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/22/2014
-// Note    : Copyright 2008-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2008-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a data grid view cell object that hosts a textbox with the auto-complete properties
 // exposed.
@@ -38,6 +37,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         private AutoCompleteStringCollection customSource;
 
         private TextBox editingTextBox;
+
         #endregion
 
         #region Properties
@@ -49,7 +49,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <value>The default is <c>None</c>.</value>
         public AutoCompleteMode AutoCompleteMode
         {
-            get { return mode; }
+            get => mode;
             set
             {
                 mode = value;
@@ -65,7 +65,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <value>The default is <c>None</c>.</value>
         public AutoCompleteSource AutoCompleteSource
         {
-            get { return source; }
+            get => source;
             set
             {
                 source = value;
@@ -119,9 +119,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <returns>True if it owns the control, false if it does not</returns>
         protected bool OwnsEditingTextBox(int rowIndex)
         {
-            IDataGridViewEditingControl editControl = editingTextBox as IDataGridViewEditingControl;
-
-            return (rowIndex != -1 && editControl != null && rowIndex == editControl.EditingControlRowIndex);
+            return rowIndex != -1 && editingTextBox is IDataGridViewEditingControl editControl &&
+                rowIndex == editControl.EditingControlRowIndex;
         }
 
         /// <summary>
@@ -159,7 +158,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
           DataGridViewCellStyle dataGridViewCellStyle)
         {
             if(dataGridViewCellStyle == null)
-                throw new ArgumentNullException("dataGridViewCellStyle");
+                throw new ArgumentNullException(nameof(dataGridViewCellStyle));
 
             base.InitializeEditingControl(rowIndex, initialFormattedValue, dataGridViewCellStyle);
 

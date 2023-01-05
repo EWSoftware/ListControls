@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : ImageListCell.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/24/2014
-// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a data grid view cell object that shows images from an image list based on the index
 // retrieved from the cell value.
@@ -108,6 +107,9 @@ namespace EWSoftware.ListControls.DataGridViewControls
             Rectangle r = base.GetContentBounds(graphics, cellStyle, rowIndex);
             Size cellSize, imageSize;
 
+            if(cellStyle == null)
+                throw new ArgumentNullException(nameof(cellStyle));
+
             // For null cells, use a default rectangle so that it enters edit mode if the middle area of the
             // empty cell is clicked.
             if(r == Rectangle.Empty)
@@ -143,7 +145,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// false.</returns>
         protected override bool KeyDownUnsharesRow(KeyEventArgs e, int rowIndex)
         {
-            return (e.KeyCode == Keys.Space && !e.Alt && !e.Control && !e.Shift);
+            return (e != null && e.KeyCode == Keys.Space && !e.Alt && !e.Control && !e.Shift);
         }
 
         /// <summary>
@@ -155,7 +157,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <returns>True if Space is released, otherwise false</returns>
         protected override bool KeyUpUnsharesRow(KeyEventArgs e, int rowIndex)
         {
-            return (e.KeyCode == Keys.Space);
+            return (e != null && e.KeyCode == Keys.Space);
         }
 
         /// <summary>
@@ -165,23 +167,31 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="e">The event arguments</param>
         protected override void OnContentClick(DataGridViewCellEventArgs e)
         {
-            ImageListColumn owner = base.OwningColumn as ImageListColumn;
             int cellValue = -1;
-            object newValue = base.NewValue;
+            object newValue = this.NewValue;
 
-            if(!base.ReadOnly && base.DataGridView != null && owner != null && owner.ImageList != null)
+            if(e == null)
+                throw new ArgumentNullException(nameof(e));
+
+            if(!this.ReadOnly && this.DataGridView != null && this.OwningColumn is ImageListColumn owner && owner.ImageList != null)
             {
-                if(newValue is int)
-                    cellValue = (int)newValue;
+                if(newValue is int iv)
+                    cellValue = iv;
                 else
-                    if(newValue is short)
-                        cellValue = (short)newValue;
+                {
+                    if(newValue is short sv)
+                        cellValue = sv;
                     else
-                        if(newValue is bool)
-                            cellValue = ((bool)newValue) ? 1 : 0;
+                    {
+                        if(newValue is bool bv)
+                            cellValue = bv ? 1 : 0;
                         else
+                        {
                             if(newValue == null || newValue == DBNull.Value)
                                 cellValue = owner.NullImageIndex;
+                        }
+                    }
+                }
 
                 // Let the user map the value to an index
                 MapIndexEventArgs mapArgs = new MapIndexEventArgs(e.ColumnIndex, e.RowIndex, newValue, cellValue);
@@ -203,29 +213,35 @@ namespace EWSoftware.ListControls.DataGridViewControls
                     // If the value changed, use that.  If the value didn't change, use the new index value but
                     // convert it to the matching type.
                     if(mapArgs.Value == null || !mapArgs.Value.Equals(cellValue))
-                        base.NewValue = mapArgs.Value;
+                        this.NewValue = mapArgs.Value;
                     else
+                    {
                         if(newValue is int)
-                            base.NewValue = cellValue;
+                            this.NewValue = cellValue;
                         else
+                        {
                             if(newValue is short)
-                                base.NewValue = (short)cellValue;
+                                this.NewValue = (short)cellValue;
                             else
+                            {
                                 if(newValue is bool)
                                 {
                                     if(cellValue == 1)
-                                        base.NewValue = true;
+                                        this.NewValue = true;
                                     else
-                                        base.NewValue = false;
+                                        this.NewValue = false;
                                 }
                                 else
-                                    base.NewValue = mapArgs.Value;
+                                    this.NewValue = mapArgs.Value;
+                            }
+                        }
+                    }
                 }
                 else
-                    base.NewValue = null;
+                    this.NewValue = null;
 
-                base.DataGridView.NotifyCurrentCellDirty(true);
-                base.DataGridView.InvalidateCell(this);
+                this.DataGridView.NotifyCurrentCellDirty(true);
+                this.DataGridView.InvalidateCell(this);
             }
         }
 
@@ -236,8 +252,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="rowIndex">The index of the row containing the cell</param>
         protected override void OnKeyDown(KeyEventArgs e, int rowIndex)
         {
-            if(base.DataGridView != null && !base.ReadOnly && e.KeyCode == Keys.Space && !e.Alt && !e.Control &&
-              !e.Shift)
+            if(e != null && this.DataGridView != null && !this.ReadOnly && e.KeyCode == Keys.Space && !e.Alt &&
+              !e.Control && !e.Shift)
             {
                 e.Handled = true;
             }
@@ -251,14 +267,14 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="rowIndex">The index of the row containing the cell</param>
         protected override void OnKeyUp(KeyEventArgs e, int rowIndex)
         {
-            if(base.DataGridView != null && !base.ReadOnly && e.KeyCode == Keys.Space && !e.Alt && !e.Control &&
-              !e.Shift)
+            if(e != null && this.DataGridView != null && !this.ReadOnly && e.KeyCode == Keys.Space && !e.Alt &&
+              !e.Control && !e.Shift)
             {
                 DataGridViewCellEventArgs args = new DataGridViewCellEventArgs(base.ColumnIndex, rowIndex);
-                base.RaiseCellClick(args);
+                this.RaiseCellClick(args);
 
-                if(base.ColumnIndex < base.DataGridView.Columns.Count && rowIndex < base.DataGridView.Rows.Count)
-                    base.RaiseCellContentClick(args);
+                if(this.ColumnIndex < this.DataGridView.Columns.Count && rowIndex < this.DataGridView.Rows.Count)
+                    this.RaiseCellContentClick(args);
 
                 e.Handled = true;
             }
@@ -270,14 +286,16 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="e">The event arguments</param>
         protected override void OnMouseMove(DataGridViewCellMouseEventArgs e)
         {
-            ImageListColumn owner = base.OwningColumn as ImageListColumn;
-            Rectangle content = base.GetContentBounds(e.RowIndex);
+            if(e == null)
+                throw new ArgumentNullException(nameof(e));
+
+            Rectangle content = this.GetContentBounds(e.RowIndex);
             Cursor newCursor;
 
             base.OnMouseMove(e);
 
             // Figure out if the mouse is actually over the image
-            if(owner != null && owner.ImageList != null && !base.ReadOnly)
+            if(this.OwningColumn is ImageListColumn owner && owner.ImageList != null && !this.ReadOnly)
             {
                 newCursor = owner.OriginalCursor;
 
@@ -285,8 +303,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
                     newCursor = Cursors.Hand;
 
                 // Update the cursor if necessary
-                if(newCursor != null && base.DataGridView != null && base.DataGridView.Cursor != newCursor)
-                    base.DataGridView.Cursor = newCursor;
+                if(newCursor != null && this.DataGridView != null && this.DataGridView.Cursor != newCursor)
+                    this.DataGridView.Cursor = newCursor;
             }
         }
 
@@ -296,10 +314,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="rowIndex">The row index of the cell</param>
         protected override void OnMouseLeave(int rowIndex)
         {
-            ImageListColumn owner = base.OwningColumn as ImageListColumn;
-
-            if(owner != null && base.DataGridView.Cursor != owner.OriginalCursor)
-                base.DataGridView.Cursor = owner.OriginalCursor;
+            if(this.OwningColumn is ImageListColumn owner && this.DataGridView.Cursor != owner.OriginalCursor)
+                this.DataGridView.Cursor = owner.OriginalCursor;
 
             base.OnMouseLeave(rowIndex);
         }
@@ -313,20 +329,23 @@ namespace EWSoftware.ListControls.DataGridViewControls
         protected override object GetCellImage(object value, int rowIndex)
         {
             // Use the image from the image list
-            ImageListColumn owner = base.OwningColumn as ImageListColumn;
             Image cellImage = null;
             int cellValue = -1;
 
-            if(owner != null && owner.ImageList != null)
+            if(this.OwningColumn is ImageListColumn owner && owner.ImageList != null)
             {
-                if(value is int)
-                    cellValue = (int)value;
+                if(value is int iv)
+                    cellValue = iv;
                 else
-                    if(value is short)
-                        cellValue = (short)value;
+                {
+                    if(value is short sv)
+                        cellValue = sv;
                     else
-                        if(value is bool)
-                            cellValue = ((bool)value) ? 1 : 0;
+                    {
+                        if(value is bool bv)
+                            cellValue = bv ? 1 : 0;
+                    }
+                }
 
                 // Let the user map the value to an index
                 MapIndexEventArgs mapArgs = new MapIndexEventArgs(owner.Index, rowIndex, value, cellValue);

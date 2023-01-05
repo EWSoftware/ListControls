@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : AutoCompleteComboBox.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/24/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a standard combo box control that supplies an auto-complete feature that selects the best
 // match as the user types text into it.  Auto-completion works for all combo box styles.
@@ -30,7 +29,7 @@ namespace EWSoftware.ListControls
     /// as the user types text into it.  Auto-completion works for all combo box styles.
 	/// </summary>
     [Description("A basic combo box with auto-completion support")]
-	public class AutoCompleteComboBox : System.Windows.Forms.ComboBox
+	public class AutoCompleteComboBox : ComboBox
 	{
         #region Private data members
         //=====================================================================
@@ -52,10 +51,7 @@ namespace EWSoftware.ListControls
         /// returns null.</value>
         /// <overloads>There are two overloads for this property</overloads>
         [Browsable(false), Description("Get the specified column from the current row")]
-        public object this[string columnName]
-        {
-            get { return this[this.SelectedIndex, columnName]; }
-        }
+        public object this[string columnName] => this[this.SelectedIndex, columnName];
 
         /// <summary>
         /// This can be used to get the value of the specified column in the specified row of the list control's
@@ -130,6 +126,9 @@ namespace EWSoftware.ListControls
         {
             bool clearAutoText = false;
 
+            if(e == null)
+                throw new ArgumentNullException(nameof(e));
+
             switch(e.KeyData)
             {
                 case Keys.Enter:
@@ -185,12 +184,14 @@ namespace EWSoftware.ListControls
             base.OnKeyUp(e);
 
             // Auto-complete if it's an appropriate key
-            if(((Char.IsLetterOrDigit((char)((ushort)e.KeyCode)) &&
+            if(e != null && ((Char.IsLetterOrDigit((char)((ushort)e.KeyCode)) &&
               (e.KeyCode < Keys.F1 || e.KeyCode > Keys.F24)) ||
               (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.Divide) ||
               (e.KeyCode >= Keys.OemSemicolon && e.KeyCode <= Keys.OemBackslash) ||
               (e.KeyCode == Keys.Space && !e.Shift)) && !e.Shift && !e.Control && !e.Alt)
+            {
                 this.AutoComplete();
+            }
         }
 
         /// <summary>
@@ -199,6 +200,9 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected override void OnKeyPress(KeyPressEventArgs e)
         {
+            if(e == null)
+                throw new ArgumentNullException(nameof(e));
+
             if(!Char.IsControl(e.KeyChar) && this.DropDownStyle == ComboBoxStyle.DropDownList)
             {
                 autoCompleteText += e.KeyChar;

@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : BaseImageCell.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/22/2014
-// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
 //
 // This file contains an abstract base data grid view image cell object that supports editing and contains
 // common properties and methods used by its derived types.
@@ -38,10 +37,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <summary>
         /// This is overridden to return <see cref="Object"/> as the formatted value type
         /// </summary>
-        public override Type FormattedValueType
-        {
-            get { return base.ValueType; }
-        }
+        public override Type FormattedValueType => base.ValueType;
 
         /// <summary>
         /// This read-only property returns the original cell value prior to editing
@@ -67,18 +63,17 @@ namespace EWSoftware.ListControls.DataGridViewControls
             {
                 object cellValue = null;
 
-                if(base.RowIndex != -1)
-                    if(base.IsInEditMode)
+                if(this.RowIndex != -1)
+                {
+                    if(this.IsInEditMode)
                         cellValue = this.NewValue;
                     else
-                        cellValue = base.GetValue(base.RowIndex);
+                        cellValue = this.GetValue(this.RowIndex);
+                }
 
-                return this.GetCellImage(cellValue, base.RowIndex);
+                return this.GetCellImage(cellValue, this.RowIndex);
             }
-            set
-            {
-                this.OriginalValue = this.NewValue = base.GetValue(base.RowIndex);
-            }
+            set => this.OriginalValue = this.NewValue = this.GetValue(this.RowIndex);
         }
 
         /// <summary>
@@ -86,7 +81,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// </summary>
         public bool EditingCellValueChanged
         {
-            get { return !this.OriginalValue.Equals(this.NewValue); }
+            get => !this.OriginalValue.Equals(this.NewValue);
             set
             {
                 if(!value)
@@ -130,7 +125,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <see cref="Object"/>.  This allows the bound cell value to be edited.</remarks>
         protected BaseImageCell()
         {
-            base.ValueType = typeof(object);
+            this.ValueType = typeof(object);
         }
         #endregion
 
@@ -160,14 +155,20 @@ namespace EWSoftware.ListControls.DataGridViewControls
         {
             object cellImage;
 
-            if(base.RowIndex != -1 && base.IsInEditMode && base.DataGridView.IsCurrentCellDirty)
+            if(graphics == null)
+                throw new ArgumentNullException(nameof(graphics));
+
+            if(cellStyle == null)
+                throw new ArgumentNullException(nameof(cellStyle));
+
+            if(this.RowIndex != -1 && this.IsInEditMode && this.DataGridView.IsCurrentCellDirty)
                 cellImage = this.GetCellImage(this.NewValue, rowIndex);
             else
                 cellImage = this.GetCellImage(value, rowIndex);
 
-            if(base.ImageLayout == DataGridViewImageCellLayout.Stretch)
+            if(this.ImageLayout == DataGridViewImageCellLayout.Stretch)
             {
-                SolidBrush br = DataGridViewHelper.GetCachedBrush(base.DataGridView,
+                SolidBrush br = DataGridViewHelper.GetCachedBrush(this.DataGridView,
                     ((paintParts & DataGridViewPaintParts.SelectionBackground) != 0 &&
                     (elementState & DataGridViewElementStates.Selected) != DataGridViewElementStates.None) ?
                         cellStyle.SelectionBackColor : cellStyle.BackColor);
@@ -201,7 +202,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
           ref DataGridViewCellStyle cellStyle, TypeConverter valueTypeConverter,
           TypeConverter formattedValueTypeConverter, DataGridViewDataErrorContexts context)
         {
-            if(base.RowIndex != -1 && base.IsInEditMode && base.DataGridView.IsCurrentCellDirty)
+            if(this.RowIndex != -1 && this.IsInEditMode && this.DataGridView.IsCurrentCellDirty)
                 return this.NewValue;
 
             return value;
@@ -230,10 +231,10 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <returns>True if this is the current cell and it is in edit mode, otherwise false</returns>
         protected override bool ContentClickUnsharesRow(DataGridViewCellEventArgs e)
         {
-            Point currentCell = base.DataGridView.CurrentCellAddress;
+            Point currentCell = this.DataGridView.CurrentCellAddress;
 
-            if(currentCell.X == base.ColumnIndex && currentCell.Y == e.RowIndex)
-                return base.DataGridView.IsCurrentCellInEditMode;
+            if(e != null && currentCell.X == this.ColumnIndex && currentCell.Y == e.RowIndex)
+                return this.DataGridView.IsCurrentCellInEditMode;
 
             return false;
         }
@@ -256,7 +257,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <returns>True if the left mouse button is pressed, otherwise false</returns>
         protected override bool MouseDownUnsharesRow(DataGridViewCellMouseEventArgs e)
         {
-            return (e.Button == MouseButtons.Left);
+            return (e != null && e.Button == MouseButtons.Left);
         }
 
         /// <summary>
@@ -267,7 +268,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <returns>True if the left mouse button is pressed, otherwise false</returns>
         protected override bool MouseUpUnsharesRow(DataGridViewCellMouseEventArgs e)
         {
-            return (e.Button == MouseButtons.Left);
+            return (e != null && e.Button == MouseButtons.Left);
         }
 
         /// <summary>
@@ -279,7 +280,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         {
             Point cell = DataGridViewHelper.MouseDownCellAddress(base.DataGridView);
 
-            return (base.ColumnIndex == cell.X && rowIndex == cell.Y);
+            return (this.ColumnIndex == cell.X && rowIndex == cell.Y);
         }
 
         /// <summary>

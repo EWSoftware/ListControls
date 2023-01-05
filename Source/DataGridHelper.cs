@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : DataGridHelper.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/25/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This is a static class that contains various helper methods for use with DataGrid objects
 //

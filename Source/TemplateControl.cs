@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : TemplateControl.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/19/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a template control used as the source for creating rows in the DataList control.
 // Note that this control has a small initial size to prevent it from overlapping other rows when not yet
@@ -44,6 +43,7 @@ namespace EWSoftware.ListControls
         //=====================================================================
 
         private object rowSource;
+
         #endregion
 
         #region Properties
@@ -74,38 +74,26 @@ namespace EWSoftware.ListControls
         /// which it is contained).
         /// </summary>
         [Browsable(false), Description("Get a reference to the item's parent DataList control")]
-        public DataList TemplateParent
-        {
-            get { return this.TemplateParentInternal; }
-        }
+        public DataList TemplateParent => this.TemplateParentInternal;
 
         /// <summary>
         /// This read-only property can be used to get the row source to which this control is bound.  The row
         /// source object is editable.
         /// </summary>
         [Browsable(false), Description("The row source to which the item is bound")]
-        public object RowSource
-        {
-            get { return rowSource; }
-        }
+        public object RowSource => rowSource;
 
         /// <summary>
         /// This read-only property can be used to determine whether or not the template has been initialized
         /// </summary>
         [Browsable(false), Description("Check to see if the item has been initialized")]
-        public bool IsInitialized
-        {
-            get { return this.HasBeenInitialized; }
-        }
+        public bool IsInitialized => this.HasBeenInitialized;
 
         /// <summary>
         /// This read-only property can be used to determine whether or not the template has been data bound
         /// </summary>
         [Browsable(false), Description("Check to see if the item has been data bound")]
-        public bool IsDataBound
-        {
-            get { return this.HasBeenBound; }
-        }
+        public bool IsDataBound => this.HasBeenBound;
 
         /// <summary>
         /// This read-only property can be used to determine whether or not the template is bound to the new row
@@ -116,10 +104,7 @@ namespace EWSoftware.ListControls
         /// the new row when a change is made to any of its bound fields.
         /// </remarks>
         [Browsable(false), Description("Check to see if the item is the new row placeholder")]
-        public bool IsNewRow
-        {
-            get { return this.IsNewRowInternal; }
-        }
+        public bool IsNewRow => this.IsNewRowInternal;
 
         /// <summary>
         /// This read-only property can be overridden to allow querying of a row to see if it is valid
@@ -159,10 +144,7 @@ namespace EWSoftware.ListControls
         /// If the template is used in many forms, it also saves you from having to add an event handler for the
         /// data list's <c>DeletingRow</c> event in each one too.</para></remarks>
         [Browsable(false), Description("Check to see if the item can be deleted")]
-        public virtual bool CanDelete
-        {
-            get { return true; }
-        }
+        public virtual bool CanDelete => true;
 
         /// <summary>
         /// This read-only property can be used to see if the row source has been modified
@@ -182,10 +164,9 @@ namespace EWSoftware.ListControls
                     // Commit any pending changes
                     this.CommitChanges();
 
-                    DataRowView drv = rowSource as DataRowView;
                     DataRow r;
 
-                    if(drv != null)
+                    if(rowSource is DataRowView drv)
                         r = drv.Row;
                     else
                         r = rowSource as DataRow;
@@ -481,7 +462,7 @@ namespace EWSoftware.ListControls
         /// resources during the initial startup phase of a form that contains a data list control.  Templates
         /// are re-bound under many conditions.  If adding bindings to controls manually, be sure to clear the
         /// <c>DataBindings</c> collection on all bound controls first.  A better alternative is to use the
-        /// overloaded <see cref="AddBinding(Control, string, string)"/> method as it will take care of that for
+        /// overloaded <see cref="AddBinding(Control, String, String)"/> method as it will take care of that for
         /// you.</remarks>
         /// <exception cref="NotImplementedException">This is thrown if the method is not overridden and the base
         /// implementation is called.</exception>
@@ -665,7 +646,7 @@ namespace EWSoftware.ListControls
           ConvertEventHandler formatEvent, ConvertEventHandler parseEvent)
         {
             if(control == null)
-                throw new ArgumentNullException("control", LR.GetString("ExNullParameter"));
+                throw new ArgumentNullException(nameof(control), LR.GetString("ExNullParameter"));
 
             Binding b = new Binding(controlProperty, rowSource, dataMember);
 

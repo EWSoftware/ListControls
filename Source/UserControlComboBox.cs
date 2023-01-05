@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : UserControlComboBox.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/19/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a user control combo box control that supports all features of the standard Windows Forms
 // combo box but displays a user control for its drop-down and has some extra features such as auto-completion
@@ -19,6 +18,8 @@
 // ==============================================================================================================
 // 03/01/2005  EFW  Created the code
 //===============================================================================================================
+
+// Ignore Spelling: typeof
 
 using System;
 using System.ComponentModel;
@@ -38,6 +39,7 @@ namespace EWSoftware.ListControls
         //====================================================================
 
         private Type dropDownControl;
+
         #endregion
 
         #region Properties
@@ -63,7 +65,7 @@ namespace EWSoftware.ListControls
           DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Type DropDownControl
         {
-            get { return dropDownControl; }
+            get => dropDownControl;
             set
             {
                 if(dropDownControl != value)
@@ -96,10 +98,7 @@ namespace EWSoftware.ListControls
         /// <param name="dropDown">The drop-down control</param>
         protected internal virtual void OnDropDownControlCreated(DropDownControl dropDown)
         {
-            var handler = DropDownControlCreated;
-
-            if(handler != null)
-                handler(dropDown, EventArgs.Empty);
+            DropDownControlCreated?.Invoke(dropDown, EventArgs.Empty);
         }
 
         /// <summary>
@@ -117,10 +116,7 @@ namespace EWSoftware.ListControls
         /// <param name="dropDown">The drop-down control</param>
         protected internal virtual void OnDropDownControlInitialized(DropDownControl dropDown)
         {
-            var handler = DropDownControlInitialized;
-
-            if(handler != null)
-                handler(dropDown, EventArgs.Empty);
+            DropDownControlInitialized?.Invoke(dropDown, EventArgs.Empty);
         }
         #endregion
 
@@ -199,16 +195,14 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            if(this.DropDownStyle != ComboBoxStyle.Simple)
+            if(e != null && this.DropDownStyle != ComboBoxStyle.Simple)
             {
                 if(e.Delta > 0)
-                    base.HandleKeys(Keys.Up);
+                    this.HandleKeys(Keys.Up);
                 else
-                    base.HandleKeys(Keys.Down);
+                    this.HandleKeys(Keys.Down);
 
-                HandledMouseEventArgs mea = e as HandledMouseEventArgs;
-
-                if(mea != null)
+                if(e is HandledMouseEventArgs mea)
                     mea.Handled = true;
             }
 

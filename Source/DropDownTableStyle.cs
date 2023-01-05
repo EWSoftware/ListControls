@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : DropDownTableStyle.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/16/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a custom table style class that omits several fields and modifies the defaults for some
 // properties for use with the multi-column combo box control's drop-down.
@@ -19,6 +18,9 @@
 // 03/09/2005  EFW  Created the code
 //===============================================================================================================
 
+// TODO: Remove if not used
+#if NETFRAMEWORK
+
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -30,7 +32,7 @@ namespace EWSoftware.ListControls
     /// This is a custom table style class that omits several fields and modifies the defaults for some
     /// properties for use with the <see cref="MultiColumnComboBox"/> control's drop-down.
     /// </summary>
-    public class DropDownTableStyle : System.Windows.Forms.DataGridTableStyle
+    public class DropDownTableStyle : DataGridTableStyle
     {
         #region Modified properties
         //=====================================================================
@@ -44,8 +46,8 @@ namespace EWSoftware.ListControls
         [DefaultValue(false)]
         public new bool ColumnHeadersVisible
         {
-            get { return base.ColumnHeadersVisible; }
-            set { base.ColumnHeadersVisible = value; }
+            get => base.ColumnHeadersVisible;
+            set => base.ColumnHeadersVisible = value;
         }
 
         /// <summary>
@@ -55,8 +57,8 @@ namespace EWSoftware.ListControls
         [DefaultValue(false)]
         public new bool RowHeadersVisible
         {
-            get { return base.RowHeadersVisible; }
-            set { base.RowHeadersVisible = value; }
+            get => base.RowHeadersVisible;
+            set => base.RowHeadersVisible = value;
         }
 
         /// <summary>
@@ -66,8 +68,8 @@ namespace EWSoftware.ListControls
         [DefaultValue(typeof(Color), "ControlText")]
         public new Color HeaderForeColor
         {
-            get { return base.HeaderForeColor; }
-            set { base.HeaderForeColor = value; }
+            get => base.HeaderForeColor;
+            set => base.HeaderForeColor = value;
         }
 
         /// <summary>
@@ -77,8 +79,8 @@ namespace EWSoftware.ListControls
         [DefaultValue(20)]
         public new int RowHeaderWidth
         {
-            get { return base.RowHeaderWidth; }
-            set { base.RowHeaderWidth = value; }
+            get => base.RowHeaderWidth;
+            set => base.RowHeaderWidth = value;
         }
         #endregion
 
@@ -93,10 +95,7 @@ namespace EWSoftware.ListControls
         /// <exclude/>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false),
           EditorBrowsable(EditorBrowsableState.Never)]
-        public new bool AllowSorting
-        {
-            get { return false; }
-        }
+        public new bool AllowSorting => false;
 
         /// <summary>
         /// The data grid is settable but is not visible to the user
@@ -106,8 +105,8 @@ namespace EWSoftware.ListControls
           EditorBrowsable(EditorBrowsableState.Never), DefaultValue(null)]
         public override DataGrid DataGrid
         {
-            get { return base.DataGrid; }
-            set { base.DataGrid = value; }
+            get => base.DataGrid;
+            set => base.DataGrid = value;
         }
 
         /// <summary>
@@ -116,10 +115,7 @@ namespace EWSoftware.ListControls
         /// <exclude/>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false),
           EditorBrowsable(EditorBrowsableState.Never)]
-        public new Color LinkColor
-        {
-            get { return SystemColors.HotTrack; }
-        }
+        public new Color LinkColor => SystemColors.HotTrack;
 
         /// <summary>
         /// Links are not used
@@ -127,10 +123,7 @@ namespace EWSoftware.ListControls
         /// <exclude/>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false),
           EditorBrowsable(EditorBrowsableState.Never)]
-        public new Color LinkHoverColor
-        {
-            get { return SystemColors.HotTrack; }
-        }
+        public new Color LinkHoverColor => SystemColors.HotTrack;
 
         /// <summary>
         /// The mapping name is settable but isn't visible to the user
@@ -140,8 +133,8 @@ namespace EWSoftware.ListControls
           EditorBrowsable(EditorBrowsableState.Never), DefaultValue("")]
         public new string MappingName
         {
-            get { return base.MappingName; }
-            set { base.MappingName = value; }
+            get => base.MappingName;
+            set => base.MappingName = value;
         }
 
         /// <summary>
@@ -152,7 +145,7 @@ namespace EWSoftware.ListControls
           EditorBrowsable(EditorBrowsableState.Never)]
         public override bool ReadOnly
         {
-            get { return true; }
+            get => true;
             set { }
         }
         #endregion
@@ -190,3 +183,4 @@ namespace EWSoftware.ListControls
         #endregion
     }
 }
+#endif

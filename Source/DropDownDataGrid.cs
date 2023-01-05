@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : DropDownDataGrid.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/16/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a custom data grid control that provides some extra features needed by the multi-column
 // combo box drop-down form.
@@ -32,7 +31,7 @@ namespace EWSoftware.ListControls
     /// drop-down form.
     /// </summary>
     [ToolboxItem(false)]
-    internal class DropDownDataGrid : System.Windows.Forms.DataGrid
+    internal class DropDownDataGrid : DataGrid
     {
         #region Private data members
         //=====================================================================
@@ -70,8 +69,8 @@ namespace EWSoftware.ListControls
             // Double-buffer to prevent flickering
             DataGridHelper.DoubleBuffer(this);
 
-            base.UpdateStyles();
-            base.Scroll += DropDownDataGrid_Scroll;
+            this.UpdateStyles();
+            this.Scroll += DropDownDataGrid_Scroll;
         }
         #endregion
 
@@ -85,8 +84,8 @@ namespace EWSoftware.ListControls
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            base.Invalidate();
-            base.Update();
+            this.Invalidate();
+            this.Update();
         }
 
         /// <summary>
@@ -99,13 +98,13 @@ namespace EWSoftware.ListControls
 
             if(e.Button == MouseButtons.Left)
             {
-                DataGrid.HitTestInfo hti = base.HitTest(e.X, e.Y);
+                HitTestInfo hti = this.HitTest(e.X, e.Y);
 
                 if(hti.Type == DataGrid.HitTestType.Cell)
                 {
-                    base.ResetSelection();
-                    base.CurrentRowIndex = hti.Row;
-                    base.Select(hti.Row);
+                    this.ResetSelection();
+                    this.CurrentRowIndex = hti.Row;
+                    this.Select(hti.Row);
                 }
             }
         }
@@ -123,33 +122,37 @@ namespace EWSoftware.ListControls
                 {
                     lastMousePos = new Point(e.X, e.Y);
 
-                    DataGrid.HitTestInfo hti = base.HitTest(e.X, e.Y);
+                    HitTestInfo hti = this.HitTest(e.X, e.Y);
 
                     if(hti.Type == DataGrid.HitTestType.Cell)
                     {
-                        base.ResetSelection();
-                        base.CurrentRowIndex = hti.Row;
-                        base.Select(hti.Row);
+                        this.ResetSelection();
+                        this.CurrentRowIndex = hti.Row;
+                        this.Select(hti.Row);
                     }
                     else
+                    {
                         if(hti.Type == DataGrid.HitTestType.None)
                         {
-                            int newRow = base.CurrentRowIndex;
+                            int newRow = this.CurrentRowIndex;
 
                             // Scroll when out of bounds
-                            if(e.Y < base.Top && newRow > 0)
+                            if(e.Y < this.Top && newRow > 0)
                                 newRow--;
                             else
-                                if(e.Y > base.Bottom && newRow < DataGridHelper.RowCount(this) - 1)
-                                    newRow++;
-
-                            if(newRow != base.CurrentRowIndex)
                             {
-                                base.ResetSelection();
-                                base.CurrentRowIndex = newRow;
-                                base.Select(newRow);
+                                if(e.Y > this.Bottom && newRow < DataGridHelper.RowCount(this) - 1)
+                                    newRow++;
+                            }
+
+                            if(newRow != this.CurrentRowIndex)
+                            {
+                                this.ResetSelection();
+                                this.CurrentRowIndex = newRow;
+                                this.Select(newRow);
                             }
                         }
+                    }
                 }
 
                 base.OnMouseMove(e);
@@ -165,8 +168,8 @@ namespace EWSoftware.ListControls
         {
             base.OnMouseLeave(e);
 
-            if(!this.IsSimpleStyle && base.Parent.Visible)
-                base.Parent.Capture = true;
+            if(!this.IsSimpleStyle && this.Parent.Visible)
+                this.Parent.Capture = true;
         }
 
         /// <summary>
@@ -174,7 +177,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         internal void ClearSelection()
         {
-            base.ResetSelection();
+            this.ResetSelection();
         }
 
         /// <summary>

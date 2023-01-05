@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : MultiColumnComboBoxEditingControl.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/24/2014
-// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/05/2023
+// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a multi-column combo box control that is hosted within a data grid view cell
 //
@@ -36,6 +35,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         //=====================================================================
 
         private bool firstKeySeen;
+
         #endregion
 
         #region Constructor
@@ -46,7 +46,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// </summary>
         public MultiColumnComboBoxEditingControl()
         {
-            base.TabStop = false;   // It cannot be a tab stop
+            this.TabStop = false;   // It cannot be a tab stop
         }
         #endregion
 
@@ -63,7 +63,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         {
             base.OnKeyPress(e);
 
-            if(!firstKeySeen && (int)e.KeyChar != 27)
+            if(!firstKeySeen && e?.KeyChar != 27)
             {
                 this.OnSelectedIndexChanged(e);
 
@@ -105,7 +105,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         public void ApplyCellStyleToEditingControl(DataGridViewCellStyle dataGridViewCellStyle)
         {
             if(dataGridViewCellStyle == null)
-                throw new ArgumentNullException("dataGridViewCellStyle");
+                throw new ArgumentNullException(nameof(dataGridViewCellStyle));
 
             this.Font = dataGridViewCellStyle.Font;
 
@@ -133,19 +133,14 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// </summary>
         public object EditingControlFormattedValue
         {
-            get
-            {
-                return this.GetEditingControlFormattedValue(DataGridViewDataErrorContexts.Formatting);
-            }
+            get => this.GetEditingControlFormattedValue(DataGridViewDataErrorContexts.Formatting);
             set
             {
-                string formattedText = value as string;
-
-                if(formattedText != null)
+                if(value is string formattedText)
                 {
                     this.Text = formattedText;
 
-                    if(String.Compare(formattedText, this.Text, true, CultureInfo.CurrentCulture) != 0)
+                    if(!String.Equals(formattedText, this.Text, StringComparison.OrdinalIgnoreCase))
                         this.SelectedIndex = -1;
                 }
             }
@@ -174,9 +169,11 @@ namespace EWSoftware.ListControls.DataGridViewControls
         public bool EditingControlWantsInputKey(Keys keyData, bool dataGridViewWantsInputKey)
         {
             if((keyData & Keys.KeyCode) != Keys.Down && (keyData & Keys.KeyCode) != Keys.Up &&
-              (!base.DroppedDown || (keyData & Keys.KeyCode) != Keys.Escape) &&
+              (!this.DroppedDown || (keyData & Keys.KeyCode) != Keys.Escape) &&
               (keyData & Keys.KeyCode) != Keys.Return)
+            {
                 return !dataGridViewWantsInputKey;
+            }
 
             return true;
         }
@@ -186,10 +183,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// not over the editing control.
         /// </summary>
         /// <value>This always returns the default cursor</value>
-        public Cursor EditingPanelCursor
-        {
-            get { return Cursors.Default; }
-        }
+        public Cursor EditingPanelCursor => Cursors.Default;
 
         /// <summary>
         /// Retrieves the formatted value of the cell
@@ -209,7 +203,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         public void PrepareEditingControlForEdit(bool selectAll)
         {
             if(selectAll)
-                base.SelectAll();
+                this.SelectAll();
         }
 
         /// <summary>
@@ -217,10 +211,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// changes.
         /// </summary>
         /// <remarks>This always returns false</remarks>
-        public bool RepositionEditingControlOnValueChange
-        {
-            get { return false; }
-        }
+        public bool RepositionEditingControlOnValueChange => false;
+
         #endregion
     }
 }

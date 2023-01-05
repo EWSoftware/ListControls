@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : BaseButtonList.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 11/25/2020
-// Note    : Copyright 2005-2020, Eric Woodruff, All rights reserved
+// Updated : 01/04/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains an abstract base button list control that supports data binding, layout options, and data
 // source indexers and serves as the base class for the RadioButtonList and CheckBoxList controls.
@@ -47,7 +47,7 @@ namespace EWSoftware.ListControls
         private const int RightAlignments = (int)(ContentAlignment.TopRight | ContentAlignment.MiddleRight |
             ContentAlignment.BottomRight);
 
-        private System.Windows.Forms.Panel pnlButtons;
+        private Panel pnlButtons;
 
         // Title properties
         private readonly SolidBrush brBackground, brTitleBack, brTitleFore;
@@ -78,7 +78,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         public override bool AutoSize
         {
-            get { return base.AutoSize; }
+            get => base.AutoSize;
             set
             {
                 pnlButtons.AutoScroll = !value;
@@ -91,11 +91,8 @@ namespace EWSoftware.ListControls
         /// </summary>
         public new AutoSizeMode AutoSizeMode
         {
-            get { return base.AutoSizeMode; }
-            set
-            {
-                base.AutoSizeMode = pnlButtons.AutoSizeMode = value;
-            }
+            get => base.AutoSizeMode;
+            set => base.AutoSizeMode = pnlButtons.AutoSizeMode = value;
         }
 
         /// <summary>
@@ -104,10 +101,7 @@ namespace EWSoftware.ListControls
         /// <remarks>This can be used to customize the appearance of the individual button controls.  This is
         /// usually accomplished by handling the <see cref="BaseListControl.SubControlsRefreshed"/> event.</remarks>
         [Browsable(false), Description("The panel containing the button controls")]
-        public Panel ButtonPanel
-        {
-            get { return pnlButtons; }
-        }
+        public Panel ButtonPanel => pnlButtons;
 
         /// <summary>
         /// This property is used to set or get the border style
@@ -117,15 +111,15 @@ namespace EWSoftware.ListControls
           Bindable(true), Description("The border style for the button list")]
         public new Border3DStyle BorderStyle
         {
-            get { return borderStyle; }
+            get => borderStyle;
             set
             {
                 if(borderStyle != value)
                 {
                     borderStyle = value;
                     OnBorderStyleChanged(EventArgs.Empty);
-                    base.PerformLayout();
-                    base.Invalidate(true);
+                    this.PerformLayout();
+                    this.Invalidate(true);
                 }
             }
         }
@@ -135,7 +129,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         public override FlatStyle FlatStyle
         {
-            get { return base.FlatStyle; }
+            get => base.FlatStyle;
             set
             {
                 foreach(Control c in pnlButtons.Controls)
@@ -152,10 +146,7 @@ namespace EWSoftware.ListControls
         /// color instead.
         /// </summary>
         [Browsable(false), Bindable(false)]
-        public override Color BackColor
-        {
-            get { return base.BackColor; }
-        }
+        public override Color BackColor => base.BackColor;
 
         /// <summary>
         /// This property is used to set or get the background color
@@ -166,12 +157,12 @@ namespace EWSoftware.ListControls
          Description("The control's background color")]
         public Color ListBackColor
         {
-            get { return brBackground.Color; }
+            get => brBackground.Color;
             set
             {
                 brBackground.Color = pnlButtons.BackColor = value;
                 OnListBackColorChanged(EventArgs.Empty);
-                base.Invalidate(true);
+                this.Invalidate(true);
             }
         }
 
@@ -182,11 +173,11 @@ namespace EWSoftware.ListControls
         [Category("Appearance"), DefaultValue(Appearance.Normal), Description("The appearance of the buttons")]
         public virtual Appearance Appearance
         {
-            get { return appearance; }
+            get => appearance;
             set
             {
                 appearance = value;
-                base.PerformLayout();
+                this.PerformLayout();
             }
         }
 
@@ -199,7 +190,7 @@ namespace EWSoftware.ListControls
         [Category("Appearance"), DefaultValue(null), Description("The image list for the buttons")]
         public ImageList ImageList
         {
-            get { return ilImages; }
+            get => ilImages;
             set
             {
                 if(ilImages != value)
@@ -246,7 +237,7 @@ namespace EWSoftware.ListControls
                         }
                     }
 
-                    base.PerformLayout();
+                    this.PerformLayout();
                 }
             }
         }
@@ -261,7 +252,7 @@ namespace EWSoftware.ListControls
           Description("The alignment for the button images")]
         public ContentAlignment ImageAlign
         {
-            get { return imageAlign; }
+            get => imageAlign;
             set
             {
                 imageAlign = value;
@@ -269,7 +260,7 @@ namespace EWSoftware.ListControls
                 foreach(Control c in pnlButtons.Controls)
                     ((ButtonBase)c).ImageAlign = value;
 
-                base.PerformLayout();
+                this.PerformLayout();
             }
         }
 
@@ -281,11 +272,11 @@ namespace EWSoftware.ListControls
           Description("The alignment for the button checkmark")]
         public virtual ContentAlignment CheckAlign
         {
-            get { return checkAlign; }
+            get => checkAlign;
             set
             {
                 checkAlign = value;
-                base.PerformLayout();
+                this.PerformLayout();
             }
         }
 
@@ -299,7 +290,7 @@ namespace EWSoftware.ListControls
           Description("The alignment for the button text")]
         public ContentAlignment TextAlign
         {
-            get { return textAlign; }
+            get => textAlign;
             set
             {
                 textAlign = value;
@@ -307,7 +298,7 @@ namespace EWSoftware.ListControls
                 foreach(Control c in pnlButtons.Controls)
                     ((ButtonBase)c).TextAlign = value;
 
-                base.PerformLayout();
+                this.PerformLayout();
             }
         }
 
@@ -321,7 +312,7 @@ namespace EWSoftware.ListControls
             "character in the display text will be used as the button's mnemonic key.")]
         public bool UseMnemonic
         {
-            get { return useMnemonic; }
+            get => useMnemonic;
             set
             {
                 if(value != useMnemonic)
@@ -336,7 +327,7 @@ namespace EWSoftware.ListControls
                         else
                             c.Text = c.Text.Replace("&", "&&");
 
-                    base.PerformLayout();
+                    this.PerformLayout();
                 }
             }
         }
@@ -351,11 +342,11 @@ namespace EWSoftware.ListControls
           Description("The layout method for the buttons")]
         public LayoutMethod LayoutMethod
         {
-            get { return layoutMethod; }
+            get => layoutMethod;
             set
             {
                 layoutMethod = value;
-                base.PerformLayout();
+                this.PerformLayout();
             }
         }
 
@@ -373,11 +364,11 @@ namespace EWSoftware.ListControls
           Description("Determines whether or not to size all columns to the widest item")]
         public bool SizeAllToWidest
         {
-            get { return sizeAllToWidest; }
+            get => sizeAllToWidest;
             set
             {
                 sizeAllToWidest = value;
-                base.PerformLayout();
+                this.PerformLayout();
             }
         }
 
@@ -399,11 +390,11 @@ namespace EWSoftware.ListControls
         [Category("Layout"), Description("Padding values for the various layout methods")]
         public ListPadding ListPadding
         {
-            get { return padding; }
+            get => padding;
             set
             {
                 padding = value;
-                base.PerformLayout();
+                this.PerformLayout();
             }
         }
 
@@ -413,10 +404,7 @@ namespace EWSoftware.ListControls
         /// <exclude/>
         [Browsable(false), EditorBrowsable(EditorBrowsableState.Never),
           DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public new Padding Padding
-        {
-            get { throw new NotSupportedException(LR.GetString("ExPropNotSupported")); }
-        }
+        public new Padding Padding => throw new NotSupportedException(LR.GetString("ExPropNotSupported"));
 
         /// <summary>
         /// This is used to specify the title displayed on the top border
@@ -426,7 +414,7 @@ namespace EWSoftware.ListControls
           Bindable(true), EditorBrowsable(EditorBrowsableState.Always)]
         public string TitleText
         {
-            get { return titleText; }
+            get => titleText;
             set
             {
                 if(value != null && value.Trim().Length == 0)
@@ -435,8 +423,8 @@ namespace EWSoftware.ListControls
                 titleText = value;
 
                 OnTitleTextChanged(EventArgs.Empty);
-                base.PerformLayout();
-                base.Invalidate(true);
+                this.PerformLayout();
+                this.Invalidate(true);
             }
         }
 
@@ -447,15 +435,14 @@ namespace EWSoftware.ListControls
          Description("The color of the border around the title")]
         public Color TitleBorderColor
         {
-            get { return penTitleBorder.Color; }
+            get => penTitleBorder.Color;
             set
             {
-                if(penTitleBorder != null)
-                    penTitleBorder.Dispose();
-
+                penTitleBorder?.Dispose();
                 penTitleBorder = new Pen(value);
+
                 OnTitleBorderColorChanged(EventArgs.Empty);
-                base.Invalidate(true);
+                this.Invalidate(true);
             }
         }
 
@@ -466,12 +453,12 @@ namespace EWSoftware.ListControls
          Description("The title's background color")]
         public Color TitleBackColor
         {
-            get { return brTitleBack.Color; }
+            get => brTitleBack.Color;
             set
             {
                 brTitleBack.Color = value;
                 OnTitleBackColorChanged(EventArgs.Empty);
-                base.Invalidate(true);
+                this.Invalidate(true);
             }
         }
 
@@ -482,12 +469,12 @@ namespace EWSoftware.ListControls
          Description("The title's foreground color")]
         public Color TitleForeColor
         {
-            get { return brTitleFore.Color; }
+            get => brTitleFore.Color;
             set
             {
                 brTitleFore.Color = value;
                 OnTitleForeColorChanged(EventArgs.Empty);
-                base.Invalidate(true);
+                this.Invalidate(true);
             }
         }
 
@@ -498,7 +485,7 @@ namespace EWSoftware.ListControls
           DefaultValue(typeof(Font), "Microsoft Sans Serif, 7.8pt"), Description("The title's font")]
         public Font TitleFont
         {
-            get { return fontTitle; }
+            get => fontTitle;
             set
             {
                 if(value == null)
@@ -507,8 +494,8 @@ namespace EWSoftware.ListControls
                     fontTitle = value;
 
                 OnTitleFontChanged(EventArgs.Empty);
-                base.PerformLayout();
-                base.Invalidate(true);
+                this.PerformLayout();
+                this.Invalidate(true);
             }
         }
         #endregion
@@ -528,10 +515,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnListBackColorChanged(EventArgs e)
         {
-            var handler = ListBackColorChanged;
-
-            if(handler != null)
-                handler(this, e);
+            ListBackColorChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -546,10 +530,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnBorderStyleChanged(EventArgs e)
         {
-            var handler = BorderStyleChanged;
-
-            if(handler != null)
-                handler(this, e);
+            BorderStyleChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -564,10 +545,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnTitleTextChanged(EventArgs e)
         {
-            var handler = TitleTextChanged;
-
-            if(handler != null)
-                handler(this, e);
+            TitleTextChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -582,10 +560,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnTitleBorderColorChanged(EventArgs e)
         {
-            var handler = TitleBorderColorChanged;
-
-            if(handler != null)
-                handler(this, e);
+            TitleBorderColorChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -600,10 +575,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnTitleBackColorChanged(EventArgs e)
         {
-            var handler = TitleBackColorChanged;
-
-            if(handler != null)
-                handler(this, e);
+            TitleBackColorChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -618,10 +590,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnTitleForeColorChanged(EventArgs e)
         {
-            var handler = TitleForeColorChanged;
-
-            if(handler != null)
-                handler(this, e);
+            TitleForeColorChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -636,10 +605,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnTitleFontChanged(EventArgs e)
         {
-            var handler = TitleFontChanged;
-
-            if(handler != null)
-                handler(this, e);
+            TitleFontChanged?.Invoke(this, e);
         }
         #endregion
 
@@ -1088,23 +1054,12 @@ namespace EWSoftware.ListControls
         {
             if(disposing)
             {
-                if(penTitleBorder != null)
-                    penTitleBorder.Dispose();
-
-                if(brBackground != null)
-                    brBackground.Dispose();
-
-                if(brTitleBack != null)
-                    brTitleBack.Dispose();
-
-                if(brTitleFore != null)
-                    brTitleFore.Dispose();
-
-                if(fontTitle != null)
-                    fontTitle.Dispose();
-
-                if(sfTitle != null)
-                    sfTitle.Dispose();
+                penTitleBorder?.Dispose();
+                brBackground?.Dispose();
+                brTitleBack?.Dispose();
+                brTitleFore?.Dispose();
+                fontTitle?.Dispose();
+                sfTitle?.Dispose();
             }
 
             base.Dispose(disposing);
@@ -1114,15 +1069,18 @@ namespace EWSoftware.ListControls
         /// This is overridden to adjust the background area painted by the base class when the title text is
         /// used.
         /// </summary>
-        /// <param name="pevent">The event arguments</param>
-        protected override void OnPaintBackground(PaintEventArgs pevent)
+        /// <param name="e">The event arguments</param>
+        protected override void OnPaintBackground(PaintEventArgs e)
         {
+            if(e == null)
+                throw new ArgumentNullException(nameof(e));
+
             // Draw transparent?
             if(brBackground.Color.A < 0xFF)
-                base.OnPaintBackground(pevent);
+                base.OnPaintBackground(e);
             else
             {
-                Rectangle r = pevent.ClipRectangle;
+                Rectangle r = e.ClipRectangle;
 
                 // Draw the transparent part if necessary
                 if(borderTop != 0 && r.Top < borderTop)
@@ -1130,11 +1088,10 @@ namespace EWSoftware.ListControls
                     r.Height = borderTop - r.Top;
 
                     // Do not dispose of the PaintEventArgs instance as it isn't our graphics context
-                    base.OnPaintBackground(new PaintEventArgs(pevent.Graphics, r));
+                    base.OnPaintBackground(new PaintEventArgs(e.Graphics, r));
                 }
 
-                pevent.Graphics.FillRectangle(brBackground, 0, borderTop,
-                    base.Width, base.Height - borderTop);
+                e.Graphics.FillRectangle(brBackground, 0, borderTop, this.Width, this.Height - borderTop);
             }
         }
 
@@ -1144,6 +1101,9 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected override void OnPaint(PaintEventArgs e)
         {
+            if(e == null)
+                throw new ArgumentNullException(nameof(e));
+            
             base.OnPaint(e);
 
             Graphics g = e.Graphics;
@@ -1171,8 +1131,8 @@ namespace EWSoftware.ListControls
         /// <summary>
         /// This is overridden to handle laying out the control elements
         /// </summary>
-        /// <param name="levent">The event parameters</param>
-        protected override void OnLayout(LayoutEventArgs levent)
+        /// <param name="e">The event parameters</param>
+        protected override void OnLayout(LayoutEventArgs e)
         {
             Size proposed = new Size(Int32.MaxValue, Int32.MaxValue);
 
@@ -1330,7 +1290,7 @@ namespace EWSoftware.ListControls
                 pnlButtons.ScrollControlIntoView(c);
             }
 
-            base.OnLayout(levent);
+            base.OnLayout(e);
         }
 
         /// <summary>

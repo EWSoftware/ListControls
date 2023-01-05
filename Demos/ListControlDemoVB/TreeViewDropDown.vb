@@ -172,6 +172,8 @@ Public Partial Class TreeViewDropDown
             tvItems.Nodes.Add(tnNode)
             row = LoadItems(row, tnNode)
         Loop
+
+        btnSelect.Enabled = False
     End Sub
 
     ' Select the specified item and hide the drop-down.

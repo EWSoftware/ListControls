@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : ListPadding.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/16/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This defines a structure used to specify the padding for the radio button and checkbox list controls
 //

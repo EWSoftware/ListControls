@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : DataList.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/26/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a control that allows you to specify a user control template to display and edit
 // information from a data source similar in nature to the DataList web server control, the sub-form control or
@@ -21,6 +20,8 @@
 // 12/19/2005  EFW  Various updates and fixes
 // 02/19/2005  EFW  Improved scrolling, added page up/down support, and added find methods
 //===============================================================================================================
+
+// Ignore Spelling: typeof
 
 using System;
 using System.Collections;
@@ -41,24 +42,24 @@ namespace EWSoftware.ListControls
 	/// </summary>
     [DefaultEvent("Current"), DefaultProperty("DataSource"),
       Description("A template-based list control used for displaying or editing information in a data source")]
-	public class DataList : System.Windows.Forms.UserControl
+	public class DataList : UserControl
 	{
         #region Private data members
         //=====================================================================
 
-        private EWSoftware.ListControls.RowPanel pnlRows;
-        private System.Windows.Forms.ImageList ilButtons;
-        private System.Windows.Forms.Button btnFirst;
-        private System.Windows.Forms.Button btnPrev;
-        private System.Windows.Forms.Button btnNext;
-        private System.Windows.Forms.Button btnLast;
-        internal System.Windows.Forms.Button btnAdd;
-        private EWSoftware.ListControls.NumericTextBox txtRowNum;
-        private System.Windows.Forms.Label lblRowCount;
-        internal System.Windows.Forms.Button btnDelete;
-        private System.Windows.Forms.Timer tmrRepeat;
-        private EWSoftware.ListControls.ClickableLabel lblCaption;
-        private System.ComponentModel.IContainer components;
+        private RowPanel pnlRows;
+        private ImageList ilButtons;
+        private Button btnFirst;
+        private Button btnPrev;
+        private Button btnNext;
+        private Button btnLast;
+        internal Button btnAdd;
+        private NumericTextBox txtRowNum;
+        private Label lblRowCount;
+        internal Button btnDelete;
+        private Timer tmrRepeat;
+        private ClickableLabel lblCaption;
+        private IContainer components;
 
         // Border properties
         private int borderWidth;
@@ -92,13 +93,13 @@ namespace EWSoftware.ListControls
         private Hashtable sharedDataSources;
 
         // Display properties
-        private SolidBrush brHeaderBack, brHeaderFore, brSelBack, brSelFore;
+        private readonly SolidBrush brHeaderBack, brHeaderFore, brSelBack, brSelFore;
         private bool rowHeadersVisible, rowHeadersFlat, suppressLayout;
         private int rowHeight, rowHeaderWidth, currentRow, headerFooterLeft;
-        private Point[] ptsCurrent, ptsNewRow;
+        private readonly Point[] ptsCurrent, ptsNewRow;
 
         // Change policy.  These settings determine how the data source can be modified.
-        private ChangePolicy changePolicy;
+        private readonly ChangePolicy changePolicy;
         private bool allowAdditions, allowEdits, allowDeletes;
 
         #endregion
@@ -113,8 +114,8 @@ namespace EWSoftware.ListControls
         [DefaultValue(BorderStyle.Fixed3D)]
         public new BorderStyle BorderStyle
         {
-            get { return base.BorderStyle; }
-            set { base.BorderStyle = value; }
+            get => base.BorderStyle;
+            set => base.BorderStyle = value;
         }
 
         /// <summary>
@@ -141,7 +142,7 @@ namespace EWSoftware.ListControls
         [Category("Appearance"), DefaultValue(false), Description("Show or hide the caption")]
         public bool CaptionVisible
         {
-            get { return showCaption; }
+            get => showCaption;
             set
             {
                 if(showCaption != value)
@@ -160,7 +161,7 @@ namespace EWSoftware.ListControls
         [Category("Appearance"), DefaultValue(""), Description("Get or set the caption text")]
         public string CaptionText
         {
-            get { return lblCaption.Text; }
+            get => lblCaption.Text;
             set
             {
                 lblCaption.Text = value;
@@ -176,7 +177,7 @@ namespace EWSoftware.ListControls
           Description("Get or set the caption background color")]
         public Color CaptionBackColor
         {
-            get { return lblCaption.BackColor; }
+            get => lblCaption.BackColor;
             set
             {
                 lblCaption.BackColor = value;
@@ -192,7 +193,7 @@ namespace EWSoftware.ListControls
           Description("Get or set the caption foreground color")]
         public Color CaptionForeColor
         {
-            get { return lblCaption.ForeColor; }
+            get => lblCaption.ForeColor;
             set
             {
                 lblCaption.ForeColor = value;
@@ -207,7 +208,7 @@ namespace EWSoftware.ListControls
         [Category("Appearance"), Description("The font to use for the caption text")]
         public Font CaptionFont
         {
-            get { return lblCaption.Font; }
+            get => lblCaption.Font;
             set
             {
                 if(value == null)
@@ -229,7 +230,7 @@ namespace EWSoftware.ListControls
           Description("Show or hide the navigation controls")]
         public bool NavigationControlsVisible
         {
-            get { return showNav; }
+            get => showNav;
             set
             {
                 if(showNav != value)
@@ -254,7 +255,7 @@ namespace EWSoftware.ListControls
           Description("Show or hide the add and delete buttons")]
         public bool AddDeleteButtonsVisible
         {
-            get { return showAddDel; }
+            get => showAddDel;
             set
             {
                 if(showAddDel != value)
@@ -285,7 +286,7 @@ namespace EWSoftware.ListControls
           Description("Show or hide the separators between rows")]
         public bool SeparatorsVisible
         {
-            get { return showSep; }
+            get => showSep;
             set
             {
                 if(showSep != value)
@@ -358,7 +359,7 @@ namespace EWSoftware.ListControls
          Description("The color of the separator between rows")]
         public Color SeparatorColor
         {
-            get { return sepColor; }
+            get => sepColor;
             set
             {
                 sepColor = value;
@@ -383,13 +384,13 @@ namespace EWSoftware.ListControls
           Description("The height of the separator between rows")]
         public int SeparatorHeight
         {
-            get { return sepHeight; }
+            get => sepHeight;
             set
             {
                 int top, idx, templateHeight;
 
                 if(value < 1 || value > 20)
-                    throw new ArgumentOutOfRangeException("value", value, LR.GetString("ExInvalidSepHeight"));
+                    throw new ArgumentOutOfRangeException(nameof(value), value, LR.GetString("ExInvalidSepHeight"));
 
                 if(showSep)
                     rowHeight = rowHeight - sepHeight + value;
@@ -426,10 +427,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <remarks>The return value is undefined if no template and/or data source has been specified</remarks>
         [Browsable(false), Description("Get the row height including the separator")]
-        public int RowHeight
-        {
-            get { return rowHeight; }
-        }
+        public int RowHeight => rowHeight;
 
         /// <summary>
         /// This property is used to set or get whether or not row headers are displayed in front of each row
@@ -438,7 +436,7 @@ namespace EWSoftware.ListControls
           Description("Show or hide the row headers")]
         public bool RowHeadersVisible
         {
-            get { return rowHeadersVisible; }
+            get => rowHeadersVisible;
             set
             {
                 rowHeadersVisible = value;
@@ -454,7 +452,7 @@ namespace EWSoftware.ListControls
           Description("Determines whether or not row headers are drawn using a flat style")]
         public bool RowHeadersFlat
         {
-            get { return rowHeadersFlat; }
+            get => rowHeadersFlat;
             set
             {
                 rowHeadersFlat = value;
@@ -472,7 +470,7 @@ namespace EWSoftware.ListControls
         [Category("Appearance"), Bindable(true), DefaultValue(20), Description("Set the width of the row headers")]
         public int RowHeaderWidth
         {
-            get { return rowHeaderWidth; }
+            get => rowHeaderWidth;
             set
             {
                 rowHeaderWidth = value;
@@ -493,7 +491,7 @@ namespace EWSoftware.ListControls
          Description("The row header's background color")]
         public Color RowHeaderBackColor
         {
-            get { return brHeaderBack.Color; }
+            get => brHeaderBack.Color;
             set
             {
                 brHeaderBack.Color = value;
@@ -511,7 +509,7 @@ namespace EWSoftware.ListControls
          Description("The row header's foreground color")]
         public Color RowHeaderForeColor
         {
-            get { return brHeaderFore.Color; }
+            get => brHeaderFore.Color;
             set
             {
                 brHeaderFore.Color = value;
@@ -529,7 +527,7 @@ namespace EWSoftware.ListControls
          Description("The background color for selected row headers")]
         public Color SelectionBackColor
         {
-            get { return brSelBack.Color; }
+            get => brSelBack.Color;
             set
             {
                 brSelBack.Color = value;
@@ -547,7 +545,7 @@ namespace EWSoftware.ListControls
          Description("The foreground color for selected row headers")]
         public Color SelectionForeColor
         {
-            get { return brSelFore.Color; }
+            get => brSelFore.Color;
             set
             {
                 brSelFore.Color = value;
@@ -565,7 +563,7 @@ namespace EWSoftware.ListControls
         [Category("Behavior"), Description("Determines whether or not additions can be made to the data source")]
         public bool AllowAdditions
         {
-            get { return changePolicy.AllowAdditions; }
+            get => changePolicy.AllowAdditions;
             set
             {
                 TemplateControl tc;
@@ -630,7 +628,7 @@ namespace EWSoftware.ListControls
         [Category("Behavior"), Description("Determines whether or not edits can be made to the data source")]
         public bool AllowEdits
         {
-            get { return changePolicy.AllowEdits; }
+            get => changePolicy.AllowEdits;
             set
             {
                 allowEdits = value;
@@ -645,7 +643,7 @@ namespace EWSoftware.ListControls
         [Category("Behavior"), Description("Determines whether or not deletes can be made to the data source")]
         public bool AllowDeletes
         {
-            get { return changePolicy.AllowDeletes; }
+            get => changePolicy.AllowDeletes;
             set
             {
                 allowDeletes = value;
@@ -661,8 +659,8 @@ namespace EWSoftware.ListControls
          Description("The shortcut key to use for jumping to the \"new row\" template")]
         public Shortcut AddRowShortcut
         {
-            get { return shortcutAdd; }
-            set { shortcutAdd = value; }
+            get => shortcutAdd;
+            set => shortcutAdd = value;
         }
 
         /// <summary>
@@ -673,8 +671,8 @@ namespace EWSoftware.ListControls
          Description("The shortcut key to use for deleting a row")]
         public Shortcut DeleteRowShortcut
         {
-            get { return shortcutDel; }
-            set { shortcutDel = value; }
+            get => shortcutDel;
+            set => shortcutDel = value;
         }
 
         /// <summary>
@@ -685,8 +683,8 @@ namespace EWSoftware.ListControls
          Description("The shortcut key to use for jumping to the row number navigation text box")]
         public Shortcut RowNumberNavShortcut
         {
-            get { return shortcutRowNum; }
-            set { shortcutRowNum = value; }
+            get => shortcutRowNum;
+            set => shortcutRowNum = value;
         }
 
         /// <summary>
@@ -699,8 +697,8 @@ namespace EWSoftware.ListControls
          Description("The shortcut key to use for jumping between the header, detail, and footer sections")]
         public Shortcut SwitchSectionShortcut
         {
-            get { return shortcutSwitchSection; }
-            set { shortcutSwitchSection = value; }
+            get => shortcutSwitchSection;
+            set => shortcutSwitchSection = value;
         }
 
         /// <summary>
@@ -713,11 +711,11 @@ namespace EWSoftware.ListControls
           Description("The initial delay before the Next and Previous buttons auto-repeat")]
         public int RepeatWait
         {
-            get { return repeatWait; }
+            get => repeatWait;
             set
             {
                 if(value < 100)
-                    throw new ArgumentOutOfRangeException("value", value, LR.GetString("ExInvalidRepeatWait"));
+                    throw new ArgumentOutOfRangeException(nameof(value), value, LR.GetString("ExInvalidRepeatWait"));
 
                 repeatWait = value;
                 OnRepeatWaitChanged(EventArgs.Empty);
@@ -734,11 +732,11 @@ namespace EWSoftware.ListControls
           Description("The auto-repeat delay for the Next and Previous buttons")]
         public int RepeatInterval
         {
-            get { return repeatInterval; }
+            get => repeatInterval;
             set
             {
                 if(value < 20)
-                    throw new ArgumentOutOfRangeException("value", value, LR.GetString("ExInvalidRepeatInterval"));
+                    throw new ArgumentOutOfRangeException(nameof(value), value, LR.GetString("ExInvalidRepeatInterval"));
 
                 repeatInterval = value;
                 OnRepeatIntervalChanged(EventArgs.Empty);
@@ -759,8 +757,8 @@ namespace EWSoftware.ListControls
           Description("The start of the selected row range")]
         public int SelectionStart
         {
-            get { return selStart; }
-            set { this.Select(value, selEnd, value); }
+            get => selStart;
+            set => this.Select(value, selEnd, value);
         }
 
         /// <summary>
@@ -777,8 +775,8 @@ namespace EWSoftware.ListControls
           Description("The end of the selected row range")]
         public int SelectionEnd
         {
-            get { return selEnd; }
-            set { this.Select(selStart, value, value); }
+            get => selEnd;
+            set => this.Select(selStart, value, value);
         }
 
         /// <summary>
@@ -796,7 +794,7 @@ namespace EWSoftware.ListControls
           Description("Set or get the data source for the data list")]
         public object DataSource
         {
-            get { return dataSource; }
+            get => dataSource;
             set
             {
                 if(value != null && !(value is IList) && !(value is IListSource))
@@ -829,7 +827,7 @@ namespace EWSoftware.ListControls
           Description("Indicates a sub-list of the data source to show in the data list")]
         public string DataMember
         {
-            get { return dataMember; }
+            get => dataMember;
             set
             {
                 if(dataMember != value)
@@ -866,7 +864,7 @@ namespace EWSoftware.ListControls
           DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Type RowTemplate
         {
-            get { return rowTemplate; }
+            get => rowTemplate;
             set
             {
                 if(rowTemplate != value)
@@ -901,7 +899,7 @@ namespace EWSoftware.ListControls
           DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Type HeaderTemplate
         {
-            get { return headerTemplate; }
+            get => headerTemplate;
             set
             {
                 if(headerTemplate != value)
@@ -970,7 +968,7 @@ namespace EWSoftware.ListControls
           DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Type FooterTemplate
         {
-            get { return footerTemplate; }
+            get => footerTemplate;
             set
             {
                 if(footerTemplate != value)
@@ -1022,16 +1020,13 @@ namespace EWSoftware.ListControls
         /// This read-only property can be used to get the current row count from the data source
         /// </summary>
         [Browsable(false), Description("Get the row count from the data source")]
-        public int RowCount
-        {
-            get { return (listManager == null) ? 0 : listManager.Count; }
-        }
+        public int RowCount => (listManager == null) ? 0 : listManager.Count;
 
         /// <summary>
         /// This read-only property is used to get the zero-based row number of the currently selected row item
         /// </summary>
         /// <value>If there is no data source or there are no rows in the data source, it returns -1</value>
-        /// <remarks>To set the current row, use the <see cref="MoveTo(int)"/> method</remarks>
+        /// <remarks>To set the current row, use the <see cref="MoveTo(Int32)"/> method</remarks>
         [Browsable(false), Description("Get the currently selected row index")]
         public int CurrentRow
         {
@@ -1074,20 +1069,14 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <value>This will return null if there is no header template</value>
         [Browsable(false), Description("Get a reference to the header template control")]
-        public TemplateControl HeaderControl
-        {
-            get { return header; }
-        }
+        public TemplateControl HeaderControl => header;
 
         /// <summary>
         /// This is used to get a reference to the current footer template control if one has been specified
         /// </summary>
         /// <value>This will return null if there is no footer template</value>
         [Browsable(false), Description("Get a reference to the footer template control")]
-        public TemplateControl FooterControl
-        {
-            get { return footer; }
-        }
+        public TemplateControl FooterControl => footer;
 
         /// <summary>
         /// This can be used to store data sources that are shared amongst all instances of the row, header, and
@@ -1182,24 +1171,25 @@ namespace EWSoftware.ListControls
 
                     object dataSource = listManager.List;
 
-                    DataSet ds = dataSource as DataSet;
-
-                    if(ds != null)
+                    if(dataSource is DataSet ds)
                         return ds.HasChanges();
 
-                    DataView dv = dataSource as DataView;
                     DataTable tbl;
 
-                    if(dv != null)
+                    if(dataSource is DataView dv)
                         tbl = dv.Table;
                     else
                         tbl = dataSource as DataTable;
 
                     // If still null, the data source is not of a type we can use to determine modifications
                     if(tbl != null)
+                    {
                         foreach(DataRow r in tbl.Rows)
+                        {
                             if(r.RowState != DataRowState.Unchanged)
                                 return true;
+                        }
+                    }
                 }
 
                 return false;
@@ -1213,10 +1203,7 @@ namespace EWSoftware.ListControls
         /// <value>This will return true if binding is taking place.  This is useful for suppressing event
         /// handlers that may cause undesirable results if executed while binding to the data source.</value>
         [Browsable(false), Description("Check to see if binding is currently happening")]
-        public bool IsBinding
-        {
-            get { return isBinding; }
-        }
+        public bool IsBinding => isBinding;
 
         /// <summary>
         /// This read-only property can be used to see if changes are being undone
@@ -1225,10 +1212,7 @@ namespace EWSoftware.ListControls
         /// handlers that may cause undesirable results if executed while undoing or canceling changes to a row.
         /// </value>
         [Browsable(false), Description("Check to see if changes are being undone")]
-        public bool IsUndoing
-        {
-            get { return isUndoing; }
-        }
+        public bool IsUndoing => isUndoing;
 
         /// <summary>
         /// This can be used to get the value of the specified column in the currently selected item
@@ -1239,10 +1223,7 @@ namespace EWSoftware.ListControls
         /// source or the column cannot be found, this returns null.</value>
         /// <overloads>There are two overloads for this property</overloads>
         [Browsable(false), Description("Get the specified column from the current row")]
-        public object this[string colName]
-        {
-            get { return this[currentRow, colName]; }
-        }
+        public object this[string colName] => this[currentRow, colName];
 
         /// <summary>
         /// This can be used to get the value of the specified column in the specified row of the data list's
@@ -1292,10 +1273,7 @@ namespace EWSoftware.ListControls
         /// <exclude/>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden),
           Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        public override Image BackgroundImage
-        {
-            get { return null; }
-        }
+        public override Image BackgroundImage => null;
 
         /// <summary>
         /// The data list does not use this property so it is hidden.  It always returns false.
@@ -1303,10 +1281,7 @@ namespace EWSoftware.ListControls
         /// <exclude/>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden),
           Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool AutoScroll
-        {
-            get { return false; }
-        }
+        public override bool AutoScroll => false;
 
         /// <summary>
         /// The data list does not use this property so it is hidden.  It always returns the base margin.
@@ -1314,10 +1289,7 @@ namespace EWSoftware.ListControls
         /// <exclude/>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden),
           Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        public new Size AutoScrollMargin
-        {
-            get { return base.AutoScrollMargin; }
-        }
+        public new Size AutoScrollMargin => base.AutoScrollMargin;
 
         /// <summary>
         /// The data list does not use this property so it is hidden.  It always returns the base size.
@@ -1325,10 +1297,7 @@ namespace EWSoftware.ListControls
         /// <exclude/>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden),
           Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        public new Size AutoScrollMinSize
-        {
-            get { return base.AutoScrollMinSize; }
-        }
+        public new Size AutoScrollMinSize => base.AutoScrollMinSize;
 
         /// <summary>
         /// The data list does not use the background image so this event is hidden.
@@ -1355,10 +1324,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected internal virtual void OnItemDataBound(DataListEventArgs e)
         {
-            var handler = ItemDataBound;
-
-            if(handler != null)
-                handler(this, e);
+            ItemDataBound?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1373,10 +1339,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnHeaderDataBound(DataListEventArgs e)
         {
-            var handler = HeaderDataBound;
-
-            if(handler != null)
-                handler(this, e);
+            HeaderDataBound?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1391,10 +1354,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnFooterDataBound(DataListEventArgs e)
         {
-            var handler = FooterDataBound;
-
-            if(handler != null)
-                handler(this, e);
+            FooterDataBound?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1409,10 +1369,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected internal virtual void OnAddingRow(DataListCancelEventArgs e)
         {
-            var handler = AddingRow;
-
-            if(handler != null)
-                handler(this, e);
+            AddingRow?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1427,10 +1384,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected internal virtual void OnAddedRow(DataListEventArgs e)
         {
-            var handler = AddedRow;
-
-            if(handler != null)
-                handler(this, e);
+            AddedRow?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1445,10 +1399,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnDeletingRow(DataListCancelEventArgs e)
         {
-            var handler = DeletingRow;
-
-            if(handler != null)
-                handler(this, e);
+            DeletingRow?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1464,10 +1415,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnDeletedRow(DataListEventArgs e)
         {
-            var handler = DeletedRow;
-
-            if(handler != null)
-                handler(this, e);
+            DeletedRow?.Invoke(this, e);
 
             if(listManager != null && listManager.Count == 0)
                 OnNoRows(EventArgs.Empty);
@@ -1485,10 +1433,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected internal virtual void OnCancelingEdits(DataListCancelEventArgs e)
         {
-            var handler = CancelingEdits;
-
-            if(handler != null)
-                handler(this, e);
+            CancelingEdits?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1503,10 +1448,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected internal virtual void OnCanceledEdits(DataListEventArgs e)
         {
-            var handler = CanceledEdits;
-
-            if(handler != null)
-                handler(this, e);
+            CanceledEdits?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1521,10 +1463,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnCurrent(DataListEventArgs e)
         {
-            var handler = Current;
-
-            if(handler != null)
-                handler(this, e);
+            Current?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1542,10 +1481,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnNoRows(EventArgs e)
         {
-            var handler = NoRows;
-
-            if(handler != null)
-                handler(this, e);
+            NoRows?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1562,10 +1498,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnBeginDrag(DataListBeginDragEventArgs e)
         {
-            var handler = BeginDrag;
-
-            if(handler != null)
-                handler(this, e);
+            BeginDrag?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1580,10 +1513,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnDataSourceChanged(EventArgs e)
         {
-            var handler = DataSourceChanged;
-
-            if(handler != null)
-                handler(this, e);
+            DataSourceChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1608,17 +1538,11 @@ namespace EWSoftware.ListControls
             btnAdd.Enabled = (changePolicy.AllowAdditions && listManager != null);
             btnDelete.Enabled = (changePolicy.AllowDeletes && listManager != null && listManager.Count > 0);
 
-            var handler = ChangePolicyModified;
-
-            if(handler != null)
-                handler(this, e);
+            ChangePolicyModified?.Invoke(this, e);
 
             // Let all templates know about the change too
-            if(header != null)
-                header.ChangePolicyModified();
-
-            if(footer != null)
-                footer.ChangePolicyModified();
+            header?.ChangePolicyModified();
+            footer?.ChangePolicyModified();
 
             ControlCollection cc = pnlRows.Controls;
 
@@ -1643,10 +1567,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnAddDeleteButtonsVisibleChanged(EventArgs e)
         {
-            var handler = AddDeleteButtonsVisibleChanged;
-
-            if(handler != null)
-                handler(this, e);
+            AddDeleteButtonsVisibleChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1661,10 +1582,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnNavigationControlsVisibleChanged(EventArgs e)
         {
-            var handler = NavigationControlsVisibleChanged;
-
-            if(handler != null)
-                handler(this, e);
+            NavigationControlsVisibleChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1679,10 +1597,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnSeparatorsVisibleChanged(EventArgs e)
         {
-            var handler = SeparatorsVisibleChanged;
-
-            if(handler != null)
-                handler(this, e);
+            SeparatorsVisibleChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1697,10 +1612,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnSeparatorColorChanged(EventArgs e)
         {
-            var handler = SeparatorColorChanged;
-
-            if(handler != null)
-                handler(this, e);
+            SeparatorColorChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1715,10 +1627,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnSeparatorHeightChanged(EventArgs e)
         {
-            var handler = SeparatorHeightChanged;
-
-            if(handler != null)
-                handler(this, e);
+            SeparatorHeightChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1733,10 +1642,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnRowHeadersVisibleChanged(EventArgs e)
         {
-            var handler = RowHeadersVisibleChanged;
-
-            if(handler != null)
-                handler(this, e);
+            RowHeadersVisibleChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1751,10 +1657,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnRowHeadersFlatChanged(EventArgs e)
         {
-            var handler = RowHeadersFlatChanged;
-
-            if(handler != null)
-                handler(this, e);
+            RowHeadersFlatChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1769,10 +1672,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnRowHeaderWidthChanged(EventArgs e)
         {
-            var handler = RowHeaderWidthChanged;
-
-            if(handler != null)
-                handler(this, e);
+            RowHeaderWidthChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1787,10 +1687,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnRowHeaderBackColorChanged(EventArgs e)
         {
-            var handler = RowHeaderBackColorChanged;
-
-            if(handler != null)
-                handler(this, e);
+            RowHeaderBackColorChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1805,10 +1702,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnRowHeaderForeColorChanged(EventArgs e)
         {
-            var handler = RowHeaderForeColorChanged;
-
-            if(handler != null)
-                handler(this, e);
+            RowHeaderForeColorChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1823,10 +1717,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnSelectionBackColorChanged(EventArgs e)
         {
-            var handler = SelectionBackColorChanged;
-
-            if(handler != null)
-                handler(this, e);
+            SelectionBackColorChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1841,10 +1732,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnSelectionForeColorChanged(EventArgs e)
         {
-            var handler = SelectionForeColorChanged;
-
-            if(handler != null)
-                handler(this, e);
+            SelectionForeColorChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1859,10 +1747,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnRepeatWaitChanged(EventArgs e)
         {
-            var handler = RepeatWaitChanged;
-
-            if(handler != null)
-                handler(this, e);
+            RepeatWaitChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1877,10 +1762,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnRepeatIntervalChanged(EventArgs e)
         {
-            var handler = RepeatIntervalChanged;
-
-            if(handler != null)
-                handler(this, e);
+            RepeatIntervalChanged?.Invoke(this, e);
         }
         #endregion
 
@@ -2379,11 +2261,9 @@ namespace EWSoftware.ListControls
                 changePolicy.UpdatePolicy(allowAdditions, allowEdits, allowDeletes);
                 this.BindData();
 
-                IBindingList bl = listManager.List as IBindingList;
-
                 // We seem to lose the data source ListChanged event handler here every so often so ensure it is
                 // hooked back up.  I didn't disconnect it so where does it go??
-                if(bl != null)
+                if(listManager.List is IBindingList bl)
                 {
                     // Disconnect it first in case it didn't go away
                     bl.ListChanged -= DataSource_ListChanged;
@@ -2399,7 +2279,7 @@ namespace EWSoftware.ListControls
         {
             TemplateControl tc;
             IList list;
-            int row, listRow, listCount, controlCount, incr = 1;
+            int row, listRow, listCount, incr = 1;
 
             if(inSetListManager || inAddRow || inDelRow || inBindData || e.NewIndex == -1)
                 return;
@@ -2422,13 +2302,9 @@ namespace EWSoftware.ListControls
                 case ListChangedType.ItemChanged:
                     list = listManager.List;
                     listCount = list.Count;
-                    controlCount = pnlRows.Controls.Count;
 
                     if(showSep)
-                    {
-                        controlCount /= 2;
                         incr = 2;
-                    }
 
                     for(row = listRow = 0; row < listCount; listRow++, row += incr)
                         if(row < pnlRows.Controls.Count)
@@ -2453,7 +2329,7 @@ namespace EWSoftware.ListControls
         {
             TemplateControl tc;
             IList list;
-            int row, listRow, listCount, controlCount, incr = 1;
+            int row, listRow, listCount, incr = 1;
 
             if(!inSetListManager && !inAddRow && !inDelRow && !inBindData)
             {
@@ -2464,13 +2340,9 @@ namespace EWSoftware.ListControls
 
                 list = listManager.List;
                 listCount = list.Count;
-                controlCount = pnlRows.Controls.Count;
 
                 if(showSep)
-                {
-                    controlCount /= 2;
                     incr = 2;
-                }
 
                 for(row = listRow = 0; row < listCount; listRow++, row += incr)
                     if(row < pnlRows.Controls.Count)
@@ -2641,10 +2513,12 @@ namespace EWSoftware.ListControls
                 btnFirst.Enabled = btnPrev.Enabled = (curRow > 0);
 
                 if(!autoRepeating)
-                    btnNext.Enabled = (!hasList) ? false : (curRow < listManager.Count - 1 ||
+                {
+                    btnNext.Enabled = hasList && (curRow < listManager.Count - 1 ||
                         (changePolicy.AllowAdditions && listManager.Count != 0));
+                }
 
-                btnLast.Enabled = (!hasList) ? false : (curRow < listManager.Count - 1);
+                btnLast.Enabled = hasList && (curRow < listManager.Count - 1);
             }
         }
 
@@ -3002,9 +2876,7 @@ namespace EWSoftware.ListControls
                         listManager.MetaDataChanged -= DataSource_MetaDataChanged;
                         listManager.PositionChanged -= DataSource_PositionChanged;
 
-                        IBindingList bl = listManager.List as IBindingList;
-
-                        if(bl != null)
+                        if(listManager.List is IBindingList bl)
                             bl.ListChanged -= DataSource_ListChanged;
                         else
                             listManager.ItemChanged -= DataSource_ItemChanged;
@@ -3020,17 +2892,15 @@ namespace EWSoftware.ListControls
                         listManager = null;
 
                     dataSource = newDataSource;
-                    dataMember = (newDataMember == null) ? String.Empty : newDataMember;
+                    dataMember = newDataMember ?? String.Empty;
 
                     if(this.listManager != null)
                     {
                         listManager.MetaDataChanged += DataSource_MetaDataChanged;
                         listManager.PositionChanged += DataSource_PositionChanged;
 
-                        IBindingList bl = listManager.List as IBindingList;
-
                         // ListChanged happens less frequently and is more efficient with regard to resets
-                        if(bl != null)
+                        if(listManager.List is IBindingList bl)
                             bl.ListChanged += DataSource_ListChanged;
                         else
                             listManager.ItemChanged += DataSource_ItemChanged;
@@ -3674,6 +3544,7 @@ namespace EWSoftware.ListControls
                     focusFooter = (footer != null);
             }
             else
+            {
                 if(footer == null || !footer.ContainsFocus)
                 {
                     if(footer != null)
@@ -3682,18 +3553,25 @@ namespace EWSoftware.ListControls
                         focusHeader = (header != null);
                 }
                 else
-                    if(footer != null && footer.ContainsFocus)
+                {
+                    if(footer.ContainsFocus)
+                    {
                         if(header != null)
                             focusHeader = true;
                         else
                             focusDetail = (listManager != null && listManager.Count != 0);
+                    }
+                }
+            }
 
             if(focusHeader)
                 header.Focus();
             else
+            {
                 if(focusFooter)
                     footer.Focus();
                 else
+                {
                     if(focusDetail)
                     {
                         int nRow = currentRow;
@@ -3708,6 +3586,8 @@ namespace EWSoftware.ListControls
                         if(rowHeadersVisible)
                             this.Invalidate(new Rectangle(0, 0, rowHeaderWidth, this.Height), false);
                     }
+                }
+            }
 
             return true;
         }
@@ -3725,20 +3605,11 @@ namespace EWSoftware.ListControls
         {
             if(disposing)
             {
-                if(brHeaderBack != null)
-                    brHeaderBack.Dispose();
-
-                if(brHeaderFore != null)
-                    brHeaderFore.Dispose();
-
-                if(brSelBack != null)
-                    brSelBack.Dispose();
-
-                if(brSelFore != null)
-                    brSelFore.Dispose();
-
-                if(components != null)
-                    components.Dispose();
+                brHeaderBack?.Dispose();
+                brHeaderFore?.Dispose();
+                brSelBack?.Dispose();
+                brSelFore?.Dispose();
+                components?.Dispose();
             }
 
             base.Dispose(disposing);
@@ -3772,9 +3643,11 @@ namespace EWSoftware.ListControls
                 // Change the focus to the next or prior control?
                 if(key == Keys.Tab)
                 {
-                    if(ctrlPressed && this.Parent.SelectNextControl(this, (keyData & Keys.Shift) != Keys.None ?
-                      false : true, true, true, true))
+                    if(ctrlPressed && this.Parent.SelectNextControl(this, (keyData & Keys.Shift) == Keys.None,
+                      true, true, true))
+                    {
                         keyHandled = true;
+                    }
                 }
 
                 // Scroll up or down the list?
@@ -3986,10 +3859,13 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected override void OnValidating(CancelEventArgs e)
         {
-            e.Cancel = !this.IsValid;
+            if(e != null)
+            {
+                e.Cancel = !this.IsValid;
 
-            if(!e.Cancel)
-                base.OnValidating(e);
+                if(!e.Cancel)
+                    base.OnValidating(e);
+            }
         }
 
         /// <summary>
@@ -4005,8 +3881,8 @@ namespace EWSoftware.ListControls
         /// <summary>
         /// This is used to reposition the controls when the control attributes change
         /// </summary>
-        /// <param name="levent">The event arguments</param>
-        protected override void OnLayout(LayoutEventArgs levent)
+        /// <param name="e">The event arguments</param>
+        protected override void OnLayout(LayoutEventArgs e)
         {
             int detailHeight, top;
 
@@ -4073,6 +3949,7 @@ namespace EWSoftware.ListControls
                 detailHeight -= header.Height + 1;
             }
             else
+            {
                 if(showCaption)
                 {
                     pnlRows.Top = lblCaption.Height + 1;
@@ -4080,6 +3957,7 @@ namespace EWSoftware.ListControls
                 }
                 else
                     pnlRows.Top = 0;
+            }
 
             if(footer != null)
             {
@@ -4105,7 +3983,7 @@ namespace EWSoftware.ListControls
             else
                 pnlRows.Height = 0;
 
-            base.OnLayout(levent);
+            base.OnLayout(e);
         }
 
         /// <summary>
@@ -4116,6 +3994,9 @@ namespace EWSoftware.ListControls
         {
             TemplateControl tc;
             int idx;
+
+            if(e == null)
+                throw new ArgumentNullException(nameof(e));
 
             // Figure out the row before calling the base class as we might have scrolled and resetting the focus
             // may shift the scrolled position.  Ignore it if there is no template defined.
@@ -4205,6 +4086,9 @@ namespace EWSoftware.ListControls
             TemplateControl tc;
             int row;
 
+            if(e == null)
+                throw new ArgumentNullException(nameof(e));
+
             // Drag and drop starting?
             if(dragMode == DragMode.DragAndDrop)
             {
@@ -4293,20 +4177,23 @@ namespace EWSoftware.ListControls
         /// <summary>
         /// This is overridden to ignore the row header area to help prevent flickering
         /// </summary>
-        /// <param name="pevent">The event arguments</param>
-        protected override void OnPaintBackground(PaintEventArgs pevent)
+        /// <param name="e">The event arguments</param>
+        protected override void OnPaintBackground(PaintEventArgs e)
         {
-            Rectangle r = pevent.ClipRectangle;
+            if(e == null)
+                throw new ArgumentNullException(nameof(e));
+
+            Rectangle r = e.ClipRectangle;
 
             if(rowHeadersVisible && r.Left < borderWidth + rowHeaderWidth)
             {
                 r.Location = new Point(borderWidth + rowHeaderWidth, r.Top);
 
                 // Do not dispose of the PaintEventArgs instance as it isn't our graphics context
-                base.OnPaintBackground(new PaintEventArgs(pevent.Graphics, r));
+                base.OnPaintBackground(new PaintEventArgs(e.Graphics, r));
             }
             else
-                base.OnPaintBackground(pevent);
+                base.OnPaintBackground(e);
         }
 
         /// <summary>
@@ -4316,6 +4203,9 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected override void OnPaint(PaintEventArgs e)
         {
+            if(e == null)
+                throw new ArgumentNullException(nameof(e));
+
             base.OnPaint(e);
 
             // Don't bother if the layout is changing
@@ -4557,7 +4447,7 @@ namespace EWSoftware.ListControls
             if(currentRow != newRow)
             {
                 if(newRow < 0 || listManager == null || newRow >= listManager.Count)
-                    throw new ArgumentOutOfRangeException("newRow", newRow, LR.GetString("ExInvalidRowNumber"));
+                    throw new ArgumentOutOfRangeException(nameof(newRow), newRow, LR.GetString("ExInvalidRowNumber"));
 
                 if(!this.IsValid)
                     return false;
@@ -4595,7 +4485,7 @@ namespace EWSoftware.ListControls
             int newRow;
 
             if(listManager == null || (listManager.Count == 0 && position != RowPosition.NewRow))
-                throw new ArgumentOutOfRangeException("position", position, LR.GetString("ExInvalidRowNumber"));
+                throw new ArgumentOutOfRangeException(nameof(position), position, LR.GetString("ExInvalidRowNumber"));
 
             switch(position)
             {
@@ -4663,7 +4553,7 @@ namespace EWSoftware.ListControls
                 throw new NotSupportedException(LR.GetString("ExDeleteNotAllowed"));
 
             if(delRow < 0 || listManager == null || delRow >= listManager.Count)
-                throw new ArgumentOutOfRangeException("delRow", delRow, LR.GetString("ExInvalidRowNumber"));
+                throw new ArgumentOutOfRangeException(nameof(delRow), delRow, LR.GetString("ExInvalidRowNumber"));
 
             return this.DeleteRowInternal(delRow, false);
         }
@@ -4906,20 +4796,18 @@ namespace EWSoftware.ListControls
             int idx;
 
             if(member == null || member.Length == 0)
-                throw new ArgumentNullException("member", LR.GetString("ExNullFindParam"));
+                throw new ArgumentNullException(nameof(member), LR.GetString("ExNullFindParam"));
 
             if(key == null)
-                throw new ArgumentNullException("key", LR.GetString("ExNullFindParam"));
+                throw new ArgumentNullException(nameof(key), LR.GetString("ExNullFindParam"));
 
             PropertyDescriptorCollection coll = listManager.GetItemProperties();
             PropertyDescriptor prop = coll.Find(member, true);
 
             if(prop == null)
-                throw new ArgumentOutOfRangeException("member", member, LR.GetString("ExInvalidMember"));
+                throw new ArgumentOutOfRangeException(nameof(member), member, LR.GetString("ExInvalidMember"));
 
-            IBindingList bl = listManager.List as IBindingList;
-
-            if(bl != null && bl.SupportsSearching)
+            if(listManager.List is IBindingList bl && bl.SupportsSearching)
             {
                 idx = bl.Find(prop, key);
 
@@ -5036,19 +4924,19 @@ namespace EWSoftware.ListControls
                 return -1;
 
             if(startIndex < -1 || startIndex >= listManager.Count)
-                throw new ArgumentOutOfRangeException("startIndex", startIndex, LR.GetString("ExInvalidItemIndex"));
+                throw new ArgumentOutOfRangeException(nameof(startIndex), startIndex, LR.GetString("ExInvalidItemIndex"));
 
             if(member == null || member.Length == 0)
-                throw new ArgumentNullException("member", LR.GetString("ExNullFindParam"));
+                throw new ArgumentNullException(nameof(member), LR.GetString("ExNullFindParam"));
 
             if(key == null)
-                throw new ArgumentNullException("key", LR.GetString("ExNullFindParam"));
+                throw new ArgumentNullException(nameof(key), LR.GetString("ExNullFindParam"));
 
             PropertyDescriptorCollection coll = listManager.GetItemProperties();
             PropertyDescriptor prop = coll.Find(member, true);
 
             if(prop == null)
-                throw new ArgumentOutOfRangeException("member", member, LR.GetString("ExInvalidMember"));
+                throw new ArgumentOutOfRangeException(nameof(member), member, LR.GetString("ExInvalidMember"));
 
             length = key.Length;
             idx = startIndex;
@@ -5059,9 +4947,12 @@ namespace EWSoftware.ListControls
                 propValue = prop.GetValue(listManager.List[idx]).ToString();
 
                 if(exactMatch)
-                    found = (String.Compare(key, propValue, ignoreCase, CultureInfo.CurrentCulture) == 0);
+                    found = String.Equals(key, propValue, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
                 else
-                    found = (String.Compare(key, 0, propValue, 0, length, ignoreCase, CultureInfo.CurrentCulture) == 0);
+                {
+                    found = String.Compare(key, 0, propValue, 0, length,
+                        ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal) == 0;
+                }
 
                 if(found)
                     return idx;

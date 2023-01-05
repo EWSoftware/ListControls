@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : ListItem.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/16/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This is a simple list item object that can be used as part of a collection suitable for binding to a combo
 // box, radio button list, list box, etc.
@@ -45,6 +44,7 @@ namespace EWSoftware.ListControls
         /// <remarks>Specify this property name for the <c>DisplayMember</c> or <c>DataTextField</c> property of
         /// the control using the item as part of its data source.</remarks>
         public string Display { get; set; }
+
         #endregion
 
         #region Constructor

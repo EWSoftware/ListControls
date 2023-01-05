@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : StringCollection.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/19/2014
-// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a type-safe collection class that is used to contain string objects
 //
@@ -36,6 +35,7 @@ namespace EWSoftware.ListControls
         //=====================================================================
 
         private bool suppressListChanged;
+
         #endregion
 
         #region Events
@@ -53,10 +53,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnListChanged(ListChangedEventArgs e)
         {
-            var handler = ListChanged;
-
-            if(handler != null)
-                handler(this, e);
+            ListChanged?.Invoke(this, e);
         }
         #endregion
 
@@ -97,7 +94,7 @@ namespace EWSoftware.ListControls
                     suppressListChanged = true;
 
                     foreach(string s in strings)
-                        base.Add(s);
+                        this.Add(s);
                 }
                 finally
                 {
@@ -114,7 +111,7 @@ namespace EWSoftware.ListControls
         /// <param name="count">The number of items to remove</param>
         public void RemoveRange(int index, int count)
         {
-            ((List<string>)base.Items).RemoveRange(index, count);
+            ((List<string>)this.Items).RemoveRange(index, count);
 
             OnListChanged(new ListChangedEventArgs(ListChangedType.Reset, -1));
         }
@@ -130,12 +127,12 @@ namespace EWSoftware.ListControls
         /// <param name="ignoreCase">Pass true for a case-insensitive sort or false for a case-sensitive sort</param>
         public void Sort(bool ascending, bool ignoreCase)
         {
-            ((List<string>)base.Items).Sort((x, y) =>
+            ((List<string>)this.Items).Sort((x, y) =>
             {
                 if(ascending)
-                    return String.Compare(x, y, ignoreCase, CultureInfo.CurrentCulture);
+                    return String.Compare(x, y, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
 
-                return String.Compare(y, x, ignoreCase, CultureInfo.CurrentCulture);
+                return String.Compare(y, x, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
             });
 
             OnListChanged(new ListChangedEventArgs(ListChangedType.Reset, -1));

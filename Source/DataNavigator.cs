@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : DataNavigator.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/19/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a control that is used to navigate through a specified data source and perform operations
 // on it such as editing, inserting, or deleting records, etc. along with other controls on the form that are
@@ -43,17 +42,17 @@ namespace EWSoftware.ListControls
         #region Private data members
         //=====================================================================
 
-        private System.Windows.Forms.ImageList ilButtons;
-        private System.Windows.Forms.Button btnFirst;
-        private System.Windows.Forms.Button btnPrev;
-        private System.Windows.Forms.Button btnNext;
-        private System.Windows.Forms.Button btnLast;
-        internal System.Windows.Forms.Button btnAdd;
-        private EWSoftware.ListControls.NumericTextBox txtRowNum;
-        private System.Windows.Forms.Label lblRowCount;
-        internal System.Windows.Forms.Button btnDelete;
-        private System.Windows.Forms.Timer tmrRepeat;
-        private System.ComponentModel.IContainer components;
+        private ImageList ilButtons;
+        private Button btnFirst;
+        private Button btnPrev;
+        private Button btnNext;
+        private Button btnLast;
+        internal Button btnAdd;
+        private NumericTextBox txtRowNum;
+        private Label lblRowCount;
+        internal Button btnDelete;
+        private Timer tmrRepeat;
+        private IContainer components;
 
         // Add/Delete properties
         private bool showAddDel;
@@ -73,7 +72,7 @@ namespace EWSoftware.ListControls
         private int currentRow;
 
         // Change policy.  These settings determine how the data source can be modified
-        private ChangePolicy changePolicy;
+        private readonly ChangePolicy changePolicy;
         private bool allowAdditions, allowEdits, allowDeletes;
 
         #endregion
@@ -107,7 +106,7 @@ namespace EWSoftware.ListControls
           Description("Show or hide the add and delete buttons")]
         public bool AddDeleteButtonsVisible
         {
-            get { return showAddDel; }
+            get => showAddDel;
             set
             {
                 if(showAddDel != value)
@@ -131,7 +130,7 @@ namespace EWSoftware.ListControls
         [Category("Behavior"), Description("Determines whether or not additions can be made to the data source")]
         public bool AllowAdditions
         {
-            get { return changePolicy.AllowAdditions; }
+            get => changePolicy.AllowAdditions;
             set
             {
                 allowAdditions = value;
@@ -148,7 +147,7 @@ namespace EWSoftware.ListControls
         [Category("Behavior"), Description("Determines whether or not edits can be made to the data source")]
         public bool AllowEdits
         {
-            get { return changePolicy.AllowEdits; }
+            get => changePolicy.AllowEdits;
             set
             {
                 allowEdits = value;
@@ -163,7 +162,7 @@ namespace EWSoftware.ListControls
         [Category("Behavior"), Description("Determines whether or not deletes can be made to the data source")]
         public bool AllowDeletes
         {
-            get { return changePolicy.AllowDeletes; }
+            get => changePolicy.AllowDeletes;
             set
             {
                 allowDeletes = value;
@@ -179,8 +178,8 @@ namespace EWSoftware.ListControls
          Description("The shortcut key to use for adding a row")]
         public Shortcut AddRowShortcut
         {
-            get { return shortcutAdd; }
-            set { shortcutAdd = value; }
+            get => shortcutAdd;
+            set => shortcutAdd = value;
         }
 
         /// <summary>
@@ -191,8 +190,8 @@ namespace EWSoftware.ListControls
          Description("The shortcut key to use for deleting a row")]
         public Shortcut DeleteRowShortcut
         {
-            get { return shortcutDel; }
-            set { shortcutDel = value; }
+            get => shortcutDel;
+            set => shortcutDel = value;
         }
 
         /// <summary>
@@ -203,8 +202,8 @@ namespace EWSoftware.ListControls
           Description("The shortcut key to use for jumping to the row number navigation text box")]
         public Shortcut RowNumberNavShortcut
         {
-            get { return shortcutRowNum; }
-            set { shortcutRowNum = value; }
+            get => shortcutRowNum;
+            set => shortcutRowNum = value;
         }
 
         /// <summary>
@@ -217,11 +216,11 @@ namespace EWSoftware.ListControls
           Description("The initial delay before the Next and Previous buttons auto-repeat")]
         public int RepeatWait
         {
-            get { return repeatWait; }
+            get => repeatWait;
             set
             {
                 if(value < 100)
-                    throw new ArgumentOutOfRangeException("value", value, LR.GetString("ExInvalidRepeatWait"));
+                    throw new ArgumentOutOfRangeException(nameof(value), value, LR.GetString("ExInvalidRepeatWait"));
 
                 repeatWait = value;
                 OnRepeatWaitChanged(EventArgs.Empty);
@@ -238,11 +237,11 @@ namespace EWSoftware.ListControls
           Description("The auto-repeat delay for the Next and Previous buttons")]
         public int RepeatInterval
         {
-            get { return repeatInterval; }
+            get => repeatInterval;
             set
             {
                 if(value < 20)
-                    throw new ArgumentOutOfRangeException("value", value,LR.GetString("ExInvalidRepeatInterval"));
+                    throw new ArgumentOutOfRangeException(nameof(value), value, LR.GetString("ExInvalidRepeatInterval"));
 
                 repeatInterval = value;
                 OnRepeatIntervalChanged(EventArgs.Empty);
@@ -265,7 +264,7 @@ namespace EWSoftware.ListControls
           Description("Set or get the data source for the data navigator")]
         public object DataSource
         {
-            get { return dataSource; }
+            get => dataSource;
             set
             {
                 if(value != null && !(value is IList) && !(value is IListSource))
@@ -295,7 +294,7 @@ namespace EWSoftware.ListControls
           Description("Indicates a sub-list of the data source to show in the data navigator")]
         public string DataMember
         {
-            get { return dataMember; }
+            get => dataMember;
             set
             {
                 if(dataMember != value)
@@ -311,16 +310,13 @@ namespace EWSoftware.ListControls
         /// This read-only property can be used to get the current row count from the data source
         /// </summary>
         [Browsable(false), Description("Get the row count from the data source")]
-        public int RowCount
-        {
-            get { return (listManager == null) ? 0 : listManager.Count; }
-        }
+        public int RowCount => (listManager == null) ? 0 : listManager.Count;
 
         /// <summary>
         /// This read-only property is used to get the zero-based row number of the currently selected row
         /// </summary>
         /// <value>If there is no data source or there are no rows in the data source, it returns -1</value>
-        /// <remarks>To set the current row, use the <see cref="MoveTo(int)"/> method</remarks>
+        /// <remarks>To set the current row, use the <see cref="MoveTo(Int32)"/> method</remarks>
         [Browsable(false), Description("Get the currently selected row index")]
         public int CurrentRow
         {
@@ -411,24 +407,25 @@ namespace EWSoftware.ListControls
 
                     object dataSource = listManager.List;
 
-                    DataSet ds = dataSource as DataSet;
-
-                    if(ds != null)
+                    if(dataSource is DataSet ds)
                         return ds.HasChanges();
 
-                    DataView dv = dataSource as DataView;
                     DataTable tbl;
 
-                    if(dv != null)
+                    if(dataSource is DataView dv)
                         tbl = dv.Table;
                     else
                         tbl = dataSource as DataTable;
 
                     // If still null, the data source is not of a type we can use to determine modifications
                     if(tbl != null)
+                    {
                         foreach(DataRow r in tbl.Rows)
+                        {
                             if(r.RowState != DataRowState.Unchanged)
                                 return true;
+                        }
+                    }
                 }
 
                 return false;
@@ -444,10 +441,7 @@ namespace EWSoftware.ListControls
         /// data source or the column cannot be found, this returns null.</value>
         /// <overloads>There are two overloads for this property</overloads>
         [Browsable(false), Description("Get the specified column from the current row")]
-        public object this[string colName]
-        {
-            get { return this[currentRow, colName]; }
-        }
+        public object this[string colName] => this[currentRow, colName];
 
         /// <summary>
         /// This can be used to get the value of the specified column in the specified row of the data
@@ -497,10 +491,7 @@ namespace EWSoftware.ListControls
         /// <exclude/>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false),
           EditorBrowsable(EditorBrowsableState.Never)]
-        public override Image BackgroundImage
-        {
-            get { return null; }
-        }
+        public override Image BackgroundImage => null;
 
         /// <summary>
         /// The data navigator does not use this property so it is hidden.  It always returns false.
@@ -508,10 +499,7 @@ namespace EWSoftware.ListControls
         /// <exclude/>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false),
           EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool AutoScroll
-        {
-            get { return false; }
-        }
+        public override bool AutoScroll => false;
 
         /// <summary>
         /// The data navigator does not use this property so it is hidden.  It always returns the base margin.
@@ -519,10 +507,7 @@ namespace EWSoftware.ListControls
         /// <exclude/>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false),
           EditorBrowsable(EditorBrowsableState.Never)]
-        public new Size AutoScrollMargin
-        {
-            get { return base.AutoScrollMargin; }
-        }
+        public new Size AutoScrollMargin => base.AutoScrollMargin;
 
         /// <summary>
         /// The data navigator does not use this property so it is hidden.  It always returns the base size.
@@ -530,10 +515,7 @@ namespace EWSoftware.ListControls
         /// <exclude/>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false),
           EditorBrowsable(EditorBrowsableState.Never)]
-        public new Size AutoScrollMinSize
-        {
-            get { return base.AutoScrollMinSize; }
-        }
+        public new Size AutoScrollMinSize => base.AutoScrollMinSize;
 
         /// <summary>
         /// The data navigator does not use the background image so this event is hidden
@@ -560,10 +542,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnAddDeleteButtonsVisibleChanged(EventArgs e)
         {
-            var handler = AddDeleteButtonsVisibleChanged;
-
-            if(handler != null)
-                handler(this, e);
+            AddDeleteButtonsVisibleChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -578,10 +557,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnRepeatWaitChanged(EventArgs e)
         {
-            var handler = RepeatWaitChanged;
-
-            if(handler != null)
-                handler(this, e);
+            RepeatWaitChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -596,10 +572,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnRepeatIntervalChanged(EventArgs e)
         {
-            var handler = RepeatIntervalChanged;
-
-            if(handler != null)
-                handler(this, e);
+            RepeatIntervalChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -614,10 +587,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnAddingRow(DataNavigatorCancelEventArgs e)
         {
-            var handler = AddingRow;
-
-            if(handler != null)
-                handler(this, e);
+            AddingRow?.Invoke(this, e);
         }
 
         /// <summary>
@@ -632,10 +602,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnAddedRow(DataNavigatorEventArgs e)
         {
-            var handler = AddedRow;
-
-            if(handler != null)
-                handler(this, e);
+            AddedRow?.Invoke(this, e);
         }
 
         /// <summary>
@@ -650,10 +617,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnDeletingRow(DataNavigatorCancelEventArgs e)
         {
-            var handler = DeletingRow;
-
-            if(handler != null)
-                handler(this, e);
+            DeletingRow?.Invoke(this, e);
         }
 
         /// <summary>
@@ -669,10 +633,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnDeletedRow(DataNavigatorEventArgs e)
         {
-            var handler = DeletedRow;
-
-            if(handler != null)
-                handler(this, e);
+            DeletedRow?.Invoke(this, e);
 
             if(listManager != null && listManager.Count == 0)
                 OnNoRows(EventArgs.Empty);
@@ -690,10 +651,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected internal virtual void OnCancelingEdits(DataNavigatorCancelEventArgs e)
         {
-            var handler = CancelingEdits;
-
-            if(handler != null)
-                handler(this, e);
+            CancelingEdits?.Invoke(this, e);
         }
 
         /// <summary>
@@ -708,10 +666,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected internal virtual void OnCanceledEdits(DataNavigatorEventArgs e)
         {
-            var handler = CanceledEdits;
-
-            if(handler != null)
-                handler(this, e);
+            CanceledEdits?.Invoke(this, e);
         }
 
         /// <summary>
@@ -726,10 +681,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnCurrent(DataNavigatorEventArgs e)
         {
-            var handler = Current;
-
-            if(handler != null)
-                handler(this, e);
+            Current?.Invoke(this, e);
         }
 
         /// <summary>
@@ -747,10 +699,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnNoRows(EventArgs e)
         {
-            var handler = NoRows;
-
-            if(handler != null)
-                handler(this, e);
+            NoRows?.Invoke(this, e);
         }
 
         /// <summary>
@@ -765,10 +714,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnDataSourceChanged(EventArgs e)
         {
-            var handler = DataSourceChanged;
-
-            if(handler != null)
-                handler(this, e);
+            DataSourceChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -788,10 +734,7 @@ namespace EWSoftware.ListControls
             btnAdd.Enabled = (changePolicy.AllowAdditions && listManager != null);
             btnDelete.Enabled = (changePolicy.AllowDeletes && listManager != null && listManager.Count > 0);
 
-            var handler = ChangePolicyModified;
-
-            if(handler != null)
-                handler(this, e);
+            ChangePolicyModified?.Invoke(this, e);
         }
         #endregion
 
@@ -1112,7 +1055,7 @@ namespace EWSoftware.ListControls
 
                 // Enable or disable buttons based on the row
                 btnFirst.Enabled = btnPrev.Enabled = (curRow > 0);
-                btnNext.Enabled = btnLast.Enabled = (!hasList) ? false : (curRow < listManager.Count - 1);
+                btnNext.Enabled = btnLast.Enabled = hasList && (curRow < listManager.Count - 1);
             }
         }
 
@@ -1416,7 +1359,7 @@ namespace EWSoftware.ListControls
                         listManager = null;
 
                     dataSource = newDataSource;
-                    dataMember = (newDataMember == null) ? String.Empty : newDataMember;
+                    dataMember = newDataMember ?? String.Empty;
 
                     if(this.listManager != null)
                     {
@@ -1512,8 +1455,7 @@ namespace EWSoftware.ListControls
         {
             if(disposing)
             {
-                if(components != null)
-                    components.Dispose();
+                components?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -1554,8 +1496,8 @@ namespace EWSoftware.ListControls
         /// <summary>
         /// This is used to reposition the controls when the control attributes change
         /// </summary>
-        /// <param name="levent">The event arguments</param>
-        protected override void OnLayout(LayoutEventArgs levent)
+        /// <param name="e">The event arguments</param>
+        protected override void OnLayout(LayoutEventArgs e)
         {
             int borderWidth;
 
@@ -1579,7 +1521,7 @@ namespace EWSoftware.ListControls
             btnFirst.Top = btnPrev.Top = txtRowNum.Top = btnNext.Top = btnLast.Top = btnAdd.Top = btnDelete.Top =
                 lblRowCount.Top = 0;
 
-            base.OnLayout(levent);
+            base.OnLayout(e);
         }
 
         /// <summary>
@@ -1625,7 +1567,7 @@ namespace EWSoftware.ListControls
             if(currentRow != newRow)
             {
                 if(newRow < 0 || listManager == null || newRow >= listManager.Count)
-                    throw new ArgumentOutOfRangeException("newRow", newRow, LR.GetString("ExInvalidRowNumber"));
+                    throw new ArgumentOutOfRangeException(nameof(newRow), newRow, LR.GetString("ExInvalidRowNumber"));
 
                 if(!this.IsValid)
                     return false;
@@ -1654,7 +1596,7 @@ namespace EWSoftware.ListControls
             int newRow;
 
             if(listManager == null || (listManager.Count == 0 && position != RowPosition.NewRow))
-                throw new ArgumentOutOfRangeException("position", position, LR.GetString("ExInvalidRowNumber"));
+                throw new ArgumentOutOfRangeException(nameof(position), position, LR.GetString("ExInvalidRowNumber"));
 
             switch(position)
             {
@@ -1701,7 +1643,7 @@ namespace EWSoftware.ListControls
                 throw new NotSupportedException(LR.GetString("ExDeleteNotAllowed"));
 
             if(delRow < 0 || listManager == null || delRow >= listManager.Count)
-                throw new ArgumentOutOfRangeException("delRow", delRow, LR.GetString("ExInvalidRowNumber"));
+                throw new ArgumentOutOfRangeException(nameof(delRow), delRow, LR.GetString("ExInvalidRowNumber"));
 
             // Nested deletes aren't supported.
             if(inDelRow)
@@ -1814,20 +1756,18 @@ namespace EWSoftware.ListControls
             int idx;
 
             if(member == null || member.Length == 0)
-                throw new ArgumentNullException("member", LR.GetString("ExNullFindParam"));
+                throw new ArgumentNullException(nameof(member), LR.GetString("ExNullFindParam"));
 
             if(key == null)
-                throw new ArgumentNullException("key", LR.GetString("ExNullFindParam"));
+                throw new ArgumentNullException(nameof(key), LR.GetString("ExNullFindParam"));
 
             PropertyDescriptorCollection coll = listManager.GetItemProperties();
             PropertyDescriptor prop = coll.Find(member, true);
 
             if(prop == null)
-                throw new ArgumentOutOfRangeException("member", member, LR.GetString("ExInvalidMember"));
+                throw new ArgumentOutOfRangeException(nameof(member), member, LR.GetString("ExInvalidMember"));
 
-            IBindingList bl = listManager.List as IBindingList;
-
-            if(bl != null && bl.SupportsSearching)
+            if(listManager.List is IBindingList bl && bl.SupportsSearching)
             {
                 idx = bl.Find(prop, key);
 
@@ -1944,19 +1884,19 @@ namespace EWSoftware.ListControls
                 return -1;
 
             if(startIndex < -1 || startIndex >= listManager.Count)
-                throw new ArgumentOutOfRangeException("startIndex", startIndex, LR.GetString("ExInvalidItemIndex"));
+                throw new ArgumentOutOfRangeException(nameof(startIndex), startIndex, LR.GetString("ExInvalidItemIndex"));
 
             if(member == null || member.Length == 0)
-                throw new ArgumentNullException("member", LR.GetString("ExNullFindParam"));
+                throw new ArgumentNullException(nameof(member), LR.GetString("ExNullFindParam"));
 
             if(key == null)
-                throw new ArgumentNullException("key", LR.GetString("ExNullFindParam"));
+                throw new ArgumentNullException(nameof(key), LR.GetString("ExNullFindParam"));
 
             PropertyDescriptorCollection coll = listManager.GetItemProperties();
             PropertyDescriptor prop = coll.Find(member, true);
 
             if(prop == null)
-                throw new ArgumentOutOfRangeException("member", member, LR.GetString("ExInvalidMember"));
+                throw new ArgumentOutOfRangeException(nameof(member), member, LR.GetString("ExInvalidMember"));
 
             length = key.Length;
             idx = startIndex;
@@ -1967,10 +1907,12 @@ namespace EWSoftware.ListControls
                 propValue = prop.GetValue(listManager.List[idx]).ToString();
 
                 if(exactMatch)
-                    found = (String.Compare(key, propValue, ignoreCase, CultureInfo.CurrentCulture) == 0);
+                    found = String.Equals(key, propValue, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
                 else
-                    found = (String.Compare(key, 0, propValue, 0, length, ignoreCase,
-                        CultureInfo.CurrentCulture) == 0);
+                {
+                    found = String.Compare(key, 0, propValue, 0, length,
+                        ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal) == 0;
+                }
 
                 if(found)
                     return idx;

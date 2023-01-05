@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : MultiColumnComboBoxCell.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/24/2014
-// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/05/2023
+// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a data grid view cell object that hosts a multi-column combo box
 //
@@ -20,7 +19,6 @@
 
 using System;
 using System.Drawing;
-using System.Globalization;
 using System.Windows.Forms;
 
 namespace EWSoftware.ListControls.DataGridViewControls
@@ -34,10 +32,11 @@ namespace EWSoftware.ListControls.DataGridViewControls
         //=====================================================================
 
         // Static type values and flags
-        private static Type defaultEditType = typeof(MultiColumnComboBoxEditingControl);
+        private static readonly Type defaultEditType = typeof(MultiColumnComboBoxEditingControl);
 
         // Combo box properties
         private int dropDownWidth;
+
         #endregion
 
         #region Properties
@@ -51,7 +50,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <exception cref="ArgumentException">This is thrown if the width is less than zero.</exception>
         public int DropDownWidth
         {
-            get { return dropDownWidth; }
+            get => dropDownWidth;
             set
             {
                 if(value < 0)
@@ -59,8 +58,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
 
                 dropDownWidth = value;
 
-                if(base.OwnsEditingComboBox(base.RowIndex))
-                    ((MultiColumnComboBox)base.EditingComboBox).DropDownWidth = value;
+                if(this.OwnsEditingComboBox(this.RowIndex))
+                    ((MultiColumnComboBox)this.EditingComboBox).DropDownWidth = value;
             }
         }
 
@@ -68,10 +67,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// Gets the type of the cell's hosted editing control
         /// </summary>
         /// <value>This always returns <see cref="MultiColumnComboBoxEditingControl"/></value>
-        public override Type EditType
-        {
-            get { return defaultEditType; }
-        }
+        public override Type EditType => defaultEditType;
+
         #endregion
 
         #region Methods
@@ -99,25 +96,25 @@ namespace EWSoftware.ListControls.DataGridViewControls
         public override void InitializeEditingControl(int rowIndex, object initialFormattedValue,
           DataGridViewCellStyle dataGridViewCellStyle)
         {
-            MultiColumnComboBoxColumn owner = (MultiColumnComboBoxColumn)base.OwningColumn;
+            MultiColumnComboBoxColumn owner = (MultiColumnComboBoxColumn)this.OwningColumn;
             MultiColumnComboBoxEditingControl box;
             string text;
 
             if(dataGridViewCellStyle == null)
-                throw new ArgumentNullException("dataGridViewCellStyle");
+                throw new ArgumentNullException(nameof(dataGridViewCellStyle));
 
             base.InitializeEditingControl(rowIndex, initialFormattedValue, dataGridViewCellStyle);
 
-            box = base.DataGridView.EditingControl as MultiColumnComboBoxEditingControl;
+            box = this.DataGridView.EditingControl as MultiColumnComboBoxEditingControl;
 
             if(box != null)
             {
-                if((base.GetInheritedState(rowIndex) & DataGridViewElementStates.Selected) ==
+                if((this.GetInheritedState(rowIndex) & DataGridViewElementStates.Selected) ==
                   DataGridViewElementStates.Selected)
-                    base.DataGridView.EditingPanel.BackColor = dataGridViewCellStyle.SelectionBackColor;
+                    this.DataGridView.EditingPanel.BackColor = dataGridViewCellStyle.SelectionBackColor;
 
                 box.DropDownStyle = ComboBoxStyle.DropDownList;
-                box.MaxDropDownItems = base.MaxDropDownItems;
+                box.MaxDropDownItems = this.MaxDropDownItems;
                 box.DropDownWidth = dropDownWidth;
                 box.DataSource = null;
                 box.DisplayMember = box.ValueMember = null;
@@ -136,35 +133,32 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 if(columnFilter.Count != 0)
                     box.ColumnFilter.AddRange(columnFilter);
 
-                box.DisplayMember = base.DisplayMember;
-                box.ValueMember = base.ValueMember;
-                box.DataSource = base.DataSource;
+                box.DisplayMember = this.DisplayMember;
+                box.ValueMember = this.ValueMember;
+                box.DataSource = this.DataSource;
 
-                if(base.HasItemCollection && base.DataSource == null && base.Items.Count > 0)
-                    box.Items.AddRange(base.Items.InnerList.ToArray());
+                if(this.HasItemCollection && this.DataSource == null && this.Items.Count > 0)
+                    box.Items.AddRange(this.Items.InnerList.ToArray());
 
-                box.SortOrder = base.SortOrder;
-                box.FlatStyle = base.FlatStyle;
+                box.SortOrder = this.SortOrder;
+                box.FlatStyle = this.FlatStyle;
 
                 text = initialFormattedValue as string;
 
-                if(text == null)
-                    text = String.Empty;
-
-                box.Text = text;
+                box.Text = text ?? String.Empty;
 
                 if(box.SelectedIndex == -1 && box.Items.Count != 0)
                     box.SelectedIndex = 0;
 
-                base.EditingComboBox = box;
+                this.EditingComboBox = box;
 
                 // If the height is greater than the standard control, erase the area below it
-                if(base.OwningRow.Height > 21)
+                if(this.OwningRow.Height > 21)
                 {
-                    Rectangle rc = base.DataGridView.GetCellDisplayRectangle(base.ColumnIndex, rowIndex, true);
+                    Rectangle rc = this.DataGridView.GetCellDisplayRectangle(this.ColumnIndex, rowIndex, true);
                     rc.Y += 21;
                     rc.Height -= 21;
-                    base.DataGridView.Invalidate(rc);
+                    this.DataGridView.Invalidate(rc);
                 }
             }
         }
@@ -175,8 +169,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <returns>A description of the cell</returns>
         public override string ToString()
         {
-            return String.Format(CultureInfo.CurrentCulture, "MultiColumnComboBoxCell {{ ColumnIndex={0}, " +
-                "RowIndex={1} }}", base.ColumnIndex, base.RowIndex);
+            return $"MultiColumnComboBoxCell {{ ColumnIndex={this.ColumnIndex}, RowIndex={this.RowIndex} }}";
         }
         #endregion
     }

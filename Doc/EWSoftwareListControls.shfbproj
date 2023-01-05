@@ -34,7 +34,7 @@
     <ComponentConfigurations>
     </ComponentConfigurations>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\Source\EWSListControls.csproj" />
+      <DocumentationSource sourceFile="..\Source\EWSoftware.ListControls.csproj" />
     </DocumentationSources>
     <NamespaceSummaries>
       <NamespaceSummaryItem name="(global)" isDocumented="False" />
@@ -48,7 +48,7 @@
 
 &lt;para&gt;This namespace contains designers for the list controls.&lt;/para&gt;</NamespaceSummaryItem>
     </NamespaceSummaries>
-    <HelpFileVersion>2020.11.25.0</HelpFileVersion>
+    <HelpFileVersion>2023.1.4.0</HelpFileVersion>
     <PlugInConfigurations>
       <PlugInConfig id="Output Deployment" enabled="True">
         <configuration deleteAfterDeploy="true" verboseLogging="false">

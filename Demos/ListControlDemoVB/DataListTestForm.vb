@@ -54,7 +54,7 @@ Public Partial Class DataListTestForm
     ' typed data sets.  For this demo, we'll do it by hand.
     Private Sub CreateDataSource()
         ' The test database should be in the project folder
-        dbConn = New OleDbConnection("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=.\TestData.mdb")
+        dbConn = New OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\TestData.mdb")
         daAddresses = New OleDbDataAdapter()
         dsAddresses = New DataSet()
 

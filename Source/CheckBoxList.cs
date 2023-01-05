@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : CheckBoxList.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/25/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a multi-selection checkbox list that supports data binding, layout options, and data
 // source indexers.
@@ -50,6 +49,7 @@ namespace EWSoftware.ListControls
         private BindingContext bindingContext;
         private object bindingDataSource;
         private StringCollection bindingMembers;
+
         #endregion
 
         #region Properties
@@ -73,7 +73,7 @@ namespace EWSoftware.ListControls
         /// than the number of items in the collection.</exception>
         public override int SelectedIndex
         {
-            get { return base.SelectedIndex; }
+            get => base.SelectedIndex;
             set
             {
                 CheckBox cb;
@@ -85,20 +85,24 @@ namespace EWSoftware.ListControls
                         return;
 
                     if(value < -1 || value >= this.Items.Count)
-                        throw new ArgumentOutOfRangeException("value", value, LR.GetString("ExItemIndexOutOfRange"));
+                        throw new ArgumentOutOfRangeException(nameof(value), value, LR.GetString("ExItemIndexOutOfRange"));
 
                     // If a default selection is being enforced, use it as long as it is valid
                     if(value == -1 && this.EnforceDefaultSelection)
-                        if(this.DefaultSelection < this.Items.Count && (base.DataManager == null ||
-                          base.DataManager.Count != 0))
+                    {
+                        if(this.DefaultSelection < this.Items.Count && (this.DataManager == null ||
+                          this.DataManager.Count != 0))
                         {
                             value = this.DefaultSelection;
                         }
                         else
-                            if(base.DataManager != null)
-                                value = base.DataManager.Count - 1;
+                        {
+                            if(this.DataManager != null)
+                                value = this.DataManager.Count - 1;
                             else
                                 value = this.Items.Count - 1;
+                        }
+                    }
 
                     inSelectedIndex = true;
                     oldValue = base.SelectedIndex;
@@ -110,6 +114,7 @@ namespace EWSoftware.ListControls
 
                     // Give focus to the selected checkbox
                     if(!this.IsInitializing)
+                    {
                         if(value != -1)
                         {
                             cb = (CheckBox)this.ButtonPanel.Controls[value];
@@ -119,6 +124,7 @@ namespace EWSoftware.ListControls
                                 cb.Focus();
                         }
                         else
+                        {
                             if(oldValue != -1 && oldValue < this.Items.Count)
                             {
                                 cb = (CheckBox)this.ButtonPanel.Controls[oldValue];
@@ -126,6 +132,8 @@ namespace EWSoftware.ListControls
                                 if(this.ContainsFocus && !cb.Focused)
                                     cb.Focus();
                             }
+                        }
+                    }
 
                     inSelectedIndex = false;
                 }
@@ -138,7 +146,7 @@ namespace EWSoftware.ListControls
         /// <value>The default is to show them as normal checkboxes</value>
         public override Appearance Appearance
         {
-            get { return base.Appearance; }
+            get => base.Appearance;
             set
             {
                 foreach(Control c in this.ButtonPanel.Controls)
@@ -154,7 +162,7 @@ namespace EWSoftware.ListControls
         /// <value>The default alignment is <c>MiddleLeft</c></value>
         public override ContentAlignment CheckAlign
         {
-            get { return base.CheckAlign; }
+            get => base.CheckAlign;
             set
             {
                 foreach(Control c in this.ButtonPanel.Controls)
@@ -173,7 +181,7 @@ namespace EWSoftware.ListControls
           Bindable(true), Description("Whether or not the checkboxes support three states instead of two")]
         public bool ThreeState
         {
-            get { return threeState; }
+            get => threeState;
             set
             {
                 CheckBox cb;
@@ -205,7 +213,7 @@ namespace EWSoftware.ListControls
           "BindingMembersDataSource")]
         public BindingContext BindingMembersBindingContext
         {
-            get { return bindingContext; }
+            get => bindingContext;
             set
             {
                 if(bindingContext != value)
@@ -228,7 +236,7 @@ namespace EWSoftware.ListControls
           Description("Specifies a data source for use with BindingMembers to bind each checkbox to a data member")]
         public object BindingMembersDataSource
         {
-            get { return bindingDataSource; }
+            get => bindingDataSource;
             set
             {
                 if(bindingDataSource != value)
@@ -275,7 +283,7 @@ namespace EWSoftware.ListControls
             {
                 CheckBox cb;
                 List<object> list = new List<object>();
-                Control.ControlCollection checkboxes = this.ButtonPanel.Controls;
+                ControlCollection checkboxes = this.ButtonPanel.Controls;
 
                 for(int idx = 0; idx < checkboxes.Count; idx++)
                 {
@@ -300,7 +308,7 @@ namespace EWSoftware.ListControls
             {
                 CheckBox cb;
                 List<int> list = new List<int>();
-                Control.ControlCollection checkboxes = this.ButtonPanel.Controls;
+                ControlCollection checkboxes = this.ButtonPanel.Controls;
 
                 for(int idx = 0; idx < checkboxes.Count; idx++)
                 {
@@ -330,10 +338,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnItemCheckStateChanged(ItemCheckStateEventArgs e)
         {
-            var handler = ItemCheckStateChanged;
-
-            if(handler != null)
-                handler(this, e);
+            ItemCheckStateChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -348,10 +353,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnThreeStateChanged(System.EventArgs e)
         {
-            var handler = ThreeStateChanged;
-
-            if(handler != null)
-                handler(this, e);
+            ThreeStateChanged?.Invoke(this, e);
         }
         #endregion
 
@@ -397,9 +399,9 @@ namespace EWSoftware.ListControls
             CheckState state = (CheckState)e.Value;
 
             if(state == CheckState.Indeterminate)
-                e.Value = (threeState) ? (object)DBNull.Value : (object)false;
+                e.Value = threeState ? (object)DBNull.Value : false;
             else
-                e.Value = (state == CheckState.Checked) ? true : false;
+                e.Value = state == CheckState.Checked;
         }
 
         /// <summary>
@@ -482,13 +484,13 @@ namespace EWSoftware.ListControls
                 else
                     cb.Text = this.GetItemText(oItem).Replace("&", "&&");
 
-                cb.Appearance = base.Appearance;
+                cb.Appearance = this.Appearance;
                 cb.FlatStyle = this.FlatStyle;
                 cb.ThreeState = threeState;
-                cb.CheckAlign = base.CheckAlign;
-                cb.TextAlign = base.TextAlign;
-                cb.ImageAlign = base.ImageAlign;
-                cb.ImageList = base.ImageList;
+                cb.CheckAlign = this.CheckAlign;
+                cb.TextAlign = this.TextAlign;
+                cb.ImageAlign = this.ImageAlign;
+                cb.ImageList = this.ImageList;
 
                 // Don't hook up the event in design mode.  They are clickable.  We'll also skip hooking up the
                 // data bindings.
@@ -515,13 +517,13 @@ namespace EWSoftware.ListControls
                             throw new InvalidOperationException(LR.GetString("ExTooFewBindingMembers"));
                 }
 
-                if(base.ImageList != null)
+                if(this.ImageList != null)
                 {
                     cb.ImageIndex = imageIdx;
                     imageIdx++;
 
                     // Wrap the index if there are more items than images
-                    if(imageIdx == base.ImageList.Images.Count)
+                    if(imageIdx == this.ImageList.Images.Count)
                         imageIdx = 0;
                 }
 
@@ -548,7 +550,7 @@ namespace EWSoftware.ListControls
         public bool GetItemChecked(int index)
         {
             if(index < 0 || index >= this.Items.Count)
-                throw new ArgumentOutOfRangeException("index", index, LR.GetString("ExItemIndexOutOfRange"));
+                throw new ArgumentOutOfRangeException(nameof(index), index, LR.GetString("ExItemIndexOutOfRange"));
 
             return ((CheckBox)this.ButtonPanel.Controls[index]).Checked;
         }
@@ -566,7 +568,7 @@ namespace EWSoftware.ListControls
             int index = this.Find(key);
 
             if(index == -1)
-                throw new ArgumentOutOfRangeException("key", key, LR.GetString("ExItemIndexOutOfRange"));
+                throw new ArgumentOutOfRangeException(nameof(key), key, LR.GetString("ExItemIndexOutOfRange"));
 
             return ((CheckBox)this.ButtonPanel.Controls[index]).Checked;
         }
@@ -582,7 +584,7 @@ namespace EWSoftware.ListControls
         public CheckState GetItemCheckState(int index)
         {
             if(index < 0 || index >= this.Items.Count)
-                throw new ArgumentOutOfRangeException("index", index, LR.GetString("ExItemIndexOutOfRange"));
+                throw new ArgumentOutOfRangeException(nameof(index), index, LR.GetString("ExItemIndexOutOfRange"));
 
             return ((CheckBox)this.ButtonPanel.Controls[index]).CheckState;
         }
@@ -600,7 +602,7 @@ namespace EWSoftware.ListControls
             int index = this.Find(key);
 
             if(index == -1)
-                throw new ArgumentOutOfRangeException("key", key, LR.GetString("ExItemIndexOutOfRange"));
+                throw new ArgumentOutOfRangeException(nameof(key), key, LR.GetString("ExItemIndexOutOfRange"));
 
             return ((CheckBox)this.ButtonPanel.Controls[index]).CheckState;
         }
@@ -616,7 +618,7 @@ namespace EWSoftware.ListControls
         public void SetItemChecked(int index, bool check)
         {
             if(index < 0 || index >= this.Items.Count)
-                throw new ArgumentOutOfRangeException("index", index, LR.GetString("ExItemIndexOutOfRange"));
+                throw new ArgumentOutOfRangeException(nameof(index), index, LR.GetString("ExItemIndexOutOfRange"));
 
             ((CheckBox)this.ButtonPanel.Controls[index]).Checked = check;
         }
@@ -649,7 +651,7 @@ namespace EWSoftware.ListControls
         public void SetItemCheckState(int index, CheckState state)
         {
             if(index < 0 || index >= this.Items.Count)
-                throw new ArgumentOutOfRangeException("index", index, LR.GetString("ExItemIndexOutOfRange"));
+                throw new ArgumentOutOfRangeException(nameof(index), index, LR.GetString("ExItemIndexOutOfRange"));
 
             ((CheckBox)this.ButtonPanel.Controls[index]).CheckState = state;
         }

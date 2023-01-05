@@ -1,0 +1,85 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net40</TargetFrameworks>
+		<UseWindowsForms>true</UseWindowsForms>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Company>Eric Woodruff</Company>
+		<Product>EWSoftware Personal Data Interchange Library</Product>
+		<Title>EWSoftware List Controls Library</Title>
+		<Copyright>Copyright (c) 2005-2023, Eric Woodruff, All Rights Reserved</Copyright>
+		<NeutralLanguage>en</NeutralLanguage>
+		<Version>2023.1.4.0</Version>
+		<FileVersion>23.1.4.0</FileVersion>
+		<Description>This library contains several Windows Forms controls: combo box controls with extra abilities, a radio button list control, a checkbox list control, a data navigator control, and a template-based data list control.  See the project website for the code, a help file, and demos.</Description>
+		<Authors>Eric Woodruff</Authors>
+		<PackageIconUrl>https://raw.githubusercontent.com/EWSoftware/ListControls/master/EWSListControls.png</PackageIconUrl>
+		<PackageIcon>EWSListControls.png</PackageIcon>
+		<RepositoryUrl>https://github.com/EWSoftware/ListControls</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>Windows Forms controls template data list checkbox radio button combo box radiobutton combobox</PackageTags>
+		<PackageProjectUrl>https://github.com/EWSoftware/ListControls</PackageProjectUrl>
+		<PackageLicenseExpression>MS-PL</PackageLicenseExpression>
+		<PackageReleaseNotes>Targets .NET Framework 4.0 and later and .NET 6.0 and later (Windows platform only)</PackageReleaseNotes>
+		<SignAssembly>true</SignAssembly>
+		<GenerateAssemblyTitleAttribute>False</GenerateAssemblyTitleAttribute>
+		<GenerateAssemblyVersionAttribute>False</GenerateAssemblyVersionAttribute>
+		<GenerateAssemblyFileVersionAttribute>False</GenerateAssemblyFileVersionAttribute>
+		<GenerateAssemblyInformationalVersionAttribute>False</GenerateAssemblyInformationalVersionAttribute>
+		<AssemblyOriginatorKeyFile>EWSListControls.snk</AssemblyOriginatorKeyFile>
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
+		<DebugType>pdbonly</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="AutoCompleteComboBox.bmp" />
+	  <None Remove="CheckBoxList.bmp" />
+	  <None Remove="ClickableLabel.bmp" />
+	  <None Remove="DataGridViewControls\ImageListColumn.bmp" />
+	  <None Remove="DataGridViewControls\IndicatorColumn.bmp" />
+	  <None Remove="DataGridViewControls\MultiColumnComboBoxColumn.bmp" />
+	  <None Remove="DataGridViewControls\RatingColumn.bmp" />
+	  <None Remove="DataGridViewControls\UserControlComboBoxColumn.bmp" />
+	  <None Remove="DataList.bmp" />
+	  <None Remove="DataNavigator.bmp" />
+	  <None Remove="ExtendedTreeView.bmp" />
+	  <None Remove="MultiColumnComboBox.bmp" />
+	  <None Remove="RadioButtonList.bmp" />
+	  <None Remove="UserControlComboBox.bmp" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\EWSListControls.png" Link="EWSListControls.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="ReadMe.txt">
+			<Pack>true</Pack>
+			<PackagePath>\</PackagePath>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
+		<Reference Include="System.Design" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="AutoCompleteComboBox.bmp" />
+	  <EmbeddedResource Include="CheckBoxList.bmp" />
+	  <EmbeddedResource Include="ClickableLabel.bmp" />
+	  <EmbeddedResource Include="DataGridViewControls\ImageListColumn.bmp" />
+	  <EmbeddedResource Include="DataGridViewControls\IndicatorColumn.bmp" />
+	  <EmbeddedResource Include="DataGridViewControls\MultiColumnComboBoxColumn.bmp" />
+	  <EmbeddedResource Include="DataGridViewControls\RatingColumn.bmp" />
+	  <EmbeddedResource Include="DataGridViewControls\UserControlComboBoxColumn.bmp" />
+	  <EmbeddedResource Include="DataList.bmp" />
+	  <EmbeddedResource Include="DataNavigator.bmp" />
+	  <EmbeddedResource Include="ExtendedTreeView.bmp" />
+	  <EmbeddedResource Include="MultiColumnComboBox.bmp" />
+	  <EmbeddedResource Include="RadioButtonList.bmp" />
+	  <EmbeddedResource Include="UserControlComboBox.bmp" />
+	</ItemGroup>
+</Project>

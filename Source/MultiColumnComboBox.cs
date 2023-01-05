@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : MultiColumnComboBox.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/16/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/05/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a multi-column combo box control that supports all features of the standard Windows Forms
 // combo box but displays a multi-column drop-down list and has some extra features such as auto-completion and
@@ -39,7 +38,7 @@ namespace EWSoftware.ListControls
         //====================================================================
 
         private int dropDownWidth;
-        private DropDownTableStyle ddsDropDownFormat;
+        private readonly DropDownTableStyle ddsDropDownFormat;
         private StringCollection scColumnFilter;
 
         #endregion
@@ -56,10 +55,7 @@ namespace EWSoftware.ListControls
         /// show all columns in the data source by default with some basic style settings.</value>
 		[Category("DropDown"), Bindable(true), Description("The drop-down's formatting options"),
           DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        public DropDownTableStyle DropDownFormat
-        {
-            get { return ddsDropDownFormat; }
-        }
+        public DropDownTableStyle DropDownFormat => ddsDropDownFormat;
 
         /// <summary>
         /// Gets or sets the width of the of the drop-down portion of the combo box
@@ -71,7 +67,7 @@ namespace EWSoftware.ListControls
           "portion of the combo box")]
         public int DropDownWidth
         {
-            get { return dropDownWidth; }
+            get => dropDownWidth;
             set
             {
                 if(value < 0)
@@ -93,13 +89,13 @@ namespace EWSoftware.ListControls
         /// <code language="cs">
         /// cboVendor.DisplayMember = "VendorName";
         /// cboVendor.ValueMember = "VendorKey";
-        /// cboVendor.ColumnFilter.AddRange(new string[] { "VendorName", "Contact" });
+        /// cboVendor.ColumnFilter.AddRange(new[] { "VendorName", "Contact" });
         /// cboVendor.DataSource = GetVendors();
         /// </code>
         /// <code language="vbnet">
         /// cboVendor.DisplayMember = "VendorName"
         /// cboVendor.ValueMember = "VendorKey"
-        /// cboVendor.ColumnFilter.AddRange(New String() { "VendorName", "Contact" })
+        /// cboVendor.ColumnFilter.AddRange(New() { "VendorName", "Contact" })
         /// cboVendor.DataSource = GetVendors()
         /// </code>
         /// </example>
@@ -145,10 +141,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected virtual void OnDropDownWidthChanged(EventArgs e)
         {
-            var handler = DropDownWidthChanged;
-
-            if(handler != null)
-                handler(this, e);
+            DropDownWidthChanged?.Invoke(this, e);
         }
         #endregion
 
@@ -210,7 +203,7 @@ namespace EWSoftware.ListControls
             base.OnSelectedIndexChanged(e);
 
             if(this.DroppedDown)
-                ((MultiColumnDropDown)this.DropDownInterface).SelectItem(base.SelectedIndex);
+                ((MultiColumnDropDown)this.DropDownInterface).SelectItem(this.SelectedIndex);
         }
 
         /// <summary>
@@ -262,17 +255,20 @@ namespace EWSoftware.ListControls
         /// <remarks>If the drop-down is visible, it is scrolled instead</remarks>
         protected override void OnMouseWheel(MouseEventArgs e)
         {
+            if(e == null)
+                throw new ArgumentNullException(nameof(e));
+
             if(this.DroppedDown && this.DropDownStyle != ComboBoxStyle.Simple)
                 this.DropDownInterface.ScrollDropDown((e.Delta > 0) ? 0 - this.MaxDropDownItems : this.MaxDropDownItems);
             else
+            {
                 if(e.Delta > 0)
-                    base.HandleKeys(Keys.Up);
+                    this.HandleKeys(Keys.Up);
                 else
-                    base.HandleKeys(Keys.Down);
+                    this.HandleKeys(Keys.Down);
+            }
 
-            HandledMouseEventArgs mea = e as HandledMouseEventArgs;
-
-            if(mea != null)
+            if(e is HandledMouseEventArgs mea)
                 mea.Handled = true;
 
             base.OnMouseWheel(e);

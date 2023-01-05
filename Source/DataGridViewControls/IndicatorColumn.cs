@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : IndicatorColumn.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/24/2014
-// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a data grid view column object that contains IndicatorCell objects
 //
@@ -42,6 +41,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         private List<bool> imageStates;
 
         private Cursor originalCursor;
+
         #endregion
 
         #region Properties
@@ -54,8 +54,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
           EditorBrowsable(EditorBrowsableState.Never)]
         public new Image Image
         {
-            get { return base.Image; }
-            set { base.Image = value; }
+            get => base.Image;
+            set => base.Image = value;
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
           EditorBrowsable(EditorBrowsableState.Never)]
         public new DataGridViewImageCellLayout ImageLayout
         {
-            get { return base.ImageLayout; }
+            get => base.ImageLayout;
             set { }
         }
 
@@ -75,7 +75,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         [Category("Behavior"), DefaultValue(null), Description("The image list to use for the column")]
         public ImageList ImageList
         {
-            get { return images; }
+            get => images;
             set
             {
                 if(images != value)
@@ -188,10 +188,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="e">The event arguments</param>
         protected internal virtual void OnMapValueToIndicators(MapIndicatorEventArgs e)
         {
-            var handler = MapValueToIndicators;
-
-            if(handler != null)
-                handler(this, e);
+            MapValueToIndicators?.Invoke(this, e);
         }
 
         /// <summary>
@@ -206,16 +203,14 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="e">The event arguments</param>
         protected internal virtual void OnIndicatorClicked(IndicatorClickEventArgs e)
         {
-            var handler = IndicatorClicked;
-
-            if(handler != null)
+            if(IndicatorClicked != null)
             {
                 // Reset the cursor.  If the user goes to another form, the cursor doesn't get reset after
                 // returning to the one containing the grid view.
-                if(base.DataGridView.Cursor != originalCursor)
-                    base.DataGridView.Cursor = originalCursor;
+                if(this.DataGridView.Cursor != originalCursor)
+                    this.DataGridView.Cursor = originalCursor;
 
-                handler(this, e);
+                IndicatorClicked.Invoke(this, e);
             }
         }
         #endregion
@@ -235,7 +230,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 if(originalCursor == null && base.DataGridView != null)
                     originalCursor = base.DataGridView.Cursor;
 
-                return (originalCursor != null) ? originalCursor : Cursors.Default;
+                return originalCursor ?? Cursors.Default;
             }
         }
 
@@ -246,8 +241,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="e">The event arguments</param>
         private void ImageList_RecreateHandle(object sender, EventArgs e)
         {
-            if(base.DataGridView != null)
-                base.DataGridView.InvalidateColumn(base.Index);
+            this.DataGridView?.InvalidateColumn(base.Index);
         }
 
         /// <summary>
@@ -271,8 +265,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// used as the on/off states for each image in the image list.</remarks>
         public IndicatorColumn()
         {
-            base.ValueType = typeof(object);
-            base.CellTemplate = new IndicatorCell();
+            this.ValueType = typeof(object);
+            this.CellTemplate = new IndicatorCell();
         }
         #endregion
 
@@ -335,9 +329,9 @@ namespace EWSoftware.ListControls.DataGridViewControls
             // If the underlying value is a set of bit flags, use them to set the image state
             if(this.IsBitFlags && (value is int || value is short))
             {
-                if(value is int)
+                if(value is int iv)
                 {
-                    cellValue = (int)value;
+                    cellValue = iv;
                     maxBit = 32;
                 }
                 else

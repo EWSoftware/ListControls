@@ -58,7 +58,7 @@ namespace ListControlDemoCS
 
             try
             {
-                using(var dbConn = new OleDbConnection(@"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=.\TestData.mdb"))
+                using(var dbConn = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\TestData.mdb"))
                 {
                     // Load some data for the demo
                     OleDbCommand cmd = new OleDbCommand("Select * From DemoTable Order By Label", dbConn);

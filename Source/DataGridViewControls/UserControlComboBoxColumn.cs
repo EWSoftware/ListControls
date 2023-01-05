@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : UserControlComboBoxColumn.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/24/2014
-// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a data grid view column object that hosts user control combo box cells
 //
@@ -17,6 +16,8 @@
 // ==============================================================================================================
 // 06/08/2007  EFW  Created the code
 //===============================================================================================================
+
+// Ignore Spelling: typeof
 
 using System;
 using System.ComponentModel;
@@ -33,6 +34,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         //=====================================================================
 
         private Type dropDownControl;
+
         #endregion
 
         #region Properties
@@ -58,7 +60,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
           DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Type DropDownControl
         {
-            get { return dropDownControl; }
+            get => dropDownControl;
             set
             {
                 if(dropDownControl != value)
@@ -80,7 +82,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// </summary>
         public UserControlComboBoxColumn() : base(new UserControlComboBoxCell())
         {
-            base.ComboBoxCellTemplate.TemplateComboBoxColumn = this;
+            this.ComboBoxCellTemplate.TemplateComboBoxColumn = this;
         }
         #endregion
 
@@ -106,7 +108,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         public override string ToString()
         {
             return String.Format(CultureInfo.CurrentCulture, "UserControlComboBoxColumn {{ Name={0}, Index={1} }}",
-                base.Name, base.Index);
+                this.Name, this.Index);
         }
         #endregion
     }

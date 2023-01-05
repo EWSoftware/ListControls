@@ -217,6 +217,8 @@ namespace ListControlDemoCS
                 tvItems.Nodes.Add(tnNode);
                 row = LoadItems(row, tnNode);
             }
+
+            btnSelect.Enabled = false;
         }
 
         /// <summary>

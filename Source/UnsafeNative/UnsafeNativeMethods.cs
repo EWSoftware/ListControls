@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : UnsafeNativeMethods.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/19/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains the class that is used for access to some Win32 API functions and for access to the
 // Windows XP theme API.
@@ -132,9 +131,9 @@ namespace EWSoftware.ListControls.UnsafeNative
         /// <returns>The 32-bit thumb position of the requested scrollbar</returns>
         internal static int ScrollThumbPosition(IntPtr handle, int scrollBar)
         {
-            SCROLLINFO scrollInfo = new SCROLLINFO();
-            scrollInfo.fMask = 0x10;
-            UnsafeNativeMethods.GetScrollInfo(handle, scrollBar, scrollInfo);
+            SCROLLINFO scrollInfo = new SCROLLINFO { fMask = 0x10 };
+
+            GetScrollInfo(handle, scrollBar, scrollInfo);
             return scrollInfo.nTrackPos;
         }
         #endregion

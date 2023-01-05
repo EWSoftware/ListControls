@@ -79,7 +79,7 @@ namespace ListControlDemoCS
         private void CreateDataSource()
         {
             // The test database should be in the project folder
-            dbConn = new OleDbConnection(@"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=.\TestData.mdb");
+            dbConn = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\TestData.mdb");
             daAddresses = new OleDbDataAdapter();
             daPhones = new OleDbDataAdapter();
             dsAddresses = new DataSet();

@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : BaseComboBoxColumn.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/22/2014
-// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a data grid view column object that acts as an abstract base class for the combo box
 // columns derived from it.
@@ -44,10 +43,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <summary>
         /// This is used internally to get a reference to the cell template as the actual type
         /// </summary>
-        protected BaseComboBoxCell ComboBoxCellTemplate
-        {
-            get { return (BaseComboBoxCell)base.CellTemplate; }
-        }
+        protected BaseComboBoxCell ComboBoxCellTemplate => (BaseComboBoxCell)base.CellTemplate;
 
         /// <summary>
         /// Gets or sets the template used to create new cells
@@ -57,7 +53,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override DataGridViewCell CellTemplate
         {
-            get { return base.CellTemplate; }
+            get => base.CellTemplate;
             set
             {
                 BaseComboBoxCell cell = value as BaseComboBoxCell;
@@ -470,11 +466,11 @@ namespace EWSoftware.ListControls.DataGridViewControls
 		[Category("Behavior"), DefaultValue(0), Description("The index to use as a default selection")]
         public int DefaultSelection
         {
-            get { return defaultSelection; }
+            get => defaultSelection;
             set
             {
                 if(value < 0)
-                    throw new ArgumentOutOfRangeException("value", value, LR.GetString("ExNegativeDefSel"));
+                    throw new ArgumentOutOfRangeException(nameof(value), value, LR.GetString("ExNegativeDefSel"));
 
                 defaultSelection = value;
             }

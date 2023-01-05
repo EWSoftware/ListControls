@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : RadioButtonList.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/19/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a single-selection radio button list that supports data
 // binding, layout options, and data source indexers.
@@ -39,6 +38,7 @@ namespace EWSoftware.ListControls
         //====================================================================
 
         private bool inSelectedIndex;
+
         #endregion
 
         #region Properties
@@ -61,7 +61,7 @@ namespace EWSoftware.ListControls
         /// than the number of items in the collection.</exception>
         public override int SelectedIndex
         {
-            get { return base.SelectedIndex; }
+            get => base.SelectedIndex;
             set
             {
                 RadioButton rb;
@@ -73,18 +73,24 @@ namespace EWSoftware.ListControls
                         return;
 
                     if(value < -1 || value >= this.Items.Count)
-                        throw new ArgumentOutOfRangeException("value", value, LR.GetString("ExItemIndexOutOfRange"));
+                        throw new ArgumentOutOfRangeException(nameof(value), value, LR.GetString("ExItemIndexOutOfRange"));
 
                     // If a default selection is being enforced, use it as long as it is valid
                     if(value == -1 && this.EnforceDefaultSelection)
+                    {
                         if(this.DefaultSelection < this.Items.Count && (base.DataManager == null ||
                           base.DataManager.Count != 0))
+                        {
                             value = this.DefaultSelection;
+                        }
                         else
+                        {
                             if(base.DataManager != null)
                                 value = base.DataManager.Count - 1;
                             else
                                 value = this.Items.Count - 1;
+                        }
+                    }
 
                     inSelectedIndex = true;
                     oldValue = base.SelectedIndex;
@@ -95,6 +101,7 @@ namespace EWSoftware.ListControls
 
                     // Give focus to the selected radio button or clear the selected radio button's checked state
                     if(!this.IsInitializing)
+                    {
                         if(value != -1)
                         {
                             rb = (RadioButton)this.ButtonPanel.Controls[value];
@@ -102,11 +109,14 @@ namespace EWSoftware.ListControls
                             rb.Checked = true;
                         }
                         else
+                        {
                             if(oldValue != -1 && oldValue < this.Items.Count)
                             {
                                 rb = (RadioButton)this.ButtonPanel.Controls[oldValue];
                                 rb.Checked = false;
                             }
+                        }
+                    }
 
                     inSelectedIndex = false;
                 }
@@ -119,7 +129,7 @@ namespace EWSoftware.ListControls
         /// <value>The default is to show them as normal radio buttons.</value>
         public override Appearance Appearance
         {
-            get { return base.Appearance; }
+            get => base.Appearance;
             set
             {
                 foreach(Control c in this.ButtonPanel.Controls)
@@ -135,7 +145,7 @@ namespace EWSoftware.ListControls
         /// <value>The default alignment is <c>MiddleLeft</c></value>
         public override ContentAlignment CheckAlign
         {
-            get { return base.CheckAlign; }
+            get => base.CheckAlign;
             set
             {
                 foreach(Control c in this.ButtonPanel.Controls)

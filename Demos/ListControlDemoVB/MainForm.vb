@@ -42,7 +42,7 @@ Public Partial Class MainForm
         End If
 
         Try
-            Using dbConn As New OleDbConnection("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=.\TestData.mdb")
+            Using dbConn As New OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\TestData.mdb")
                 ' Load the menu data
                 Dim cmd As New OleDbCommand("Select * From DemoInfo Order By DemoOrder, DemoName", dbConn)
                 cmd.CommandType = CommandType.Text

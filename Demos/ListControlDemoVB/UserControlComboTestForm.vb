@@ -44,7 +44,7 @@ Public Partial Class UserControlComboTestForm
         productData = New DataSet()
 
         Try
-            Using dbConn As New OleDbConnection("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=.\TestData.mdb")
+            Using dbConn As New OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\TestData.mdb")
                 ' Load some data for the demo
                 Dim cmd As New OleDbCommand("Select * From DemoTable Order By Label", dbConn)
                 cmd.CommandType = CommandType.Text

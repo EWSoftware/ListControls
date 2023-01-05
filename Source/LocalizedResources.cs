@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : LocalizedResources.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/16/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains some internal classes used to manage the localized resources for the assembly
 //
@@ -41,7 +40,7 @@ namespace EWSoftware.ListControls
         private static ResourceManager rm;
 
         // This is a helper object used to quickly lock the class when creating the resource manager
-        private static object syncRoot = new Object();
+        private static readonly object syncRoot = new Object();
 
         #endregion
 
@@ -87,12 +86,7 @@ namespace EWSoftware.ListControls
         /// "[?:&lt;key&gt;]" if not found.</returns>
         internal static string GetString(string name)
         {
-            string s = Resources.GetString(name, null);
-
-            if(s == null)
-                s = String.Format(CultureInfo.CurrentCulture, "[?:{0}]", name);
-
-            return s;
+            return Resources.GetString(name, null) ?? $"[?:{name}]";
         }
 
         /// <summary>

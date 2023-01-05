@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : RatingCell.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/24/2014
-// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a data grid view cell object that shows a set of images (stars by default) that represent
 // a rating similar to the one found in Windows Media Player.
@@ -35,6 +34,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         //=====================================================================
 
         private int keyRating;
+
         #endregion
 
         #region Properties
@@ -95,7 +95,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 return new Size(-1, -1);
 
             if(cellStyle == null)
-                throw new ArgumentNullException("cellStyle");
+                throw new ArgumentNullException(nameof(cellStyle));
 
             if(constraintSize.Width == 0)
             {
@@ -194,9 +194,9 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// held down, otherwise false.</returns>
         protected override bool KeyDownUnsharesRow(KeyEventArgs e, int rowIndex)
         {
-            return (((e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9) || e.KeyCode == Keys.Add ||
+            return e != null && ((e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9) || e.KeyCode == Keys.Add ||
                 e.KeyCode == Keys.Subtract || e.KeyCode == Keys.Oemplus || e.KeyCode == Keys.OemMinus) &&
-                !e.Alt && !e.Control && (!e.Shift || (e.Shift && e.KeyCode == Keys.Oemplus)));
+                !e.Alt && !e.Control && (!e.Shift || (e.Shift && e.KeyCode == Keys.Oemplus));
         }
 
         /// <summary>
@@ -208,7 +208,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <returns>True if a digit 0 through 9 or + or - is released, otherwise false</returns>
         protected override bool KeyUpUnsharesRow(KeyEventArgs e, int rowIndex)
         {
-            return ((e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9) || e.KeyCode == Keys.Add ||
+            return e != null && ((e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9) || e.KeyCode == Keys.Add ||
                 e.KeyCode == Keys.Subtract || e.KeyCode == Keys.Oemplus || e.KeyCode == Keys.OemMinus);
         }
 
@@ -218,20 +218,21 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="e">The event arguments</param>
         protected override void OnContentClick(DataGridViewCellEventArgs e)
         {
-            RatingColumn owner = base.OwningColumn as RatingColumn;
             int rating;
             object newValue = this.NewValue;
 
             if(keyRating != -1)
                 rating = keyRating;
             else
+            {
                 if(this.MouseRating != -1)
                     rating = this.MouseRating + 1;
                 else
                     rating = -1;
+            }
 
-            if(!base.ReadOnly && base.DataGridView != null && owner != null && rating != -1 &&
-              rating <= owner.MaximumRating)
+            if(e != null && !this.ReadOnly && this.DataGridView != null &&
+              this.OwningColumn is RatingColumn owner && rating != -1 && rating <= owner.MaximumRating)
             {
                 // Let the user map the rating to a cell value
                 MapRatingEventArgs mapArgs = new MapRatingEventArgs(e.ColumnIndex, e.RowIndex, rating, rating);
@@ -250,8 +251,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
                         else
                             this.NewValue = mapArgs.Value;
 
-                base.DataGridView.NotifyCurrentCellDirty(true);
-                base.DataGridView.InvalidateCell(this);
+                this.DataGridView.NotifyCurrentCellDirty(true);
+                this.DataGridView.InvalidateCell(this);
             }
         }
 
@@ -262,11 +263,13 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="rowIndex">The index of the row containing the cell</param>
         protected override void OnKeyDown(KeyEventArgs e, int rowIndex)
         {
-            if(base.DataGridView != null && ((e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9) ||
+            if(e != null && this.DataGridView != null && ((e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9) ||
               e.KeyCode == Keys.Add || e.KeyCode == Keys.Subtract || e.KeyCode == Keys.Oemplus ||
               e.KeyCode == Keys.OemMinus) && !e.Alt && !e.Control &&
               (!e.Shift || (e.Shift && e.KeyCode == Keys.Oemplus)))
+            {
                 e.Handled = true;
+            }
         }
 
         /// <summary>
@@ -282,7 +285,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         {
             object cellValue;
 
-            if(base.DataGridView != null && ((e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9) ||
+            if(e != null && this.DataGridView != null && ((e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9) ||
               e.KeyCode == Keys.Add || e.KeyCode == Keys.Subtract || e.KeyCode == Keys.Oemplus ||
               e.KeyCode == Keys.OemMinus) && !e.Alt && !e.Control &&
               (!e.Shift || (e.Shift && e.KeyCode == Keys.Oemplus)))
@@ -291,21 +294,23 @@ namespace EWSoftware.ListControls.DataGridViewControls
                     keyRating = (int)(e.KeyCode - Keys.D0);
                 else
                 {
-                    if(base.IsInEditMode)
+                    if(this.IsInEditMode)
                         cellValue = this.NewValue;
                     else
-                        cellValue = base.GetValue(rowIndex);
+                        cellValue = this.GetValue(rowIndex);
 
-                    if(cellValue is int)
-                        keyRating = (int)cellValue;
+                    if(cellValue is int iv)
+                        keyRating = iv;
                     else
-                        if(cellValue is short)
-                            keyRating = (short)cellValue;
+                    {
+                        if(cellValue is short sv)
+                            keyRating = sv;
+                    }
 
                     // Let the user map the value to a rating
-                    MapRatingEventArgs mapArgs = new MapRatingEventArgs(base.ColumnIndex, rowIndex, cellValue,
+                    MapRatingEventArgs mapArgs = new MapRatingEventArgs(this.ColumnIndex, rowIndex, cellValue,
                         keyRating);
-                    ((RatingColumn)base.OwningColumn).OnMapValueToRating(mapArgs);
+                    ((RatingColumn)this.OwningColumn).OnMapValueToRating(mapArgs);
 
                     if(e.KeyCode == Keys.Add || e.KeyCode == Keys.Oemplus)
                         keyRating = mapArgs.Rating + 1;
@@ -313,11 +318,11 @@ namespace EWSoftware.ListControls.DataGridViewControls
                         keyRating = mapArgs.Rating - 1;
                 }
 
-                DataGridViewCellEventArgs args = new DataGridViewCellEventArgs(base.ColumnIndex, rowIndex);
-                base.RaiseCellClick(args);
+                DataGridViewCellEventArgs args = new DataGridViewCellEventArgs(this.ColumnIndex, rowIndex);
+                this.RaiseCellClick(args);
 
-                if(base.ColumnIndex < base.DataGridView.Columns.Count && rowIndex < base.DataGridView.Rows.Count)
-                    base.RaiseCellContentClick(args);
+                if(this.ColumnIndex < this.DataGridView.Columns.Count && rowIndex < this.DataGridView.Rows.Count)
+                    this.RaiseCellContentClick(args);
 
                 e.Handled = true;
                 keyRating = -1;
@@ -330,10 +335,10 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="e">The event arguments</param>
         protected override void OnMouseMove(DataGridViewCellMouseEventArgs e)
         {
-            RatingColumn owner = base.OwningColumn as RatingColumn;
-            Rectangle content = base.GetContentBounds(e.RowIndex);
-            Cursor newCursor = null;
+            if(e == null)
+                throw new ArgumentNullException(nameof(e));
 
+            Rectangle content = this.GetContentBounds(e.RowIndex);
             int index, width, lastMouseRating = this.MouseRating;
 
             base.OnMouseMove(e);
@@ -341,9 +346,9 @@ namespace EWSoftware.ListControls.DataGridViewControls
             this.MouseRating = -1;
 
             // Figure out if the mouse is actually over an image
-            if(owner != null && !base.ReadOnly)
+            if(this.OwningColumn is RatingColumn owner && !this.ReadOnly)
             {
-                newCursor = owner.OriginalCursor;
+                Cursor newCursor = owner.OriginalCursor;
 
                 if(content.Contains(e.Location))
                 {
@@ -358,13 +363,13 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 }
 
                 // Update the cursor if necessary and redraw the cell
-                if(base.DataGridView != null)
+                if(this.DataGridView != null)
                 {
-                    if(newCursor != null && base.DataGridView.Cursor != newCursor)
-                        base.DataGridView.Cursor = newCursor;
+                    if(newCursor != null && this.DataGridView.Cursor != newCursor)
+                        this.DataGridView.Cursor = newCursor;
 
                     if(this.MouseRating != lastMouseRating)
-                        base.DataGridView.InvalidateCell(e.ColumnIndex, e.RowIndex);
+                        this.DataGridView.InvalidateCell(e.ColumnIndex, e.RowIndex);
                 }
             }
         }
@@ -375,14 +380,14 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="rowIndex">The row index of the cell</param>
         protected override void OnMouseLeave(int rowIndex)
         {
-            RatingColumn owner = base.OwningColumn as RatingColumn;
-
-            if(!base.ReadOnly && owner != null && base.DataGridView.Cursor != owner.OriginalCursor)
-                base.DataGridView.Cursor = owner.OriginalCursor;
+            if(!this.ReadOnly && this.OwningColumn is RatingColumn owner && this.DataGridView.Cursor != owner.OriginalCursor)
+                this.DataGridView.Cursor = owner.OriginalCursor;
 
             this.MouseRating = -1;
+            
             base.OnMouseLeave(rowIndex);
-            base.DataGridView.InvalidateCell(base.ColumnIndex, rowIndex);
+            
+            this.DataGridView.InvalidateCell(this.ColumnIndex, rowIndex);
         }
 
         /// <summary>
@@ -393,15 +398,15 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <returns>The image that should be displayed in the cell</returns>
         protected override object GetCellImage(object value, int rowIndex)
         {
-            RatingColumn owner = base.OwningColumn as RatingColumn;
-
             // If this is a shared cell, we don't want to draw hot images as they may end up in several places.
             // As such, only draw them if the mouse is in the cell being drawn.
-            Point mouseCell = DataGridViewHelper.MouseEnteredCellAddress(base.DataGridView);
+            Point mouseCell = DataGridViewHelper.MouseEnteredCellAddress(this.DataGridView);
 
-            if(owner != null)
+            if(this.OwningColumn is RatingColumn owner)
+            {
                 return owner.DrawImage(value, rowIndex,
                     (mouseCell.X == owner.Index && mouseCell.Y == rowIndex) ? this.MouseRating : -1);
+            }
 
             return null;
         }

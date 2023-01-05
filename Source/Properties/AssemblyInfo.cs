@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : AssemblyInfo.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 11/25/2020
-// Note    : Copyright 2005-2020, Eric Woodruff, All rights reserved
+// Updated : 01/04/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // Window Forms list controls library attributes
 //
@@ -24,22 +24,10 @@
 
 using System;
 using System.Reflection;
-using System.Resources;
 using System.Runtime.InteropServices;
 
 // General assembly information
-[assembly: AssemblyProduct("EWSoftware Windows Forms List Controls")]
 [assembly: AssemblyTitle("EWSoftware Windows Forms List Controls")]
-[assembly: AssemblyDescription("Several combo box controls with extra abilities, a radio button list control, " +
-    "a checkbox list control, a data navigator control, and a template-based data list control.")]
-[assembly: AssemblyCompany("Eric Woodruff")]
-[assembly: AssemblyCopyright("Copyright \xA9 2004-2020, Eric Woodruff, All Rights Reserved")]
-[assembly: AssemblyCulture("")]
-#if DEBUG
-[assembly: AssemblyConfiguration("Debug")]
-#else
-[assembly: AssemblyConfiguration("Release")]
-#endif
 
 // The assembly is CLS compliant
 [assembly: CLSCompliant(true)]
@@ -47,8 +35,9 @@ using System.Runtime.InteropServices;
 // Not visible to COM
 [assembly: ComVisible(false)]
 
-// Resources contained within the assembly are English
-[assembly: NeutralResourcesLanguageAttribute("en")]
+#if NET6_0_OR_GREATER
+[assembly: System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
 
 // Version numbers.  All version numbers for an assembly consists of the following four values:
 //
@@ -63,16 +52,16 @@ using System.Runtime.InteropServices;
 // This is used to set the assembly version in the strong name.  This should remain unchanged to maintain binary
 // compatibility with prior releases.  It should only be changed if a breaking change is made that requires
 // assemblies that reference older versions to be recompiled against the newer version.
-[assembly: AssemblyVersion("2020.11.25.0")]
+[assembly: AssemblyVersion("2023.1.4.0")]
 
 // Common assembly file version
 //
 // This is used to set the assembly file version.  This will change with each new release.  MSIs only support a
 // Major value between 0 and 255 so we drop the century from the year on this one.
-[assembly: AssemblyFileVersion("20.11.25.0")]
+[assembly: AssemblyFileVersion("23.1.4.0")]
 
 // Common product version
 //
 // This may contain additional text to indicate Alpha or Beta states.  The version number will always match the
 // file version above but includes the century on the year.
-[assembly: AssemblyInformationalVersion("2020.11.25.0")]
+[assembly: AssemblyInformationalVersion("2023.1.4.0")]

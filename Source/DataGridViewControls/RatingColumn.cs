@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : RatingColumn.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/24/2014
-// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a data grid view column object that contains RatingCell objects
 //
@@ -40,7 +39,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         private const string ResourcePath = "EWSoftware.ListControls.Images.";
 
         // The internal image list
-        private static ImageList ilStars;
+        private static readonly ImageList ilStars;
 
         // The cell image and custom image list
         private Bitmap cellImage;
@@ -49,6 +48,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         private int maxRating;
 
         private Cursor originalCursor;
+
         #endregion
 
         #region Properties
@@ -61,8 +61,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
           EditorBrowsable(EditorBrowsableState.Never)]
         public new Image Image
         {
-            get { return base.Image; }
-            set { base.Image = value; }
+            get => base.Image;
+            set => base.Image = value;
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
           EditorBrowsable(EditorBrowsableState.Never)]
         public new DataGridViewImageCellLayout ImageLayout
         {
-            get { return base.ImageLayout; }
+            get => base.ImageLayout;
             set { }
         }
 
@@ -83,19 +83,15 @@ namespace EWSoftware.ListControls.DataGridViewControls
         [Category("Appearance"), DefaultValue(5), Description("The maximum rating and thus images drawn in the cells")]
         public int MaximumRating
         {
-            get { return maxRating; }
+            get => maxRating;
             set
             {
                 maxRating = value;
-
-                if(cellImage != null)
-                    cellImage.Dispose();
-
+                cellImage?.Dispose();
                 cellImage = null;
 
-                if(base.DataGridView != null)
-                    DataGridViewHelper.OnColumnCommonChange(
-                        base.DataGridView, base.Index);
+                if(this.DataGridView != null)
+                    DataGridViewHelper.OnColumnCommonChange(this.DataGridView, this.Index);
             }
         }
 
@@ -108,7 +104,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         [Category("Behavior"), DefaultValue(null), Description("The image list to use for the column")]
         public ImageList ImageList
         {
-            get { return images; }
+            get => images;
             set
             {
                 if(images != value)
@@ -123,10 +119,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
                     }
 
                     images = value;
-
-                    if(cellImage != null)
-                        cellImage.Dispose();
-
+                    cellImage?.Dispose();
                     cellImage = null;
 
                     if(value != null)
@@ -135,8 +128,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
                         images.Disposed += disposeList;
                     }
 
-                    if(base.DataGridView != null)
-                        DataGridViewHelper.OnColumnCommonChange(base.DataGridView, base.Index);
+                    if(this.DataGridView != null)
+                        DataGridViewHelper.OnColumnCommonChange(this.DataGridView, this.Index);
                 }
             }
         }
@@ -157,10 +150,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="e">The event arguments</param>
         protected internal virtual void OnMapValueToRating(MapRatingEventArgs e)
         {
-            var handler = MapValueToRating;
-
-            if(handler != null)
-                handler(this, e);
+            MapValueToRating?.Invoke(this, e);
         }
 
         /// <summary>
@@ -175,10 +165,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="e">The event arguments</param>
         protected internal virtual void OnMapRatingToValue(MapRatingEventArgs e)
         {
-            var handler = MapRatingToValue;
-
-            if(handler != null)
-                handler(this, e);
+            MapRatingToValue?.Invoke(this, e);
         }
         #endregion
 
@@ -192,8 +179,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         {
             Assembly asm = Assembly.GetExecutingAssembly();
 
-            ilStars = new ImageList();
-            ilStars.ImageSize = new Size(14, 14);
+            ilStars = new ImageList { ImageSize = new Size(14, 14) };
 
             ilStars.Images.Add(new Bitmap(asm.GetManifestResourceStream(ResourcePath + "RatingStarEmpty.png")),
                 Color.Magenta);
@@ -215,17 +201,14 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 if(originalCursor == null && base.DataGridView != null)
                     originalCursor = base.DataGridView.Cursor;
 
-                return (originalCursor != null) ? originalCursor : Cursors.Default;
+                return originalCursor ?? Cursors.Default;
             }
         }
 
         /// <summary>
         /// Return the user-supplied image list if not null or the default image list if it is null
         /// </summary>
-        internal ImageList ImageListInternal
-        {
-            get { return (images == null) ? ilStars : images; }
-        }
+        internal ImageList ImageListInternal => images ?? ilStars;
 
         /// <summary>
         /// Invalidate the column when the image list handle is recreated
@@ -234,8 +217,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="e">The event arguments</param>
         private void ImageList_RecreateHandle(object sender, EventArgs e)
         {
-            if(base.DataGridView != null)
-                base.DataGridView.InvalidateColumn(base.Index);
+            this.DataGridView?.InvalidateColumn(this.Index);
         }
 
         /// <summary>
@@ -290,8 +272,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <returns>A string description of the column</returns>
         public override string ToString()
         {
-            return String.Format(CultureInfo.CurrentCulture, "RatingColumn {{ Name={0}, Index={1} }}",
-                base.Name, base.Index);
+            return $"RatingColumn {{ Name={this.Name}, Index={this.Index} }}";
         }
 
         /// <summary>
@@ -311,11 +292,13 @@ namespace EWSoftware.ListControls.DataGridViewControls
             if(cellImage == null)
                 cellImage = new Bitmap(width * maxRating, imageList.ImageSize.Height);
 
-            if(value is int)
-                cellValue = (int)value;
+            if(value is int iv)
+                cellValue = iv;
             else
-                if(value is short)
-                    cellValue = (short)value;
+            {
+                if(value is short sv)
+                    cellValue = sv;
+            }
 
             // Let the user map the value to a rating
             MapRatingEventArgs mapArgs = new MapRatingEventArgs(base.Index, rowIndex, value, cellValue);

@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : MultiColumnComboBoxCell.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/22/2014
-// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/04/2023
+// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a base data grid view cell class that contains various common properties and methods used
 // by its derived classes.
@@ -210,7 +209,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
           TextFormatFlags flags, DataGridViewCellStyle cellStyle)
         {
             if(cellStyle == null)
-                throw new ArgumentNullException("cellStyle");
+                throw new ArgumentNullException(nameof(cellStyle));
 
             Point point = new Point(0, 0);
             DataGridViewContentAlignment alignment = cellStyle.Alignment;
@@ -327,10 +326,10 @@ namespace EWSoftware.ListControls.DataGridViewControls
             Rectangle rect;
 
             if(g == null)
-                throw new ArgumentNullException("g");
+                throw new ArgumentNullException(nameof(g));
 
             if(cellStyle == null)
-                throw new ArgumentNullException("cellStyle");
+                throw new ArgumentNullException(nameof(cellStyle));
 
             if(rightToLeft)
             {

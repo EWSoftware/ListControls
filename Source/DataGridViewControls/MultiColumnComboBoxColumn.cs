@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : MultiColumnComboBoxColumn.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/24/2014
-// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/05/2023
+// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a data grid view column object that hosts multi-column combo box cells
 //
@@ -21,7 +20,6 @@
 using System;
 using System.ComponentModel;
 using System.Drawing.Design;
-using System.Globalization;
 using System.Windows.Forms;
 
 namespace EWSoftware.ListControls.DataGridViewControls
@@ -75,10 +73,10 @@ namespace EWSoftware.ListControls.DataGridViewControls
         {
             get
             {
-                if(base.ComboBoxCellTemplate == null)
+                if(this.ComboBoxCellTemplate == null)
                     throw new InvalidOperationException(LR.GetString("ExCellTemplateRequired"));
 
-                return ((MultiColumnComboBoxCell)base.ComboBoxCellTemplate).DropDownWidth;
+                return ((MultiColumnComboBoxCell)this.ComboBoxCellTemplate).DropDownWidth;
             }
             set
             {
@@ -86,21 +84,21 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 MultiColumnComboBoxCell cell;
                 int count, idx;
 
-                if(base.ComboBoxCellTemplate == null)
+                if(this.ComboBoxCellTemplate == null)
                     throw new InvalidOperationException(LR.GetString("ExCellTemplateRequired"));
 
                 if(this.DropDownWidth != value)
                 {
-                    ((MultiColumnComboBoxCell)base.ComboBoxCellTemplate).DropDownWidth = value;
+                    ((MultiColumnComboBoxCell)this.ComboBoxCellTemplate).DropDownWidth = value;
 
-                    if(base.DataGridView != null)
+                    if(this.DataGridView != null)
                     {
-                        rows = base.DataGridView.Rows;
+                        rows = this.DataGridView.Rows;
                         count = rows.Count;
 
                         for(idx = 0; idx < count; idx++)
                         {
-                            cell = rows.SharedRow(idx).Cells[base.Index] as MultiColumnComboBoxCell;
+                            cell = rows.SharedRow(idx).Cells[this.Index] as MultiColumnComboBoxCell;
 
                             if(cell != null)
                                 cell.DropDownWidth = value;
@@ -154,7 +152,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// </summary>
         public MultiColumnComboBoxColumn() : base(new MultiColumnComboBoxCell())
         {
-            base.ComboBoxCellTemplate.TemplateComboBoxColumn = this;
+            this.ComboBoxCellTemplate.TemplateComboBoxColumn = this;
         }
         #endregion
 
@@ -168,6 +166,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         public override object Clone()
         {
             MultiColumnComboBoxColumn clone = (MultiColumnComboBoxColumn)base.Clone();
+
             clone.ColumnHeadersVisible = this.ColumnHeadersVisible;
             clone.RowHeadersVisible = this.RowHeadersVisible;
             clone.DefaultNullText = this.DefaultNullText;
@@ -184,8 +183,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <returns>A string description of the column</returns>
         public override string ToString()
         {
-            return String.Format(CultureInfo.CurrentCulture, "MultiColumnComboBoxColumn {{ Name={0}, Index={1} }}",
-                base.Name, base.Index);
+            return $"MultiColumnComboBoxColumn {{ Name={this.Name}, Index={this.Index} }}";
         }
         #endregion
     }
