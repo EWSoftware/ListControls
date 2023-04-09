@@ -2,7 +2,7 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : BaseComboBox.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
+// Updated : 04/09/2023
 // Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains an abstract base class for use in creating the MultiColumnComboBox and UserControlComboBox
@@ -289,8 +289,8 @@ namespace EWSoftware.ListControls
         /// <summary>
         /// This property is used to set or get the drop-down's font
         /// </summary>
-        [Category("DropDown"), Bindable(true), DefaultValue(typeof(Font), "Microsoft Sans Serif, 7.8pt"),
-         Description("The font to use in the drop-down portion of the combo box")]
+        [Category("DropDown"), Bindable(true),
+          Description("The font to use in the drop-down portion of the combo box")]
         public Font DropDownFont
         {
             get => dropDownFont;
@@ -887,6 +887,14 @@ namespace EWSoftware.ListControls
 
         #region Private class methods and event handlers
         //=====================================================================
+
+        /// <summary>
+        /// Determine whether or not to serialize the dropdown font property value
+        /// </summary>
+        internal bool ShouldSerializeDropDownFont()
+        {
+            return this.Parent != null && !this.Parent.Font.Equals(this.DropDownFont);
+        }
 
         /// <summary>
         /// This is called by the drop-down control to hide the drop-down and select an item by index

@@ -2,9 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : AddressRow.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 10/01/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/06/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This is a sample row template control for the DataList demo
 //
@@ -55,10 +54,12 @@ namespace ListControlDemoCS
         {
             get
             {
-                if(MessageBox.Show(String.Format("Are you sure you want to delete the name '{0} {1}'?",
-                  txtFName.Text, txtLName.Text), "Data List Test", MessageBoxButtons.YesNo,
-                  MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.No)
+                if(MessageBox.Show($"Are you sure you want to delete the name '{txtFName.Text} {txtLName.Text}'?",
+                  "Data List Test", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+                  MessageBoxDefaultButton.Button2) == DialogResult.No)
+                {
                     return false;
+                }
 
                 return true;
             }

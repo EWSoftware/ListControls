@@ -2,9 +2,8 @@
 ' System  : EWSoftware Data List Control Demonstration Applications
 ' File    : TreeViewDropDown.vb
 ' Author  : Eric Woodruff  (Eric@EWoodruff.us)
-' Updated : 10/02/2014
-' Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-' Compiler: Microsoft Visual Basic .NET
+' Updated : 04/09/2023
+' Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 '
 ' This is a sample drop-down control for the UserControlComboBox demo
 '
@@ -18,10 +17,7 @@
 ' 10/27/2005  EFW  Created the code
 '================================================================================================================
 
-Imports System
-Imports System.Collections
 Imports System.Data
-Imports System.Windows.Forms
 
 Imports EWSoftware.ListControls
 
@@ -61,8 +57,9 @@ Public Partial Class TreeViewDropDown
         Dim tnChild As TreeNode
 
         Do While row < dvItems.Count AndAlso CType(dvItems(row)("CategoryName"), String) = tnRoot.Text
-            tnChild = New TreeNode(CType(dvItems(row)("ProductName"), String))
-            tnChild.Tag = dvItems(row)("ProductID")
+            tnChild = New TreeNode(CType(dvItems(row)("ProductName"), String)) With {
+                .Tag = dvItems(row)("ProductID")
+            }
 
             If CType(dvItems(row)("Discontinued"), Boolean) = True Then
                 tnChild.Text &= " (Discontinued)"
@@ -83,14 +80,16 @@ Public Partial Class TreeViewDropDown
         ' Determine the data source type in use by the demo form
         If ds Is Nothing Then
             For Each s In Me.ComboBox.Items
-                tn = New TreeNode(s)
-                tn.Tag = s
+                tn = New TreeNode(s) With {
+                    .Tag = s
+                }
                 tvItems.Nodes.Add(tn)
             Next
         ElseIf TypeOf(ds) Is ArrayList Then
             For Each li In Me.ComboBox.Items
-                tn = New TreeNode(li.Display)
-                tn.Tag = li.Value
+                tn = New TreeNode(li.Display) With {
+                    .Tag = li.Value
+                }
                 tvItems.Nodes.Add(tn)
             Next
         Else
@@ -112,8 +111,9 @@ Public Partial Class TreeViewDropDown
             Else
                 ' This is the one that doesn't contain categories
                 For idx = 0 To dvItems.Count - 1
-                    tn = New TreeNode(CType(dvItems(idx)("Label"), String))
-                    tn.Tag = dvItems(idx)("ListKey")
+                    tn = New TreeNode(CType(dvItems(idx)("Label"), String)) With {
+                        .Tag = dvItems(idx)("ListKey")
+                    }
                     tvItems.Nodes.Add(tn)
                 Next idx
             End If
@@ -153,7 +153,7 @@ Public Partial Class TreeViewDropDown
     End Sub
 
     ' Refresh the list based on the filter
-    Public Sub chkExcludeDiscontinued_CheckedChanged(sender As Object, e As System.EventArgs) _
+    Private Sub chkExcludeDiscontinued_CheckedChanged(sender As Object, e As System.EventArgs) _
         Handles chkExcludeDiscontinued.CheckedChanged
 
         Dim tnNode As TreeNode

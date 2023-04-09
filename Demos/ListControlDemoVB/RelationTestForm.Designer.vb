@@ -6,8 +6,12 @@ Partial Class RelationTestForm
     <System.Diagnostics.DebuggerNonUserCode()> _
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
-            If disposing AndAlso components IsNot Nothing Then
-                components.Dispose()
+            If disposing Then
+                dbConn?.Dispose()
+                daAddresses?.Dispose()
+                dsAddresses?.Dispose()
+                daPhones?.Dispose()
+                components?.Dispose()
             End If
         Finally
             MyBase.Dispose(disposing)

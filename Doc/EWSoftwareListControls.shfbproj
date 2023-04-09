@@ -24,10 +24,10 @@
     </HtmlHelp1xCompilerPath>
     <WorkingPath>
     </WorkingPath>
-    <FrameworkVersion>.NET Framework 4.0</FrameworkVersion>
+    <FrameworkVersion>.NET Core/.NET Standard/.NET 5.0+</FrameworkVersion>
     <HelpTitle>EWSoftware.ListControls Library Documentation</HelpTitle>
     <CopyrightHref>https://github.com/EWSoftware/ListControls</CopyrightHref>
-    <CopyrightText>[v{%40HelpFileVersion}] Copyright \xA9 2005-2020, Eric Woodruff, All Rights Reserved</CopyrightText>
+    <CopyrightText>[v{%40HelpFileVersion}] Copyright \xA9 2005-2023, Eric Woodruff, All Rights Reserved</CopyrightText>
     <FeedbackEMailAddress>Eric%40EWoodruff.us</FeedbackEMailAddress>
     <PresentationStyle>Default2022</PresentationStyle>
     <SyntaxFilters>Standard</SyntaxFilters>
@@ -48,7 +48,7 @@
 
 &lt;para&gt;This namespace contains designers for the list controls.&lt;/para&gt;</NamespaceSummaryItem>
     </NamespaceSummaries>
-    <HelpFileVersion>2023.1.4.0</HelpFileVersion>
+    <HelpFileVersion>2023.4.9.0</HelpFileVersion>
     <PlugInConfigurations>
       <PlugInConfig id="Output Deployment" enabled="True">
         <configuration deleteAfterDeploy="true" verboseLogging="false">
@@ -197,6 +197,7 @@
     <None Include="Content\VersionHistory\v1.0.0.0.aml" />
     <None Include="Content\VersionHistory\v2015.1.27.0.aml" />
     <None Include="Content\VersionHistory\v2020.11.25.0.aml" />
+    <None Include="Content\VersionHistory\v2023.4.9.0.aml" />
     <None Include="Content\VersionHistory\VersionHistory.aml" />
     <None Include="Content\VersionHistory\v2015.1.19.0.aml" />
     <None Include="Content\Welcome.aml" />

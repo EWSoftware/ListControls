@@ -4,7 +4,6 @@
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
 // Updated : 09/30/2014
 // Note    : Copyright 2006-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
 //
 // This file contains the enumerated type that defines the various node parts that are to be drawn for the
 // ExtendedTreeView control.

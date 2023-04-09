@@ -2,7 +2,7 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : BaseComboBoxCell.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
+// Updated : 04/09/2023
 // Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
 //
 // This file contains an data grid view cell object that acts as an abstract base class for the combo box cells
@@ -1984,15 +1984,17 @@ namespace EWSoftware.ListControls.DataGridViewControls
               value != DBNull.Value))
             {
                 if(value == null)
+                {
                     return base.GetFormattedValue(null, rowIndex, ref cellStyle, valueTypeConverter,
                         formattedValueTypeConverter, context);
+                }
 
-                if(base.DataGridView != null)
+                if(this.DataGridView != null)
                 {
                     DataGridViewDataErrorEventArgs e = new DataGridViewDataErrorEventArgs(new FormatException(
                         LR.GetString("ExInvalidCellValue")), base.ColumnIndex, rowIndex, context);
 
-                    base.RaiseDataError(e);
+                    this.RaiseDataError(e);
 
                     if(e.ThrowException)
                         throw e.Exception;
@@ -2012,16 +2014,18 @@ namespace EWSoftware.ListControls.DataGridViewControls
                     if(value == DBNull.Value)
                         displayValue = DBNull.Value;
                     else
-                        if(text != null && String.IsNullOrEmpty(text) && this.DisplayType == typeof(string))
+                    {
+                        if(text != null && String.IsNullOrWhiteSpace(text) && this.DisplayType == typeof(string))
                             displayValue = String.Empty;
                         else
-                            if(base.DataGridView != null)
+                        {
+                            if(this.DataGridView != null)
                             {
                                 DataGridViewDataErrorEventArgs e = new DataGridViewDataErrorEventArgs(
                                     new ArgumentException(LR.GetString("ExInvalidCellValue")), base.ColumnIndex,
                                     rowIndex, context);
 
-                                base.RaiseDataError(e);
+                                this.RaiseDataError(e);
 
                                 if(e.ThrowException)
                                     throw e.Exception;
@@ -2030,9 +2034,11 @@ namespace EWSoftware.ListControls.DataGridViewControls
                                 {
                                     IDataGridViewEditingControl editControl = (IDataGridViewEditingControl)this.EditingComboBox;
                                     editControl.EditingControlValueChanged = true;
-                                    base.DataGridView.NotifyCurrentCellDirty(true);
+                                    this.DataGridView.NotifyCurrentCellDirty(true);
                                 }
                             }
+                        }
+                    }
                 }
 
                 return base.GetFormattedValue(displayValue, rowIndex, ref cellStyle, this.DisplayTypeConverter,
@@ -2042,13 +2048,13 @@ namespace EWSoftware.ListControls.DataGridViewControls
             if(!this.Items.Contains(value) && value != DBNull.Value && (!(value is string) ||
               !String.IsNullOrEmpty(text)))
             {
-                if(base.DataGridView != null)
+                if(this.DataGridView != null)
                 {
                     DataGridViewDataErrorEventArgs e = new DataGridViewDataErrorEventArgs(
                         new ArgumentException(LR.GetString("ExInvalidCellValue")), base.ColumnIndex, rowIndex,
                         context);
 
-                    base.RaiseDataError(e);
+                    this.RaiseDataError(e);
 
                     if(e.ThrowException)
                         throw e.Exception;

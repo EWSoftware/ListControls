@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : UserControlDropDown.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/19/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 04/09/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a combo box drop-down form that handles the display of the user control for the user
 // control combo box.  Because this is a form, it does not support Simple mode.
@@ -33,12 +32,12 @@ namespace EWSoftware.ListControls
     /// Because it is a form, it does not support Simple mode.
 	/// </summary>
 	[ToolboxItem(false)]
-	internal class UserControlDropDown : System.Windows.Forms.Form, IDropDown
+	internal class UserControlDropDown : Form, IDropDown
 	{
         #region Private data members
         //=====================================================================
 
-        private UserControlComboBox owner;
+        private readonly UserControlComboBox owner;
         private DropDownControl ddControl;
         private int startIndex;
         private bool isCreating, hasInitialized;
@@ -56,30 +55,25 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <value>The combo box uses this to determine whether to fire the selection change committed or
         /// selection change canceled event when the drop-down is closed.</value>
-        public int StartIndex
-        {
-            get { return startIndex; }
-        }
+        public int StartIndex => startIndex;
 
         /// <summary>
         /// This returns a flag indicating whether or not the drop-down is currently being created
         /// </summary>
         /// <value>The combo box uses this to determine whether or not to refresh the sub-controls in certain
         /// situations.</value>
-        public bool IsCreating
-        {
-            get { return isCreating; }
-        }
+        public bool IsCreating => isCreating;
+
         #endregion
 
         #region Constructor
         //=====================================================================
 
         /// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="cb">The owner of the drop-down</param>
-		internal UserControlDropDown(UserControlComboBox cb)
+        /// Constructor
+        /// </summary>
+        /// <param name="cb">The owner of the drop-down</param>
+        internal UserControlDropDown(UserControlComboBox cb)
         {
             owner = cb;
 
@@ -88,12 +82,12 @@ namespace EWSoftware.ListControls
                 ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw, true);
             this.UpdateStyles();
 
-            this.ClientSize = new System.Drawing.Size(142, 122);
+            this.ClientSize = new Size(142, 122);
             this.ControlBox = false;
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
             this.Name = "UserControlDropDown";
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+            this.StartPosition = FormStartPosition.Manual;
             this.TopMost = true;
             this.BackColor = owner.DropDownBackColor;
 		}
@@ -158,8 +152,7 @@ namespace EWSoftware.ListControls
             dragOffset = Point.Empty;
 
             // Let the drop-down perform any initialization prior to display
-            if(ddControl != null)
-                ddControl.ShowDropDown();
+            ddControl?.ShowDropDown();
 
             if(this.Width < owner.Width)
                 this.Width = owner.Width;

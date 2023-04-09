@@ -2,7 +2,7 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : MultiColumnComboBoxCell.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/05/2023
+// Updated : 01/07/2023
 // Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a data grid view cell object that hosts a multi-column combo box
@@ -45,8 +45,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <summary>
         /// Gets or sets the width of the of the drop-down portion of the combo box
         /// </summary>
-        /// <value>If set to zero, it will default to an appropriate width based on the
-        /// <see cref="MultiColumnComboBox.DropDownFormat"/> options.</value>
+        /// <value>If set to zero, it will default to an appropriate width based on the dropdown formatting
+        /// options.</value>
         /// <exception cref="ArgumentException">This is thrown if the width is less than zero.</exception>
         public int DropDownWidth
         {
@@ -124,9 +124,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 // The default selection, format, and column filter values are stored at the column level
                 box.EnforceDefaultSelection = owner.EnforceDefaultSelection;
                 box.DefaultSelection = owner.DefaultSelection;
-                box.DropDownFormat.ColumnHeadersVisible = owner.ColumnHeadersVisible;
-                box.DropDownFormat.RowHeadersVisible = owner.RowHeadersVisible;
-                box.DropDownFormat.DefaultNullText = owner.DefaultNullText;
+                box.ColumnHeadersVisible = owner.ColumnHeadersVisible;
+                box.RowHeadersVisible = owner.RowHeadersVisible;
 
                 StringCollection columnFilter = owner.ColumnFilter;
 
@@ -171,6 +170,6 @@ namespace EWSoftware.ListControls.DataGridViewControls
         {
             return $"MultiColumnComboBoxCell {{ ColumnIndex={this.ColumnIndex}, RowIndex={this.RowIndex} }}";
         }
-        #endregion
+#endregion
     }
 }

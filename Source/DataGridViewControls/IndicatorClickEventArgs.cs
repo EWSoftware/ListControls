@@ -4,7 +4,6 @@
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
 // Updated : 07/24/2014
 // Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
 //
 // This file contains an event arguments class used to provide information about an image index that was clicked
 // in an indicator column.

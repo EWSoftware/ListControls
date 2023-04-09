@@ -112,9 +112,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// This gets the <see cref="StringCollection"/> used to filter the columns displayed by the drop-down
         /// portion of the combo box.
         /// </summary>
-        /// <value>This is a quick way to filter the drop-down to a specific set of columns without defining
-        /// column definitions using the <see cref="MultiColumnComboBox.DropDownFormat">DropDownFormat.GridColumnStyles</see>
-        /// property collection.  If empty, no filtering takes place.</value>
+        /// <value>This is a quick way to filter the drop-down to a specific set of columns without having to
+        /// specify column definitions.  If empty, no filtering takes place.</value>
         /// <example>
         /// <code language="cs">
         /// cbocVendor.DisplayMember = "VendorName";

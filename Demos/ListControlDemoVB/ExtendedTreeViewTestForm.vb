@@ -2,9 +2,8 @@
 ' System  : EWSoftware Data List Control Demonstration Applications
 ' File    : ExtendedTreeViewDemo.cs
 ' Author  : Eric Woodruff
-' Updated : 10/02/2014
-' Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
-' Compiler: Microsoft Visual C#
+' Updated : 04/09/2023
+' Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
 '
 ' This form is used to demonstrate the extended tree view control
 '
@@ -17,6 +16,8 @@
 ' ===============================================================================================================
 ' 03/02/2007  EFW  Created the code
 '================================================================================================================
+
+' Ignore Spelling: Fld
 
 Imports System.Drawing.Drawing2D
 
@@ -36,20 +37,19 @@ Public Class ExtendedTreeViewTestForm
 
         ' Only even numbered nodes gets an image
         For i = 0 To 2
-            tnFolder = tvExtTree.Nodes.Add("Fld" & i.ToString(), "Folder " & i.ToString(),
-                CType(IIf(i Mod 2 <> 0, -1, 0), Integer), CType(IIf(i Mod 2 <> 0, -1, 1), Integer))
+            tnFolder = tvExtTree.Nodes.Add($"Fld{i}", $"Folder {i}",
+                IIf(i Mod 2 <> 0, -1, 0), IIf(i Mod 2 <> 0, -1, 1))
             tnFolder.ToolTipText = tnFolder.Name
 
             For j = 0 To 2
-                tnBook = tnFolder.Nodes.Add(String.Format("Fld{0}Bk{1}", i, j), "Book " & j.ToString(),
-                    CType(IIf(j Mod 2 <> 0, -1, 2), Integer), CType(IIf(j Mod 2 <> 0, -1, 3), Integer))
+                tnBook = tnFolder.Nodes.Add($"Fld{i}Bk{j}", $"Book {j}",
+                    IIf(j Mod 2 <> 0, -1, 2), IIf(j Mod 2 <> 0, -1, 3))
                 tnBook.ToolTipText = tnBook.Name
 
                 ' These also get a state image
                 For k = 0 To 4
-                    tnPage = tnBook.Nodes.Add(String.Format("Fld{0}Bk{1}Pg{2}", i, j, k),
-                        "Page " & k.ToString(), CType(IIf(k Mod 2 <> 0, -1, 4), Integer),
-                        CType(IIf(k Mod 2 <> 0, -1, 4), Integer))
+                    tnPage = tnBook.Nodes.Add($"Fld{i}Bk{j}Pg{k}",
+                        $"Page {k}", IIf(k Mod 2 <> 0, -1, 4), IIf(k Mod 2 <> 0, -1, 4))
                     tnPage.StateImageIndex = k
                     tnPage.ToolTipText = tnPage.Name
                 Next k
@@ -261,11 +261,9 @@ Public Class ExtendedTreeViewTestForm
         Dim node As TreeNode
         txtEnumResults.Text = Nothing
 
-        ' Use foreach() on the ExtendedTreeView control itself to
-        ' enumerate all of its nodes recursively.
+        ' Use For Each on the ExtendedTreeView control itself to enumerate all of its nodes recursively
         For Each node in tvExtTree
-            txtEnumResults.AppendText(String.Format("{0}{1}" & Environment.NewLine,
-                New String(" "C, node.Level * 4), node.Text))
+            txtEnumResults.AppendText($"{New String(" "C, node.Level * 4)}{node.Text}" & Environment.NewLine)
         Next
         '#End Region
     End Sub
@@ -297,24 +295,23 @@ Public Class ExtendedTreeViewTestForm
         ' For this, we create the enumerator manually and pass it the starting
         ' node and a flag indicating whether or not to enumerate the siblings
         ' of the starting node as well.
-        Dim enumerator As TreeNodeEnumerator = New TreeNodeEnumerator(startNode,
-            enumerateSiblings)
+        Dim enumerator As New TreeNodeEnumerator(startNode, enumerateSiblings)
 
         ' Call the MoveNext() method to move through each node.  Use the Current
         ' property to access the current node.
         Do While enumerator.MoveNext()
             node = enumerator.Current
 
-            txtEnumResults.AppendText(String.Format("Manual Enum: {0}{1}" &
-                Environment.NewLine, New String(" "C, node.Level * 4), node.Text))
+            txtEnumResults.AppendText($"Manual Enum: {New String(" "C, node.Level * 4)}{node.Text}" &
+                Environment.NewLine)
         Loop
 
         txtEnumResults.AppendText(Environment.NewLine & Environment.NewLine)
 
         ' We can also use the helper method to simplify it
         For Each node In TreeNodeEnumerator.Enumerate(startNode, enumerateSiblings)
-            txtEnumResults.AppendText(String.Format("Enum Helper: {0}{1}" &
-                Environment.NewLine, New String(" "C, node.Level * 4), node.Text))
+            txtEnumResults.AppendText($"Enum Helper: {New String(" "C, node.Level * 4)}{node.Text}" &
+                Environment.NewLine)
         Next
 
         '#End Region

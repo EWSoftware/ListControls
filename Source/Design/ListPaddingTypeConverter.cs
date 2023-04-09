@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : ListPaddingTypeConverter.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/22/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 04/09/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This contains a type converter for the padding class so that it can be used in the designer and can be
 // serialized to code.
@@ -74,13 +73,12 @@ namespace EWSoftware.ListControls.Design
         /// <returns>The converted object</returns>
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            string strValue = value as string;
-
-            if(strValue != null)
+            if(value is string stringValue)
             {
-                string[] strParts = strValue.Split(',');
+                string[] strParts = stringValue.Split(',');
 
                 if(strParts.Length == 6)
+                {
                     return new ListPadding(
                         Convert.ToInt32(strParts[0], CultureInfo.InvariantCulture),
                         Convert.ToInt32(strParts[1], CultureInfo.InvariantCulture),
@@ -88,6 +86,7 @@ namespace EWSoftware.ListControls.Design
                         Convert.ToInt32(strParts[3], CultureInfo.InvariantCulture),
                         Convert.ToInt32(strParts[4], CultureInfo.InvariantCulture),
                         Convert.ToInt32(strParts[5], CultureInfo.InvariantCulture));
+                }
             }
 
             return base.ConvertFrom(context, culture, value);

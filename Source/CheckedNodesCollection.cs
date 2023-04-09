@@ -4,7 +4,6 @@
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
 // Updated : 07/25/2014
 // Note    : Copyright 2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
 //
 // This file contains a collection class used by the ExtendedTreeView control to return a list of checked nodes
 //

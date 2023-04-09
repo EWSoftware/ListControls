@@ -2,9 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : RelationTestForm.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 10/02/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/06/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This is used to demonstrate how the data navigator and data list controls can be used with related data
 // sources in a data set.
@@ -45,6 +44,7 @@ namespace ListControlDemoCS
         private DataSet dsAddresses;
         private bool clearingDataSet;
         private string lastSearch;
+
         #endregion
 
         #region Constructor
@@ -202,10 +202,12 @@ namespace ListControlDemoCS
             cblAddressTypes.BindingMembersDataSource = dsAddresses;
 
             // Create the data source for the radio button list items
-            List<ListItem> contactTypeList = new List<ListItem>();
-            contactTypeList.Add(new ListItem("B", "Business"));
-            contactTypeList.Add(new ListItem("P", "Personal"));
-            contactTypeList.Add(new ListItem("O", "Other"));
+            List<ListItem> contactTypeList = new List<ListItem>
+            {
+                new ListItem("B", "Business"),
+                new ListItem("P", "Personal"),
+                new ListItem("O", "Other")
+            };
 
             rblContactType.DisplayMember = "Display";
             rblContactType.ValueMember = "Value";
@@ -243,16 +245,17 @@ namespace ListControlDemoCS
             daPhones.RowUpdated += daPhones_RowUpdated;
 
             // Load the state codes for the row template's shared data source
-            OleDbDataAdapter daStates = new OleDbDataAdapter("Select State, StateDesc From States", dbConn);
+            using(var daStates = new OleDbDataAdapter("Select State, StateDesc From States", dbConn))
+            {
+                DataTable dtStates = new DataTable();
+                daStates.Fill(dtStates);
 
-            DataTable dtStates = new DataTable();
-            daStates.Fill(dtStates);
+                // Add a blank row to allow no selection
+                dtStates.Rows.InsertAt(dtStates.NewRow(), 0);
 
-            // Add a blank row to allow no selection
-            dtStates.Rows.InsertAt(dtStates.NewRow(), 0);
-
-            cboState.DisplayMember = cboState.ValueMember = "State";
-            cboState.DataSource = dtStates.DefaultView;
+                cboState.DisplayMember = cboState.ValueMember = "State";
+                cboState.DataSource = dtStates.DefaultView;
+            }
         }
         #endregion
 
@@ -279,9 +282,11 @@ namespace ListControlDemoCS
         {
             if(e.Status == UpdateStatus.Continue && e.StatementType == StatementType.Insert)
             {
-                OleDbCommand cmd = new OleDbCommand("Select @@Identity", dbConn);
-                e.Row["ID"] = cmd.ExecuteScalar();
-                e.Row.AcceptChanges();
+                using(var cmd = new OleDbCommand("Select @@Identity", dbConn))
+                {
+                    e.Row["ID"] = cmd.ExecuteScalar();
+                    e.Row.AcceptChanges();
+                }
             }
         }
 
@@ -294,9 +299,11 @@ namespace ListControlDemoCS
         {
             if(e.Status == UpdateStatus.Continue && e.StatementType == StatementType.Insert)
             {
-                OleDbCommand cmd = new OleDbCommand("Select @@Identity", dbConn);
-                e.Row["PhoneKey"] = cmd.ExecuteScalar();
-                e.Row.AcceptChanges();
+                using(var cmd = new OleDbCommand("Select @@Identity", dbConn))
+                {
+                    e.Row["PhoneKey"] = cmd.ExecuteScalar();
+                    e.Row.AcceptChanges();
+                }
             }
 
             // Ignore deletions that don't find their row.  The cascade delete took care of them already.
@@ -379,10 +386,12 @@ namespace ListControlDemoCS
         {
             epErrors.Clear();
 
-            if(MessageBox.Show(String.Format("Are you sure you want to delete the name '{0} {1}'?",
-              txtFName.Text, txtLName.Text), "Relationship Test", MessageBoxButtons.YesNo,
-              MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.No)
+            if(MessageBox.Show($"Are you sure you want to delete the name '{txtFName.Text} {txtLName.Text}'?",
+              "Relationship Test", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+              MessageBoxDefaultButton.Button2) == DialogResult.No)
+            {
                 e.Cancel = true;
+            }
         }
 
         /// <summary>

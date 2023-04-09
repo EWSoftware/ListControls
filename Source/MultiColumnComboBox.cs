@@ -2,7 +2,7 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : MultiColumnComboBox.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/05/2023
+// Updated : 04/09/2023
 // Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a multi-column combo box control that supports all features of the standard Windows Forms
@@ -20,6 +20,7 @@
 //===============================================================================================================
 
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing.Design;
 using System.Windows.Forms;
@@ -38,7 +39,6 @@ namespace EWSoftware.ListControls
         //====================================================================
 
         private int dropDownWidth;
-        private readonly DropDownTableStyle ddsDropDownFormat;
         private StringCollection scColumnFilter;
 
         #endregion
@@ -47,21 +47,48 @@ namespace EWSoftware.ListControls
         //====================================================================
 
         /// <summary>
-        /// This is used to define the formatting for the drop down portion of the combo box including the
-        /// columns displayed if so desired.
+        /// This is used to modify the column header default cell style
         /// </summary>
-        /// <value>Column definitions can be added to the <c>DropDownFormat.GridColumnStyles</c> collection.
-        /// Set as many or as few properties as you need.  If the columns are not defined, the drop-down will
-        /// show all columns in the data source by default with some basic style settings.</value>
-		[Category("DropDown"), Bindable(true), Description("The drop-down's formatting options"),
-          DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        public DropDownTableStyle DropDownFormat => ddsDropDownFormat;
+		[Category("DropDown"), Bindable(true), Description("The drop-down's column headers default cell style")]
+        public DataGridViewCellStyle ColumnHeadersDefaultCellStyle { get; set; } = new DataGridViewCellStyle();
+
+
+        /// <summary>
+        /// This is used to modify the alternating rows default cell style
+        /// </summary>
+		[Category("DropDown"), Bindable(true), Description("The drop-down's alternating rows default cell style")]
+        public DataGridViewCellStyle AlternatingRowsDefaultCellStyle { get; set; } = new DataGridViewCellStyle();
+
+        /// <summary>
+        /// This is used to modify the default cell style
+        /// </summary>
+		[Category("DropDown"), Bindable(true), Description("The drop-down's default cell style")]
+        public DataGridViewCellStyle DefaultCellStyle { get; set; } = new DataGridViewCellStyle();
+
+        /// <summary>
+        /// This is used to get or set whether or not column headers are visible
+        /// </summary>
+        [Category("DropDown"), Bindable(true), DefaultValue(false), Description("Indicate whether or not column " +
+            "headers are visible")]
+        public bool ColumnHeadersVisible { get; set; } = false;
+
+        /// <summary>
+        /// This is used to get or set whether or not row headers are visible
+        /// </summary>
+        [Category("DropDown"), Bindable(true), DefaultValue(false), Description("Indicate whether or not row " +
+            "headers are visible")]
+        public bool RowHeadersVisible { get; set; } = false;
+
+        /// <summary>
+        /// This is used to get or set the width of row headers if they are visible
+        /// </summary>
+        [Category("DropDown"), Bindable(true), DefaultValue(20), Description("Specify the width of the row headers")]
+        public int RowHeadersWidth { get; set; } = 20;
 
         /// <summary>
         /// Gets or sets the width of the of the drop-down portion of the combo box
         /// </summary>
-        /// <value>If set to zero, it will default to an appropriate width based on the <see cref="DropDownFormat"/>
-        /// options.</value>
+        /// <value>If set to zero, it will default to an appropriate width based on the column definitions</value>
         /// <exception cref="ArgumentException">This is thrown if the width is less than zero</exception>
         [Category("DropDown"), Bindable(true), DefaultValue(0), Description("The default width of the drop-down " +
           "portion of the combo box")]
@@ -82,9 +109,8 @@ namespace EWSoftware.ListControls
         /// This gets the <see cref="StringCollection"/> used to filter the columns displayed by the drop-down
         /// portion of the combo box.
         /// </summary>
-        /// <value>This is a quick way to filter the drop-down to a specific set of columns without defining
-        /// column definitions using the <see cref="DropDownFormat">DropDownFormat.GridColumnStyles</see>
-        /// property collection.  If empty, no filtering takes place.</value>
+        /// <value>This is a quick way to filter the drop-down to a specific set of columns without having to
+        /// specify column definitions.  If empty, no filtering takes place.</value>
         /// <example>
         /// <code language="cs">
         /// cboVendor.DisplayMember = "VendorName";
@@ -143,6 +169,21 @@ namespace EWSoftware.ListControls
         {
             DropDownWidthChanged?.Invoke(this, e);
         }
+
+        /// <summary>
+        /// This event is raised when the a dropdown column needs to be for formatted
+        /// </summary>
+		[Category("DropDown"), Description("Occurs when a drop-down column needs to be formatted")]
+        public event EventHandler<DataGridViewColumnEventArgs> FormatDropDownColumn;
+
+        /// <summary>
+        /// This raises the <see cref="FormatDropDownColumn"/> event
+        /// </summary>
+        /// <param name="e">The event arguments</param>
+        protected internal virtual void OnFormatDropDownColumn(DataGridViewColumnEventArgs e)
+        {
+            FormatDropDownColumn?.Invoke(this, e);
+        }
         #endregion
 
         #region Constructor
@@ -157,9 +198,6 @@ namespace EWSoftware.ListControls
         public MultiColumnComboBox()
         {
             this.MouseTracking = true;
-
-            ddsDropDownFormat = new DropDownTableStyle();
-            ddsDropDownFormat.GridColumnStyles.CollectionChanged += GridColumnStyles_CollectionChanged;
         }
         #endregion
 
@@ -167,15 +205,27 @@ namespace EWSoftware.ListControls
         //=====================================================================
 
         /// <summary>
-        /// This is handled to reset the drop-down when its column collection changes so that the changes are
-        /// displayed.
+        /// Determine whether or not to serialize the alternating rows default cell style
         /// </summary>
-        /// <param name="sender">The sender of the event</param>
-        /// <param name="e">The event arguments</param>
-        private void GridColumnStyles_CollectionChanged(object sender, CollectionChangeEventArgs e)
+        internal bool ShouldSerializeAlternatingRowsDefaultCellStyle()
         {
-            if(this.IsHandleCreated && this.DropDownInterface != null && this.DropDownInterface.Visible == false)
-                this.RefreshSubControls();
+            return !this.AlternatingRowsDefaultCellStyle.Equals(new DataGridViewCellStyle());
+        }
+
+        /// <summary>
+        /// Determine whether or not to serialize the column headers default cell style
+        /// </summary>
+        internal bool ShouldSerializeColumnHeadersDefaultCellStyle()
+        {
+            return !this.ColumnHeadersDefaultCellStyle.Equals(new DataGridViewCellStyle());
+        }
+
+        /// <summary>
+        /// Determine whether or not to serialize the default cell style
+        /// </summary>
+        internal bool ShouldSerializeDefaultCellStyle()
+        {
+            return !this.DefaultCellStyle.Equals(new DataGridViewCellStyle());
         }
 
         /// <summary>
@@ -209,16 +259,9 @@ namespace EWSoftware.ListControls
         /// <summary>
         /// This can be called to force the drop-down portion of the combo box to refresh its format settings
         /// </summary>
-        /// <remarks><para>Note that this will clear all column definitions from <see cref="DropDownFormat"/> so
-        /// if you need to, call this method first and then load the column definitions.  The columns in the
-        /// table style do not completely disconnect from the grid when it is disposed.  Unfortunately, there is
-        /// no way to do this so the columns must be disposed of as well and recreated.  This is only a problem
-        /// if you are modifying the settings after the combo box has been in use after its initial creation
-        /// (i.e. the drop-down portion has been made visible at least once).</para>
-        /// 
-        /// <para>This method will raise the <see cref="BaseListControl.SubControlsRefreshed"/> event when
+        /// <remarks>This method will raise the <see cref="BaseListControl.SubControlsRefreshed"/> event when
         /// called.  You can add an event handler to it to reload your preferred column definitions whenever the
-        /// drop-down is refreshed and the column collection has been cleared.</para></remarks>
+        /// drop-down is refreshed and the column collection has been cleared.</remarks>
         public override void RefreshSubControls()
         {
             if(this.DropDownInterface != null)
@@ -238,9 +281,6 @@ namespace EWSoftware.ListControls
                 dd.Dispose();
             }
 
-            if(this.DropDownFormat.GridColumnStyles.Count == 0)
-                base.RefreshSubControls();
-
             // Recreate the drop-down if using the simple style
             if(this.DropDownStyle == ComboBoxStyle.Simple)
                 this.CreateDropDown();
@@ -259,7 +299,10 @@ namespace EWSoftware.ListControls
                 throw new ArgumentNullException(nameof(e));
 
             if(this.DroppedDown && this.DropDownStyle != ComboBoxStyle.Simple)
-                this.DropDownInterface.ScrollDropDown((e.Delta > 0) ? 0 - this.MaxDropDownItems : this.MaxDropDownItems);
+            {
+                this.DropDownInterface.ScrollDropDown(e.Delta / SystemInformation.MouseWheelScrollDelta *
+                    SystemInformation.MouseWheelScrollLines * -1);
+            }
             else
             {
                 if(e.Delta > 0)

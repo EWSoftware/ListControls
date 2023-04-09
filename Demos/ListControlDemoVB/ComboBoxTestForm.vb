@@ -2,9 +2,8 @@
 ' System  : EWSoftware Data List Control Demonstration Applications
 ' File    : ComboBoxTestForm.vb
 ' Author  : Eric Woodruff  (Eric@EWoodruff.us)
-' Updated : 10/02/2014
-' Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-' Compiler: Microsoft Visual Basic .NET
+' Updated : 04/09/2023
+' Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 '
 ' This is used to demonstrate the AutoCompleteComboBox and MultiColumnComboBox controls
 '
@@ -18,18 +17,15 @@
 ' 10/27/2005  EFW  Created the code
 '================================================================================================================
 
-Imports System
-Imports System.Collections
 Imports System.Data
 Imports System.Data.OleDb
-Imports System.Windows.Forms
 
 Imports EWSoftware.ListControls
 
 Public Partial Class ComboBoxTestForm
-    Inherits System.Windows.Forms.Form
+    Inherits Form
 
-    Private demoData, productData As DataSet
+    Private ReadOnly demoData, productData As DataSet
 
     Public Sub New()
         MyBase.New()
@@ -48,16 +44,18 @@ Public Partial Class ComboBoxTestForm
         Try
             Using dbConn As New OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\TestData.mdb")
                 ' Load some data for the demo
-                Dim cmd As New OleDbCommand("Select * From DemoTable Order By Label", dbConn)
-                cmd.CommandType = CommandType.Text
-                Dim adapter As New OleDbDataAdapter(cmd)
+                Using cmd As New OleDbCommand("Select * From DemoTable Order By Label", dbConn)
+                    cmd.CommandType = CommandType.Text
 
-                adapter.Fill(demoData)
+                    Using adapter As New OleDbDataAdapter(cmd)
+                        adapter.Fill(demoData)
 
-                ' Use a named table for this one
-                adapter.TableMappings.Add("Table", "ProductInfo")
-                cmd.CommandText = "Select * From ProductInfo Order By ProductName"
-                adapter.Fill(productData)
+                        ' Use a named table for this one
+                        adapter.TableMappings.Add("Table", "ProductInfo")
+                        cmd.CommandText = "Select * From ProductInfo Order By ProductName"
+                        adapter.Fill(productData)
+                    End Using
+                End Using
             End Using
 
         Catch ex As OleDbException
@@ -256,16 +254,14 @@ Public Partial Class ComboBoxTestForm
         ' This can be any column from the data source regardless of whether or not it is displayed.  Note that
         ' you can also use cboMultiCol("ColName") to get a column value from the item indicated by the
         ' SelectedIndex property.
-        txtValue.Text = String.Format("{0} = {1}", cboColumns.Text, cboMultiCol(CType(txtRowNumber.Value, Integer),
-            cboColumns.Text))
+        txtValue.Text = $"{cboColumns.Text} = {cboMultiCol(CType(txtRowNumber.Value, Integer), cboColumns.Text)}"
     End Sub
 
     ' Show the current item info when the selected index changes
     Private Sub cboMultiCol_SelectedIndexChanged(sender As object, e As System.EventArgs) _
         Handles cboMultiCol.SelectedIndexChanged
         ' Note that SelectedValue is only valid if there is a data source
-        txtValue.Text = String.Format("Index = {0}, Value = {1}, Text = {2}", cboMultiCol.SelectedIndex,
-            cboMultiCol.SelectedValue, cboMultiCol.Text)
+        txtValue.Text = $"Index = {cboMultiCol.SelectedIndex}, Value = {cboMultiCol.SelectedValue}, Text = {cboMultiCol.Text}"
     End Sub
 
     ' Draw an image for the demo.  They aren't representative of the items, they're just something to show
@@ -279,6 +275,27 @@ Public Partial Class ComboBoxTestForm
                     e.Bounds.X, e.Bounds.Y, e.BackColor)
             Else
                 e.Graphics.DrawImage(ilImages.Images(e.Index Mod ilImages.Images.Count), e.Bounds.X, e.Bounds.Y)
+            End If
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' Apply custom formatting to a dropdown column when it is created
+    ''' </summary>
+    ''' <param name="sender">The sender of the event</param>
+    ''' <param name="e">The event arguments</param>
+    Private Sub cboMultiCol_FormatDropDownColumn(sender As Object, e As DataGridViewColumnEventArgs) _
+      Handles cboMultiCol.FormatDropDownColumn
+        ' Format unit price as currency
+        If e.Column.DataPropertyName = "UnitPrice" Then
+            e.Column.DefaultCellStyle.Format = "C2"
+        Else
+            ' When bound to an array list, the value is seen as an object so manually right-align the
+            ' numeric value.
+            If cboDataSource.SelectedIndex = 3 And e.Column.DataPropertyName = "Value" And
+              e.Column.ValueType = GetType(Object)
+                e.Column.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight
+                e.Column.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             End If
         End If
     End Sub

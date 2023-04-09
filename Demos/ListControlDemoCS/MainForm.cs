@@ -2,9 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : MainForm.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 10/01/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Visual C#
+// Updated : 01/06/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This application is used to demonstrate various features of the EWSoftware List Control classes
 //
@@ -55,16 +54,20 @@ namespace ListControlDemoCS
                 using(var dbConn = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\TestData.mdb"))
                 {
                     // Load the menu data
-                    OleDbCommand cmd = new OleDbCommand("Select * From DemoInfo Order By DemoOrder, DemoName",
-                        dbConn);
-                    cmd.CommandType = CommandType.Text;
-                    OleDbDataAdapter adapter = new OleDbDataAdapter(cmd);
+                    using(var cmd = new OleDbCommand("Select * From DemoInfo Order By DemoOrder, DemoName", dbConn))
+                    {
+                        cmd.CommandType = CommandType.Text;
 
-                    DataSet demoData = new DataSet();
-                    adapter.Fill(demoData);
+                        using(var adapter = new OleDbDataAdapter(cmd))
+                        {
 
-                    // Set the data list's data source and row template
-                    dlMenu.SetDataBinding(demoData.Tables[0], null, typeof(MenuRow));
+                            DataSet demoData = new DataSet();
+                            adapter.Fill(demoData);
+
+                            // Set the data list's data source and row template
+                            dlMenu.SetDataBinding(demoData.Tables[0], null, typeof(MenuRow));
+                        }
+                    }
                 }
             }
             catch(OleDbException ex)

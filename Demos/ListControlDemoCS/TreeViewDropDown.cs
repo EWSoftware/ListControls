@@ -2,9 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : TreeViewDropDown.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 10/02/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/06/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This is a sample drop-down control for the UserControlComboBox demo
 //
@@ -51,8 +50,8 @@ namespace ListControlDemoCS
         /// the parent isn't visible (i.e. during initialization).</remarks>
         public bool ShowExcludeDiscontinued
         {
-            get { return excludeVisible; }
-            set { excludeVisible = chkExcludeDiscontinued.Visible = value; }
+            get => excludeVisible;
+            set => excludeVisible = chkExcludeDiscontinued.Visible = value;
         }
         #endregion
 
@@ -83,8 +82,10 @@ namespace ListControlDemoCS
 
             while(row < dvItems.Count && (string)dvItems[row]["CategoryName"] == tnRoot.Text)
             {
-                tnChild = new TreeNode((string)dvItems[row]["ProductName"]);
-                tnChild.Tag = dvItems[row]["ProductID"];
+                tnChild = new TreeNode((string)dvItems[row]["ProductName"])
+                {
+                    Tag = dvItems[row]["ProductID"]
+                };
 
                 if((bool)dvItems[row]["Discontinued"])
                     tnChild.Text += " (Discontinued)";
@@ -109,8 +110,7 @@ namespace ListControlDemoCS
             {
                 foreach(string s in this.ComboBox.Items)
                 {
-                    tn = new TreeNode(s);
-                    tn.Tag = s;
+                    tn = new TreeNode(s) { Tag = s };
                     tvItems.Nodes.Add(tn);
                 }
             }
@@ -118,20 +118,24 @@ namespace ListControlDemoCS
             {
                 foreach(ListItem li in this.ComboBox.Items)
                 {
-                    tn = new TreeNode(li.Display);
-                    tn.Tag = li.Value;
+                    tn = new TreeNode(li.Display) { Tag = li.Value };
                     tvItems.Nodes.Add(tn);
                 }
             }
             else
             {
                 // Data set, view, or table
-                if(ds is DataSet)
-                    tblItems = ((DataSet)ds).Tables["ProductInfo"];
-                else if(ds is DataView)
-                    tblItems = ((DataView)ds).Table;
+                if(ds is DataSet set)
+                {
+                    tblItems = set.Tables["ProductInfo"];
+                }
                 else
-                    tblItems = (DataTable)ds;
+                {
+                    if(ds is DataView view)
+                        tblItems = view.Table;
+                    else
+                        tblItems = (DataTable)ds;
+                }
 
                 dvItems = tblItems.DefaultView;
 
@@ -146,8 +150,11 @@ namespace ListControlDemoCS
                     // This is the one that doesn't contain categories
                     for(int idx = 0; idx < dvItems.Count; idx++)
                     {
-                        tn = new TreeNode((string)dvItems[idx]["Label"]);
-                        tn.Tag = dvItems[idx]["ListKey"];
+                        tn = new TreeNode((string)dvItems[idx]["Label"])
+                        {
+                            Tag = dvItems[idx]["ListKey"]
+                        };
+
                         tvItems.Nodes.Add(tn);
                     }
                 }
@@ -199,7 +206,7 @@ namespace ListControlDemoCS
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        public void chkExcludeDiscontinued_CheckedChanged(object sender, EventArgs e)
+        private void chkExcludeDiscontinued_CheckedChanged(object sender, EventArgs e)
         {
             TreeNode tnNode;
             int row = 0;

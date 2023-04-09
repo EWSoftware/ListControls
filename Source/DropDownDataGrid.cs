@@ -2,7 +2,7 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : DropDownDataGrid.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
+// Updated : 01/07/2023
 // Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a custom data grid control that provides some extra features needed by the multi-column
@@ -31,7 +31,7 @@ namespace EWSoftware.ListControls
     /// drop-down form.
     /// </summary>
     [ToolboxItem(false)]
-    internal class DropDownDataGrid : DataGrid
+    internal class DropDownDataGrid : DataGridView
     {
         #region Private data members
         //=====================================================================
@@ -58,56 +58,8 @@ namespace EWSoftware.ListControls
 
         #endregion
 
-        #region Constructor
-        //=====================================================================
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        internal DropDownDataGrid()
-        {
-            // Double-buffer to prevent flickering
-            DataGridHelper.DoubleBuffer(this);
-
-            this.UpdateStyles();
-            this.Scroll += DropDownDataGrid_Scroll;
-        }
-        #endregion
-
         #region Methods
         //=====================================================================
-
-        /// <summary>
-        /// Redraw when resized
-        /// </summary>
-        /// <param name="e">The event arguments</param>
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            this.Invalidate();
-            this.Update();
-        }
-
-        /// <summary>
-        /// Highlight the item under the mouse when clicked
-        /// </summary>
-        /// <param name="e">The event arguments</param>
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            base.OnMouseDown(e);
-
-            if(e.Button == MouseButtons.Left)
-            {
-                HitTestInfo hti = this.HitTest(e.X, e.Y);
-
-                if(hti.Type == DataGrid.HitTestType.Cell)
-                {
-                    this.ResetSelection();
-                    this.CurrentRowIndex = hti.Row;
-                    this.Select(hti.Row);
-                }
-            }
-        }
 
         /// <summary>
         /// Highlight the item under the mouse when it moves
@@ -115,48 +67,46 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            // We tend to get lots of these even if the mouse doesn't move.  It's an OS thing apparently.
-            if(lastMousePos.X != e.X || lastMousePos.Y != e.Y)
+            if((lastMousePos.X != e.X || lastMousePos.Y != e.Y) && ((!this.IsSimpleStyle && this.MouseTracking) ||
+              e.Button == MouseButtons.Left))
             {
-                if((!this.IsSimpleStyle && this.MouseTracking) || e.Button == MouseButtons.Left)
+                lastMousePos = new Point(e.X, e.Y);
+
+                HitTestInfo hti = this.HitTest(e.X, e.Y);
+
+                if(hti.Type == DataGridViewHitTestType.Cell)
                 {
-                    lastMousePos = new Point(e.X, e.Y);
-
-                    HitTestInfo hti = this.HitTest(e.X, e.Y);
-
-                    if(hti.Type == DataGrid.HitTestType.Cell)
+                    // Don't auto-scroll unless the left mouse button is down if out of view otherwise it tends
+                    // to scroll too far too fast.
+                    if(hti.RowIndex <= this.FirstDisplayedScrollingRowIndex + this.DisplayedRowCount(false) - 1 ||
+                      e.Button == MouseButtons.Left)
                     {
-                        this.ResetSelection();
-                        this.CurrentRowIndex = hti.Row;
-                        this.Select(hti.Row);
-                    }
-                    else
-                    {
-                        if(hti.Type == DataGrid.HitTestType.None)
-                        {
-                            int newRow = this.CurrentRowIndex;
-
-                            // Scroll when out of bounds
-                            if(e.Y < this.Top && newRow > 0)
-                                newRow--;
-                            else
-                            {
-                                if(e.Y > this.Bottom && newRow < DataGridHelper.RowCount(this) - 1)
-                                    newRow++;
-                            }
-
-                            if(newRow != this.CurrentRowIndex)
-                            {
-                                this.ResetSelection();
-                                this.CurrentRowIndex = newRow;
-                                this.Select(newRow);
-                            }
-                        }
+                        this.SelectCell(hti.ColumnIndex, hti.RowIndex);
                     }
                 }
+                else
+                {
+                    // Auto-scroll if the left mouse button is down and we're outside the bounds
+                    if(hti.Type == DataGridViewHitTestType.None && e.Button == MouseButtons.Left)
+                    {
+                        int newRow = this.CurrentCellAddress.Y;
 
-                base.OnMouseMove(e);
+                        // Scroll when out of bounds
+                        if(e.Y < this.Top && newRow > 0)
+                            newRow--;
+                        else
+                        {
+                            if(e.Y > this.Bottom && newRow < this.RowCount - 1)
+                                newRow++;
+                        }
+
+                        if(newRow != this.CurrentCellAddress.Y)
+                            this.SelectCell(this.CurrentCellAddress.X, newRow);
+                    }
+                }
             }
+
+            base.OnMouseMove(e);
         }
 
         /// <summary>
@@ -173,21 +123,36 @@ namespace EWSoftware.ListControls
         }
 
         /// <summary>
-        /// This lets the owner clear the selected row
+        /// This is used to select a specific cell in the grid and scroll it into view if necessary
         /// </summary>
-        internal void ClearSelection()
+        /// <param name="column">The column to select</param>
+        /// <param name="row">The row to select</param>
+        public void SelectCell(int column, int row)
         {
-            this.ResetSelection();
-        }
+            if(column < 0 || row < 0 || column >= this.ColumnCount || row >= this.RowCount)
+                return;
 
-        /// <summary>
-        /// Hide any edit control when the grid is scrolled
-        /// </summary>
-        /// <param name="sender">The sender of the event</param>
-        /// <param name="e">The event arguments</param>
-        private void DropDownDataGrid_Scroll(object sender, EventArgs e)
-        {
-            DataGridHelper.ConcedeFocus(this);
+            try
+            {
+                if(!this.Rows[row].Selected)
+                {
+                    this.CurrentCell = this[column, row];
+                    this.Rows[row].Selected = true;
+
+                    if(row < this.FirstDisplayedScrollingRowIndex)
+                        this.FirstDisplayedScrollingRowIndex = row;
+                    else
+                    {
+                        if(row > this.FirstDisplayedScrollingRowIndex + this.DisplayedRowCount(false) - 1)
+                            this.FirstDisplayedScrollingRowIndex += row - this.DisplayedRowCount(false) + 1;
+                    }
+                }
+            }
+            catch(InvalidOperationException)
+            {
+                // There's an odd problem with this getting called while CurrentCell is already being set which
+                // causes an exception.  Ignore it in such cases.
+            }
         }
         #endregion
     }

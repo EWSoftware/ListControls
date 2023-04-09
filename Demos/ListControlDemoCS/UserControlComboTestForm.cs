@@ -2,9 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : UserControlComboBoxTestForm.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 10/02/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/06/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This is used to demonstrate the UserControlComboBox control
 //
@@ -36,7 +35,8 @@ namespace ListControlDemoCS
         #region Private data members
         //=====================================================================
 
-        private DataSet demoData, productData;
+        private readonly OleDbDataAdapter adapter;
+        private readonly DataSet demoData, productData;
 
         #endregion
 
@@ -62,16 +62,18 @@ namespace ListControlDemoCS
                 using(var dbConn = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\TestData.mdb"))
                 {
                     // Load some data for the demo
-                    OleDbCommand cmd = new OleDbCommand("Select * From DemoTable Order By Label", dbConn);
-                    cmd.CommandType = CommandType.Text;
-                    OleDbDataAdapter adapter = new OleDbDataAdapter(cmd);
+                    using(var cmd = new OleDbCommand("Select * From DemoTable Order By Label", dbConn))
+                    {
+                        cmd.CommandType = CommandType.Text;
 
-                    adapter.Fill(demoData);
+                        adapter = new OleDbDataAdapter(cmd);
+                        adapter.Fill(demoData);
 
-                    // Use a named table for this one
-                    adapter.TableMappings.Add("Table", "ProductInfo");
-                    cmd.CommandText = "Select * From ProductInfo Order By ProductName";
-                    adapter.Fill(productData);
+                        // Use a named table for this one
+                        adapter.TableMappings.Add("Table", "ProductInfo");
+                        cmd.CommandText = "Select * From ProductInfo Order By ProductName";
+                        adapter.Fill(productData);
+                    }
                 }
             }
             catch(OleDbException ex)
@@ -226,9 +228,6 @@ namespace ListControlDemoCS
         /// <param name="e">The event arguments</param>
         private void cboDataSource_SelectedIndexChanged(object sender, EventArgs e)
         {
-            object dataSource;
-            string displayMember, valueMember;
-
             // Clear out the prior definitions
             cboColumns.Items.Clear();
             cboColumns.SelectedIndex = -1;
@@ -247,7 +246,7 @@ namespace ListControlDemoCS
 
             // Keep it simple.  We'll bind them to the same data but using different instances so no need for
             // binding contexts.
-            LoadData(cboAutoComp.Items, out dataSource, out displayMember, out valueMember);
+            LoadData(cboAutoComp.Items, out object dataSource, out string displayMember, out string valueMember);
 
             if(dataSource != null)
             {
@@ -284,8 +283,7 @@ namespace ListControlDemoCS
             // This can be any column from the data source regardless of whether or not it is displayed.  Note
             // that you can also use cboUCCombo["ColName"] to get a column value from the item indicated by the
             // SelectedIndex property.
-            txtValue.Text = String.Format("{0} = {1}", cboColumns.Text, cboUCCombo[(int)txtRowNumber.Value,
-                cboColumns.Text]);
+            txtValue.Text = $"{cboColumns.Text} = {cboUCCombo[(int)txtRowNumber.Value, cboColumns.Text]}";
         }
 
         /// <summary>
@@ -296,8 +294,7 @@ namespace ListControlDemoCS
         private void cboUCCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Note that SelectedValue is only valid if there is a data source
-            txtValue.Text = String.Format("Index = {0}, Value = {1}, Text = {2}", cboUCCombo.SelectedIndex,
-                cboUCCombo.SelectedValue, cboUCCombo.Text);
+            txtValue.Text = $"Index = {cboUCCombo.SelectedIndex}, Value = {cboUCCombo.SelectedValue}, Text = {cboUCCombo.Text}";
         }
 
         /// <summary>

@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : ChangePolicy.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/25/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 04/09/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains the class that keeps track of the change policy for the DataList and DataNavigator
 // controls.
@@ -33,8 +32,8 @@ namespace EWSoftware.ListControls
         #region Private data members
         //=====================================================================
 
-        private DataList dataList;
-        private DataNavigator dataNav;
+        private readonly DataList dataList;
+        private readonly DataNavigator dataNav;
 
         #endregion
 

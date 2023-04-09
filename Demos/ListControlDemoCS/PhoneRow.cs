@@ -2,9 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : PhoneRow.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 10/01/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/06/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This is a sample row template control for the DataList relationship demo
 //
@@ -33,7 +32,7 @@ namespace ListControlDemoCS
         //=====================================================================
 
         // A simple edit for the phone number format
-        private static Regex rePhone = new Regex(@"^\(\d{3}\) \d{3}-\d{4}$");
+        private static readonly Regex rePhone = new Regex(@"^\(\d{3}\) \d{3}-\d{4}$");
 
         #endregion
 
@@ -62,8 +61,8 @@ namespace ListControlDemoCS
         {
             get
             {
-                if(MessageBox.Show(String.Format("Are you sure you want to delete the phone number '{0}'?",
-                  txtPhoneNumber.Text), "Relationship Test", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+                if(MessageBox.Show($"Are you sure you want to delete the phone number '{txtPhoneNumber.Text}'?",
+                  "Relationship Test", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
                   MessageBoxDefaultButton.Button2) == DialogResult.No)
                     return false;
 

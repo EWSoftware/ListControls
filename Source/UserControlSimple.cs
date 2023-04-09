@@ -4,7 +4,6 @@
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
 // Updated : 09/19/2014
 // Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
 //
 // This file contains a combo box user control that handles the display of the user control for the user control
 // combo box in simple mode.
@@ -33,15 +32,16 @@ namespace EWSoftware.ListControls
     /// for the user control combo box in simple mode.
 	/// </summary>
 	[ToolboxItem(false)]
-	internal class UserControlSimple : System.Windows.Forms.UserControl, IDropDown
+	internal class UserControlSimple : UserControl, IDropDown
 	{
         #region Private data members
         //=====================================================================
 
-        private UserControlComboBox owner;
+        private readonly UserControlComboBox owner;
         private DropDownControl ddControl;
         private int startIndex;
         private bool isCreating, hasInitialized;
+
         #endregion
 
         #region Properties
@@ -52,30 +52,25 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <value>The combo box uses this to determine whether to fire the selection change committed or
         /// selection change canceled event when the drop-down is closed.</value>
-        public int StartIndex
-        {
-            get { return startIndex; }
-        }
+        public int StartIndex => startIndex;
 
         /// <summary>
         /// This returns a flag indicating whether or not the drop-down is currently being created
         /// </summary>
         /// <value>The combo box uses this to determine whether or not to refresh the sub-controls in certain
         /// situations.</value>
-        public bool IsCreating
-        {
-            get { return isCreating; }
-        }
+        public bool IsCreating => isCreating;
+
         #endregion
 
         #region Constructor
         //=====================================================================
 
         /// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="cb">The owner of the drop-down</param>
-		internal UserControlSimple(UserControlComboBox cb)
+        /// Constructor
+        /// </summary>
+        /// <param name="cb">The owner of the drop-down</param>
+        internal UserControlSimple(UserControlComboBox cb)
         {
             owner = cb;
 
@@ -140,8 +135,7 @@ namespace EWSoftware.ListControls
             startIndex = owner.SelectedIndex;
 
             // Let the drop-down perform any initialization prior to display
-            if(ddControl != null)
-                ddControl.ShowDropDown();
+            ddControl?.ShowDropDown();
         }
 
         /// <summary>

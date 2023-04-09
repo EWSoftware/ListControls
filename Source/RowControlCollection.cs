@@ -4,7 +4,6 @@
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
 // Updated : 09/19/2014
 // Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
 //
 // This file contains a derived ControlCollection class that hooks up a LocationChanged event to the first
 // control so that the overall containing DataList control can scroll the header and footer horizontally in

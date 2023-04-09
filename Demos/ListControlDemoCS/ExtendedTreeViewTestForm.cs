@@ -2,9 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : ExtendedTreeViewDemo.cs
 // Author  : Eric Woodruff
-// Updated : 10/01/2014
-// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/06/2023
+// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
 //
 // This form is used to demonstrate the extended tree view control.
 //
@@ -17,6 +16,8 @@
 // ==============================================================================================================
 // 01/09/2007  EFW  Created the code
 //===============================================================================================================
+
+// Ignore Spelling: Fld foreach
 
 using System;
 using System.Drawing;
@@ -49,20 +50,20 @@ namespace ListControlDemoCS
             // Only even numbered nodes gets an image
             for(int i = 0; i < 3; i++)
             {
-                tnFolder = tvExtTree.Nodes.Add("Fld" + i.ToString(), "Folder " + i.ToString(),
+                tnFolder = tvExtTree.Nodes.Add($"Fld {i}", $"Folder {i}",
                     (i % 2 != 0) ? -1 : 0, (i % 2 != 0) ? -1 : 1);
                 tnFolder.ToolTipText = tnFolder.Name;
 
                 for(int j = 0; j < 3; j++)
                 {
-                    tnBook = tnFolder.Nodes.Add(String.Format("Fld{0}Bk{1}", i, j), "Book " + j.ToString(),
+                    tnBook = tnFolder.Nodes.Add($"Fld{i}Bk{j}", $"Book {j}",
                         (j % 2 != 0) ? -1 : 2, (j % 2 != 0) ? -1 : 3);
                     tnBook.ToolTipText = tnBook.Name;
 
                     // These also get a state image
                     for(int k = 0; k < 5; k++)
                     {
-                        tnPage = tnBook.Nodes.Add(String.Format("Fld{0}Bk{1}Pg{2}", i, j, k), "Page " + k.ToString(),
+                        tnPage = tnBook.Nodes.Add($"Fld{i}Bk{j}Pg{k}", $"Page {k}",
                             (k % 2 != 0) ? -1 : 4, (k % 2 != 0) ? -1 : 4);
                         tnPage.StateImageIndex = k;
                         tnPage.ToolTipText = tnPage.Name;
@@ -273,8 +274,7 @@ namespace ListControlDemoCS
             // Use foreach() on the ExtendedTreeView control itself to
             // enumerate all of its nodes recursively.
             foreach(TreeNode node in tvExtTree)
-                txtEnumResults.AppendText(String.Format("{0}{1}\r\n",
-                    new String(' ', node.Level * 4), node.Text));
+                txtEnumResults.AppendText($"{new String(' ', node.Level * 4)}{node.Text}\r\n");
             #endregion
         }
 
@@ -309,16 +309,14 @@ namespace ListControlDemoCS
             {
                 node = enumerator.Current;
 
-                txtEnumResults.AppendText(String.Format("Manual Enum: {0}{1}\r\n",
-                    new String(' ', node.Level * 4), node.Text));
+                txtEnumResults.AppendText($"Manual Enum: {new String(' ', node.Level * 4)}{node.Text}\r\n");
             }
 
             txtEnumResults.AppendText("\r\n\r\n");
 
             // We can also use the helper method to simplify it
             foreach(TreeNode tn in TreeNodeEnumerator.Enumerate(startNode, enumerateSiblings))
-                txtEnumResults.AppendText(String.Format("Enum Helper: {0}{1}\r\n",
-                    new String(' ', tn.Level * 4), tn.Text));
+                txtEnumResults.AppendText($"Enum Helper: {new String(' ', tn.Level * 4)}{tn.Text}\r\n");
             #endregion
         }
 

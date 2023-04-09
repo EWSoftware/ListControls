@@ -2,9 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : DataListTestForm.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 10/01/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/06/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This is used to demonstrate the DataList and TemplateControl controls.
 //
@@ -140,15 +139,16 @@ namespace ListControlDemoCS
             daAddresses.RowUpdated += daAddresses_RowUpdated;
 
             // Load the state codes for the row template's shared data source
-            OleDbDataAdapter daStates = new OleDbDataAdapter("Select State, StateDesc From States", dbConn);
+            using(var daStates = new OleDbDataAdapter("Select State, StateDesc From States", dbConn))
+            {
+                DataTable dtStates = new DataTable();
+                daStates.Fill(dtStates);
 
-            DataTable dtStates = new DataTable();
-            daStates.Fill(dtStates);
+                // Add a blank row to allow no selection
+                dtStates.Rows.InsertAt(dtStates.NewRow(), 0);
 
-            // Add a blank row to allow no selection
-            dtStates.Rows.InsertAt(dtStates.NewRow(), 0);
-
-            dlList.SharedDataSources.Add("States", dtStates.DefaultView);
+                dlList.SharedDataSources.Add("States", dtStates.DefaultView);
+            }
         }
         #endregion
 
@@ -164,9 +164,11 @@ namespace ListControlDemoCS
         {
             if(e.Status == UpdateStatus.Continue && e.StatementType == StatementType.Insert)
             {
-                OleDbCommand cmd = new OleDbCommand("Select @@Identity", dbConn);
-                e.Row["ID"] = cmd.ExecuteScalar();
-                e.Row.AcceptChanges();
+                using(var cmd = new OleDbCommand("Select @@Identity", dbConn))
+                {
+                    e.Row["ID"] = cmd.ExecuteScalar();
+                    e.Row.AcceptChanges();
+                }
             }
         }
 
@@ -395,8 +397,7 @@ namespace ListControlDemoCS
             // This can be any column from the data source regardless of whether or not it is displayed.  Note
             // that you can also use dlList["ColName"] to get a column value from the item indicated by the
             // CurrentRow property.
-            txtValue.Text = String.Format("{0} = {1}", cboColumns.Text, dlList[(int)txtRowNumber.Value - 1,
-                cboColumns.Text]);
+            txtValue.Text = $"{cboColumns.Text} = {dlList[(int)txtRowNumber.Value - 1, cboColumns.Text]}";
         }
 
         /// <summary>
@@ -536,7 +537,7 @@ namespace ListControlDemoCS
             if((hti.Type & DataListHitType.RowOrHeader) != 0 && (hti.Row < dragArgs.SelectionStart ||
               hti.Row > dragArgs.SelectionEnd))
             {
-                MessageBox.Show(String.Format("Selection dropped on row {0}", hti.Row + 1));
+                MessageBox.Show($"Selection dropped on row {hti.Row + 1}");
 
                 dlList.MoveTo(hti.Row);
                 dlList.Select(hti.Row, hti.Row, hti.Row);

@@ -2,9 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : ComboBoxTestForm.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 10/01/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 04/09/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This is used to demonstrate the AutoCompleteComboBox and MultiColumnComboBox controls
 //
@@ -28,15 +27,17 @@ using EWSoftware.ListControls;
 
 namespace ListControlDemoCS
 {
-	/// <summary>
-	/// This is used to demonstrate the AutoCompleteComboBox and MultiColumnComboBox controls
-	/// </summary>
-	public partial class ComboBoxTestForm : System.Windows.Forms.Form
+    /// <summary>
+    /// This is used to demonstrate the AutoCompleteComboBox and MultiColumnComboBox controls
+    /// </summary>
+    public partial class ComboBoxTestForm : System.Windows.Forms.Form
     {
         #region Private data members
         //=====================================================================
 
-        private DataSet demoData, productData;
+        private readonly OleDbDataAdapter adapter;
+        private readonly DataSet demoData, productData;
+
         #endregion
 
         #region Constructor
@@ -47,7 +48,7 @@ namespace ListControlDemoCS
         /// </summary>
 		public ComboBoxTestForm()
         {
-			InitializeComponent();
+            InitializeComponent();
 
             // This demo uses the same data source for both combo boxes so give each their own binding context
             cboAutoComp.BindingContext = new BindingContext();
@@ -61,16 +62,18 @@ namespace ListControlDemoCS
                 using(var dbConn = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\TestData.mdb"))
                 {
                     // Load some data for the demo
-                    OleDbCommand cmd = new OleDbCommand("Select * From DemoTable Order By Label", dbConn);
-                    cmd.CommandType = CommandType.Text;
-                    OleDbDataAdapter adapter = new OleDbDataAdapter(cmd);
+                    using(var cmd = new OleDbCommand("Select * From DemoTable Order By Label", dbConn))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        adapter = new OleDbDataAdapter(cmd);
 
-                    adapter.Fill(demoData);
+                        adapter.Fill(demoData);
 
-                    // Use a named table for this one
-                    adapter.TableMappings.Add("Table", "ProductInfo");
-                    cmd.CommandText = "Select * From ProductInfo Order By ProductName";
-                    adapter.Fill(productData);
+                        // Use a named table for this one
+                        adapter.TableMappings.Add("Table", "ProductInfo");
+                        cmd.CommandText = "Select * From ProductInfo Order By ProductName";
+                        adapter.Fill(productData);
+                    }
                 }
             }
             catch(OleDbException ex)
@@ -82,7 +85,7 @@ namespace ListControlDemoCS
 
             pgProps.SelectedObject = cboMultiCol;
             pgProps.Refresh();
-		}
+        }
         #endregion
 
         #region Helper methods
@@ -179,7 +182,7 @@ namespace ListControlDemoCS
                     foreach(DataColumn c in tbl.Columns)
                         cboColumns.Items.Add(c.ColumnName);
                 }
-		}
+        }
         #endregion
 
         #region Event handlers
@@ -225,9 +228,6 @@ namespace ListControlDemoCS
         /// <param name="e">The event arguments</param>
         private void cboDataSource_SelectedIndexChanged(object sender, EventArgs e)
         {
-            object dataSource;
-            string displayMember, valueMember;
-
             // Clear out the prior definitions
             cboColumns.Items.Clear();
             cboColumns.SelectedIndex = -1;
@@ -249,7 +249,7 @@ namespace ListControlDemoCS
 
             // Keep it simple.  We'll bind them to the same data but using different instances so no need for
             // binding contexts.
-            LoadData(cboAutoComp.Items, out dataSource, out displayMember, out valueMember);
+            LoadData(cboAutoComp.Items, out object dataSource, out string displayMember, out string valueMember);
 
             if(dataSource != null)
             {
@@ -286,8 +286,7 @@ namespace ListControlDemoCS
             // This can be any column from the data source regardless of whether or not it is displayed.  Note
             // that you can also use cboMultiCol["ColName"] to get a column value from the item indicated by the
             // SelectedIndex property.
-            txtValue.Text = String.Format("{0} = {1}", cboColumns.Text, cboMultiCol[(int)txtRowNumber.Value,
-                cboColumns.Text]);
+            txtValue.Text = $"{cboColumns.Text} = {cboMultiCol[(int)txtRowNumber.Value, cboColumns.Text]}";
         }
 
         /// <summary>
@@ -298,8 +297,7 @@ namespace ListControlDemoCS
         private void cboMultiCol_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Note that SelectedValue is only valid if there is a data source
-            txtValue.Text = String.Format("Index = {0}, Value = {1}, Text = {2}", cboMultiCol.SelectedIndex,
-                cboMultiCol.SelectedValue, cboMultiCol.Text);
+            txtValue.Text = $"Index = {cboMultiCol.SelectedIndex}, Value = {cboMultiCol.SelectedValue}, Text = {cboMultiCol.Text}";
         }
 
         /// <summary>
@@ -312,6 +310,7 @@ namespace ListControlDemoCS
             if(e.Index == -1)
                 e.DrawBackground();
             else
+            {
                 if((e.State & DrawItemState.Disabled) != 0)
                 {
                     ControlPaint.DrawImageDisabled(e.Graphics, ilImages.Images[e.Index % ilImages.Images.Count],
@@ -319,6 +318,30 @@ namespace ListControlDemoCS
                 }
                 else
                     e.Graphics.DrawImage(ilImages.Images[e.Index % ilImages.Images.Count], e.Bounds.X, e.Bounds.Y);
+            }
+        }
+
+        /// <summary>
+        /// Apply custom formatting to a dropdown column when it is created
+        /// </summary>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The event arguments</param>
+        private void cboMultiCol_FormatDropDownColumn(object sender, DataGridViewColumnEventArgs e)
+        {
+            // Format unit price as currency
+            if(e.Column.DataPropertyName == "UnitPrice")
+                e.Column.DefaultCellStyle.Format = "C2";
+            else
+            {
+                // When bound to an array list, the value is seen as an object so manually right-align the
+                // numeric value.
+                if(cboDataSource.SelectedIndex == 3 && e.Column.DataPropertyName == "Value" &&
+                  e.Column.ValueType == typeof(object))
+                {
+                    e.Column.HeaderCell.Style.Alignment = e.Column.DefaultCellStyle.Alignment =
+                        DataGridViewContentAlignment.MiddleRight;
+                }
+            }
         }
         #endregion
     }

@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : ImageListColumn.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/24/2014
-// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 04/09/2023
+// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a data grid view column object that contains ImageListCell objects
 //
@@ -21,7 +20,6 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
-using System.Globalization;
 using System.Windows.Forms;
 
 namespace EWSoftware.ListControls.DataGridViewControls
@@ -50,8 +48,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
           EditorBrowsable(EditorBrowsableState.Never)]
         public new Image Image
         {
-            get { return base.Image; }
-            set { base.Image = value; }
+            get => base.Image;
+            set => base.Image = value;
         }
 
         /// <summary>
@@ -60,7 +58,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         [Category("Behavior"), DefaultValue(null), Description("The image list to use for the column")]
         public ImageList ImageList
         {
-            get { return images; }
+            get => images;
             set
             {
                 if(images != value)
@@ -169,10 +167,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="e">The event arguments</param>
         protected internal virtual void OnMapValueToIndex(MapIndexEventArgs e)
         {
-            var handler = MapValueToIndex;
-
-            if(handler != null)
-                handler(this, e);
+            MapValueToIndex?.Invoke(this, e);
         }
 
         /// <summary>
@@ -187,10 +182,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="e">The event arguments</param>
         protected internal virtual void OnMapIndexToValue(MapIndexEventArgs e)
         {
-            var handler = MapIndexToValue;
-
-            if(handler != null)
-                handler(this, e);
+            MapIndexToValue?.Invoke(this, e);
         }
         #endregion
 
@@ -206,10 +198,10 @@ namespace EWSoftware.ListControls.DataGridViewControls
         {
             get
             {
-                if(originalCursor == null && base.DataGridView != null)
-                    originalCursor = base.DataGridView.Cursor;
+                if(originalCursor == null && this.DataGridView != null)
+                    originalCursor = this.DataGridView.Cursor;
 
-                return (originalCursor != null) ? originalCursor : Cursors.Default;
+                return originalCursor ?? Cursors.Default;
             }
         }
 
@@ -220,8 +212,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="e">The event arguments</param>
         private void ImageList_RecreateHandle(object sender, EventArgs e)
         {
-            if(base.DataGridView != null)
-                base.DataGridView.InvalidateColumn(base.Index);
+            this.DataGridView?.InvalidateColumn(base.Index);
         }
 
         /// <summary>
@@ -247,8 +238,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <see cref="MapValueToIndex"/> event.</remarks>
         public ImageListColumn()
         {
-            base.ValueType = typeof(object);
-            base.CellTemplate = new ImageListCell();
+            this.ValueType = typeof(object);
+            this.CellTemplate = new ImageListCell();
             this.NullImageIndex = -1;
         }
         #endregion
@@ -263,6 +254,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         public override object Clone()
         {
             ImageListColumn clone = (ImageListColumn)base.Clone();
+            
             clone.ImageList = images;
             clone.NullImage = this.NullImage;
             clone.NullImageIndex = this.NullImageIndex;
@@ -277,8 +269,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <returns>A string description of the column</returns>
         public override string ToString()
         {
-            return String.Format(CultureInfo.CurrentCulture, "ImageListColumn {{ Name={0}, Index={1} }}",
-                base.Name, base.Index);
+            return $"ImageListColumn {{ Name={this.Name}, Index={this.Index} }}";
         }
         #endregion
     }

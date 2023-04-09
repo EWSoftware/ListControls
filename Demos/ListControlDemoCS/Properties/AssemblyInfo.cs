@@ -2,8 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : AssemblyInfo.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 11/25/2020
-// Note    : Copyright 2005-2020, Eric Woodruff, All rights reserved
+// Updated : 04/09/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // EWSoftware Window Forms list control demo application
 //
@@ -29,7 +29,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("EWSoftware Windows Forms List Controls Demo")]
 [assembly: AssemblyDescription("This is used to demonstrate the capabilities of the EWSoftware List Controls.")]
 [assembly: AssemblyCompany("Eric Woodruff")]
-[assembly: AssemblyCopyright("Copyright \xA9 2005-2020, Eric Woodruff, All Rights Reserved")]
+[assembly: AssemblyCopyright("Copyright \xA9 2005-2023, Eric Woodruff, All Rights Reserved")]
 [assembly: AssemblyCulture("")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
@@ -44,7 +44,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Resources contained within the assembly are English
-[assembly: NeutralResourcesLanguageAttribute("en")]
+[assembly: NeutralResourcesLanguage("en")]
 
 // Version numbers.  All version numbers for an assembly consists of the following four values:
 //
@@ -53,5 +53,5 @@ using System.Runtime.InteropServices;
 //      Day of release
 //      Revision (typically zero unless multiple releases are made on the same day)
 //
-[assembly: AssemblyVersion("2020.11.25.0")]
-[assembly: AssemblyFileVersion("20.11.25.0")]
+[assembly: AssemblyVersion("2023.4.9.0")]
+[assembly: AssemblyFileVersion("23.4.9.0")]

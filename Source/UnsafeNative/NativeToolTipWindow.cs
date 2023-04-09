@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : NativeToolTipWindow.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/19/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 04/09/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a native tool tip window used by the DataList control as the tracking tool tip when
 // dragging its vertical scrollbar.
@@ -57,9 +56,10 @@ namespace EWSoftware.ListControls.UnsafeNative
         private readonly int TTM_UPDATETIPTEXT;
 
         // The owning window, visible flag, and tool tip info object
-        private IWin32Window owner;
+        private readonly IWin32Window owner;
         private bool isVisible;
         private TOOLINFO ti;
+
         #endregion
 
         #region Properties
@@ -68,20 +68,18 @@ namespace EWSoftware.ListControls.UnsafeNative
         /// <summary>
         /// This read-only property returns true if visible, false if not
         /// </summary>
-        internal bool IsVisible
-        {
-            get { return isVisible; }
-        }
+        internal bool IsVisible => isVisible;
+
         #endregion
 
         #region Constructor
         //=====================================================================
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="window">The parent window for the tool tip window</param>
-		internal NativeToolTipWindow(IWin32Window window)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="window">The parent window for the tool tip window</param>
+        internal NativeToolTipWindow(IWin32Window window)
 		{
             // Determine the correct messages to use
             if(Marshal.SystemDefaultCharSize == 1)
@@ -99,12 +97,14 @@ namespace EWSoftware.ListControls.UnsafeNative
 
             owner = window;
 
-			CreateParams cp = new CreateParams();
-			cp.Parent = owner.Handle;
-			cp.ClassName = TOOLTIP_CLASS;
-			cp.Style = TTS_ALWAYSTIP | TTS_NOPREFIX;
+            CreateParams cp = new CreateParams
+            {
+                Parent = owner.Handle,
+                ClassName = TOOLTIP_CLASS,
+                Style = TTS_ALWAYSTIP | TTS_NOPREFIX
+            };
 
-			this.CreateHandle(cp);
+            this.CreateHandle(cp);
 
 			// Make the window topmost
 			UnsafeNativeMethods.SetWindowPos(this.Handle, new IntPtr(-1), 0, 0, 0, 0,

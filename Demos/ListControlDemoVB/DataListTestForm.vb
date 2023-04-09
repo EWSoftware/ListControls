@@ -2,9 +2,8 @@
 ' System  : EWSoftware Data List Control Demonstration Applications
 ' File    : DataListTestForm.vb
 ' Author  : Eric Woodruff  (Eric@EWoodruff.us)
-' Updated : 10/02/2014
-' Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-' Compiler: Microsoft Visual C#
+' Updated : 04/09/2023
+' Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 '
 ' This is used to demonstrate the DataList and TemplateControl controls
 '
@@ -18,17 +17,14 @@
 ' 10/29/2005  EFW  Created the code
 '================================================================================================================
 
-Imports System
 Imports System.Data
 Imports System.Data.OleDb
-Imports System.Drawing
 Imports System.Text
-Imports System.Windows.Forms
 
 Imports EWSoftware.ListControls
 
 Public Partial Class DataListTestForm
-    Inherits System.Windows.Forms.Form
+    Inherits Form
 
     Private dbConn As OleDbConnection
     Private WithEvents daAddresses As OleDbDataAdapter
@@ -108,26 +104,28 @@ Public Partial Class DataListTestForm
         ' Connect the Row Updated event so that we can retrieve the new primary key values as they are identity
         ' values.
         AddHandler daAddresses.RowUpdated, AddressOf daAddresses_RowUpdated
-
+#Disable Warning CA2000
         ' Load the state codes for the row template's shared data source
-        Dim daStates As New OleDbDataAdapter("Select State, StateDesc From States", dbConn)
+        Using daStates As New OleDbDataAdapter("Select State, StateDesc From States", dbConn)
+            Dim dtStates As New DataTable()
+            daStates.Fill(dtStates)
 
-        Dim dtStates As New DataTable()
-        daStates.Fill(dtStates)
+            ' Add a blank row to allow no selection
+            dtStates.Rows.InsertAt(dtStates.NewRow(), 0)
 
-        ' Add a blank row to allow no selection
-        dtStates.Rows.InsertAt(dtStates.NewRow(), 0)
-
-        dlList.SharedDataSources.Add("States", dtStates.DefaultView)
+            dlList.SharedDataSources.Add("States", dtStates.DefaultView)
+        End Using
+#Enable Warning CA2000
     End Sub
 
     ' Get the new primary key on added rows
     Private Sub daAddresses_RowUpdated(sender As Object, e As System.Data.OleDb.OleDbRowUpdatedEventArgs) _
       Handles daAddresses.RowUpdated
         If e.Status = UpdateStatus.[Continue] And e.StatementType = StatementType.Insert Then
-            Dim cmd As New OleDbCommand("Select @@Identity", dbConn)
-            e.Row("ID") = cmd.ExecuteScalar()
-            e.Row.AcceptChanges()
+            Using cmd As New OleDbCommand("Select @@Identity", dbConn)
+                e.Row("ID") = cmd.ExecuteScalar()
+                e.Row.AcceptChanges()
+            End Using
         End If
     End Sub
 
@@ -212,10 +210,11 @@ Public Partial Class DataListTestForm
                 dsAddresses.Clear()
                 daAddresses.Fill(dsAddresses)
             End If
-
+#Disable Warning CA1031
         Catch ex As Exception
             MessageBox.Show(Me, ex.Message)
         End Try
+#Enable Warning CA1031
 
         dlList.Focus()
 	End Sub
@@ -311,8 +310,7 @@ Public Partial Class DataListTestForm
         ' This can be any column from the data source regardless of whether or not it is displayed.  Note that
         ' you can also use dlList("ColName") to get a column value from the item indicated by the CurrentRow
         ' property.
-        txtValue.Text = String.Format("{0} = {1}", cboColumns.Text, dlList(CType(txtRowNumber.Value - 1, Integer),
-            cboColumns.Text))
+        txtValue.Text = $"{cboColumns.Text} = {dlList(CType(txtRowNumber.Value - 1, Integer), cboColumns.Text)}"
     End Sub
 
     ' Show or hide the data list's header
@@ -380,7 +378,7 @@ Public Partial Class DataListTestForm
         ' Just list the IDs of the selection
         For idx = dragArgs.SelectionStart To dragArgs.SelectionEnd
             If idx <> dragArgs.SelectionStart Then
-                sb.Append(",")
+                sb.Append(","c)
             End If
 
             drv = CType(cm.List(idx), DataRowView)
@@ -434,7 +432,7 @@ Public Partial Class DataListTestForm
 
         If (hti.Type And DataListHitType.RowOrHeader) <> 0 And (hti.Row < dragArgs.SelectionStart Or _
           hti.Row > dragArgs.SelectionEnd) Then
-            MessageBox.Show(String.Format("Selection dropped on row {0}", hti.Row + 1))
+            MessageBox.Show($"Selection dropped on row {hti.Row + 1}")
 
             dlList.MoveTo(hti.Row)
             dlList.Select(hti.Row, hti.Row, hti.Row)

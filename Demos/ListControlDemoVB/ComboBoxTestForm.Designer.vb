@@ -6,8 +6,10 @@ Partial Class ComboBoxTestForm
     <System.Diagnostics.DebuggerNonUserCode()> _
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
-            If disposing AndAlso components IsNot Nothing Then
-                components.Dispose()
+            If disposing Then
+                demoData?.Dispose()
+                productData?.Dispose()
+                components?.Dispose()
             End If
         Finally
             MyBase.Dispose(disposing)
@@ -159,9 +161,9 @@ Partial Class ComboBoxTestForm
         Me.txtRowNumber.Location = New System.Drawing.Point(288, 103)
         Me.txtRowNumber.Maximum = New Decimal(New Integer() {999, 0, 0, 0})
         Me.txtRowNumber.Name = "txtRowNumber"
-        Me.txtRowNumber.RightToLeft = System.Windows.Forms.RightToLeft.Yes
         Me.txtRowNumber.Size = New System.Drawing.Size(56, 22)
         Me.txtRowNumber.TabIndex = 6
+        Me.txtRowNumber.TextAlign = HorizontalAlignment.Right
         '
         'label6
         '

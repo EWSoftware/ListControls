@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : BaseComboBoxDesigner.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/22/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 04/09/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This contains a control designer for BaseComboBox that enables the display of snap lines for it
 //
@@ -45,37 +44,34 @@ namespace EWSoftware.ListControls.Design
                 // from Reflector.
                 IList snapLines = base.SnapLines;
 
-                // Get a handle to the target control type
-                BaseComboBox control = Control as BaseComboBox;
-
-                // If failed, return the default
-                if(control == null)
-                    return snapLines;
-
-                // Create a new instance of the IDesigner based off of the target textbox in the BaseComboBox
-                // user control.
-                IDesigner designer = TypeDescriptor.CreateDesigner(control.txtValue, typeof(IDesigner));
-
-                if(designer == null)
-                    return snapLines;
-
-                using(designer)
+                // Get a handle to the target control type.  If it fails, return the default
+                if(Control is BaseComboBox control)
                 {
-                    designer.Initialize(control.txtValue);
+                    // Create a new instance of the IDesigner based off of the target textbox in the BaseComboBox
+                    // user control.
+                    IDesigner designer = TypeDescriptor.CreateDesigner(control.txtValue, typeof(IDesigner));
 
-                    ControlDesigner boxDesigner = designer as ControlDesigner;
-
-                    if(boxDesigner != null)
+                    if(designer != null)
                     {
-                        // Go through each SnapLine in the designer, look for the BaseLine, and create a new one
-                        // for the control.
-                        foreach(SnapLine line in boxDesigner.SnapLines)
-                            if(line.SnapLineType == SnapLineType.Baseline)
+                        using(designer)
+                        {
+                            designer.Initialize(control.txtValue);
+
+                            if(designer is ControlDesigner boxDesigner)
                             {
-                                snapLines.Add(new SnapLine(SnapLineType.Baseline,
-                                    line.Offset + control.txtValue.Top, line.Filter, line.Priority));
-                                break;
+                                // Go through each SnapLine in the designer, look for the BaseLine, and create a
+                                // new one for the control.
+                                foreach(SnapLine line in boxDesigner.SnapLines)
+                                {
+                                    if(line.SnapLineType == SnapLineType.Baseline)
+                                    {
+                                        snapLines.Add(new SnapLine(SnapLineType.Baseline,
+                                            line.Offset + control.txtValue.Top, line.Filter, line.Priority));
+                                        break;
+                                    }
+                                }
                             }
+                        }
                     }
                 }
 

@@ -2,9 +2,8 @@
 ' System  : EWSoftware Data List Control Demonstration Applications
 ' File    : AddressRow.vb
 ' Author  : Eric Woodruff  (Eric@EWoodruff.us)
-' Updated : 10/02/2014
-' Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-' Compiler: Microsoft Visual C#
+' Updated : 04/09/2023
+' Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 '
 ' This is a sample row template control for the DataList demo
 '
@@ -18,11 +17,7 @@
 ' 10/29/2005  EFW  Created the code
 '================================================================================================================
 
-Imports System
 Imports System.Data
-Imports System.Windows.Forms
-
-Imports EWSoftware.ListControls
 
 Public Partial Class AddressRow
     Inherits EWSoftware.ListControls.TemplateControl
@@ -39,9 +34,9 @@ Public Partial Class AddressRow
     ' This is overridden to confirm the deletion.  Returns True to allow the delete, False if not.
     Public Overrides ReadOnly Property CanDelete As Boolean
         Get
-            If MessageBox.Show(String.Format("Are you sure you want to delete the name '{0} {1}'?",
-              txtFName.Text, txtLName.Text), "Data List Test", MessageBoxButtons.YesNo,
-              MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = DialogResult.No Then
+            If MessageBox.Show($"Are you sure you want to delete the name '{txtFName.Text} {txtLName.Text}'?",
+              "Data List Test", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+              MessageBoxDefaultButton.Button2) = DialogResult.No Then
                 Return False
             End If
 

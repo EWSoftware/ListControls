@@ -4,7 +4,6 @@
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
 // Updated : 01/27/2015
 // Note    : Copyright 2007-2015, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
 //
 // This file contains an event arguments class used to map a cell value to a set of on/off states for drawing
 // the indicator column cell value.

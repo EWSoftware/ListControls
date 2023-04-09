@@ -2,7 +2,7 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : BaseListControl.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
+// Updated : 01/06/2023
 // Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a base list control class used to contain the common item collection and data binding
@@ -876,7 +876,7 @@ namespace EWSoftware.ListControls
         {
             get
             {
-                string strName = String.Empty;
+                string name = String.Empty;
 
                 // If the value member has a binding path, use that
                 if(valueMember.BindingPath.Length != 0)
@@ -886,31 +886,33 @@ namespace EWSoftware.ListControls
                 if(dataSource == null)
                 {
                     if(this.Items.Count > 0)
+                    {
                         if(this.Items[0] is ValueType)
-                            strName = "ValueType";
+                            name = "ValueType";
                         else
-                            strName = this.Items[0].GetType().Name;
+                            name = this.Items[0].GetType().Name;
+                    }
 
-                    return strName;
+                    return name;
                 }
 
                 // Return the type of the data source
-                object oSource = dataSource;
+                object ds = dataSource;
 
-                if(oSource is IListSource)
-                    oSource = ((IListSource)dataSource).GetList();
+                if(ds is IListSource ils)
+                    ds = ils.GetList();
 
-                ITypedList itl = (oSource as ITypedList);
-
-                if(itl != null)
-                    strName = itl.GetListName(null);
+                if(ds is ITypedList itl)
+                    name = itl.GetListName(null);
                 else
-                    if((oSource is Array) || (oSource is IList))
-                        strName = oSource.GetType().Name;
+                {
+                    if(ds is Array || ds is IList)
+                        name = ds.GetType().Name;
                     else
-                        strName = oSource.GetType().Name;
+                        name = ds.GetType().Name;
+                }
 
-                return strName;
+                return name;
             }
         }
 

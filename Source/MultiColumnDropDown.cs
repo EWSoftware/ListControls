@@ -2,7 +2,7 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : MultiColumnDropDown.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/05/2023
+// Updated : 04/09/2023
 // Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a multi-column combo box drop-down form that handles the display of the multiple columns
@@ -22,6 +22,9 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Globalization;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 using EWSoftware.ListControls.UnsafeNative;
@@ -40,14 +43,14 @@ namespace EWSoftware.ListControls
         /// <summary>
         /// This class acts as a wrapper for value data types so that they can be displayed in the data grid
         /// </summary>
-        /// <remarks>Since value types and strings do not have a property that the data grid can use to obtain a
-        /// value for display, this class acts as a surrogate for them.</remarks>
+        /// <remarks>Since value types and strings do not have a property that the data grid view can use to
+        /// obtain a value for display, this class acts as a surrogate for them.</remarks>
         internal class ValueItem
         {
             /// <summary>
             /// This property is used to return the value
             /// </summary>
-            public object Value { get; private set; }
+            public object Value { get; }
 
             /// <summary>
             /// Constructor
@@ -63,7 +66,7 @@ namespace EWSoftware.ListControls
         #region Private data members
         //=====================================================================
 
-        private DropDownDataGrid dgDropDown;
+        private readonly DropDownDataGrid dgDropDown;
         private readonly MultiColumnComboBox owner;
         private Point dragOffset;
         private Cursor priorCursor;
@@ -128,7 +131,30 @@ namespace EWSoftware.ListControls
 
             InitializeComponent();
 
-            dgDropDown.MouseTracking = owner.MouseTracking;
+            dgDropDown = new DropDownDataGrid
+            {
+                AllowUserToAddRows = false,
+                AllowUserToDeleteRows = false,
+                AllowUserToResizeColumns = false,
+                AllowUserToResizeRows = false,
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
+                BorderStyle = BorderStyle.None,
+                ColumnHeadersVisible = false,
+                Location = new Point(0, 0),
+                MultiSelect = false,
+                Name = "dgDropDown",
+                ReadOnly = true,
+                RowHeadersVisible = false,
+                RowHeadersWidth = 20,
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+                Size = new Size(326, 192),
+                TabIndex = 0,
+                MouseTracking = owner.MouseTracking
+            };
+
+            dgDropDown.MouseUp += this.dgDropDown_MouseUp;
+
+            this.Controls.Add(this.dgDropDown);
 
             if(owner.DropDownStyle == ComboBoxStyle.Simple)
             {
@@ -149,33 +175,12 @@ namespace EWSoftware.ListControls
 		/// </summary>
 		private void InitializeComponent()
         {
-            this.dgDropDown = new DropDownDataGrid();
-            ((ISupportInitialize)(this.dgDropDown)).BeginInit();
             this.SuspendLayout();
-            //
-            // dgDropDown
-            //
-            this.dgDropDown.AllowNavigation = false;
-            this.dgDropDown.AllowSorting = false;
-            this.dgDropDown.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            this.dgDropDown.BorderStyle = BorderStyle.None;
-            this.dgDropDown.CaptionVisible = false;
-            this.dgDropDown.DataMember = "";
-            this.dgDropDown.HeaderForeColor = SystemColors.ControlText;
-            this.dgDropDown.Location = new Point(0, 0);
-            this.dgDropDown.Name = "dgDropDown";
-            this.dgDropDown.ParentRowsVisible = false;
-            this.dgDropDown.ReadOnly = true;
-            this.dgDropDown.Size = new Size(326, 192);
-            this.dgDropDown.TabIndex = 0;
-            this.dgDropDown.MouseUp += this.dgDropDown_MouseUp;
             // 
             // MultiColumnDropDown
             // 
-            this.Controls.Add(this.dgDropDown);
             this.Name = "MultiColumnDropDown";
             this.Size = new Size(328, 208);
-            ((ISupportInitialize)(this.dgDropDown)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -185,130 +190,123 @@ namespace EWSoftware.ListControls
         //=====================================================================
 
         /// <summary>
-        /// Clean up any resources being used
-        /// </summary>
-        /// <param name="disposing">True to release both managed and unmanaged resources, false to just release
-        /// unmanaged resources.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if(disposing)
-            {
-                // Note that this will clear all column definitions.  The columns in the table style do not
-                // completely disconnect from the grid when it is disposed.  Unfortunately, there is no way to
-                // do this so the columns must be disposed of as well and recreated.
-                if(dgDropDown.TableStyles.Count != 0)
-                {
-                    DataGridTableStyle dgs = dgDropDown.TableStyles[0];
-                    dgs.GridColumnStyles.Clear();
-
-                    if(dgDropDown.TableStyles.Count != 0)
-                        dgDropDown.TableStyles.RemoveAt(0);
-
-                    dgs.DataGrid = null;
-                }
-            }
-
-            base.Dispose(disposing);
-        }
-
-        /// <summary>
         /// This is used to initialize the drop-down styles and data source
         /// </summary>
         private void InitDropDown()
         {
-            DropDownTableStyle ddts = owner.DropDownFormat;
-            int rowCount, rowHeight, headerHeight = 0, totalSize = 0, rowHeaderWidth = ddts.RowHeaderWidth;
-
-            // Must check this before we set the data source otherwise, columns are added by default
-            bool autoSize = (ddts.GridColumnStyles.Count == 0);
+            int rowCount, rowHeight, totalSize = 0;
 
             dgDropDown.Font = owner.DropDownFont;
             dgDropDown.RightToLeft = owner.RightToLeft;
+            dgDropDown.ColumnHeadersVisible = owner.ColumnHeadersVisible;
+            dgDropDown.RowHeadersVisible = owner.RowHeadersVisible;
+            dgDropDown.RowHeadersWidth = owner.RowHeadersWidth;
+
+            dgDropDown.ColumnHeadersDefaultCellStyle.ApplyStyle(owner.ColumnHeadersDefaultCellStyle);
+            dgDropDown.DefaultCellStyle.ApplyStyle(owner.DefaultCellStyle);
+            dgDropDown.AlternatingRowsDefaultCellStyle.ApplyStyle(owner.AlternatingRowsDefaultCellStyle);
+
             this.BackColor = dgDropDown.BackgroundColor = owner.DropDownBackColor;
             this.Cursor = owner.Cursor;
 
-            // Set the data source and apply style settings.  If there is a data source, use it.
-            ddts.MappingName = owner.MappingName;
+            // Set the data source and apply style settings
             dgDropDown.DataMember = owner.BindingPath;
 
             if(owner.DataSource != null)
-            {
-                // If bound to a relationship, use the object collection
-                if(ddts.MappingName == dgDropDown.DataMember && ddts.MappingName.IndexOf('.') != -1)
-                {
-                    ddts.MappingName = "ObjectCollection";
-                    dgDropDown.TableStyles.Add(ddts);
-                    dgDropDown.DataSource = owner.Items;
-                }
-                else
-                {
-                    dgDropDown.TableStyles.Add(ddts);
-                    dgDropDown.DataSource = owner.DataSource;
-                }
-            }
+                dgDropDown.DataSource = owner.DataSource;
             else
             {
-                if(ddts.MappingName == "ValueType" || ddts.MappingName == "String")
-                {
-                    // Value and string types require a wrapper or they don't show up correctly
-                    ValueItem[] viArray = new ValueItem[owner.Items.Count];
-
-                    for(int collIdx = 0; collIdx < owner.Items.Count; collIdx++)
-                        viArray[collIdx] = new ValueItem(owner.Items[collIdx]);
-
-                    ddts.MappingName = "ValueItem[]";
-                    dgDropDown.TableStyles.Add(ddts);
-                    dgDropDown.DataSource = viArray;
-                }
+                if(owner.MappingName == "ValueType" || owner.MappingName == "String")
+                    dgDropDown.DataSource = owner.Items.Cast<object>().Select(o => new ValueItem(o)).ToList();
                 else    // It must be an object collection
                     dgDropDown.DataSource = owner.Items;
             }
 
-            // Filter the columns if necessary and clear the headers if auto-sizing and they aren't visible.
-            // Clearing the header text is necessary so that we get an accurate size.
+            // Filter and auto-size the columns if necessary
             StringCollection filter = owner.ColumnFilter;
-            int idx;
+            int idx = 0;
+            var sb = new StringBuilder();
 
-            if(filter.Count != 0 || (autoSize && !ddts.ColumnHeadersVisible))
+            foreach(DataGridViewColumn col in dgDropDown.Columns)
             {
-                for(idx = 0; idx < ddts.GridColumnStyles.Count; idx++)
+                if(filter.Count == 0 || filter.Contains(col.DataPropertyName))
                 {
-                    if(filter.Count != 0 && !filter.Contains(ddts.GridColumnStyles[idx].MappingName))
+                    col.Visible = true;
+                    col.SortMode = DataGridViewColumnSortMode.NotSortable;
+
+                    // Apply some basic formatting based on the column data type
+                    Type colType = col.ValueType;
+
+                    // If it's a nullable type, get the type of the type parameter
+                    if(colType.IsGenericType)
+                        colType = colType.GetGenericArguments()[0];
+
+                    switch(Type.GetTypeCode(col.ValueType))
                     {
-                        ddts.GridColumnStyles.RemoveAt(idx);
-                        idx--;
+                        case TypeCode.Int16:
+                        case TypeCode.Int32:
+                        case TypeCode.Int64:
+                        case TypeCode.UInt16:
+                        case TypeCode.UInt32:
+                        case TypeCode.UInt64:
+                            col.HeaderCell.Style.Alignment = col.DefaultCellStyle.Alignment =
+                                DataGridViewContentAlignment.MiddleRight;
+                            break;
+
+                        case TypeCode.Decimal:
+                        case TypeCode.Double:
+                        case TypeCode.Single:
+                            col.HeaderCell.Style.Alignment = col.DefaultCellStyle.Alignment =
+                                DataGridViewContentAlignment.MiddleRight;
+                            col.DefaultCellStyle.Format = $"N{CultureInfo.CurrentCulture.NumberFormat.NumberDecimalDigits}";
+                            break;
+
+                        case TypeCode.Boolean:
+                            col.HeaderCell.Style.Alignment = col.DefaultCellStyle.Alignment =
+                                DataGridViewContentAlignment.MiddleCenter;
+                            break;
+
+                        case TypeCode.DateTime:
+                            col.DefaultCellStyle.Format = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
+                            break;
+
+                        default:
+                            break;
                     }
-                    else
+
+                    if(owner.ColumnHeadersVisible)
                     {
-                        if(autoSize && !ddts.ColumnHeadersVisible)
-                            ddts.GridColumnStyles[idx].HeaderText = String.Empty;
+                        // Format the caption by inserting spaces between words
+                        sb.Clear();
+
+                        for(int charIdx = 0; charIdx < col.DataPropertyName.Length; charIdx++)
+                        {
+                            if(Char.IsUpper(col.DataPropertyName[charIdx]) && charIdx > 0 &&
+                              !Char.IsUpper(col.DataPropertyName[charIdx - 1]))
+                            {
+                                sb.Append(' ');
+                            }
+
+                            sb.Append(col.DataPropertyName[charIdx]);
+                        }
+
+                        col.HeaderText = sb.ToString();
                     }
+
+                    // Give the user a chance to adjust the formatting before sizing the column
+                    owner.OnFormatDropDownColumn(new DataGridViewColumnEventArgs(col));
+
+                    if(col.AutoSizeMode != DataGridViewAutoSizeColumnMode.None)
+                    {
+                        dgDropDown.AutoResizeColumn(col.Index, dgDropDown.ColumnHeadersVisible ?
+                            DataGridViewAutoSizeColumnMode.AllCells : DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                    }
+
+                    totalSize += col.Width;
+                    idx++;
                 }
-            }
-
-            // Row Header Width and Column Headers Visible seem to get overridden so restore them
-            ddts.RowHeaderWidth = rowHeaderWidth;
-            dgDropDown.ColumnHeadersVisible = ddts.ColumnHeadersVisible;
-
-            // Only auto-size if the user didn't specify any columns
-            if(autoSize)
-                DataGridHelper.AutoSizeColumns(dgDropDown);
-
-            // Sum the width of the columns and take the opportunity to auto-size columns with a width of zero.
-            // This only happens if the user specified column definitions.
-            idx = 0;
-
-            foreach(DataGridColumnStyle col in ddts.GridColumnStyles)
-            {
-                // Replace default null text where needed
-                if(col.NullText == "(null)")
-                    col.NullText = ddts.DefaultNullText;
-
-                if(col.Width == 0)
-                    DataGridHelper.AutoSizeColumn(dgDropDown, idx);
-
-                totalSize += col.Width;
-                idx++;
+                else
+                    col.Visible = false;
             }
 
             // Use the specified width or figure out the initial width
@@ -316,13 +314,12 @@ namespace EWSoftware.ListControls
                 totalSize = owner.DropDownWidth;
             else
             {
-                if(ddts.RowHeadersVisible)
-                    totalSize += rowHeaderWidth;
+                totalSize += dgDropDown.RowHeadersVisible ? dgDropDown.RowHeadersWidth : 0;
 
-                if(idx != 0 && totalSize < owner.Width - 2)
+                if(idx != 0 && totalSize < owner.Width)
                 {
-                    // Stretch the last column to fit the width
-                    ddts.GridColumnStyles[idx - 1].Width += owner.Width - totalSize - 2;
+                    // Stretch the last column to fill the width
+                    dgDropDown.Columns[idx - 1].Width += owner.Width - totalSize - 3;
                     totalSize = owner.Width;
                 }
                 else
@@ -330,7 +327,7 @@ namespace EWSoftware.ListControls
                     if(idx == 0)
                         totalSize = owner.Width;
                     else
-                        totalSize += 2;
+                        totalSize += 4;
                 }
             }
 
@@ -341,31 +338,21 @@ namespace EWSoftware.ListControls
             this.Width = totalSize;
 
             // Set default height
-            rowCount = DataGridHelper.RowCount(dgDropDown);
-
-            if(rowCount != 0 && ddts.GridColumnStyles.Count > 0)
-                rowHeight = dgDropDown.GetCellBounds(0, 0).Height + 1;
-            else
-                rowHeight = dgDropDown.PreferredRowHeight;
-
-            // Figure out column header height if visible.  This is a little ugly but it works.
-            if(ddts.ColumnHeadersVisible)
-            {
-                while(dgDropDown.HitTest(rowHeaderWidth + 2, headerHeight).Type == DataGrid.HitTestType.ColumnHeader)
-                    headerHeight++;
-            }
+            rowCount = dgDropDown.RowCount;
+            rowHeight = dgDropDown.RowTemplate.Height;
 
             if(rowCount > owner.MaxDropDownItems)
             {
-                rowHeight = (rowHeight * owner.MaxDropDownItems) + headerHeight;
+                rowHeight = (rowHeight * owner.MaxDropDownItems) + (dgDropDown.ColumnHeadersVisible ?
+                    dgDropDown.ColumnHeadersHeight : 0);
 
                 // Adjust width to account for the scrollbar
                 this.Width += BaseComboBox.DropDownButtonWidth;
             }
             else
-                rowHeight = (rowHeight * rowCount) + headerHeight;
+                rowHeight = (rowHeight * rowCount) + (dgDropDown.ColumnHeadersVisible ? dgDropDown.ColumnHeadersHeight : 0);
 
-            this.Height = rowHeight + this.Height - dgDropDown.Height;
+            this.Height = rowHeight + this.Height - dgDropDown.Height + 1;
             hasInitialized = true;
         }
 
@@ -384,14 +371,8 @@ namespace EWSoftware.ListControls
             dgDropDown.ClearSelection();
             dragOffset = Point.Empty;
 
-            // Sometimes it shows the edit control so clear it
-            DataGridHelper.ConcedeFocus(dgDropDown);
-
-            if(idx != -1 && DataGridHelper.RowCount(dgDropDown) > idx)
-            {
-                dgDropDown.Select(idx);
-                dgDropDown.CurrentRowIndex = idx;
-            }
+            if(idx != -1 && dgDropDown.RowCount > idx)
+                dgDropDown.SelectCell(dgDropDown.CurrentCellAddress.X, idx);
 
             // The owner positions us when using the simple style.  There's also an odd sequence of events
             // related to updates to bound controls that can cause this control to get disposed after setting
@@ -487,8 +468,13 @@ namespace EWSoftware.ListControls
         /// <param name="rows">The number of rows to scroll</param>
         public void ScrollDropDown(int rows)
         {
-            DataGridHelper.ScrollDown(dgDropDown, rows);
-            dgDropDown.Invalidate(true);
+            int newFirstRow = dgDropDown.FirstDisplayedScrollingRowIndex + rows;
+
+            if(newFirstRow < 0)
+                newFirstRow = 0;
+
+            if(newFirstRow < dgDropDown.RowCount)
+                dgDropDown.FirstDisplayedScrollingRowIndex = newFirstRow;
         }
 
         /// <summary>
@@ -500,11 +486,7 @@ namespace EWSoftware.ListControls
             dgDropDown.ClearSelection();
 
             if(selIdx != -1)
-            {
-                DataGridHelper.ConcedeFocus(dgDropDown);
-                dgDropDown.CurrentRowIndex = selIdx;
-                dgDropDown.Select(selIdx);
-            }
+                dgDropDown.SelectCell(dgDropDown.CurrentCellAddress.X, selIdx);
         }
 
         /// <summary>
@@ -696,8 +678,8 @@ namespace EWSoftware.ListControls
             {
                 var hti = dgDropDown.HitTest(e.X, e.Y);
 
-                if(hti.Type == DataGrid.HitTestType.Cell)
-                    owner.CommitSelection(hti.Row);
+                if(hti.Type == DataGridViewHitTestType.Cell)
+                    owner.CommitSelection(hti.RowIndex);
 
                 if(owner.DropDownStyle == ComboBoxStyle.Simple)
                     owner.FocusTextBox();

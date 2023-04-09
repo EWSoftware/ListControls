@@ -15,11 +15,10 @@ namespace ListControlDemoCS
         {
             if(disposing)
             {
-                if(dbConn != null)
-                    dbConn.Dispose();
-
-                if(components != null)
-                    components.Dispose();
+                dbConn?.Dispose();
+                daAddresses?.Dispose();
+                dsAddresses?.Dispose();
+                components?.Dispose();
             }
             base.Dispose(disposing);
         }

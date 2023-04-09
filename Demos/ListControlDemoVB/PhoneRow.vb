@@ -2,9 +2,8 @@
 ' System  : EWSoftware Data List Control Demonstration Applications
 ' File    : PhoneRow.vb
 ' Author  : Eric Woodruff  (Eric@EWoodruff.us)
-' Updated : 10/02/2014
-' Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-' Compiler: Microsoft Visual C#
+' Updated : 04/09/2023
+' Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 '
 ' This is a sample row template control for the DataList relationship demo
 '
@@ -18,18 +17,13 @@
 ' 12/23/2005  EFW  Created the code
 '================================================================================================================
 
-Imports System
-Imports System.Data
 Imports System.Text.RegularExpressions
-Imports System.Windows.Forms
-
-Imports EWSoftware.ListControls
 
 Public Partial Class PhoneRow
     Inherits EWSoftware.ListControls.TemplateControl
 
     ' A simple edit for the phone number format
-    Private Shared rePhone As New Regex("^\(\d{3}\) \d{3}-\d{4}$")
+    Private Shared ReadOnly rePhone As New Regex("^\(\d{3}\) \d{3}-\d{4}$")
 
     ' Constructor
 	Public Sub New()
@@ -44,8 +38,8 @@ Public Partial Class PhoneRow
     ' This is overridden to confirm the deletion.   Returns True to allow the delete, False if not.
     Public Overrides ReadOnly Property CanDelete As Boolean
         Get
-            If MessageBox.Show(String.Format("Are you sure you want to delete the phone number '{0}'?",
-              txtPhoneNumber.Text), "Relationship Test", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+            If MessageBox.Show($"Are you sure you want to delete the phone number '{txtPhoneNumber.Text}'?",
+              "Relationship Test", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
               MessageBoxDefaultButton.Button2) = DialogResult.No Then
                 Return False
             End If

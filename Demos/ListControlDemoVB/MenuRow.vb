@@ -2,9 +2,8 @@
 ' System  : EWSoftware Data List Control Demonstration Applications
 ' File    : MenuRow.vb
 ' Author  : Eric Woodruff  (Eric@EWoodruff.us)
-' Updated : 10/02/2014
-' Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-' Compiler: Microsoft Visual Basic
+' Updated : 04/09/2023
+' Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 '
 ' This is used as a row template for the main menu form's data list
 '
@@ -19,10 +18,8 @@
 ' 03/02/2007  EFW  Added extended tree view control demo
 '================================================================================================================
 
-Imports System
 Imports System.Data
 Imports System.Reflection
-Imports System.Windows.Forms
 
 Imports EWSoftware.ListControls
 
@@ -58,8 +55,7 @@ Public Partial Class MenuRow
         If CType(drv("UseControlImageYN"), Boolean) = True Then
             Dim asm As [Assembly] = GetType(TemplateControl).Assembly
 
-            Dim image As New Bitmap(asm.GetManifestResourceStream(String.Format("EWSoftware.ListControls.{0}.bmp",
-                drv("DemoName"))))
+            Dim image As New Bitmap(asm.GetManifestResourceStream($"EWSoftware.ListControls.{drv("DemoName")}.bmp"))
             image.MakeTransparent()
             lblDemoImage.Image = image
         Else

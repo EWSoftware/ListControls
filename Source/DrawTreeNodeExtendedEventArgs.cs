@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : DrawTreeNodeExtendedEventArgs.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/25/2014
-// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 04/09/2023
+// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
 //
 // This file contains an event arguments class used to provide information for the ExtendedTreeView's
 // TreeNodeDrawing and TreeNodeDrawn events.
@@ -39,9 +38,9 @@ namespace EWSoftware.ListControls
         #region Private data members
         //=====================================================================
 
-        private Graphics graphics;
-        private TreeNode node;
-        private TreeNodeStates state;
+        private readonly Graphics graphics;
+        private readonly TreeNode node;
+        private readonly TreeNodeStates state;
 
         private NodeParts nodeParts;
         private string text;
@@ -62,26 +61,17 @@ namespace EWSoftware.ListControls
         /// <summary>
         /// This read-only property returns the graphics object
         /// </summary>
-        public Graphics Graphics
-        {
-            get { return graphics; }
-        }
+        public Graphics Graphics => graphics;
 
         /// <summary>
         /// This read-only property returns the tree node being drawn
         /// </summary>
-        public TreeNode Node
-        {
-            get { return node; }
-        }
+        public TreeNode Node => node;
 
         /// <summary>
         /// This read-only property returns the current state of the tree node to draw
         /// </summary>
-        public TreeNodeStates State
-        {
-            get { return state; }
-        }
+        public TreeNodeStates State => state;
 
         /// <summary>
         /// This is used to set or get the parts of the node to draw
@@ -92,25 +82,22 @@ namespace EWSoftware.ListControls
         /// tree view will not draw them.</remarks>
         public NodeParts NodeParts
         {
-            get { return nodeParts; }
-            set { nodeParts = value; }
+            get => nodeParts;
+            set => nodeParts = value;
         }
 
         /// <summary>
         /// This read-only property returns the overall bounds of the node to draw
         /// </summary>
-        public Rectangle NodeBounds
-        {
-            get { return nodeBounds; }
-        }
+        public Rectangle NodeBounds => nodeBounds;
 
         /// <summary>
         /// This is used to set or get the bounds of the expando image (+/-) if it is drawn
         /// </summary>
         public Rectangle ExpandoBounds
         {
-            get { return expandoBounds; }
-            set { expandoBounds = value; }
+            get => expandoBounds;
+            set => expandoBounds = value;
         }
 
         /// <summary>
@@ -118,8 +105,8 @@ namespace EWSoftware.ListControls
         /// </summary>
         public Rectangle StateBounds
         {
-            get { return stateBounds; }
-            set { stateBounds = value; }
+            get => stateBounds;
+            set => stateBounds = value;
         }
 
         /// <summary>
@@ -127,8 +114,8 @@ namespace EWSoftware.ListControls
         /// </summary>
         public Rectangle ImageBounds
         {
-            get { return imageBounds; }
-            set { imageBounds = value; }
+            get => imageBounds;
+            set => imageBounds = value;
         }
 
         /// <summary>
@@ -137,8 +124,8 @@ namespace EWSoftware.ListControls
         /// <value>This value is calculated automatically when the text is set if a font has been defined</value>
         public Rectangle TextBounds
         {
-            get { return textBounds; }
-            set { textBounds = value; }
+            get => textBounds;
+            set => textBounds = value;
         }
 
         /// <summary>
@@ -146,8 +133,8 @@ namespace EWSoftware.ListControls
         /// </summary>
         public StringFormat StringFormat
         {
-            get { return sf; }
-            set { sf = value; }
+            get => sf;
+            set => sf = value;
         }
 
         /// <summary>
@@ -157,7 +144,7 @@ namespace EWSoftware.ListControls
         /// <see cref="TextBounds"/> property is recalculated automatically.</value>
         public string Text
         {
-            get { return text; }
+            get => text;
             set
             {
                 text = value;
@@ -180,8 +167,8 @@ namespace EWSoftware.ListControls
         /// <value>If set to -1, no image is drawn</value>
         public int ImageIndex
         {
-            get { return imageIndex; }
-            set { imageIndex = value; }
+            get => imageIndex;
+            set => imageIndex = value;
         }
 
         /// <summary>
@@ -192,8 +179,8 @@ namespace EWSoftware.ListControls
         /// the node's checked state if the tree view's <see cref="TreeView.CheckBoxes"/> is set to true.</value>
         public int StateImageIndex
         {
-            get { return stateImageIndex; }
-            set { stateImageIndex = value; }
+            get => stateImageIndex;
+            set => stateImageIndex = value;
         }
 
         /// <summary>
@@ -201,7 +188,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         public Font Font
         {
-            get { return font; }
+            get => font;
             set
             {
                 // Only dispose of the font if it isn't the tree view's or the node's font
@@ -218,12 +205,10 @@ namespace EWSoftware.ListControls
         /// </summary>
         public Pen LinePen
         {
-            get { return linePen; }
+            get => linePen;
             set
             {
-                if(linePen != null)
-                    linePen.Dispose();
-
+                linePen?.Dispose();
                 linePen = value;
             }
         }
@@ -235,8 +220,8 @@ namespace EWSoftware.ListControls
         /// lines can be determined by subtracting the tree view's <see cref="TreeView.Indent"/> value.</value>
         public int LinePosition
         {
-            get { return linePos; }
-            set { linePos = value; }
+            get => linePos;
+            set => linePos = value;
         }
 
         /// <summary>
@@ -245,8 +230,8 @@ namespace EWSoftware.ListControls
         /// </summary>
         public int LineWidth
         {
-            get { return lineWidth; }
-            set { lineWidth = value; }
+            get => lineWidth;
+            set => lineWidth = value;
         }
 
         /// <summary>
@@ -254,12 +239,10 @@ namespace EWSoftware.ListControls
         /// </summary>
         public Brush BackgroundBrush
         {
-            get { return bgBrush; }
+            get => bgBrush;
             set
             {
-                if(bgBrush != null)
-                    bgBrush.Dispose();
-
+                bgBrush?.Dispose();
                 bgBrush = value;
             }
         }
@@ -271,12 +254,10 @@ namespace EWSoftware.ListControls
         /// <value>This will be null if <see cref="TreeView.FullRowSelect"/> is true</value>
         public Brush TextBackgroundBrush
         {
-            get { return bgTextBrush; }
+            get => bgTextBrush;
             set
             {
-                if(bgTextBrush != null)
-                    bgTextBrush.Dispose();
-
+                bgTextBrush?.Dispose();
                 bgTextBrush = value;
             }
         }
@@ -286,12 +267,10 @@ namespace EWSoftware.ListControls
         /// </summary>
         public Brush TextForegroundBrush
         {
-            get { return fgBrush; }
+            get => fgBrush;
             set
             {
-                if(fgBrush != null)
-                    fgBrush.Dispose();
-
+                fgBrush?.Dispose();
                 fgBrush = value;
             }
         }

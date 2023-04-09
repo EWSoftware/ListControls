@@ -4,7 +4,6 @@
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
 // Updated : 07/22/2014
 // Note    : Copyright 2008-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
 //
 // This file contains a data grid view column that hosts a textbox control and exposes its auto-complete
 // features.
@@ -37,10 +36,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <summary>
         /// This is used internally to get a reference to the cell template as the actual type
         /// </summary>
-        protected AutoCompleteTextBoxCell AutoCompleteTextBoxCellTemplate
-        {
-            get { return (AutoCompleteTextBoxCell)base.CellTemplate; }
-        }
+        protected AutoCompleteTextBoxCell AutoCompleteTextBoxCellTemplate => (AutoCompleteTextBoxCell)base.CellTemplate;
 
         /// <summary>
         /// Gets or sets the template used to create new cells
@@ -50,7 +46,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override DataGridViewCell CellTemplate
         {
-            get { return base.CellTemplate; }
+            get => base.CellTemplate;
             set
             {
                 AutoCompleteTextBoxCell cell = value as AutoCompleteTextBoxCell;

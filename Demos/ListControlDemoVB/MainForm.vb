@@ -2,9 +2,8 @@
 ' System  : EWSoftware Data List Control Demonstration Applications
 ' File    : MainForm.vb
 ' Author  : Eric Woodruff  (Eric@EWoodruff.us)
-' Updated : 10/02/2014
-' Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-' Compiler: Microsoft Visual Basic .NET
+' Updated : 04/09/2023
+' Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 '
 ' This application is used to demonstrate various features of the EWSoftware List Control classes
 '
@@ -19,14 +18,14 @@
 ' 03/06/2006  EFW  Reworked main menu form to use a DataList
 '================================================================================================================
 
-Imports System
 Imports System.Data
 Imports System.Data.OleDb
 Imports System.IO
-Imports System.Windows.Forms
+
+ #Disable Warning CA2000
 
 Public Partial Class MainForm
-    Inherits System.Windows.Forms.Form
+    Inherits Form
 
     Public Sub New()
         MyBase.New()
@@ -44,15 +43,18 @@ Public Partial Class MainForm
         Try
             Using dbConn As New OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\TestData.mdb")
                 ' Load the menu data
-                Dim cmd As New OleDbCommand("Select * From DemoInfo Order By DemoOrder, DemoName", dbConn)
-                cmd.CommandType = CommandType.Text
-                Dim adapter As New OleDbDataAdapter(cmd)
+                Using cmd As New OleDbCommand("Select * From DemoInfo Order By DemoOrder, DemoName", dbConn) With {
+                    .CommandType = CommandType.Text
+                }
+                    Using adapter As New OleDbDataAdapter(cmd)
+                        Dim demoData As New DataSet
 
-                Dim demoData As New DataSet
-                adapter.Fill(demoData)
+                        adapter.Fill(demoData)
 
-                ' Set the data list's data source and row template
-                dlMenu.SetDataBinding(demoData.Tables(0), Nothing, GetType(MenuRow))
+                        ' Set the data list's data source and row template
+                        dlMenu.SetDataBinding(demoData.Tables(0), Nothing, GetType(MenuRow))
+                    End Using
+                End Using
             End Using
 
         Catch ex As OleDbException
@@ -71,3 +73,5 @@ Public Partial Class MainForm
     End Sub
 
 End Class
+
+#Enable Warning CA2000

@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : DataListHitTestInfo.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/25/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 04/09/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a hit test information class for the DataList control
 //
@@ -91,12 +90,7 @@ namespace EWSoftware.ListControls
         /// <returns>Returns true if the object equals this instance, false if it does not</returns>
         public override bool Equals(object obj)
         {
-            DataListHitTestInfo info = obj as DataListHitTestInfo;
-
-            if(info != null && this.Type == info.Type && this.Row == info.Row)
-                return true;
-
-            return false;
+            return obj is DataListHitTestInfo info && this.Type == info.Type && this.Row == info.Row;
         }
 
         /// <summary>
@@ -114,7 +108,7 @@ namespace EWSoftware.ListControls
         /// <returns>Returns a string representation of the object.</returns>
         public override string ToString()
         {
-            return String.Format(CultureInfo.InvariantCulture, "{{{0}, {1}}}", this.Type, this.Row);
+            return $"{{{this.Type}, {this.Row}}}";
         }
         #endregion
     }

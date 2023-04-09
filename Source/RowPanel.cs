@@ -2,9 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : RowPanel.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/19/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 04/09/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This file contains a derived Panel control used to display rows in the DataList control
 //
@@ -39,8 +38,8 @@ namespace EWSoftware.ListControls
         #region Private data members
         //=====================================================================
 
-        private MethodInfo syncScrollbars;
-        private FieldInfo  eventMouseWheel, layoutSuspendCount;
+        private readonly MethodInfo syncScrollbars;
+        private readonly FieldInfo  eventMouseWheel, layoutSuspendCount;
 
         private NativeToolTipWindow scrollTip;
         #endregion
@@ -103,7 +102,7 @@ namespace EWSoftware.ListControls
         }
 
         /// <summary>
-        /// This is called by <see cref="DataList.MoveTo(int)"/> to scroll a row into view smoothly
+        /// This is called by <see cref="DataList.MoveTo(Int32)"/> to scroll a row into view smoothly
         /// </summary>
         /// <param name="newRow">The row to make visible</param>
         internal void ScrollRowIntoView(int newRow)
@@ -247,8 +246,7 @@ namespace EWSoftware.ListControls
                 this.SetScrollState(8, true);
                 this.SetDisplayRectLocation(displayRect.X, -curPos);
 
-                if(syncScrollbars != null)
-                    syncScrollbars.Invoke(this, new object[] { this.AutoScroll });
+                syncScrollbars?.Invoke(this, new object[] { this.AutoScroll });
 
                 // Refresh the row headers if they are visible
                 if(owner.RowHeadersVisible)
@@ -326,18 +324,13 @@ namespace EWSoftware.ListControls
 
                 this.ScrollRowIntoView(row);
 
-                HandledMouseEventArgs mea = e as HandledMouseEventArgs;
-
-                if(mea != null)
+                if(e is HandledMouseEventArgs mea)
                     mea.Handled = true;
 
                 // Bypass ScrollableControl's version and let other handlers get called
                 if(eventMouseWheel != null)
                 {
-                    MouseEventHandler meh = (MouseEventHandler)base.Events[eventMouseWheel];
-
-                    if(meh != null)
-                        meh(this, e);
+                    ((MouseEventHandler)this.Events[eventMouseWheel])?.Invoke(this, e);
                 }
             }
             else

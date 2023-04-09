@@ -2,9 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : DataNavigatorTestForm.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 10/01/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-// Compiler: Microsoft Visual C#
+// Updated : 01/06/2023
+// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 //
 // This is used to demonstrate the DataNavigator control
 //
@@ -28,11 +27,11 @@ using EWSoftware.ListControls;
 
 namespace ListControlDemoCS
 {
-	/// <summary>
-	/// This is used to demonstrate the DataNavigator control
-	/// </summary>
-	public partial class DataNavigatorTestForm : System.Windows.Forms.Form
-	{
+    /// <summary>
+    /// This is used to demonstrate the DataNavigator control
+    /// </summary>
+    public partial class DataNavigatorTestForm : Form
+    {
         #region Private data members
         //=====================================================================
 
@@ -51,8 +50,8 @@ namespace ListControlDemoCS
         /// Constructor
         /// </summary>
 		public DataNavigatorTestForm()
-		{
-			InitializeComponent();
+        {
+            InitializeComponent();
 
             lastSearch = String.Empty;
 
@@ -65,7 +64,7 @@ namespace ListControlDemoCS
 
             // Load data by default
             btnLoad_Click(this, EventArgs.Empty);
-		}
+        }
         #endregion
 
         #region Helper methods
@@ -152,16 +151,17 @@ namespace ListControlDemoCS
             daAddresses.RowUpdated += daAddresses_RowUpdated;
 
             // Load the state codes for the row template's shared data source
-            OleDbDataAdapter daStates = new OleDbDataAdapter("Select State, StateDesc From States", dbConn);
+            using(var daStates = new OleDbDataAdapter("Select State, StateDesc From States", dbConn))
+            {
+                DataTable dtStates = new DataTable();
+                daStates.Fill(dtStates);
 
-            DataTable dtStates = new DataTable();
-            daStates.Fill(dtStates);
+                // Add a blank row to allow no selection
+                dtStates.Rows.InsertAt(dtStates.NewRow(), 0);
 
-            // Add a blank row to allow no selection
-            dtStates.Rows.InsertAt(dtStates.NewRow(), 0);
-
-            cboState.DisplayMember = cboState.ValueMember = "State";
-            cboState.DataSource = dtStates.DefaultView;
+                cboState.DisplayMember = cboState.ValueMember = "State";
+                cboState.DataSource = dtStates.DefaultView;
+            }
         }
         #endregion
 
@@ -177,9 +177,11 @@ namespace ListControlDemoCS
         {
             if(e.Status == UpdateStatus.Continue && e.StatementType == StatementType.Insert)
             {
-                OleDbCommand cmd = new OleDbCommand("Select @@Identity", dbConn);
-                e.Row["ID"] = cmd.ExecuteScalar();
-                e.Row.AcceptChanges();
+                using(var cmd = new OleDbCommand("Select @@Identity", dbConn))
+                {
+                    e.Row["ID"] = cmd.ExecuteScalar();
+                    e.Row.AcceptChanges();
+                }
             }
         }
 
@@ -260,10 +262,12 @@ namespace ListControlDemoCS
         {
             epErrors.Clear();
 
-            if(MessageBox.Show(String.Format("Are you sure you want to delete the name '{0} {1}'?",
-              txtFName.Text, txtLName.Text), "Data Navigator Test", MessageBoxButtons.YesNo,
-              MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.No)
+            if(MessageBox.Show($"Are you sure you want to delete the name '{txtFName.Text} {txtLName.Text}'?",
+              "Data Navigator Test", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+              MessageBoxDefaultButton.Button2) == DialogResult.No)
+            {
                 e.Cancel = true;
+            }
         }
 
         /// <summary>
@@ -310,13 +314,13 @@ namespace ListControlDemoCS
                     e.Cancel = true;
                 else
                     if(dr == DialogResult.Yes)
-                    {
-                        btnSave_Click(sender, e);
+                {
+                    btnSave_Click(sender, e);
 
-                        // If it didn't work, stay here
-                        if(dnNav.HasChanges)
-                            e.Cancel = true;
-                    }
+                    // If it didn't work, stay here
+                    if(dnNav.HasChanges)
+                        e.Cancel = true;
+                }
             }
         }
 
@@ -326,7 +330,7 @@ namespace ListControlDemoCS
         /// <param name="s">The sender of the event</param>
         /// <param name="e">The event arguments</param>
 		private void btnLoad_Click(object sender, EventArgs e)
-		{
+        {
             DialogResult dr;
 
             try
@@ -379,7 +383,7 @@ namespace ListControlDemoCS
             {
                 MessageBox.Show(this, ex.Message);
             }
-		}
+        }
 
         /// <summary>
         /// Save the changes
@@ -392,12 +396,12 @@ namespace ListControlDemoCS
                 btnLoad_Click(sender, e);
             else
                 if(dnNav.IsValid)
-                {
-                    // We must commit any pending changes
-                    dnNav.CommitChanges();
+            {
+                // We must commit any pending changes
+                dnNav.CommitChanges();
 
-                    daAddresses.Update(dsAddresses);
-                }
+                daAddresses.Update(dsAddresses);
+            }
         }
 
         /// <summary>
@@ -498,8 +502,7 @@ namespace ListControlDemoCS
             // This can be any column from the data source regardless of whether or not it is displayed.  Note
             // that you can also use dnNav["ColName"] to get a column value from the item indicated by the
             // CurrentRow property.
-            txtValue.Text = String.Format("{0} = {1}", cboColumns.Text, dnNav[(int)txtRowNumber.Value - 1,
-                cboColumns.Text]);
+            txtValue.Text = $"{cboColumns.Text} = {dnNav[(int)txtRowNumber.Value - 1, cboColumns.Text]}";
         }
 
         /// <summary>

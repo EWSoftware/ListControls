@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="1eafc4ba-7a87-41d0-8f6d-fc4faf499bee" revisionNumber="1">
+	<developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+		<introduction>
+			<para>Release notes for version 2023.4.9.0.</para>
+		</introduction>
+
+		<section>
+			<title>Changes in This Release</title>
+			<content>
+
+				<list class="bullet">
+					<listItem>
+						<para>Added support for using the controls with .NET 6.0 and later.</para>
+					</listItem>
+
+					<listItem>
+						<para><legacyBold>Possible breaking change</legacyBold>: In order to support .NET 6.0, the grid
+control used by the <codeInline>MultiColumnComboBox</codeInline> control was changed from the unsupported
+<codeInline>DataGrid</codeInline> to the <codeInline>DataGridView</codeInline> control.  As a result of this
+change, the <codeInline>DropDownFormat</codeInline> property was removed.  Columns are now added based on the
+data source and as each one is formatted, a new
+<codeEntityReference qualifyHint="false">E:EWSoftware.ListControls.MultiColumnComboBox.FormatDropDownColumn</codeEntityReference>
+event is raised to allow you to modify the column's formatting if necessary.</para>
+					
+						<para>The following properties were also added to allow configuring some of the settings for the
+dropdown grid:</para>
+					
+						<list class="bullet">
+							<listItem>
+								<para><codeEntityReference qualifyHint="false">P:EWSoftware.ListControls.MultiColumnComboBox.AlternatingRowsDefaultCellStyle</codeEntityReference></para>
+							</listItem>
+
+							<listItem>
+								<para><codeEntityReference qualifyHint="false">P:EWSoftware.ListControls.MultiColumnComboBox.ColumnHeadersDefaultCellStyle</codeEntityReference></para>
+							</listItem>
+
+							<listItem>
+								<para><codeEntityReference qualifyHint="false">P:EWSoftware.ListControls.MultiColumnComboBox.DefaultCellStyle</codeEntityReference></para>
+							</listItem>
+
+							<listItem>
+								<para><codeEntityReference qualifyHint="false">P:EWSoftware.ListControls.MultiColumnComboBox.ColumnHeadersVisible</codeEntityReference></para>
+							</listItem>
+
+							<listItem>
+								<para><codeEntityReference qualifyHint="false">P:EWSoftware.ListControls.MultiColumnComboBox.RowHeadersVisible</codeEntityReference></para>
+							</listItem>
+						
+							<listItem>
+								<para><codeEntityReference qualifyHint="false">P:EWSoftware.ListControls.MultiColumnComboBox.RowHeadersWidth</codeEntityReference></para>
+							</listItem>
+						</list>
+					</listItem>
+
+				</list>
+
+			</content>
+		</section>
+
+		<relatedTopics>
+			<link xlink:href="4466344c-0933-476c-9743-63008a2d8659" />
+		</relatedTopics>
+
+	</developerConceptualDocument>
+</topic>

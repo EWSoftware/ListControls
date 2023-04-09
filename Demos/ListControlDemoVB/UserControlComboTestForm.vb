@@ -2,9 +2,8 @@
 ' System  : EWSoftware Data List Control Demonstration Applications
 ' File    : UserControlComboBoxTestForm.vb
 ' Author  : Eric Woodruff  (Eric@EWoodruff.us)
-' Updated : 10/02/2014
+' Updated : 04/09/2023
 ' Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-' Compiler: Microsoft Visual Basic .NET
 '
 ' This is used to demonstrate the UserControlComboBox control
 '
@@ -18,16 +17,13 @@
 ' 10/27/2005  EFW  Created the code
 '================================================================================================================
 
-Imports System
-Imports System.Collections
 Imports System.Data
 Imports System.Data.OleDb
-Imports System.Windows.Forms
 
 Imports EWSoftware.ListControls
 
 Public Partial Class UserControlComboTestForm
-    Inherits System.Windows.Forms.Form
+    Inherits Form
 
     Private demoData, productData As DataSet
 
@@ -46,16 +42,18 @@ Public Partial Class UserControlComboTestForm
         Try
             Using dbConn As New OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\TestData.mdb")
                 ' Load some data for the demo
-                Dim cmd As New OleDbCommand("Select * From DemoTable Order By Label", dbConn)
-                cmd.CommandType = CommandType.Text
-                Dim adapter As New OleDbDataAdapter(cmd)
+                Using cmd As New OleDbCommand("Select * From DemoTable Order By Label", dbConn)
+                    cmd.CommandType = CommandType.Text
+                    
+                    Using adapter As New OleDbDataAdapter(cmd)
+                        adapter.Fill(demoData)
 
-                adapter.Fill(demoData)
-
-                ' Use a named table for this one
-                adapter.TableMappings.Add("Table", "ProductInfo")
-                cmd.CommandText = "Select * From ProductInfo Order By ProductName"
-                adapter.Fill(productData)
+                        ' Use a named table for this one
+                        adapter.TableMappings.Add("Table", "ProductInfo")
+                        cmd.CommandText = "Select * From ProductInfo Order By ProductName"
+                        adapter.Fill(productData)
+                    End Using
+                End Using
             End Using
 
         Catch ex As OleDbException
@@ -254,16 +252,14 @@ Public Partial Class UserControlComboTestForm
         ' This can be any column from the data source regardless of whether or not it is displayed.  Note that
         ' you can also use cboUCCombo("ColName") to get a column value from the item indicated by the
         ' SelectedIndex property.
-        txtValue.Text = String.Format("{0} = {1}", cboColumns.Text, cboUCCombo(CType(txtRowNumber.Value, Integer),
-            cboColumns.Text))
+        txtValue.Text = $"{cboColumns.Text} = {cboUCCombo(CType(txtRowNumber.Value, Integer), cboColumns.Text)}"
     End Sub
 
     ' Show the current item info when the selected index changes
     Private Sub cboUCCombo_SelectedIndexChanged(sender As Object, e As System.EventArgs) _
         Handles cboUCCombo.SelectedIndexChanged
         ' Note that SelectedValue is only valid if there is a data source
-        txtValue.Text = String.Format("Index = {0}, Value = {1}, Text = {2}", cboUCCombo.SelectedIndex,
-            cboUCCombo.SelectedValue, cboUCCombo.Text)
+        txtValue.Text = $"Index = {cboUCCombo.SelectedIndex}, Value = {cboUCCombo.SelectedValue}, Text = {cboUCCombo.Text}"
     End Sub
 
     ' For this demo, the drop-down has to determine the data source for itself so it could figure out whether or

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net40</TargetFrameworks>
+		<TargetFrameworks>net6.0-windows;net40</TargetFrameworks>
 		<UseWindowsForms>true</UseWindowsForms>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -10,8 +10,8 @@
 		<Title>EWSoftware List Controls Library</Title>
 		<Copyright>Copyright (c) 2005-2023, Eric Woodruff, All Rights Reserved</Copyright>
 		<NeutralLanguage>en</NeutralLanguage>
-		<Version>2023.1.4.0</Version>
-		<FileVersion>23.1.4.0</FileVersion>
+		<Version>2023.4.9.0</Version>
+		<FileVersion>23.4.9.0</FileVersion>
 		<Description>This library contains several Windows Forms controls: combo box controls with extra abilities, a radio button list control, a checkbox list control, a data navigator control, and a template-based data list control.  See the project website for the code, a help file, and demos.</Description>
 		<Authors>Eric Woodruff</Authors>
 		<PackageIconUrl>https://raw.githubusercontent.com/EWSoftware/ListControls/master/EWSListControls.png</PackageIconUrl>
@@ -32,6 +32,7 @@
 		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
 		<DebugType>pdbonly</DebugType>
 		<DebugSymbols>true</DebugSymbols>
+		<PlatformTarget>AnyCPU</PlatformTarget>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -46,6 +47,19 @@
 	  <None Remove="DataList.bmp" />
 	  <None Remove="DataNavigator.bmp" />
 	  <None Remove="ExtendedTreeView.bmp" />
+	  <None Remove="Images\RatingStarEmpty.png" />
+	  <None Remove="Images\RatingStarFilled.png" />
+	  <None Remove="Images\RatingStarHot.png" />
+	  <None Remove="Images\ThemedChecked.bmp" />
+	  <None Remove="Images\ThemedCollapse.bmp" />
+	  <None Remove="Images\ThemedExpand.bmp" />
+	  <None Remove="Images\ThemedMixed.bmp" />
+	  <None Remove="Images\ThemedUnchecked.bmp" />
+	  <None Remove="Images\UnthemedChecked.bmp" />
+	  <None Remove="Images\UnthemedCollapse.bmp" />
+	  <None Remove="Images\UnthemedExpand.bmp" />
+	  <None Remove="Images\UnthemedMixed.bmp" />
+	  <None Remove="Images\UnthemedUnchecked.bmp" />
 	  <None Remove="MultiColumnComboBox.bmp" />
 	  <None Remove="RadioButtonList.bmp" />
 	  <None Remove="UserControlComboBox.bmp" />
@@ -78,6 +92,19 @@
 	  <EmbeddedResource Include="DataList.bmp" />
 	  <EmbeddedResource Include="DataNavigator.bmp" />
 	  <EmbeddedResource Include="ExtendedTreeView.bmp" />
+	  <EmbeddedResource Include="Images\RatingStarEmpty.png" />
+	  <EmbeddedResource Include="Images\RatingStarFilled.png" />
+	  <EmbeddedResource Include="Images\RatingStarHot.png" />
+	  <EmbeddedResource Include="Images\ThemedChecked.bmp" />
+	  <EmbeddedResource Include="Images\ThemedCollapse.bmp" />
+	  <EmbeddedResource Include="Images\ThemedExpand.bmp" />
+	  <EmbeddedResource Include="Images\ThemedMixed.bmp" />
+	  <EmbeddedResource Include="Images\ThemedUnchecked.bmp" />
+	  <EmbeddedResource Include="Images\UnthemedChecked.bmp" />
+	  <EmbeddedResource Include="Images\UnthemedCollapse.bmp" />
+	  <EmbeddedResource Include="Images\UnthemedExpand.bmp" />
+	  <EmbeddedResource Include="Images\UnthemedMixed.bmp" />
+	  <EmbeddedResource Include="Images\UnthemedUnchecked.bmp" />
 	  <EmbeddedResource Include="MultiColumnComboBox.bmp" />
 	  <EmbeddedResource Include="RadioButtonList.bmp" />
 	  <EmbeddedResource Include="UserControlComboBox.bmp" />

@@ -2,9 +2,8 @@
 ' System  : EWSoftware Data List Control Demonstration Applications
 ' File    : RelationTestForm.cs
 ' Author  : Eric Woodruff  (Eric@EWoodruff.us)
-' Updated : 10/02/2014
-' Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-' Compiler: Microsoft Visual C#
+' Updated : 04/09/2023
+' Note    : Copyright 2005-2012, Eric Woodruff, All rights reserved
 '
 ' This is used to demonstrate how the data navigator and data list controls can be used with related data
 ' sources in a data set.
@@ -20,16 +19,13 @@
 ' 05/05/2007  EFW  Added demo of data binding the CheckBoxList and RadioButtonList controls
 '================================================================================================================
 
-Imports System
-Imports System.Collections.Generic
 Imports System.Data
 Imports System.Data.OleDb
-Imports System.Windows.Forms
 
 Imports EWSoftware.ListControls
 
 Public Partial Class RelationTestForm
-    Inherits System.Windows.Forms.Form
+    Inherits Form
 
     Private dbConn As OleDbConnection
     Private daAddresses, daPhones As OleDbDataAdapter
@@ -166,10 +162,11 @@ Public Partial Class RelationTestForm
         cblAddressTypes.BindingMembersDataSource = dsAddresses
 
         ' Create the data source for the radio button list items
-        Dim contactTypeList As New List(Of ListItem)()
-        contactTypeList.Add(new ListItem("B", "Business"))
-        contactTypeList.Add(new ListItem("P", "Personal"))
-        contactTypeList.Add(new ListItem("O", "Other"))
+        Dim contactTypeList As New List(Of ListItem) From {
+            new ListItem("B", "Business"),
+            new ListItem("P", "Personal"),
+            new ListItem("O", "Other")
+        }
 
         rblContactType.DisplayMember = "Display"
         rblContactType.ValueMember = "Value"
@@ -205,19 +202,20 @@ Public Partial Class RelationTestForm
         ' Connect the Row Updated event so that we can retrieve the new primary key values as they are identity
         ' values.
         AddHandler daPhones.RowUpdated, AddressOf daPhones_RowUpdated
-
+#Disable Warning CA2000
         ' Load the state codes for the row template's shared data source
-        Dim daStates As New OleDbDataAdapter("Select State, StateDesc From States", dbConn)
+        Using daStates As New OleDbDataAdapter("Select State, StateDesc From States", dbConn)
+            Dim dtStates As New DataTable()
+            daStates.Fill(dtStates)
 
-        Dim dtStates As New DataTable()
-        daStates.Fill(dtStates)
+            ' Add a blank row to allow no selection
+            dtStates.Rows.InsertAt(dtStates.NewRow(), 0)
 
-        ' Add a blank row to allow no selection
-        dtStates.Rows.InsertAt(dtStates.NewRow(), 0)
-
-        cboState.DisplayMember = "State"
-        cboState.ValueMember = "State"
-        cboState.DataSource = dtStates.DefaultView
+            cboState.DisplayMember = "State"
+            cboState.ValueMember = "State"
+            cboState.DataSource = dtStates.DefaultView
+        End Using
+#Enable Warning CA2000
     End Sub
 
     ' This converts null values to a default type for the bound radio button list
@@ -230,18 +228,20 @@ Public Partial Class RelationTestForm
     ' Get the new primary key on added rows
     Private Sub daAddresses_RowUpdated(sender As Object, e As System.Data.OleDb.OleDbRowUpdatedEventArgs)
         If e.Status = UpdateStatus.[Continue] And e.StatementType = StatementType.Insert Then
-            Dim cmd As New OleDbCommand("Select @@Identity", dbConn)
-            e.Row("ID") = cmd.ExecuteScalar()
-            e.Row.AcceptChanges()
+            Using cmd As New OleDbCommand("Select @@Identity", dbConn)
+                e.Row("ID") = cmd.ExecuteScalar()
+                e.Row.AcceptChanges()
+            End Using
         End If
     End Sub
 
     ' Get the new primary key on added rows
     Private Sub daPhones_RowUpdated(sender As Object, e As System.Data.OleDb.OleDbRowUpdatedEventArgs)
         If e.Status = UpdateStatus.[Continue] And e.StatementType = StatementType.Insert Then
-            Dim cmd As New OleDbCommand("Select @@Identity", dbConn)
-            e.Row("PhoneKey") = cmd.ExecuteScalar()
-            e.Row.AcceptChanges()
+            Using cmd As New OleDbCommand("Select @@Identity", dbConn)
+                e.Row("PhoneKey") = cmd.ExecuteScalar()
+                e.Row.AcceptChanges()
+            End Using
         End If
 
         ' Ignore deletions that don't find their row.  The cascade delete took care of them already.
@@ -305,8 +305,8 @@ Public Partial Class RelationTestForm
       Handles dnNav.DeletingRow
         epErrors.Clear()
 
-        If MessageBox.Show(String.Format("Are you sure you want to delete the name '{0} {1}'?", txtFName.Text,
-          txtLName.Text), "Relationship Test", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+        If MessageBox.Show($"Are you sure you want to delete the name '{txtFName.Text} {txtLName.Text}'?",
+          "Relationship Test", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
           MessageBoxDefaultButton.Button2) = System.Windows.Forms.DialogResult.No Then
             e.Cancel = True
         End If
@@ -412,10 +412,11 @@ Public Partial Class RelationTestForm
                 dlPhones.DataMember = "Addresses.AddrPhone"
                 dlPhones.DataSource = dsAddresses
             End If
-
+#Disable Warning CA1031
         Catch ex As Exception
             MessageBox.Show(Me, ex.Message)
         End Try
+#Enable Warning CA1031
 	End Sub
 
     ' Save the changes

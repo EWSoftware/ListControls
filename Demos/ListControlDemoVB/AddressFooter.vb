@@ -4,7 +4,6 @@
 ' Author  : Eric Woodruff  (Eric@EWoodruff.us)
 ' Updated : 10/02/2014
 ' Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
-' Compiler: Microsoft Visual C#
 '
 ' This is a sample footer template control for the DataList demo.
 '
