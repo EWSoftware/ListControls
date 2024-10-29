@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : ExtendedTreeView.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
-// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
+// Updated : 10/29/2024
+// Note    : Copyright 2007-2024, Eric Woodruff, All rights reserved
 //
 // This file contains an extended tree view control that is fully owner-drawn to overcome some limitations in
 // the way the default tree view is drawn.  It also provides several additional features to make it easier to
@@ -511,7 +511,7 @@ namespace EWSoftware.ListControls
         /// Update the parent node state image based on the child's state and its children if any
         /// </summary>
         /// <param name="child">The child node</param>
-        private void UpdateParentImageState(TreeNode child)
+        private static void UpdateParentImageState(TreeNode child)
         {
             TreeNode parent = child.Parent;
 
@@ -527,7 +527,7 @@ namespace EWSoftware.ListControls
             else
                 parent.StateImageIndex = (int)NodeCheckState.Mixed;
 
-            this.UpdateParentImageState(parent);
+            UpdateParentImageState(parent);
         }
         #endregion
 
@@ -1210,7 +1210,7 @@ namespace EWSoftware.ListControls
 
                     node.StateImageIndex = (int)(node.Checked ? NodeCheckState.Checked : NodeCheckState.Unchecked);
 
-                    this.UpdateParentImageState(node);
+                    UpdateParentImageState(node);
                 }
                 finally
                 {
@@ -1324,7 +1324,7 @@ namespace EWSoftware.ListControls
                         n.StateImageIndex = (int)NodeCheckState.Checked;
 
                     if(n.Parent != null && n.Parent.LastNode == n)
-                        this.UpdateParentImageState(n);
+                        UpdateParentImageState(n);
                 }
                 else
                 {
@@ -1332,7 +1332,7 @@ namespace EWSoftware.ListControls
                         n.StateImageIndex = (int)NodeCheckState.Unchecked;
 
                     if(n.Parent != null && n.Parent.LastNode == n)
-                        this.UpdateParentImageState(n);
+                        UpdateParentImageState(n);
                 }
             }
 

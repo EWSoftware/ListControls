@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : MultiColumnDropDown.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 04/09/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 10/29/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a multi-column combo box drop-down form that handles the display of the multiple columns
 // in the data source.
@@ -372,7 +372,15 @@ namespace EWSoftware.ListControls
             dragOffset = Point.Empty;
 
             if(idx != -1 && dgDropDown.RowCount > idx)
-                dgDropDown.SelectCell(dgDropDown.CurrentCellAddress.X, idx);
+            {
+                // Make sure we have a visible column or it won't highlight the row
+                int column = dgDropDown.CurrentCellAddress.X;
+
+                if(column < 0 || !dgDropDown.Columns[column].Visible)
+                    column = dgDropDown.Columns.GetFirstColumn(DataGridViewElementStates.Visible)?.Index ?? 0;
+
+                dgDropDown.SelectCell(column, idx);
+            }
 
             // The owner positions us when using the simple style.  There's also an odd sequence of events
             // related to updates to bound controls that can cause this control to get disposed after setting
@@ -486,7 +494,15 @@ namespace EWSoftware.ListControls
             dgDropDown.ClearSelection();
 
             if(selIdx != -1)
-                dgDropDown.SelectCell(dgDropDown.CurrentCellAddress.X, selIdx);
+            {
+                // Make sure we have a visible column or it won't highlight the row
+                int column = dgDropDown.CurrentCellAddress.X;
+
+                if(column < 0 || !dgDropDown.Columns[column].Visible)
+                    column = dgDropDown.Columns.GetFirstColumn(DataGridViewElementStates.Visible)?.Index ?? 0;
+
+                dgDropDown.SelectCell(column, selIdx);
+            }
         }
 
         /// <summary>

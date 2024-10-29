@@ -8,10 +8,10 @@
 		<Company>Eric Woodruff</Company>
 		<Product>EWSoftware Personal Data Interchange Library</Product>
 		<Title>EWSoftware List Controls Library</Title>
-		<Copyright>Copyright (c) 2005-2023, Eric Woodruff, All Rights Reserved</Copyright>
+		<Copyright>Copyright (c) 2005-2024, Eric Woodruff, All Rights Reserved</Copyright>
 		<NeutralLanguage>en</NeutralLanguage>
-		<Version>2023.4.9.0</Version>
-		<FileVersion>23.4.9.0</FileVersion>
+		<Version>2024.10.29.0</Version>
+		<FileVersion>24.10.29.0</FileVersion>
 		<Description>This library contains several Windows Forms controls: combo box controls with extra abilities, a radio button list control, a checkbox list control, a data navigator control, and a template-based data list control.  See the project website for the code, a help file, and demos.</Description>
 		<Authors>Eric Woodruff</Authors>
 		<PackageIconUrl>https://raw.githubusercontent.com/EWSoftware/ListControls/master/EWSListControls.png</PackageIconUrl>
