@@ -2,8 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : AssemblyInfo.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 04/09/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/02/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // EWSoftware Window Forms list control demo application
 //
@@ -19,8 +19,6 @@
 // 04/23/2007  EFW  Added the DataGridView column controls
 //===============================================================================================================
 
-using System;
-using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
 
@@ -29,7 +27,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("EWSoftware Windows Forms List Controls Demo")]
 [assembly: AssemblyDescription("This is used to demonstrate the capabilities of the EWSoftware List Controls.")]
 [assembly: AssemblyCompany("Eric Woodruff")]
-[assembly: AssemblyCopyright("Copyright \xA9 2005-2023, Eric Woodruff, All Rights Reserved")]
+[assembly: AssemblyCopyright("Copyright \xA9 2005-2024, Eric Woodruff, All Rights Reserved")]
 [assembly: AssemblyCulture("")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
@@ -38,7 +36,7 @@ using System.Runtime.InteropServices;
 #endif
 
 // The assembly is CLS compliant
-[assembly: CLSCompliant(true)]
+[assembly: CLSCompliant(false)]
 
 // Not visible to COM
 [assembly: ComVisible(false)]
@@ -53,5 +51,5 @@ using System.Runtime.InteropServices;
 //      Day of release
 //      Revision (typically zero unless multiple releases are made on the same day)
 //
-[assembly: AssemblyVersion("2023.4.9.0")]
-[assembly: AssemblyFileVersion("23.4.9.0")]
+[assembly: AssemblyVersion("2024.12.2.0")]
+[assembly: AssemblyFileVersion("24.12.2.0")]

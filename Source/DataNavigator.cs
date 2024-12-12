@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : DataNavigator.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/11/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a control that is used to navigate through a specified data source and perform operations
 // on it such as editing, inserting, or deleting records, etc. along with other controls on the form that are
@@ -19,53 +19,49 @@
 // 03/20/2005  EFW  Created the code
 //===============================================================================================================
 
-using System;
 using System.Collections;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Drawing.Design;
 using System.Globalization;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls
 {
-	/// <summary>
+    /// <summary>
     /// This control is used to navigate through a specified data source and perform operations on it such as
     /// editing, inserting, or deleting records, etc. along with other controls on the form that are bound to
     /// the same data source.
-	/// </summary>
+    /// </summary>
     [DefaultEvent("Current"), DefaultProperty("DataSource"),
       Description("Allows navigation through a data source one row at a time")]
-	public class DataNavigator : System.Windows.Forms.UserControl
+	public class DataNavigator : UserControl
 	{
         #region Private data members
         //=====================================================================
 
-        private ImageList ilButtons;
-        private Button btnFirst;
-        private Button btnPrev;
-        private Button btnNext;
-        private Button btnLast;
-        internal Button btnAdd;
-        private NumericTextBox txtRowNum;
-        private Label lblRowCount;
-        internal Button btnDelete;
-        private Timer tmrRepeat;
-        private IContainer components;
+        private ImageList ilButtons = null!;
+        private Button btnFirst = null!;
+        private Button btnPrev = null!;
+        private Button btnNext = null!;
+        private Button btnLast = null!;
+        internal Button btnAdd = null!;
+        private NumericTextBox txtRowNum = null!;
+        private Label lblRowCount = null!;
+        internal Button btnDelete = null!;
+        private System.Windows.Forms.Timer tmrRepeat = null!;
+        private Container components = null!;
 
         // Add/Delete properties
         private bool showAddDel;
         private Shortcut shortcutAdd, shortcutDel, shortcutRowNum;
 
         // Auto-repeat properties
-        private Button repeatButton;
+        private Button repeatButton = null!;
         private int repeatWait, repeatInterval;
 
         // Data source information
-        private object dataSource;
+        private object? dataSource;
         private string dataMember;
-        private CurrencyManager listManager;
+        private CurrencyManager? listManager;
 
         private bool inSetListManager, inAddRow, inDelRow;
 
@@ -86,14 +82,14 @@ namespace EWSoftware.ListControls
         /// </summary>
         [Browsable(false), Description("Returns the CurrencyManager that the data navigator is currently using " +
           "to get data from the DataSource/DataMember pair.")]
-        public CurrencyManager ListManager
+        public CurrencyManager? ListManager
         {
             get
             {
                 if(listManager == null && this.Parent != null && this.BindingContext != null && dataSource != null)
                     return (CurrencyManager)this.BindingContext[dataSource, dataMember];
 
-                return this.listManager;
+                return listManager;
             }
         }
 
@@ -260,14 +256,14 @@ namespace EWSoftware.ListControls
         /// <see cref="IList"/> interface.</exception>
         [Category("Data"), DefaultValue(null), RefreshProperties(RefreshProperties.Repaint),
           AttributeProvider(typeof(IListSource)),
-          TypeConverter("System.Windows.Forms.Design.DataSourceConverter, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"),
+          TypeConverter("Design.DataSourceConverter, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"),
           Description("Set or get the data source for the data navigator")]
-        public object DataSource
+        public object? DataSource
         {
             get => dataSource;
             set
             {
-                if(value != null && !(value is IList) && !(value is IListSource))
+                if(value != null && value is not IList && value is not IListSource)
                     throw new ArgumentException(LR.GetString("ExBadDataSource"));
 
                 if(dataSource != value)
@@ -290,7 +286,7 @@ namespace EWSoftware.ListControls
         /// This indicates the sub-list (if any) of the <see cref="DataSource"/> to show in the data navigator
         /// </summary>
         [Category("Data"), DefaultValue(""),
-          Editor("System.Windows.Forms.Design.DataMemberListEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor)),
+          Editor("Design.DataMemberListEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor)),
           Description("Indicates a sub-list of the data source to show in the data navigator")]
         public string DataMember
         {
@@ -359,7 +355,7 @@ namespace EWSoftware.ListControls
         {
             get
             {
-                CancelEventArgs e = new CancelEventArgs();
+                CancelEventArgs e = new();
                 base.OnValidating(e);
 
                 if(!e.Cancel)
@@ -410,7 +406,7 @@ namespace EWSoftware.ListControls
                     if(dataSource is DataSet ds)
                         return ds.HasChanges();
 
-                    DataTable tbl;
+                    DataTable? tbl;
 
                     if(dataSource is DataView dv)
                         tbl = dv.Table;
@@ -441,7 +437,7 @@ namespace EWSoftware.ListControls
         /// data source or the column cannot be found, this returns null.</value>
         /// <overloads>There are two overloads for this property</overloads>
         [Browsable(false), Description("Get the specified column from the current row")]
-        public object this[string colName] => this[currentRow, colName];
+        public object? this[string colName] => this[currentRow, colName];
 
         /// <summary>
         /// This can be used to get the value of the specified column in the specified row of the data
@@ -453,19 +449,21 @@ namespace EWSoftware.ListControls
         /// <value>This returns the entry at the specified column in the specified row.  If the row is out of
         /// bounds or if the column cannot be found, this will return null.</value>
         [Browsable(false), Description("Get the specified column from the specified row")]
-        public object this[int rowIdx, string colName]
+        public object? this[int rowIdx, string colName]
         {
             get
             {
                 if(rowIdx < 0 || listManager == null || rowIdx >= listManager.Count || colName == null ||
                   colName.Length == 0)
+                {
                     return null;
+                }
 
-                object oItem = listManager.List[rowIdx];
+                object? oItem = listManager.List[rowIdx];
 
                 if(oItem != null)
                 {
-                    PropertyDescriptor pd = listManager.GetItemProperties().Find(colName, true);
+                    PropertyDescriptor? pd = listManager.GetItemProperties().Find(colName, true);
 
                     if(pd != null)
                         oItem = pd.GetValue(oItem);
@@ -491,7 +489,7 @@ namespace EWSoftware.ListControls
         /// <exclude/>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false),
           EditorBrowsable(EditorBrowsableState.Never)]
-        public override Image BackgroundImage => null;
+        public override Image? BackgroundImage => null;
 
         /// <summary>
         /// The data navigator does not use this property so it is hidden.  It always returns false.
@@ -522,7 +520,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <exclude/>
         [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        public new event EventHandler BackgroundImageChanged;
+        public new event EventHandler? BackgroundImageChanged;
 
 #pragma warning restore 0067
         #endregion
@@ -534,7 +532,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="AddDeleteButtonsVisible"/> property changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the add/delete button visibility changes")]
-        public event EventHandler AddDeleteButtonsVisibleChanged;
+        public event EventHandler? AddDeleteButtonsVisibleChanged;
 
         /// <summary>
         /// This raises the <see cref="AddDeleteButtonsVisibleChanged"/> event
@@ -549,7 +547,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="RepeatWait"/> value changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the auto-repeat initial wait interval changes")]
-        public event EventHandler RepeatWaitChanged;
+        public event EventHandler? RepeatWaitChanged;
 
         /// <summary>
         /// This raises the <see cref="RepeatWaitChanged"/> event
@@ -564,7 +562,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="RepeatInterval"/> changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the auto-repeat interval changes")]
-        public event EventHandler RepeatIntervalChanged;
+        public event EventHandler? RepeatIntervalChanged;
 
         /// <summary>
         /// This raises the <see cref="RepeatIntervalChanged"/> event
@@ -579,7 +577,7 @@ namespace EWSoftware.ListControls
         /// This event is raised just prior to adding an item to the data source
         /// </summary>
         [Category("Data"), Description("Occurs just prior to adding an item to the data source")]
-        public event EventHandler<DataNavigatorCancelEventArgs> AddingRow;
+        public event EventHandler<DataNavigatorCancelEventArgs>? AddingRow;
 
         /// <summary>
         /// This raises the <see cref="AddingRow"/> event
@@ -594,7 +592,7 @@ namespace EWSoftware.ListControls
         /// This event is raised after adding an item to the data source.
         /// </summary>
         [Category("Data"), Description("Occurs after adding an item to the data source")]
-        public event EventHandler<DataNavigatorEventArgs> AddedRow;
+        public event EventHandler<DataNavigatorEventArgs>? AddedRow;
 
         /// <summary>
         /// This raises the <see cref="AddedRow"/> event
@@ -609,7 +607,7 @@ namespace EWSoftware.ListControls
         /// This event is raised just prior to deleting an item from the data source
         /// </summary>
         [Category("Data"), Description("Occurs just prior to deleting an item from the data source")]
-        public event EventHandler<DataNavigatorCancelEventArgs> DeletingRow;
+        public event EventHandler<DataNavigatorCancelEventArgs>? DeletingRow;
 
         /// <summary>
         /// This raises the <see cref="DeletingRow"/> event
@@ -625,7 +623,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <remarks>If there are no more rows after the deletion, the <see cref="NoRows"/> event is also raised</remarks>
         [Category("Data"), Description("Occurs after deleting an item from the data source")]
-        public event EventHandler<DataNavigatorEventArgs> DeletedRow;
+        public event EventHandler<DataNavigatorEventArgs>? DeletedRow;
 
         /// <summary>
         /// This raises the <see cref="DeletedRow"/> event
@@ -643,7 +641,7 @@ namespace EWSoftware.ListControls
         /// This event is raised just prior to canceling edits to a row via the Escape key
         /// </summary>
         [Category("Data"), Description("Occurs just prior to canceling edits via the Escape key")]
-        public event EventHandler<DataNavigatorCancelEventArgs> CancelingEdits;
+        public event EventHandler<DataNavigatorCancelEventArgs>? CancelingEdits;
 
         /// <summary>
         /// This raises the <see cref="CancelingEdits"/> event
@@ -658,7 +656,7 @@ namespace EWSoftware.ListControls
         /// This event is raised after canceling edits via the Escape key
         /// </summary>
         [Category("Data"), Description("Occurs after canceling edits via the Escape key")]
-        public event EventHandler<DataNavigatorEventArgs> CanceledEdits;
+        public event EventHandler<DataNavigatorEventArgs>? CanceledEdits;
 
         /// <summary>
         /// This raises the <see cref="CanceledEdits"/> event
@@ -673,7 +671,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when a row is made the current row
         /// </summary>
         [Category("Data"), Description("Occurs when a row is made the current row")]
-        public event EventHandler<DataNavigatorEventArgs> Current;
+        public event EventHandler<DataNavigatorEventArgs>? Current;
 
         /// <summary>
         /// This raises the <see cref="Current"/> event
@@ -691,7 +689,7 @@ namespace EWSoftware.ListControls
         /// <remarks>This event can be used to disable bound controls and/or display a message asking the user to
         /// add a new row.</remarks>
         [Category("Data"), Description("Occurs after refresh or deletion when there are no rows in the data source")]
-        public event EventHandler NoRows;
+        public event EventHandler? NoRows;
 
         /// <summary>
         /// This raises the <see cref="NoRows"/> event
@@ -706,7 +704,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="DataSource"/> is changed
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the control's data source changes")]
-        public event EventHandler DataSourceChanged;
+        public event EventHandler? DataSourceChanged;
 
         /// <summary>
         /// This raises the <see cref="DataSourceChanged"/> event
@@ -722,7 +720,7 @@ namespace EWSoftware.ListControls
         /// whether or not adds, edits, or deletes are allowed).
         /// </summary>
         [Category("Data"), Description("Occurs when the control's change policy is modified")]
-        public event EventHandler<ChangePolicyEventArgs> ChangePolicyModified;
+        public event EventHandler<ChangePolicyEventArgs>? ChangePolicyModified;
 
         /// <summary>
         /// This raises the <see cref="ChangePolicyModified"/> event for the control
@@ -770,17 +768,17 @@ namespace EWSoftware.ListControls
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.components = new System.ComponentModel.Container();
-            System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(DataNavigator));
-            this.btnFirst = new System.Windows.Forms.Button();
-            this.ilButtons = new System.Windows.Forms.ImageList(this.components);
-            this.btnPrev = new System.Windows.Forms.Button();
-            this.btnNext = new System.Windows.Forms.Button();
-            this.btnLast = new System.Windows.Forms.Button();
-            this.btnAdd = new System.Windows.Forms.Button();
-            this.txtRowNum = new EWSoftware.ListControls.NumericTextBox();
-            this.lblRowCount = new System.Windows.Forms.Label();
-            this.btnDelete = new System.Windows.Forms.Button();
+            this.components = new Container();
+            System.Resources.ResourceManager resources = new(typeof(DataNavigator));
+            this.btnFirst = new Button();
+            this.ilButtons = new ImageList(this.components);
+            this.btnPrev = new Button();
+            this.btnNext = new Button();
+            this.btnLast = new Button();
+            this.btnAdd = new Button();
+            this.txtRowNum = new NumericTextBox();
+            this.lblRowCount = new Label();
+            this.btnDelete = new Button();
             this.tmrRepeat = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
@@ -789,85 +787,85 @@ namespace EWSoftware.ListControls
             this.btnFirst.Enabled = false;
             this.btnFirst.ImageIndex = 0;
             this.btnFirst.ImageList = this.ilButtons;
-            this.btnFirst.Location = new System.Drawing.Point(1, 1);
+            this.btnFirst.Location = new Point(1, 1);
             this.btnFirst.Name = "btnFirst";
-            this.btnFirst.Size = new System.Drawing.Size(22, 22);
+            this.btnFirst.Size = new Size(22, 22);
             this.btnFirst.TabIndex = 0;
-            this.btnFirst.Click += new System.EventHandler(this.btnFirst_Click);
+            this.btnFirst.Click += new EventHandler(this.btnFirst_Click);
             // 
             // ilButtons
             // 
-            this.ilButtons.ImageSize = new System.Drawing.Size(15, 11);
-            this.ilButtons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilButtons.ImageStream")));
-            this.ilButtons.TransparentColor = System.Drawing.Color.Lime;
+            this.ilButtons.ImageSize = new Size(15, 11);
+            this.ilButtons.ImageStream = ((ImageListStreamer)(resources.GetObject("ilButtons.ImageStream")!));
+            this.ilButtons.TransparentColor = Color.Lime;
             // 
             // btnPrev
             // 
             this.btnPrev.Enabled = false;
             this.btnPrev.ImageIndex = 1;
             this.btnPrev.ImageList = this.ilButtons;
-            this.btnPrev.Location = new System.Drawing.Point(23, 1);
+            this.btnPrev.Location = new Point(23, 1);
             this.btnPrev.Name = "btnPrev";
-            this.btnPrev.Size = new System.Drawing.Size(22, 22);
+            this.btnPrev.Size = new Size(22, 22);
             this.btnPrev.TabIndex = 1;
-            this.btnPrev.Click += new System.EventHandler(this.btnPrev_Click);
-            this.btnPrev.MouseUp += new System.Windows.Forms.MouseEventHandler(this.btnPrev_MouseUp);
-            this.btnPrev.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btnPrev_MouseDown);
+            this.btnPrev.Click += new EventHandler(this.btnPrev_Click);
+            this.btnPrev.MouseUp += new MouseEventHandler(this.btnPrev_MouseUp);
+            this.btnPrev.MouseDown += new MouseEventHandler(this.btnPrev_MouseDown);
             //
             // btnNext
             //
             this.btnNext.Enabled = false;
             this.btnNext.ImageIndex = 2;
             this.btnNext.ImageList = this.ilButtons;
-            this.btnNext.Location = new System.Drawing.Point(108, 1);
+            this.btnNext.Location = new Point(108, 1);
             this.btnNext.Name = "btnNext";
-            this.btnNext.Size = new System.Drawing.Size(22, 22);
+            this.btnNext.Size = new Size(22, 22);
             this.btnNext.TabIndex = 3;
-            this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
-            this.btnNext.MouseUp += new System.Windows.Forms.MouseEventHandler(this.btnNext_MouseUp);
-            this.btnNext.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btnNext_MouseDown);
+            this.btnNext.Click += new EventHandler(this.btnNext_Click);
+            this.btnNext.MouseUp += new MouseEventHandler(this.btnNext_MouseUp);
+            this.btnNext.MouseDown += new MouseEventHandler(this.btnNext_MouseDown);
             // 
             // btnLast
             // 
             this.btnLast.Enabled = false;
             this.btnLast.ImageIndex = 3;
             this.btnLast.ImageList = this.ilButtons;
-            this.btnLast.Location = new System.Drawing.Point(130, 1);
+            this.btnLast.Location = new Point(130, 1);
             this.btnLast.Name = "btnLast";
-            this.btnLast.Size = new System.Drawing.Size(22, 22);
+            this.btnLast.Size = new Size(22, 22);
             this.btnLast.TabIndex = 4;
-            this.btnLast.Click += new System.EventHandler(this.btnLast_Click);
+            this.btnLast.Click += new EventHandler(this.btnLast_Click);
             // 
             // btnAdd
             // 
             this.btnAdd.Enabled = false;
             this.btnAdd.ImageIndex = 4;
             this.btnAdd.ImageList = this.ilButtons;
-            this.btnAdd.Location = new System.Drawing.Point(152, 1);
+            this.btnAdd.Location = new Point(152, 1);
             this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(22, 22);
+            this.btnAdd.Size = new Size(22, 22);
             this.btnAdd.TabIndex = 5;
-            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+            this.btnAdd.Click += new EventHandler(this.btnAdd_Click);
             // 
             // txtRowNum
             // 
-            this.txtRowNum.Location = new System.Drawing.Point(48, 1);
+            this.txtRowNum.Location = new Point(48, 1);
             this.txtRowNum.MaxLength = 7;
             this.txtRowNum.Name = "txtRowNum";
-            this.txtRowNum.Size = new System.Drawing.Size(57, 22);
+            this.txtRowNum.Size = new Size(57, 22);
             this.txtRowNum.TabIndex = 2;
             this.txtRowNum.Text = "0";
-            this.txtRowNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtRowNum.Leave += new System.EventHandler(this.txtRowNum_Leave);
+            this.txtRowNum.TextAlign = HorizontalAlignment.Right;
+            this.txtRowNum.Leave += new EventHandler(this.txtRowNum_Leave);
             //
             // lblRowCount
             // 
-            this.lblRowCount.Location = new System.Drawing.Point(201, 1);
+            this.lblRowCount.Location = new Point(201, 1);
             this.lblRowCount.Name = "lblRowCount";
-            this.lblRowCount.Size = new System.Drawing.Size(88, 22);
+            this.lblRowCount.Size = new Size(88, 22);
             this.lblRowCount.TabIndex = 7;
             this.lblRowCount.Text = "of 0";
-            this.lblRowCount.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblRowCount.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // btnDelete
             // 
@@ -875,15 +873,15 @@ namespace EWSoftware.ListControls
             this.btnDelete.Enabled = false;
             this.btnDelete.ImageIndex = 5;
             this.btnDelete.ImageList = this.ilButtons;
-            this.btnDelete.Location = new System.Drawing.Point(174, 1);
+            this.btnDelete.Location = new Point(174, 1);
             this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(22, 22);
+            this.btnDelete.Size = new Size(22, 22);
             this.btnDelete.TabIndex = 6;
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            this.btnDelete.Click += new EventHandler(this.btnDelete_Click);
             // 
             // tmrRepeat
             // 
-            this.tmrRepeat.Tick += new System.EventHandler(this.tmrRepeat_Tick);
+            this.tmrRepeat.Tick += new EventHandler(this.tmrRepeat_Tick);
             // 
             // DataNavigator
             // 
@@ -896,7 +894,7 @@ namespace EWSoftware.ListControls
             this.Controls.Add(this.btnPrev);
             this.Controls.Add(this.btnFirst);
             this.Name = "DataNavigator";
-            this.Size = new System.Drawing.Size(296, 24);
+            this.Size = new Size(296, 24);
             this.ResumeLayout(false);
 
         }
@@ -966,7 +964,7 @@ namespace EWSoftware.ListControls
         /// <summary>
         /// This is called when the data source's meta data changes in some way
         /// </summary>
-        private void DataSource_MetaDataChanged(object sender, EventArgs e)
+        private void DataSource_MetaDataChanged(object? sender, EventArgs e)
         {
             if(!inSetListManager && !inAddRow && !inDelRow)
                 SetListManager(dataSource, dataMember, true);
@@ -975,7 +973,7 @@ namespace EWSoftware.ListControls
         /// <summary>
         /// This is called when the data source is changed in some way
         /// </summary>
-        private void DataSource_ListChanged(object sender, ListChangedEventArgs e)
+        private void DataSource_ListChanged(object? sender, ListChangedEventArgs e)
         {
             // Ignore calls in the following cases or it tends to get recursive in a hurry
             if(inSetListManager || inAddRow || inDelRow)
@@ -1002,7 +1000,7 @@ namespace EWSoftware.ListControls
                 case ListChangedType.ItemDeleted:
                     this.BindData();
                     this.OnDeletedRow(new DataNavigatorEventArgs(e.OldIndex));
-                    btnDelete.Enabled = (changePolicy.AllowDeletes && listManager.Count != 0);
+                    btnDelete.Enabled = (changePolicy.AllowDeletes && listManager!.Count != 0);
                     break;
 
                 default:
@@ -1015,7 +1013,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="ea">The event arguments</param>
-        private void DataSource_ItemChanged(object sender, ItemChangedEventArgs ea)
+        private void DataSource_ItemChanged(object? sender, ItemChangedEventArgs ea)
         {
             if(ea.Index == -1 && !inSetListManager && !inAddRow && !inDelRow)
             {
@@ -1033,10 +1031,10 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void DataSource_PositionChanged(object sender, EventArgs e)
+        private void DataSource_PositionChanged(object? sender, EventArgs e)
         {
             bool hasList = (listManager != null);
-            int  curRow = (hasList) ? listManager.Position : -1;
+            int  curRow = (hasList) ? listManager!.Position : -1;
 
             // Ignore calls in the following cases.  It'll refresh when it's all done.
             if(inAddRow || inDelRow)
@@ -1055,17 +1053,17 @@ namespace EWSoftware.ListControls
 
                 // Enable or disable buttons based on the row
                 btnFirst.Enabled = btnPrev.Enabled = (curRow > 0);
-                btnNext.Enabled = btnLast.Enabled = hasList && (curRow < listManager.Count - 1);
+                btnNext.Enabled = btnLast.Enabled = hasList && (curRow < listManager!.Count - 1);
             }
         }
 
         /// <summary>
         /// This handles the <c>KeyDown</c> event in the parent form and processes our shortcut keys
         /// </summary>
-        private void Parent_KeyDown(object sender, KeyEventArgs e)
+        private void Parent_KeyDown(object? sender, KeyEventArgs e)
         {
             // Don't do anything if we are nested inside another control and it doesn't contain the focus
-            if(sender == this.ParentForm && (this.Parent == this.ParentForm || this.Parent.ContainsFocus))
+            if(sender == this.ParentForm && (this.Parent == this.ParentForm || this.Parent!.ContainsFocus))
             {
                 if(e.KeyData == Keys.Escape && listManager != null && listManager.Count > 0)
                 {
@@ -1073,7 +1071,7 @@ namespace EWSoftware.ListControls
                     // on the new row.
                     int row = currentRow;
 
-                    DataNavigatorCancelEventArgs ce = new DataNavigatorCancelEventArgs(row);
+                    DataNavigatorCancelEventArgs ce = new(row);
                     OnCancelingEdits(ce);
 
                     if(!ce.Cancel)
@@ -1105,7 +1103,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void txtRowNum_Leave(object sender, System.EventArgs e)
+        private void txtRowNum_Leave(object? sender, EventArgs e)
         {
             bool updateText;
             int curRow = currentRow;
@@ -1151,10 +1149,10 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void btnFirst_Click(object sender, System.EventArgs e)
+        private void btnFirst_Click(object? sender, EventArgs e)
         {
             if(this.ContainsFocus && this.IsValid)
-                listManager.Position = 0;
+                listManager!.Position = 0;
         }
 
         /// <summary>
@@ -1162,9 +1160,9 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void btnPrev_Click(object sender, System.EventArgs e)
+        private void btnPrev_Click(object? sender, EventArgs e)
         {
-            if(this.ContainsFocus && this.IsValid && listManager.Position > 0)
+            if(this.ContainsFocus && this.IsValid && listManager!.Position > 0)
                 listManager.Position--;
         }
 
@@ -1173,7 +1171,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event parameters</param>
-        private void btnPrev_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
+        private void btnPrev_MouseDown(object? sender, MouseEventArgs e)
         {
             if(this.ContainsFocus)
             {
@@ -1188,7 +1186,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event parameters</param>
-        private void btnPrev_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
+        private void btnPrev_MouseUp(object? sender, MouseEventArgs e)
         {
             tmrRepeat.Enabled = false;
         }
@@ -1198,9 +1196,9 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void btnNext_Click(object sender, System.EventArgs e)
+        private void btnNext_Click(object? sender, EventArgs e)
         {
-            if(this.ContainsFocus && this.IsValid && listManager.Position < listManager.Count - 1)
+            if(this.ContainsFocus && this.IsValid && listManager!.Position < listManager.Count - 1)
                 listManager.Position++;
         }
 
@@ -1209,7 +1207,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event parameters</param>
-        private void btnNext_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
+        private void btnNext_MouseDown(object? sender, MouseEventArgs e)
         {
             if(this.ContainsFocus)
             {
@@ -1224,7 +1222,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event parameters</param>
-        private void btnNext_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
+        private void btnNext_MouseUp(object? sender, MouseEventArgs e)
         {
             tmrRepeat.Enabled = false;
         }
@@ -1234,10 +1232,10 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void btnLast_Click(object sender, System.EventArgs e)
+        private void btnLast_Click(object? sender, EventArgs e)
         {
             if(this.ContainsFocus && this.IsValid)
-                listManager.Position = listManager.Count - 1;
+                listManager!.Position = listManager.Count - 1;
         }
 
         /// <summary>
@@ -1246,7 +1244,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event parameters</param>
-        private void btnAdd_Click(object sender, System.EventArgs e)
+        private void btnAdd_Click(object? sender, EventArgs e)
         {
             if(this.ContainsFocus && this.IsValid)
                 this.AddRowInternal();
@@ -1258,7 +1256,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event parameters</param>
-        private void btnDelete_Click(object sender, System.EventArgs e)
+        private void btnDelete_Click(object? sender, EventArgs e)
         {
             if(this.ContainsFocus && this.IsValid)
                 this.DeleteRow(currentRow);
@@ -1269,7 +1267,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event parameters</param>
-        private void tmrRepeat_Tick(object sender, System.EventArgs e)
+        private void tmrRepeat_Tick(object? sender, EventArgs e)
         {
             // Only repeat while the cursor is in the button
             Point p = repeatButton.PointToClient(Cursor.Position);
@@ -1300,7 +1298,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="ds">The data source to check</param>
         /// <param name="member">The data member to check</param>
-        private void EnforceValidDataMember(object ds, string member)
+        private void EnforceValidDataMember(object? ds, string? member)
         {
             if(ds != null && member != null && member.Length != 0 && this.Parent != null &&
               this.BindingContext != null)
@@ -1326,7 +1324,7 @@ namespace EWSoftware.ListControls
         /// something really changed.</param>
         /// <exception cref="ArgumentException">This is thrown if the data member cannot be found in the data
         /// source.</exception>
-        private void SetListManager(object newDataSource, string newDataMember, bool force)
+        private void SetListManager(object? newDataSource, string? newDataMember, bool force)
         {
             bool dataSrcChanged = dataSource != newDataSource;
             bool dataMbrChanged = dataMember != newDataMember;
@@ -1343,7 +1341,7 @@ namespace EWSoftware.ListControls
                         listManager.MetaDataChanged -= DataSource_MetaDataChanged;
                         listManager.PositionChanged -= DataSource_PositionChanged;
 
-                        IBindingList bl = listManager.List as IBindingList;
+                        var bl = listManager.List as IBindingList;
 
                         if(bl != null)
                             bl.ListChanged -= DataSource_ListChanged;
@@ -1354,7 +1352,9 @@ namespace EWSoftware.ListControls
 
                     if(newDataSource != null && this.Parent != null && this.BindingContext != null &&
                       newDataSource != Convert.DBNull)
+                    {
                         listManager = (CurrencyManager)this.BindingContext[newDataSource, newDataMember];
+                    }
                     else
                         listManager = null;
 
@@ -1366,7 +1366,7 @@ namespace EWSoftware.ListControls
                         listManager.MetaDataChanged += DataSource_MetaDataChanged;
                         listManager.PositionChanged += DataSource_PositionChanged;
 
-                        IBindingList bl = listManager.List as IBindingList;
+                        var bl = listManager.List as IBindingList;
 
                         // ListChanged happens less frequently and is more efficient with regard to resets
                         if(bl != null)
@@ -1419,11 +1419,10 @@ namespace EWSoftware.ListControls
             try
             {
                 inAddRow = true;
-                listManager.EndCurrentEdit();
+                listManager!.EndCurrentEdit();
 
                 // See if the user wants to allow the addition
-                DataNavigatorCancelEventArgs ce =
-                    new DataNavigatorCancelEventArgs(-1);
+                DataNavigatorCancelEventArgs ce = new(-1);
 
                 OnAddingRow(ce);
 
@@ -1484,7 +1483,7 @@ namespace EWSoftware.ListControls
         {
             base.OnCreateControl();
 
-            Form parentForm = this.ParentForm;
+            var parentForm = this.ParentForm;
 
             if(parentForm != null)
             {
@@ -1546,7 +1545,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="dataSource">The data source to use</param>
         /// <param name="member">The data member in the data source to use, if any</param>
-        public void SetDataBinding(object dataSource, string member)
+        public void SetDataBinding(object dataSource, string? member)
         {
             this.SetListManager(dataSource, member, false);
         }
@@ -1654,7 +1653,7 @@ namespace EWSoftware.ListControls
                 inDelRow = true;
 
                 // See if the user will allow the delete to occur
-                DataNavigatorCancelEventArgs ce = new DataNavigatorCancelEventArgs(delRow);
+                DataNavigatorCancelEventArgs ce = new(delRow);
 
                 OnDeletingRow(ce);
 
@@ -1761,10 +1760,8 @@ namespace EWSoftware.ListControls
             if(key == null)
                 throw new ArgumentNullException(nameof(key), LR.GetString("ExNullFindParam"));
 
-            PropertyDescriptorCollection coll = listManager.GetItemProperties();
-            PropertyDescriptor prop = coll.Find(member, true);
-
-            if(prop == null)
+            PropertyDescriptorCollection coll = listManager!.GetItemProperties();
+            PropertyDescriptor prop = coll.Find(member, true) ??
                 throw new ArgumentOutOfRangeException(nameof(member), member, LR.GetString("ExInvalidMember"));
 
             if(listManager.List is IBindingList bl && bl.SupportsSearching)
@@ -1878,7 +1875,6 @@ namespace EWSoftware.ListControls
         {
             bool found;
             int length, idx;
-            string propValue;
 
             if(listManager == null || listManager.Count == 0)
                 return -1;
@@ -1893,9 +1889,7 @@ namespace EWSoftware.ListControls
                 throw new ArgumentNullException(nameof(key), LR.GetString("ExNullFindParam"));
 
             PropertyDescriptorCollection coll = listManager.GetItemProperties();
-            PropertyDescriptor prop = coll.Find(member, true);
-
-            if(prop == null)
+            PropertyDescriptor prop = coll.Find(member, true) ??
                 throw new ArgumentOutOfRangeException(nameof(member), member, LR.GetString("ExInvalidMember"));
 
             length = key.Length;
@@ -1904,7 +1898,7 @@ namespace EWSoftware.ListControls
             while(true)
             {
                 idx++;
-                propValue = prop.GetValue(listManager.List[idx]).ToString();
+                string? propValue = prop.GetValue(listManager.List[idx])?.ToString();
 
                 if(exactMatch)
                     found = String.Equals(key, propValue, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);

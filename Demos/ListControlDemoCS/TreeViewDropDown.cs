@@ -2,8 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : TreeViewDropDown.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/06/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This is a sample drop-down control for the UserControlComboBox demo
 //
@@ -17,25 +17,20 @@
 // 04/17/2005  EFW  Created the code
 //===============================================================================================================
 
-using System;
 using System.Collections;
-using System.Data;
-using System.Windows.Forms;
-
-using EWSoftware.ListControls;
 
 namespace ListControlDemoCS
 {
 	/// <summary>
 	/// This is a sample drop-down control for the UserControlComboBox demo
 	/// </summary>
-	public partial class TreeViewDropDown : EWSoftware.ListControls.DropDownControl
+	public partial class TreeViewDropDown : DropDownControl
 	{
         #region Private data members
         //=====================================================================
 
-        private DataView dvItems;
-        private DataTable tblItems;
+        private List<DemoTable>? demoData;
+        private List<ProductInfo>? productInfo;
         private bool excludeVisible;
 
         #endregion
@@ -71,39 +66,12 @@ namespace ListControlDemoCS
         //=====================================================================
 
         /// <summary>
-        /// This loads items from the row collection into the tree view
-        /// </summary>
-        /// <param name="row">The starting row</param>
-        /// <param name="tnRoot">The root node to which items are added</param>
-        /// <returns>The index of the next row that starts a new node</returns>
-        private int LoadItems(int row, TreeNode tnRoot)
-        {
-            TreeNode tnChild;
-
-            while(row < dvItems.Count && (string)dvItems[row]["CategoryName"] == tnRoot.Text)
-            {
-                tnChild = new TreeNode((string)dvItems[row]["ProductName"])
-                {
-                    Tag = dvItems[row]["ProductID"]
-                };
-
-                if((bool)dvItems[row]["Discontinued"])
-                    tnChild.Text += " (Discontinued)";
-
-                tnRoot.Nodes.Add(tnChild);
-                row++;
-            }
-
-            return row;
-        }
-
-        /// <summary>
         /// Clone the combo box's data source and load the tree view
         /// </summary>
         public override void InitializeDropDown()
         {
             TreeNode tn;
-            object ds = this.ComboBox.DataSource;
+            object? ds = this.ComboBox.DataSource;
 
             // Determine the data source type in use by the demo form
             if(ds == null)
@@ -124,35 +92,27 @@ namespace ListControlDemoCS
             }
             else
             {
-                // Data set, view, or table
-                if(ds is DataSet set)
-                {
-                    tblItems = set.Tables["ProductInfo"];
-                }
+                // List of items
+                if(ds is List<ProductInfo> p)
+                    productInfo = p;
                 else
-                {
-                    if(ds is DataView view)
-                        tblItems = view.Table;
-                    else
-                        tblItems = (DataTable)ds;
-                }
-
-                dvItems = tblItems.DefaultView;
+                    demoData = (List<DemoTable>)ds;
 
                 if(excludeVisible)
                 {
                     // Sort and load by category name
-                    dvItems.Sort = "CategoryName, ProductName";
+                    productInfo = [.. productInfo!.OrderBy(p => p.CategoryName).ThenBy(p => p.ProductName)];
+
                     chkExcludeDiscontinued_CheckedChanged(this, EventArgs.Empty);
                 }
                 else
                 {
                     // This is the one that doesn't contain categories
-                    for(int idx = 0; idx < dvItems.Count; idx++)
+                    for(int idx = 0; idx < demoData!.Count; idx++)
                     {
-                        tn = new TreeNode((string)dvItems[idx]["Label"])
+                        tn = new TreeNode(demoData[idx].Label)
                         {
-                            Tag = dvItems[idx]["ListKey"]
+                            Tag = demoData[idx].ListKey
                         };
 
                         tvItems.Nodes.Add(tn);
@@ -183,16 +143,19 @@ namespace ListControlDemoCS
                 }
                 else
                 {
-                    // There doesn't appear to be an easy way to search for a node so do it the hard way
-                    object currentValue = this.ComboBox.SelectedValue;
+                    // Select the node by its key value stored in the tag
+                    object? currentValue = this.ComboBox.SelectedValue;
 
-                    foreach(TreeNode tn in tvItems.Nodes)
-                        foreach(TreeNode child in tn.Nodes)
-                            if(child.Tag.Equals(currentValue))
-                            {
-                                tvItems.SelectedNode = child;
-                                break;
-                            }
+                    var tne = new TreeNodeEnumerator(tvItems.Nodes[0], true);
+
+                    while(tne.MoveNext())
+                    {
+                        if(tne.Current!.Tag?.Equals(currentValue) ?? false)
+                        {
+                            tvItems.SelectedNode = tne.Current;
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -208,22 +171,36 @@ namespace ListControlDemoCS
         /// <param name="e">The event arguments</param>
         private void chkExcludeDiscontinued_CheckedChanged(object sender, EventArgs e)
         {
-            TreeNode tnNode;
             int row = 0;
+            var products = productInfo!;
 
             if(chkExcludeDiscontinued.Checked)
-                dvItems.RowFilter = "Discontinued = false";
-            else
-                dvItems.RowFilter = null;
+                products = products.Where(p => !p.Discontinued).ToList();
 
             tvItems.Nodes.Clear();
 
-            while(row < dvItems.Count)
+            while(row < products.Count)
             {
-                tnNode = new TreeNode((string)dvItems[row]["CategoryName"]);
-                tvItems.Nodes.Add(tnNode);
-                row = LoadItems(row, tnNode);
+                TreeNode root = new(products[row].CategoryName);
+                tvItems.Nodes.Add(root);
+
+                while(row < products.Count && products[row].CategoryName == root.Text)
+                {
+                    TreeNode child = new(products[row].ProductName)
+                    {
+                        Tag = products[row].ProductID
+                    };
+
+                    if(products[row].Discontinued)
+                        child.Text += " (Discontinued)";
+
+                    root.Nodes.Add(child);
+                    row++;
+                }
             }
+
+            tvItems.ExpandAll();
+            tvItems.Nodes[0].EnsureVisible();
 
             btnSelect.Enabled = false;
         }
@@ -233,7 +210,7 @@ namespace ListControlDemoCS
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void btnSelect_Click(object sender, System.EventArgs e)
+        private void btnSelect_Click(object sender, EventArgs e)
         {
             if(!excludeVisible)
                 this.CommitSelection(tvItems.Nodes.IndexOf(tvItems.SelectedNode));
@@ -246,7 +223,7 @@ namespace ListControlDemoCS
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void tvItems_AfterSelect(object sender, System.Windows.Forms.TreeViewEventArgs e)
+        private void tvItems_AfterSelect(object sender, TreeViewEventArgs e)
         {
             btnSelect.Enabled = (tvItems.SelectedNode.Nodes.Count == 0);
 
@@ -260,7 +237,7 @@ namespace ListControlDemoCS
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void tvItems_DoubleClick(object sender, System.EventArgs e)
+        private void tvItems_DoubleClick(object sender, EventArgs e)
         {
             if(tvItems.SelectedNode.Nodes.Count == 0)
                 btnSelect_Click(sender, e);
@@ -271,7 +248,7 @@ namespace ListControlDemoCS
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void btnCancel_Click(object sender, System.EventArgs e)
+        private void btnCancel_Click(object sender, EventArgs e)
         {
             this.ComboBox.DroppedDown = false;
         }

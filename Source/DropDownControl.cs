@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : DropDownControl.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/25/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a drop-down control used as the source for creating the drop-down portion of the
 // UserControlComboBox control.
@@ -18,10 +18,6 @@
 // 09/08/2005  EFW  Created the code
 //===============================================================================================================
 
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
-
 namespace EWSoftware.ListControls
 {
 	/// <summary>
@@ -31,7 +27,7 @@ namespace EWSoftware.ListControls
     /// <remarks>Derive a <see cref="UserControl"/> from this class and add your controls to it for use as a
     /// template in the drop-down.</remarks>
 	[ToolboxItem(false)]
-	public class DropDownControl : System.Windows.Forms.UserControl
+	public class DropDownControl : UserControl
 	{
         #region Properties
         //=====================================================================
@@ -41,7 +37,7 @@ namespace EWSoftware.ListControls
         /// that owns it).
         /// </summary>
         [Browsable(false), Description("Get a reference to the drop-down's parent UserControlComboBox")]
-        public UserControlComboBox ComboBox { get; internal set; }
+        public UserControlComboBox ComboBox { get; internal set; } = null!;
 
         #endregion
 

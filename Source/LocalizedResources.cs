@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : LocalizedResources.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains some internal classes used to manage the localized resources for the assembly
 //
@@ -17,8 +17,6 @@
 // 03/17/2005  EFW  Created the code
 //===============================================================================================================
 
-using System;
-using System.Reflection;
 using System.Globalization;
 using System.Resources;
 
@@ -37,10 +35,10 @@ namespace EWSoftware.ListControls
         private const string ResourcesKey = "ResFile";
 
         // The resource manager
-        private static ResourceManager rm;
+        private static ResourceManager rm = null!;
 
         // This is a helper object used to quickly lock the class when creating the resource manager
-        private static readonly object syncRoot = new Object();
+        private static readonly object syncRoot = new();
 
         #endregion
 

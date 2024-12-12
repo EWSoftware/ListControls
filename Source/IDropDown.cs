@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : IDropDown.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/16/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
+// Updated : 12/08/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a simple interface for the drop-down container classes so that the base combo box class
 // can access some of their methods.

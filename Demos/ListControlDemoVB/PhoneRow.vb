@@ -2,8 +2,8 @@
 ' System  : EWSoftware Data List Control Demonstration Applications
 ' File    : PhoneRow.vb
 ' Author  : Eric Woodruff  (Eric@EWoodruff.us)
-' Updated : 04/09/2023
-' Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+' Updated : 12/08/2024
+' Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 '
 ' This is a sample row template control for the DataList relationship demo
 '
@@ -20,10 +20,7 @@
 Imports System.Text.RegularExpressions
 
 Public Partial Class PhoneRow
-    Inherits EWSoftware.ListControls.TemplateControl
-
-    ' A simple edit for the phone number format
-    Private Shared ReadOnly rePhone As New Regex("^\(\d{3}\) \d{3}-\d{4}$")
+    Inherits TemplateControl
 
     ' Constructor
 	Public Sub New()
@@ -55,7 +52,7 @@ Public Partial Class PhoneRow
 
     ' Bind the controls to their data source
     Protected Overrides Sub Bind()
-        Me.AddBinding(txtPhoneNumber, "Text", "PhoneNumber")
+        Me.AddBinding(txtPhoneNumber, NameOf(Control.Text), NameOf(Phone.PhoneNumber))
     End Sub
 
     ' Require a phone number in a specific format
@@ -68,7 +65,7 @@ Public Partial Class PhoneRow
             epErrors.SetError(txtPhoneNumber, "A phone number is required")
             e.Cancel = True
         Else
-            If rePhone.IsMatch(txtPhoneNumber.Text) = False Then
+            If Not txtPhoneNumber.MaskCompleted Then
                 epErrors.SetError(txtPhoneNumber, "Please enter a phone number in the format (###) ###-####")
                 e.Cancel = True
             Else

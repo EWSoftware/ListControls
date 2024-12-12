@@ -15,9 +15,7 @@ namespace ListControlDemoCS
         {
             if(disposing)
             {
-                dbConn?.Dispose();
-                daAddresses.Dispose();
-                dsAddresses.Dispose();
+                dc?.Dispose();
                 components?.Dispose();
             }
             base.Dispose(disposing);
@@ -31,53 +29,53 @@ namespace ListControlDemoCS
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-            btnLoad = new System.Windows.Forms.Button();
-            dnNav = new EWSoftware.ListControls.DataNavigator();
-            btnSave = new System.Windows.Forms.Button();
-            pgProps = new System.Windows.Forms.PropertyGrid();
-            btnAddDSRow = new System.Windows.Forms.Button();
-            btnDelDSRow = new System.Windows.Forms.Button();
-            btnModRow = new System.Windows.Forms.Button();
-            udcRowNumber = new System.Windows.Forms.NumericUpDown();
-            label6 = new System.Windows.Forms.Label();
-            toolTip1 = new System.Windows.Forms.ToolTip(components);
-            btnGetValue = new System.Windows.Forms.Button();
-            cboColumns = new System.Windows.Forms.ComboBox();
-            txtValue = new System.Windows.Forms.TextBox();
-            txtRowNumber = new System.Windows.Forms.NumericUpDown();
-            label7 = new System.Windows.Forms.Label();
-            label8 = new System.Windows.Forms.Label();
-            pnlData = new System.Windows.Forms.Panel();
-            txtZip = new System.Windows.Forms.TextBox();
-            cboState = new EWSoftware.ListControls.MultiColumnComboBox();
-            txtCity = new System.Windows.Forms.TextBox();
-            txtAddress = new System.Windows.Forms.TextBox();
-            txtLName = new System.Windows.Forms.TextBox();
-            txtFName = new System.Windows.Forms.TextBox();
-            label1 = new System.Windows.Forms.Label();
-            lblKey = new System.Windows.Forms.Label();
-            label5 = new System.Windows.Forms.Label();
-            label4 = new System.Windows.Forms.Label();
-            label3 = new System.Windows.Forms.Label();
-            label2 = new System.Windows.Forms.Label();
-            lblAddRow = new System.Windows.Forms.Label();
-            epErrors = new System.Windows.Forms.ErrorProvider(components);
-            txtFindName = new System.Windows.Forms.TextBox();
-            clickableLabel1 = new EWSoftware.ListControls.ClickableLabel();
-            ((System.ComponentModel.ISupportInitialize)udcRowNumber).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)txtRowNumber).BeginInit();
+            components = new Container();
+            btnLoad = new Button();
+            dnNav = new DataNavigator();
+            btnSave = new Button();
+            pgProps = new PropertyGrid();
+            btnAddDSRow = new Button();
+            btnDelDSRow = new Button();
+            btnModRow = new Button();
+            udcRowNumber = new NumericUpDown();
+            label6 = new Label();
+            toolTip1 = new ToolTip(components);
+            btnGetValue = new Button();
+            cboColumns = new ComboBox();
+            txtValue = new TextBox();
+            txtRowNumber = new NumericUpDown();
+            label7 = new Label();
+            label8 = new Label();
+            pnlData = new Panel();
+            txtZip = new TextBox();
+            cboState = new MultiColumnComboBox();
+            txtCity = new TextBox();
+            txtAddress = new TextBox();
+            txtLName = new TextBox();
+            txtFName = new TextBox();
+            label1 = new Label();
+            lblKey = new Label();
+            label5 = new Label();
+            label4 = new Label();
+            label3 = new Label();
+            label2 = new Label();
+            lblAddRow = new Label();
+            epErrors = new ErrorProvider(components);
+            txtFindName = new TextBox();
+            clickableLabel1 = new ClickableLabel();
+            ((ISupportInitialize)udcRowNumber).BeginInit();
+            ((ISupportInitialize)txtRowNumber).BeginInit();
             pnlData.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)cboState).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)epErrors).BeginInit();
+            ((ISupportInitialize)cboState).BeginInit();
+            ((ISupportInitialize)epErrors).BeginInit();
             this.SuspendLayout();
             // 
             // btnLoad
             // 
-            btnLoad.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            btnLoad.Location = new System.Drawing.Point(12, 375);
+            btnLoad.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnLoad.Location = new Point(12, 681);
             btnLoad.Name = "btnLoad";
-            btnLoad.Size = new System.Drawing.Size(104, 28);
+            btnLoad.Size = new Size(104, 32);
             btnLoad.TabIndex = 8;
             btnLoad.Text = "L&oad Data";
             toolTip1.SetToolTip(btnLoad, "Load data into the control");
@@ -85,9 +83,9 @@ namespace ListControlDemoCS
             // 
             // dnNav
             // 
-            dnNav.Location = new System.Drawing.Point(12, 184);
+            dnNav.Location = new Point(12, 195);
             dnNav.Name = "dnNav";
-            dnNav.Size = new System.Drawing.Size(282, 22);
+            dnNav.Size = new Size(547, 22);
             dnNav.TabIndex = 1;
             dnNav.AddedRow += this.dnNav_AddedRow;
             dnNav.DeletingRow += this.dnNav_DeletingRow;
@@ -98,10 +96,10 @@ namespace ListControlDemoCS
             // 
             // btnSave
             // 
-            btnSave.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            btnSave.Location = new System.Drawing.Point(122, 375);
+            btnSave.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnSave.Location = new Point(122, 681);
             btnSave.Name = "btnSave";
-            btnSave.Size = new System.Drawing.Size(104, 28);
+            btnSave.Size = new Size(104, 32);
             btnSave.TabIndex = 9;
             btnSave.Text = "&Save Data";
             toolTip1.SetToolTip(btnSave, "Save all changes");
@@ -109,31 +107,31 @@ namespace ListControlDemoCS
             // 
             // pgProps
             // 
-            pgProps.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            pgProps.LineColor = System.Drawing.SystemColors.ScrollBar;
-            pgProps.Location = new System.Drawing.Point(512, 12);
+            pgProps.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            pgProps.LineColor = SystemColors.ScrollBar;
+            pgProps.Location = new Point(565, 12);
             pgProps.Name = "pgProps";
-            pgProps.Size = new System.Drawing.Size(308, 327);
+            pgProps.Size = new Size(429, 628);
             pgProps.TabIndex = 15;
             pgProps.PropertyValueChanged += this.pgProps_PropertyValueChanged;
             // 
             // btnAddDSRow
             // 
-            btnAddDSRow.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            btnAddDSRow.Location = new System.Drawing.Point(284, 375);
+            btnAddDSRow.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnAddDSRow.Location = new Point(284, 681);
             btnAddDSRow.Name = "btnAddDSRow";
-            btnAddDSRow.Size = new System.Drawing.Size(104, 28);
+            btnAddDSRow.Size = new Size(104, 32);
             btnAddDSRow.TabIndex = 10;
-            btnAddDSRow.Text = "Add DS Row";
+            btnAddDSRow.Text = "Add Row";
             toolTip1.SetToolTip(btnAddDSRow, "Add row directly to the data source");
             btnAddDSRow.Click += this.btnAddDSRow_Click;
             // 
             // btnDelDSRow
             // 
-            btnDelDSRow.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            btnDelDSRow.Location = new System.Drawing.Point(565, 375);
+            btnDelDSRow.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnDelDSRow.Location = new Point(595, 681);
             btnDelDSRow.Name = "btnDelDSRow";
-            btnDelDSRow.Size = new System.Drawing.Size(104, 28);
+            btnDelDSRow.Size = new Size(104, 32);
             btnDelDSRow.TabIndex = 13;
             btnDelDSRow.Text = "Del DS Row";
             toolTip1.SetToolTip(btnDelDSRow, "Delete row directly from data source");
@@ -141,10 +139,10 @@ namespace ListControlDemoCS
             // 
             // btnModRow
             // 
-            btnModRow.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            btnModRow.Location = new System.Drawing.Point(675, 375);
+            btnModRow.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnModRow.Location = new Point(705, 681);
             btnModRow.Name = "btnModRow";
-            btnModRow.Size = new System.Drawing.Size(104, 28);
+            btnModRow.Size = new Size(104, 32);
             btnModRow.TabIndex = 14;
             btnModRow.Text = "Modify Row";
             toolTip1.SetToolTip(btnModRow, "Modify row directly in data source");
@@ -152,32 +150,32 @@ namespace ListControlDemoCS
             // 
             // udcRowNumber
             // 
-            udcRowNumber.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            udcRowNumber.Location = new System.Drawing.Point(495, 377);
+            udcRowNumber.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            udcRowNumber.Location = new Point(525, 683);
             udcRowNumber.Maximum = new decimal(new int[] { 99999, 0, 0, 0 });
             udcRowNumber.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             udcRowNumber.Name = "udcRowNumber";
-            udcRowNumber.Size = new System.Drawing.Size(64, 31);
+            udcRowNumber.Size = new Size(64, 27);
             udcRowNumber.TabIndex = 12;
-            udcRowNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            udcRowNumber.TextAlign = HorizontalAlignment.Right;
             udcRowNumber.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // label6
             // 
-            label6.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            label6.Location = new System.Drawing.Point(390, 377);
+            label6.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            label6.Location = new Point(394, 686);
             label6.Name = "label6";
-            label6.Size = new System.Drawing.Size(99, 23);
+            label6.Size = new Size(125, 23);
             label6.TabIndex = 11;
             label6.Text = "Del/Mod Row";
-            label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label6.TextAlign = ContentAlignment.MiddleRight;
             // 
             // btnGetValue
             // 
-            btnGetValue.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            btnGetValue.Location = new System.Drawing.Point(346, 341);
+            btnGetValue.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnGetValue.Location = new Point(377, 643);
             btnGetValue.Name = "btnGetValue";
-            btnGetValue.Size = new System.Drawing.Size(75, 28);
+            btnGetValue.Size = new Size(75, 32);
             btnGetValue.TabIndex = 6;
             btnGetValue.Text = "&Get";
             toolTip1.SetToolTip(btnGetValue, "Get the specified column from the specified row");
@@ -185,55 +183,55 @@ namespace ListControlDemoCS
             // 
             // cboColumns
             // 
-            cboColumns.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            cboColumns.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cboColumns.Items.AddRange(new object[] { "ID", "FirstName", "LastName", "Address", "City", "State", "Zip", "SumValue" });
-            cboColumns.Location = new System.Drawing.Point(100, 345);
+            cboColumns.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            cboColumns.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboColumns.Items.AddRange(new object[] { "ID", "FirstName", "LastName", "StreetAddress", "City", "State", "Zip", "SumValue" });
+            cboColumns.Location = new Point(122, 647);
             cboColumns.Name = "cboColumns";
-            cboColumns.Size = new System.Drawing.Size(132, 33);
+            cboColumns.Size = new Size(132, 28);
             cboColumns.TabIndex = 3;
             // 
             // txtValue
             // 
-            txtValue.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            txtValue.Location = new System.Drawing.Point(427, 345);
+            txtValue.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            txtValue.Location = new Point(458, 646);
             txtValue.Name = "txtValue";
             txtValue.ReadOnly = true;
-            txtValue.Size = new System.Drawing.Size(352, 31);
+            txtValue.Size = new Size(536, 27);
             txtValue.TabIndex = 7;
             txtValue.TabStop = false;
             // 
             // txtRowNumber
             // 
-            txtRowNumber.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            txtRowNumber.Location = new System.Drawing.Point(284, 345);
+            txtRowNumber.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            txtRowNumber.Location = new Point(315, 647);
             txtRowNumber.Maximum = new decimal(new int[] { 99999, 0, 0, 0 });
             txtRowNumber.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             txtRowNumber.Name = "txtRowNumber";
-            txtRowNumber.Size = new System.Drawing.Size(56, 31);
+            txtRowNumber.Size = new Size(56, 27);
             txtRowNumber.TabIndex = 5;
-            txtRowNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            txtRowNumber.TextAlign = HorizontalAlignment.Right;
             txtRowNumber.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // label7
             // 
-            label7.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            label7.Location = new System.Drawing.Point(236, 345);
+            label7.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            label7.Location = new Point(261, 649);
             label7.Name = "label7";
-            label7.Size = new System.Drawing.Size(48, 23);
+            label7.Size = new Size(48, 23);
             label7.TabIndex = 4;
             label7.Text = "at row";
-            label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label7.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label8
             // 
-            label8.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            label8.Location = new System.Drawing.Point(16, 344);
+            label8.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            label8.Location = new Point(18, 649);
             label8.Name = "label8";
-            label8.Size = new System.Drawing.Size(80, 23);
+            label8.Size = new Size(98, 23);
             label8.TabIndex = 2;
             label8.Text = "G&et column";
-            label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label8.TextAlign = ContentAlignment.MiddleRight;
             // 
             // pnlData
             // 
@@ -249,128 +247,128 @@ namespace ListControlDemoCS
             pnlData.Controls.Add(label4);
             pnlData.Controls.Add(label3);
             pnlData.Controls.Add(label2);
-            pnlData.Location = new System.Drawing.Point(12, 40);
+            pnlData.Location = new Point(12, 45);
             pnlData.Name = "pnlData";
-            pnlData.Size = new System.Drawing.Size(494, 144);
+            pnlData.Size = new Size(547, 144);
             pnlData.TabIndex = 0;
             // 
             // txtZip
             // 
-            txtZip.Location = new System.Drawing.Point(296, 108);
+            txtZip.Location = new Point(347, 110);
             txtZip.MaxLength = 10;
             txtZip.Name = "txtZip";
-            txtZip.Size = new System.Drawing.Size(77, 31);
+            txtZip.Size = new Size(77, 27);
             txtZip.TabIndex = 11;
             // 
             // cboState
             // 
-            cboState.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cboState.Location = new System.Drawing.Point(228, 108);
+            cboState.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboState.Location = new Point(275, 110);
             cboState.MaxDropDownItems = 16;
             cboState.Name = "cboState";
-            cboState.Size = new System.Drawing.Size(57, 34);
+            cboState.Size = new Size(66, 29);
             cboState.TabIndex = 10;
             // 
             // txtCity
             // 
-            txtCity.Location = new System.Drawing.Point(92, 108);
+            txtCity.Location = new Point(109, 110);
             txtCity.MaxLength = 20;
             txtCity.Name = "txtCity";
-            txtCity.Size = new System.Drawing.Size(125, 31);
+            txtCity.Size = new Size(160, 27);
             txtCity.TabIndex = 9;
             // 
             // txtAddress
             // 
-            txtAddress.Location = new System.Drawing.Point(92, 76);
+            txtAddress.Location = new Point(109, 77);
             txtAddress.MaxLength = 50;
             txtAddress.Name = "txtAddress";
-            txtAddress.Size = new System.Drawing.Size(389, 31);
+            txtAddress.Size = new Size(407, 27);
             txtAddress.TabIndex = 7;
             // 
             // txtLName
             // 
-            txtLName.Location = new System.Drawing.Point(92, 44);
+            txtLName.Location = new Point(109, 44);
             txtLName.MaxLength = 30;
             txtLName.Name = "txtLName";
-            txtLName.Size = new System.Drawing.Size(160, 31);
+            txtLName.Size = new Size(160, 27);
             txtLName.TabIndex = 3;
             // 
             // txtFName
             // 
-            txtFName.Location = new System.Drawing.Point(344, 44);
+            txtFName.Location = new Point(379, 44);
             txtFName.MaxLength = 20;
             txtFName.Name = "txtFName";
-            txtFName.Size = new System.Drawing.Size(137, 31);
+            txtFName.Size = new Size(137, 27);
             txtFName.TabIndex = 5;
             // 
             // label1
             // 
-            label1.Location = new System.Drawing.Point(62, 12);
+            label1.Location = new Point(71, 12);
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(24, 23);
+            label1.Size = new Size(32, 23);
             label1.TabIndex = 0;
             label1.Text = "ID";
-            label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label1.TextAlign = ContentAlignment.MiddleRight;
             // 
             // lblKey
             // 
-            lblKey.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            lblKey.Location = new System.Drawing.Point(92, 12);
+            lblKey.BorderStyle = BorderStyle.Fixed3D;
+            lblKey.Location = new Point(109, 12);
             lblKey.Name = "lblKey";
-            lblKey.Size = new System.Drawing.Size(64, 23);
+            lblKey.Size = new Size(64, 23);
             lblKey.TabIndex = 1;
-            lblKey.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            lblKey.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // label5
             // 
-            label5.BackColor = System.Drawing.Color.Transparent;
-            label5.Location = new System.Drawing.Point(4, 108);
+            label5.BackColor = Color.Transparent;
+            label5.Location = new Point(6, 112);
             label5.Name = "label5";
-            label5.Size = new System.Drawing.Size(82, 22);
+            label5.Size = new Size(97, 22);
             label5.TabIndex = 8;
             label5.Text = "&City/St/Zip";
-            label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label5.TextAlign = ContentAlignment.MiddleRight;
             // 
             // label4
             // 
-            label4.BackColor = System.Drawing.Color.Transparent;
-            label4.Location = new System.Drawing.Point(10, 76);
+            label4.BackColor = Color.Transparent;
+            label4.Location = new Point(27, 79);
             label4.Name = "label4";
-            label4.Size = new System.Drawing.Size(76, 22);
+            label4.Size = new Size(76, 22);
             label4.TabIndex = 6;
             label4.Text = "&Address";
-            label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label4.TextAlign = ContentAlignment.MiddleRight;
             // 
             // label3
             // 
-            label3.BackColor = System.Drawing.Color.Transparent;
-            label3.Location = new System.Drawing.Point(3, 44);
+            label3.BackColor = Color.Transparent;
+            label3.Location = new Point(8, 46);
             label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(83, 22);
+            label3.Size = new Size(95, 22);
             label3.TabIndex = 2;
             label3.Text = "&Last Name";
-            label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label3.TextAlign = ContentAlignment.MiddleRight;
             // 
             // label2
             // 
-            label2.BackColor = System.Drawing.Color.Transparent;
-            label2.Location = new System.Drawing.Point(262, 44);
+            label2.BackColor = Color.Transparent;
+            label2.Location = new Point(280, 46);
             label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(76, 22);
+            label2.Size = new Size(93, 22);
             label2.TabIndex = 4;
             label2.Text = "First Name";
-            label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label2.TextAlign = ContentAlignment.MiddleRight;
             // 
             // lblAddRow
             // 
-            lblAddRow.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            lblAddRow.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            lblAddRow.Location = new System.Drawing.Point(12, 216);
+            lblAddRow.BackColor = SystemColors.ActiveCaption;
+            lblAddRow.ForeColor = SystemColors.ActiveCaptionText;
+            lblAddRow.Location = new Point(12, 220);
             lblAddRow.Name = "lblAddRow";
-            lblAddRow.Size = new System.Drawing.Size(494, 24);
+            lblAddRow.Size = new Size(547, 24);
             lblAddRow.TabIndex = 16;
             lblAddRow.Text = "Please click the Add button to add a new row";
-            lblAddRow.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lblAddRow.TextAlign = ContentAlignment.MiddleCenter;
             lblAddRow.Visible = false;
             // 
             // epErrors
@@ -379,25 +377,25 @@ namespace ListControlDemoCS
             // 
             // txtFindName
             // 
-            txtFindName.Location = new System.Drawing.Point(126, 12);
+            txtFindName.Location = new Point(154, 12);
             txtFindName.MaxLength = 30;
             txtFindName.Name = "txtFindName";
-            txtFindName.Size = new System.Drawing.Size(136, 31);
+            txtFindName.Size = new Size(160, 27);
             txtFindName.TabIndex = 18;
             txtFindName.TextChanged += this.txtFindName_TextChanged;
             // 
             // clickableLabel1
             // 
-            clickableLabel1.Location = new System.Drawing.Point(7, 12);
+            clickableLabel1.Location = new Point(12, 14);
             clickableLabel1.Name = "clickableLabel1";
-            clickableLabel1.Size = new System.Drawing.Size(113, 23);
+            clickableLabel1.Size = new Size(136, 23);
             clickableLabel1.TabIndex = 17;
             clickableLabel1.Text = "&Find Last Name";
-            clickableLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            clickableLabel1.TextAlign = ContentAlignment.MiddleRight;
             // 
             // DataNavigatorTestForm
             // 
-            this.ClientSize = new System.Drawing.Size(832, 415);
+            this.ClientSize = new Size(1006, 721);
             this.Controls.Add(txtFindName);
             this.Controls.Add(txtValue);
             this.Controls.Add(clickableLabel1);
@@ -418,19 +416,19 @@ namespace ListControlDemoCS
             this.Controls.Add(dnNav);
             this.Controls.Add(btnLoad);
             this.KeyPreview = true;
-            this.MinimumSize = new System.Drawing.Size(840, 336);
+            this.MinimumSize = new Size(850, 375);
             this.Name = "DataNavigatorTestForm";
             this.ShowInTaskbar = false;
-            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.SizeGripStyle = SizeGripStyle.Show;
+            this.StartPosition = FormStartPosition.CenterScreen;
             this.Text = "Test Data Navigator Control";
             this.Closing += this.DataNavigatorTestForm_Closing;
-            ((System.ComponentModel.ISupportInitialize)udcRowNumber).EndInit();
-            ((System.ComponentModel.ISupportInitialize)txtRowNumber).EndInit();
+            ((ISupportInitialize)udcRowNumber).EndInit();
+            ((ISupportInitialize)txtRowNumber).EndInit();
             pnlData.ResumeLayout(false);
             pnlData.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)cboState).EndInit();
-            ((System.ComponentModel.ISupportInitialize)epErrors).EndInit();
+            ((ISupportInitialize)cboState).EndInit();
+            ((ISupportInitialize)epErrors).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
         }

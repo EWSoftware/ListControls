@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : ChangePolicyEventArgs.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/30/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains the event argument class used to provide change policy modifications for the DataList and
 // DataNavigator controls.
@@ -18,8 +18,6 @@
 // 03/20/2005  EFW  Created the code
 //===============================================================================================================
 
-using System;
-
 namespace EWSoftware.ListControls
 {
 	/// <summary>
@@ -31,17 +29,17 @@ namespace EWSoftware.ListControls
         /// <summary>
         /// This is used to determine whether or not additions are allowed to be made to the data source
         /// </summary>
-        public bool AllowAdditions { get; private set; }
+        public bool AllowAdditions { get; }
 
         /// <summary>
         /// This is used to determine whether or not edits are allowed to be made to the data source
         /// </summary>
-        public bool AllowEdits { get; private set; }
+        public bool AllowEdits { get; }
 
         /// <summary>
         /// This is used to determine whether or not deletes are allowed to be made to the data source
         /// </summary>
-        public bool AllowDeletes { get; private set; }
+        public bool AllowDeletes { get; }
 
         /// <summary>
         /// Constructor

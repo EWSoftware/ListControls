@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : DataListBeginDragEventArgs.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/30/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
+// Updated : 12/08/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains the event argument class used for the data list BeginDrag event
 //
@@ -17,9 +17,6 @@
 // 03/20/2005  EFW  Created the code
 //===============================================================================================================
 
-using System;
-using System.Windows.Forms;
-
 namespace EWSoftware.ListControls
 {
 	/// <summary>
@@ -30,22 +27,22 @@ namespace EWSoftware.ListControls
         /// <summary>
         /// Get the source data list for the drag and drop operation
         /// </summary>
-        public DataList Source { get; private set; }
+        public DataList Source { get; }
 
         /// <summary>
         /// Get the starting row of the selection in the data list when the drag operation started
         /// </summary>
-        public int SelectionStart { get; private set; }
+        public int SelectionStart { get; }
 
         /// <summary>
         /// Get the ending row of the selection in the data list when the drag operation started
         /// </summary>
-        public int SelectionEnd { get; private set; }
+        public int SelectionEnd { get; }
 
         /// <summary>
         /// Get the mouse button clicked to start the drag operation
         /// </summary>
-        public MouseButtons Button { get; private set; }
+        public MouseButtons Button { get; }
 
         /// <summary>
         /// Constructor

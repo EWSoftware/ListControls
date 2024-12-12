@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : MapIndexEventArgs.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/24/2014
-// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
+// Updated : 12/09/2024
+// Note    : Copyright 2007-2024, Eric Woodruff, All rights reserved
 //
 // This file contains an event arguments class used to map a cell value to an image list index and vice versa
 //
@@ -17,8 +17,6 @@
 // 05/04/2007  EFW  Created the code
 //===============================================================================================================
 
-using System;
-
 namespace EWSoftware.ListControls.DataGridViewControls
 {
     /// <summary>
@@ -29,12 +27,12 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <summary>
         /// This read-only property can be used to retrieve the column in which the event occurred
         /// </summary>
-        public int Column { get; private set; }
+        public int Column { get; }
 
         /// <summary>
         /// This read-only property can be used to retrieve the row in which the event occurred
         /// </summary>
-        public int Row { get; private set; }
+        public int Row { get; }
 
         /// <summary>
         /// The cell value related to the event
@@ -43,7 +41,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// that needs mapping to an image index.  For the <see cref="ImageListColumn.MapIndexToValue"/> event,
         /// it is used to return the value that should be stored in the cell for the specified
         /// <see cref="Index"/>.</value>
-        public object Value { get; set; }
+        public object? Value { get; set; }
 
         /// <summary>
         /// The image list index related to the event
@@ -61,7 +59,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="rowIndex">The row in which the event occurred</param>
         /// <param name="value">The cell value</param>
         /// <param name="imageIndex">The image index</param>
-        public MapIndexEventArgs(int columnIndex, int rowIndex, object value, int imageIndex)
+        public MapIndexEventArgs(int columnIndex, int rowIndex, object? value, int imageIndex)
         {
             this.Column = columnIndex;
             this.Row = rowIndex;

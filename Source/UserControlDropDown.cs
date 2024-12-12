@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : UserControlDropDown.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 04/09/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a combo box drop-down form that handles the display of the user control for the user
 // control combo box.  Because this is a form, it does not support Simple mode.
@@ -19,12 +19,6 @@
 // 05/01/2006  EFW  Implemented the IDropDown.Scroll method
 //===============================================================================================================
 
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Reflection;
-using System.Windows.Forms;
-
 namespace EWSoftware.ListControls
 {
 	/// <summary>
@@ -32,18 +26,18 @@ namespace EWSoftware.ListControls
     /// Because it is a form, it does not support Simple mode.
 	/// </summary>
 	[ToolboxItem(false)]
-	internal class UserControlDropDown : Form, IDropDown
+	internal sealed class UserControlDropDown : Form, IDropDown
 	{
         #region Private data members
         //=====================================================================
 
         private readonly UserControlComboBox owner;
-        private DropDownControl ddControl;
+        private DropDownControl? ddControl;
         private int startIndex;
         private bool isCreating, hasInitialized;
 
         private Point dragOffset;
-        private Cursor priorCursor;
+        private Cursor priorCursor = null!;
 
         #endregion
 
@@ -104,7 +98,7 @@ namespace EWSoftware.ListControls
             // Create and initialize the drop-down control
             if(owner.DropDownControl != null)
             {
-                ConstructorInfo ctor = owner.DropDownControl.GetConstructor(Type.EmptyTypes);
+                ConstructorInfo ctor = owner.DropDownControl.GetConstructor(Type.EmptyTypes)!;
                 ddControl = (DropDownControl)ctor.Invoke(null);
                 ddControl.Location = new Point(0, 0);
                 ddControl.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right;
@@ -159,7 +153,7 @@ namespace EWSoftware.ListControls
 
             // Make sure we are within the screen bounds.  Take into account the working area of all screens.
             // Note that in certain setups, the leftmost/uppermost screen(s) may have negative coordinates.
-            Rectangle workingArea, screen = new Rectangle();
+            Rectangle workingArea, screen = new();
 
             foreach(Screen s in Screen.AllScreens)
             {
@@ -178,7 +172,7 @@ namespace EWSoftware.ListControls
                     screen.Height = Math.Abs(workingArea.Y) + workingArea.Height;
             }
 
-            Point pOwner = owner.Parent.PointToScreen(owner.Location);
+            Point pOwner = owner.Parent!.PointToScreen(owner.Location);
             pOwner.Y += owner.Height;
 
             Point p = pOwner;
@@ -250,7 +244,7 @@ namespace EWSoftware.ListControls
         protected override void OnDeactivate(EventArgs e)
         {
             // Transfer focus back to the combo box's parent
-            owner.ParentForm.Focus();
+            owner.ParentForm?.Focus();
 
             base.OnDeactivate(e);
             owner.DroppedDown = false;
@@ -321,8 +315,7 @@ namespace EWSoftware.ListControls
         {
             Point p = this.PointToClient(Cursor.Position);
 
-            Rectangle r = new Rectangle(this.Size.Width - 16,
-                this.Size.Height - 16, 16, 16);
+            Rectangle r = new(this.Size.Width - 16, this.Size.Height - 16, 16, 16);
 
             if(e.Button == MouseButtons.Left && r.Contains(p))
         	    dragOffset = new Point(this.Width - p.X, this.Height - p.Y);
@@ -348,8 +341,7 @@ namespace EWSoftware.ListControls
                 nWidth = Cursor.Position.X - this.Location.X + dragOffset.X;
                 nHeight = Cursor.Position.Y - this.Location.Y + dragOffset.Y;
 
-                Size minSize = (ddControl != null) ? ddControl.MinimumSize :
-                    new Size(30, 30);
+                Size minSize = (ddControl != null) ? ddControl.MinimumSize : new Size(30, 30);
 
                 if(nWidth < owner.Width)
                     nWidth = owner.Width;
@@ -363,7 +355,7 @@ namespace EWSoftware.ListControls
         		this.Size = new Size(nWidth, nHeight);
             }
 
-            Rectangle r = new Rectangle(this.Size.Width - 16, this.Size.Height - 16, 16, 16);
+            Rectangle r = new(this.Size.Width - 16, this.Size.Height - 16, 16, 16);
 
             if(r.Contains(p))
             {

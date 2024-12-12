@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : DataGridViewHelper.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 11/25/2020
-// Note    : Copyright 2007-2020, Eric Woodruff, All rights reserved
+// Updated : 12/09/2024
+// Note    : Copyright 2007-2024, Eric Woodruff, All rights reserved
 //
 // This is a static class that contains various helper methods for use with DataGridView objects
 //
@@ -17,22 +17,18 @@
 // 04/21/2007  EFW  Created the code
 //===============================================================================================================
 
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Reflection;
-using System.Windows.Forms;
-
 namespace EWSoftware.ListControls.DataGridViewControls
 {
-	/// <summary>
+    /// <summary>
     /// This is a static class that contains various helper methods for use with <see cref="DataGridView"/>
     /// objects.
-	/// </summary>
-	/// <remarks>Many of these methods use reflection to access internal members of the <see cref="DataGridView"/>
+    /// </summary>
+    /// <remarks>Many of these methods use reflection to access internal members of the <see cref="DataGridView"/>
     /// class that are not exposed as public items.</remarks>
-	internal static class DataGridViewHelper
-	{
+    internal static class DataGridViewHelper
+    {
+        private static readonly Dictionary<Color, SolidBrush> brushes = new(10);
+
         /// <summary>
         /// This is used to get a reference to the DataGridView type on the passed data grid view-derived object
         /// </summary>
@@ -42,7 +38,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
             Type type = dgv.GetType();
 
             while(type != typeof(DataGridView))
-                type = type.BaseType;
+                type = type.BaseType!;
 
             return type;
         }
@@ -55,24 +51,28 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <returns>The type converter for the specified type</returns>
         internal static TypeConverter GetCachedTypeConverter(DataGridView dgv, Type type)
         {
-            MethodInfo mi = DataGridViewHelper.DataGridViewType(dgv).GetMethod("GetCachedTypeConverter",
-                BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo mi = DataGridViewType(dgv).GetMethod("GetCachedTypeConverter",
+                BindingFlags.NonPublic | BindingFlags.Instance) ??
+                throw new InvalidOperationException("GetCachedTypeConverter method not found");
 
-            return (TypeConverter)mi.Invoke(dgv, new object[] { type });
+            return (TypeConverter)mi.Invoke(dgv, [type])!;
         }
 
         /// <summary>
-        /// This can be used to get a cached brush from the specified data grid view
+        /// This can be used to get a cached solid brush
         /// </summary>
-        /// <param name="dgv">The data grid view from which to get the cached brush</param>
         /// <param name="color">The color of the brush</param>
         /// <returns>The brush to use</returns>
-        internal static SolidBrush GetCachedBrush(DataGridView dgv, Color color)
+        internal static SolidBrush GetCachedBrush(Color color)
         {
-            MethodInfo mi = DataGridViewHelper.DataGridViewType(dgv).GetMethod("GetCachedBrush",
-                BindingFlags.NonPublic | BindingFlags.Instance);
+            // The GetCachedBrush method doesn't exist in .NET anymore so we implement our own cache
+            if(!brushes.TryGetValue(color, out SolidBrush? cachedBrush))
+            {
+                cachedBrush = new SolidBrush(color);
+                brushes.Add(color, cachedBrush);
+            }
 
-            return (SolidBrush)mi.Invoke(dgv, new object[] { color });
+            return cachedBrush;
         }
 
         /// <summary>
@@ -82,10 +82,11 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <returns>The point at which the mouse entered the cell</returns>
         internal static Point MouseEnteredCellAddress(DataGridView dgv)
         {
-            PropertyInfo pi = DataGridViewHelper.DataGridViewType(dgv).GetProperty("MouseEnteredCellAddress",
-                BindingFlags.NonPublic | BindingFlags.Instance);
+            PropertyInfo pi = DataGridViewType(dgv).GetProperty("MouseEnteredCellAddress",
+                BindingFlags.NonPublic | BindingFlags.Instance) ??
+                throw new InvalidOperationException("MouseEnteredCellAddress property not found");
 
-            return (Point)pi.GetValue(dgv, null);
+            return (Point)pi.GetValue(dgv, null)!;
         }
 
         /// <summary>
@@ -95,10 +96,11 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <returns>The cell in which the mouse button was pressed</returns>
         internal static Point MouseDownCellAddress(DataGridView dgv)
         {
-            PropertyInfo pi = DataGridViewHelper.DataGridViewType(dgv).GetProperty("MouseDownCellAddress",
-                BindingFlags.NonPublic | BindingFlags.Instance);
+            PropertyInfo pi = DataGridViewType(dgv).GetProperty("MouseDownCellAddress",
+                BindingFlags.NonPublic | BindingFlags.Instance) ??
+                throw new InvalidOperationException("MouseDownCellAddress property not found");
 
-            return (Point)pi.GetValue(dgv, null);
+            return (Point)pi.GetValue(dgv, null)!;
         }
 
         /// <summary>
@@ -108,10 +110,11 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="column">The column to resize</param>
         internal static void OnColumnCommonChange(DataGridView dgv, int column)
         {
-            MethodInfo mi = DataGridViewHelper.DataGridViewType(dgv).GetMethod("OnColumnCommonChange",
-                BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo mi = DataGridViewType(dgv).GetMethod("OnColumnCommonChange",
+                BindingFlags.NonPublic | BindingFlags.Instance) ??
+                throw new InvalidOperationException("OnColumnCommonChange method not found");
 
-            mi.Invoke(dgv, new object[] { column });
+            mi.Invoke(dgv, [column]);
         }
 
         /// <summary>
@@ -122,10 +125,11 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="row">The row to resize</param>
         internal static void OnCellCommonChange(DataGridView dgv, int column, int row)
         {
-            MethodInfo mi = DataGridViewHelper.DataGridViewType(dgv).GetMethod("OnCellCommonChange",
-                BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo mi = DataGridViewType(dgv).GetMethod("OnCellCommonChange",
+                BindingFlags.NonPublic | BindingFlags.Instance) ??
+                throw new InvalidOperationException("OnCellCommonChange method not found");
 
-            mi.Invoke(dgv, new object[] { column, row });
+            mi.Invoke(dgv, [column, row]);
         }
 
         /// <summary>
@@ -134,10 +138,11 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="dgv">The data grid view from which to get the point</param>
         internal static bool ShowFocusCues(DataGridView dgv)
         {
-            PropertyInfo pi = DataGridViewHelper.DataGridViewType(dgv).GetProperty("ShowFocusCues",
-                BindingFlags.NonPublic | BindingFlags.Instance);
+            PropertyInfo pi = DataGridViewType(dgv).GetProperty("ShowFocusCues",
+                BindingFlags.NonPublic | BindingFlags.Instance) ??
+                throw new InvalidOperationException("ShowFocusCues property not found");
 
-            return (bool)pi.GetValue(dgv, null);
+            return (bool)pi.GetValue(dgv, null)!;
         }
 
         /// <summary>
@@ -148,13 +153,14 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="toolTipText">The tool tip text to show</param>
         /// <param name="columnIndex">The column index of the cell</param>
         /// <param name="rowIndex">The row index of the cell</param>
-        internal static void ActivateToolTip(DataGridView dgv, bool activate, string toolTipText,
+        internal static void ActivateToolTip(DataGridView dgv, bool activate, string? toolTipText,
           int columnIndex, int rowIndex)
         {
-            MethodInfo mi = DataGridViewHelper.DataGridViewType(dgv).GetMethod("ActivateToolTip",
-                BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo mi = DataGridViewType(dgv).GetMethod("ActivateToolTip",
+                BindingFlags.NonPublic | BindingFlags.Instance) ??
+                throw new InvalidOperationException("ActivateToolTip method not found");
 
-            mi.Invoke(dgv, new object[] { activate, toolTipText, columnIndex, rowIndex });
+            mi.Invoke(dgv, [activate, toolTipText, columnIndex, rowIndex]);
         }
     }
 }

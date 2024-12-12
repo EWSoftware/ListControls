@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : ListPadding.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This defines a structure used to specify the padding for the radio button and checkbox list controls
 //
@@ -18,8 +18,6 @@
 // 12/09/2005  EFW  Renamed to avoid conflict with .NET 2.0 class
 //===============================================================================================================
 
-using System;
-using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.InteropServices;
 
@@ -109,7 +107,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="obj">The object to which this instance is compared</param>
         /// <returns>Returns true if the object equals this instance, false if it does not</returns>
-        public override bool Equals(object obj)
+        public override readonly bool Equals(object? obj)
         {
             if(obj == null || !(obj is ListPadding))
                 return false;
@@ -147,7 +145,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <remarks>To compute the hash code, it uses the string form of the object</remarks>
         /// <returns>Returns the hash code for the <c>ListPadding</c> object</returns>
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return this.ToString().GetHashCode();
         }
@@ -156,11 +154,10 @@ namespace EWSoftware.ListControls
         /// This is overridden to get a string representation of the <c>ListPadding</c> object
         /// </summary>
         /// <returns>The object as a string</returns>
-        public override string ToString()
+        public override readonly string ToString()
         {
-            return String.Format(CultureInfo.InvariantCulture, "List Padding: Top: {0} Left: {1} " +
-                "Bottom: {2} Right: {3} Column: {4} Row: {5}", this.Top, this.Left, this.Bottom, this.Right,
-                this.Column, this.Row);
+            return $"List Padding: Top: {this.Top} Left: {this.Left} Bottom: {this.Bottom} " +
+                $"Right: {this.Right} Column: {this.Column} Row: {this.Row}";
         }
         #endregion
     }

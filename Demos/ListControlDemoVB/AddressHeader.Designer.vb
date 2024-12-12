@@ -22,56 +22,56 @@ Partial Class AddressHeader
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.label1 = New EWSoftware.ListControls.ClickableLabel
-        Me.lblKey = New EWSoftware.ListControls.ClickableLabel
-        Me.txtFindName = New System.Windows.Forms.TextBox
-        Me.label2 = New EWSoftware.ListControls.ClickableLabel
+        label1 = New ClickableLabel()
+        lblKey = New ClickableLabel()
+        txtFindName = New TextBox()
+        label2 = New ClickableLabel()
         Me.SuspendLayout()
-        '
-        'label1
-        '
-        Me.label1.Location = New System.Drawing.Point(10, 9)
-        Me.label1.Name = "label1"
-        Me.label1.Size = New System.Drawing.Size(24, 23)
-        Me.label1.TabIndex = 0
-        Me.label1.Text = "ID"
-        Me.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'lblKey
-        '
-        Me.lblKey.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.lblKey.Location = New System.Drawing.Point(40, 9)
-        Me.lblKey.Name = "lblKey"
-        Me.lblKey.Size = New System.Drawing.Size(64, 23)
-        Me.lblKey.TabIndex = 1
-        Me.lblKey.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'txtFindName
-        '
-        Me.txtFindName.Location = New System.Drawing.Point(232, 9)
-        Me.txtFindName.MaxLength = 30
-        Me.txtFindName.Name = "txtFindName"
-        Me.txtFindName.Size = New System.Drawing.Size(136, 22)
-        Me.txtFindName.TabIndex = 3
-        '
-        'label2
-        '
-        Me.label2.Location = New System.Drawing.Point(114, 9)
-        Me.label2.Name = "label2"
-        Me.label2.Size = New System.Drawing.Size(112, 23)
-        Me.label2.TabIndex = 2
-        Me.label2.Text = "&Find Last Name"
-        Me.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'AddressHeader
-        '
-        Me.BackColor = System.Drawing.Color.Gainsboro
-        Me.Controls.Add(Me.txtFindName)
-        Me.Controls.Add(Me.label2)
-        Me.Controls.Add(Me.label1)
-        Me.Controls.Add(Me.lblKey)
+        ' 
+        ' label1
+        ' 
+        label1.Location = New Point(13, 9)
+        label1.Name = "label1"
+        label1.Size = New Size(31, 23)
+        label1.TabIndex = 0
+        label1.Text = "ID"
+        label1.TextAlign = ContentAlignment.MiddleRight
+        ' 
+        ' lblKey
+        ' 
+        lblKey.BorderStyle = BorderStyle.Fixed3D
+        lblKey.Location = New Point(50, 9)
+        lblKey.Name = "lblKey"
+        lblKey.Size = New Size(64, 23)
+        lblKey.TabIndex = 1
+        lblKey.TextAlign = ContentAlignment.MiddleLeft
+        ' 
+        ' txtFindName
+        ' 
+        txtFindName.Location = New Point(248, 7)
+        txtFindName.MaxLength = 30
+        txtFindName.Name = "txtFindName"
+        txtFindName.Size = New Size(212, 27)
+        txtFindName.TabIndex = 3
+        ' 
+        ' label2
+        ' 
+        label2.Location = New Point(120, 9)
+        label2.Name = "label2"
+        label2.Size = New Size(122, 23)
+        label2.TabIndex = 2
+        label2.Text = "&Find Last Name"
+        label2.TextAlign = ContentAlignment.MiddleRight
+        ' 
+        ' AddressHeader
+        ' 
+        Me.BackColor = Color.Gainsboro
+        Me.Controls.Add(txtFindName)
+        Me.Controls.Add(label2)
+        Me.Controls.Add(label1)
+        Me.Controls.Add(lblKey)
         Me.Name = "AddressHeader"
-        Me.Size = New System.Drawing.Size(504, 40)
+        Me.Size = New Size(580, 40)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : ListPaddingTypeConverter.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 04/09/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This contains a type converter for the padding class so that it can be used in the designer and can be
 // serialized to code.
@@ -19,12 +19,9 @@
 // 12/09/2005  EFW  Renamed to avoid conflict with .NET 2.0 class
 //===============================================================================================================
 
-using System;
 using System.Collections;
-using System.ComponentModel;
 using System.ComponentModel.Design.Serialization;
 using System.Globalization;
-using System.Reflection;
 
 namespace EWSoftware.ListControls.Design
 {
@@ -41,7 +38,7 @@ namespace EWSoftware.ListControls.Design
         /// <param name="context">The format context</param>
         /// <param name="sourceType">The type from which to convert</param>
         /// <returns>Returns true if it can perform the conversion or false if it cannot</returns>
-        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+        public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
         {
             if(sourceType == typeof(string))
                 return true;
@@ -56,7 +53,7 @@ namespace EWSoftware.ListControls.Design
         /// <param name="context">The format context</param>
         /// <param name="destinationType">The type to which to convert</param>
         /// <returns>Returns true if it can perform the conversion or false if it cannot</returns>
-        public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
+        public override bool CanConvertTo(ITypeDescriptorContext? context, Type? destinationType)
         {
             if(destinationType == typeof(InstanceDescriptor))
                 return true;
@@ -71,7 +68,7 @@ namespace EWSoftware.ListControls.Design
         /// <param name="culture">Culture-specific information</param>
         /// <param name="value">The object to convert</param>
         /// <returns>The converted object</returns>
-        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+        public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
         {
             if(value is string stringValue)
             {
@@ -100,7 +97,7 @@ namespace EWSoftware.ListControls.Design
         /// <param name="value">The object to convert</param>
         /// <param name="destinationType">The type to which to convert</param>
         /// <returns>The converted object</returns>
-        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value,
+        public override object? ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value,
           Type destinationType)
         {
             if(destinationType != null)
@@ -108,29 +105,27 @@ namespace EWSoftware.ListControls.Design
                 if(destinationType == typeof(string) && value != null)
                 {
                     ListPadding lp = (ListPadding)value;
-                    return String.Format(culture, "{0}, {1}, {2}, {3}, {4}, {5}", lp.Top, lp.Left, lp.Bottom,
-                        lp.Right, lp.Column, lp.Row);
+                    return $"{lp.Top}, {lp.Left}, {lp.Bottom}, {lp.Right}, {lp.Column}, {lp.Row}";
                 }
 
                 if(destinationType == typeof(InstanceDescriptor) && value != null)
                 {
                     ListPadding lp = (ListPadding)value;
 
-                    Type[] ctorParams = new Type[6] { typeof(int), typeof(int), typeof(int), typeof(int),
-                        typeof(int), typeof(int) } ;
+                    Type[] ctorParams = [typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int)];
 
-                    ConstructorInfo ci = typeof(ListPadding).GetConstructor(ctorParams);
+                    var ci = typeof(ListPadding).GetConstructor(ctorParams);
 
                     if(ci != null)
                     {
-                        object[] oParams = new object[6] { lp.Top, lp.Left, lp.Bottom, lp.Right, lp.Column, lp.Row };
+                        object[] oParams = [lp.Top, lp.Left, lp.Bottom, lp.Right, lp.Column, lp.Row];
 
                         return new InstanceDescriptor(ci, oParams);
                     }
                 }
             }
 
-            return base.ConvertTo(context, culture, value, destinationType);
+            return base.ConvertTo(context, culture, value, destinationType!);
         }
 
         /// <summary>
@@ -139,14 +134,15 @@ namespace EWSoftware.ListControls.Design
         /// <param name="context">A formatter context</param>
         /// <param name="propertyValues">A dictionary of new property values</param>
         /// <returns>A new <see cref="ListPadding"/> instance</returns>
-        public override object CreateInstance(ITypeDescriptorContext context, IDictionary propertyValues)
+        public override object? CreateInstance(ITypeDescriptorContext? context, IDictionary propertyValues)
         {
             if(propertyValues == null)
                 return null;
 
-            return new ListPadding((int)propertyValues["Top"], (int)propertyValues["Left"],
-                (int)propertyValues["Bottom"], (int)propertyValues["Right"], (int)propertyValues["Column"],
-                (int)propertyValues["Row"]);
+            return new ListPadding((int)propertyValues[nameof(ListPadding.Top)]!,
+                (int)propertyValues[nameof(ListPadding.Left)]!, (int)propertyValues[nameof(ListPadding.Bottom)]!,
+                (int)propertyValues[nameof(ListPadding.Right)]!, (int)propertyValues[nameof(ListPadding.Column)]!,
+                (int)propertyValues[nameof(ListPadding.Row)]!);
         }
 
         /// <summary>
@@ -157,12 +153,13 @@ namespace EWSoftware.ListControls.Design
         /// <param name="value">The object for which to get properties</param>
         /// <param name="attributes">An array of attributes that describe the properties</param>
         /// <returns>The set of properties that should be exposed for this data type</returns>
-        public override PropertyDescriptorCollection GetProperties(ITypeDescriptorContext context, object value,
-          Attribute[] attributes)
+        public override PropertyDescriptorCollection? GetProperties(ITypeDescriptorContext? context, object value,
+          Attribute[]? attributes)
         {
             PropertyDescriptorCollection pdc = TypeDescriptor.GetProperties(typeof(ListPadding), attributes);
 
-            string[] props = new[] { "Top", "Left", "Bottom", "Right", "Column", "Row" };
+            string[] props = [nameof(ListPadding.Top), nameof(ListPadding.Left), nameof(ListPadding.Bottom),
+                nameof(ListPadding.Right), nameof(ListPadding.Column), nameof(ListPadding.Row)];
 
             return pdc.Sort(props);
         }
@@ -173,7 +170,7 @@ namespace EWSoftware.ListControls.Design
         /// </summary>
         /// <param name="context">A formatter context</param>
         /// <returns>Always returns true</returns>
-        public override bool GetCreateInstanceSupported(ITypeDescriptorContext context)
+        public override bool GetCreateInstanceSupported(ITypeDescriptorContext? context)
         {
             return true;
         }
@@ -183,7 +180,7 @@ namespace EWSoftware.ListControls.Design
         /// </summary>
         /// <param name="context">A formatter context</param>
         /// <returns>Always returns true</returns>
-        public override bool GetPropertiesSupported(ITypeDescriptorContext context)
+        public override bool GetPropertiesSupported(ITypeDescriptorContext? context)
         {
             return true;
         }

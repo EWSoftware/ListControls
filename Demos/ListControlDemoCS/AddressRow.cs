@@ -2,8 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : AddressRow.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/06/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/06/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This is a sample row template control for the DataList demo
 //
@@ -17,17 +17,12 @@
 // 04/17/2005  EFW  Created the code
 //===============================================================================================================
 
-using System;
-using System.ComponentModel;
-using System.Data;
-using System.Windows.Forms;
-
 namespace ListControlDemoCS
 {
 	/// <summary>
 	/// This is a sample row template control for the DataList demo
 	/// </summary>
-	public partial class AddressRow : EWSoftware.ListControls.TemplateControl
+	public partial class AddressRow : TemplateControl
 	{
         #region Constructor
         //=====================================================================
@@ -74,8 +69,8 @@ namespace ListControlDemoCS
             this.InitializeComponent();
 
             // Use the shared data source for the combo box
-            cboState.DisplayMember = cboState.ValueMember = "State";
-            cboState.DataSource = (DataView)this.TemplateParent.SharedDataSources["States"];
+            cboState.DisplayMember = cboState.ValueMember = nameof(StateCode.State);
+            cboState.DataSource = (List<StateCode>?)this.TemplateParent.SharedDataSources["States"];
 
             // Update control states based on the parent's change policy.  This can be omitted if you do not
             // need it.
@@ -87,13 +82,21 @@ namespace ListControlDemoCS
         /// </summary>
         protected override void Bind()
         {
-            this.AddBinding(txtFName, "Text", "FirstName");
-            this.AddBinding(txtLName, "Text", "LastName");
-            this.AddBinding(txtAddress, "Text", "Address");
-            this.AddBinding(txtCity, "Text", "City");
-            this.AddBinding(cboState, "SelectedValue", "State");
-            this.AddBinding(txtZip, "Text", "Zip");
-            this.AddBinding(udcSumValue, "Text", "SumValue");
+            this.AddBinding(txtFName, nameof(Control.Text), nameof(Address.FirstName));
+            this.AddBinding(txtLName, nameof(Control.Text), nameof(Address.LastName));
+            this.AddBinding(txtAddress, nameof(Control.Text), nameof(Address.StreetAddress));
+            this.AddBinding(txtCity, nameof(Control.Text), nameof(Address.City));
+            this.AddBinding(txtZip, nameof(Control.Text), nameof(Address.Zip));
+
+            // We must enable formatting or the bound values for these control types won't get updated for
+            // some reason.  The sum value is also nullable so it needs a format event handler.
+            this.AddBinding(cboState, nameof(MultiColumnComboBox.SelectedValue), nameof(Address.State)).FormattingEnabled = true;
+            this.AddBinding(udcSumValue, nameof(NumericUpDown.Value), nameof(Address.SumValue), true,
+                (s, e) => e.Value ??= 0).FormattingEnabled = true;
+
+            // They also need to update on the property value changing in case the mouse wheel is used
+            udcSumValue.DataBindings[0].DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+            cboState.DataBindings[0].DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
         }
 
         /// <summary>
@@ -103,8 +106,10 @@ namespace ListControlDemoCS
         protected override void ChangePolicyModified()
         {
             if(this.TemplateParent.AllowEdits != txtFName.Enabled && !this.IsNewRow)
+            {
                 txtFName.Enabled = txtLName.Enabled = txtAddress.Enabled = txtCity.Enabled = cboState.Enabled =
                     txtZip.Enabled = udcSumValue.Enabled = this.TemplateParent.AllowEdits;
+            }
         }
         #endregion
 

@@ -22,36 +22,36 @@ Partial Class AddressFooter
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.label1 = New System.Windows.Forms.Label
-        Me.lblTotal = New System.Windows.Forms.Label
+        label1 = New Label()
+        lblTotal = New Label()
         Me.SuspendLayout()
-        '
-        'label1
-        '
-        Me.label1.Location = New System.Drawing.Point(346, 9)
-        Me.label1.Name = "label1"
-        Me.label1.Size = New System.Drawing.Size(88, 23)
-        Me.label1.TabIndex = 0
-        Me.label1.Text = "Demo Total"
-        Me.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'lblTotal
-        '
-        Me.lblTotal.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.lblTotal.Location = New System.Drawing.Point(440, 9)
-        Me.lblTotal.Name = "lblTotal"
-        Me.lblTotal.Size = New System.Drawing.Size(56, 23)
-        Me.lblTotal.TabIndex = 1
-        Me.lblTotal.Text = "0"
-        Me.lblTotal.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'AddressFooter
-        '
-        Me.BackColor = System.Drawing.Color.Gainsboro
-        Me.Controls.Add(Me.lblTotal)
-        Me.Controls.Add(Me.label1)
+        ' 
+        ' label1
+        ' 
+        label1.Location = New Point(384, 9)
+        label1.Name = "label1"
+        label1.Size = New Size(107, 23)
+        label1.TabIndex = 0
+        label1.Text = "Demo Total"
+        label1.TextAlign = ContentAlignment.MiddleRight
+        ' 
+        ' lblTotal
+        ' 
+        lblTotal.BorderStyle = BorderStyle.Fixed3D
+        lblTotal.Location = New Point(497, 9)
+        lblTotal.Name = "lblTotal"
+        lblTotal.Size = New Size(56, 23)
+        lblTotal.TabIndex = 1
+        lblTotal.Text = "0"
+        lblTotal.TextAlign = ContentAlignment.MiddleRight
+        ' 
+        ' AddressFooter
+        ' 
+        Me.BackColor = Color.Gainsboro
+        Me.Controls.Add(lblTotal)
+        Me.Controls.Add(label1)
         Me.Name = "AddressFooter"
-        Me.Size = New System.Drawing.Size(504, 40)
+        Me.Size = New Size(580, 40)
         Me.ResumeLayout(False)
 
     End Sub

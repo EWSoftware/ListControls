@@ -15,9 +15,7 @@ namespace ListControlDemoCS
         {
             if(disposing)
             {
-                dbConn?.Dispose();
-                daAddresses?.Dispose();
-                dsAddresses?.Dispose();
+                dc?.Dispose();
                 components?.Dispose();
             }
             base.Dispose(disposing);
@@ -25,301 +23,264 @@ namespace ListControlDemoCS
 
         #region Windows Form Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
-            this.components = new System.ComponentModel.Container();
-            this.btnLoad = new System.Windows.Forms.Button();
-            this.dlList = new EWSoftware.ListControls.DataList();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.pgProps = new System.Windows.Forms.PropertyGrid();
-            this.btnAddDSRow = new System.Windows.Forms.Button();
-            this.btnDelDSRow = new System.Windows.Forms.Button();
-            this.btnModRow = new System.Windows.Forms.Button();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.btnGetValue = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.udcRowNumber = new System.Windows.Forms.NumericUpDown();
-            this.cboColumns = new System.Windows.Forms.ComboBox();
-            this.txtValue = new System.Windows.Forms.TextBox();
-            this.txtRowNumber = new System.Windows.Forms.NumericUpDown();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.chkShowHeader = new System.Windows.Forms.CheckBox();
-            this.chkShowFooter = new System.Windows.Forms.CheckBox();
-            ((System.ComponentModel.ISupportInitialize)(this.udcRowNumber)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.txtRowNumber)).BeginInit();
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            components = new Container();
+            btnLoad = new Button();
+            dlList = new DataList();
+            btnSave = new Button();
+            pgProps = new PropertyGrid();
+            btnAddDSRow = new Button();
+            btnDelDSRow = new Button();
+            btnModRow = new Button();
+            toolTip1 = new ToolTip(components);
+            btnGetValue = new Button();
+            label1 = new Label();
+            udcRowNumber = new NumericUpDown();
+            cboColumns = new ComboBox();
+            txtValue = new TextBox();
+            txtRowNumber = new NumericUpDown();
+            label6 = new Label();
+            label5 = new Label();
+            chkShowHeader = new CheckBox();
+            chkShowFooter = new CheckBox();
+            ((ISupportInitialize)udcRowNumber).BeginInit();
+            ((ISupportInitialize)txtRowNumber).BeginInit();
             this.SuspendLayout();
             // 
             // btnLoad
             // 
-            this.btnLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnLoad.Location = new System.Drawing.Point(12, 445);
-            this.btnLoad.Name = "btnLoad";
-            this.btnLoad.Size = new System.Drawing.Size(104, 28);
-            this.btnLoad.TabIndex = 8;
-            this.btnLoad.Text = "L&oad Data";
-            this.toolTip1.SetToolTip(this.btnLoad, "Load data into the control");
-            this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
+            btnLoad.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnLoad.Location = new Point(12, 681);
+            btnLoad.Name = "btnLoad";
+            btnLoad.Size = new Size(104, 32);
+            btnLoad.TabIndex = 8;
+            btnLoad.Text = "L&oad Data";
+            toolTip1.SetToolTip(btnLoad, "Load data into the control");
+            btnLoad.Click += this.btnLoad_Click;
             // 
             // dlList
             // 
-            this.dlList.AllowDrop = true;
-            this.dlList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.dlList.CaptionText = "Names and Addresses";
-            this.dlList.CaptionVisible = true;
-            this.dlList.Location = new System.Drawing.Point(15, 12);
-            this.dlList.Name = "dlList";
-            this.dlList.Size = new System.Drawing.Size(590, 390);
-            this.dlList.TabIndex = 0;
-            this.dlList.DragDrop += new System.Windows.Forms.DragEventHandler(this.dlList_DragDrop);
-            this.dlList.DragEnter += new System.Windows.Forms.DragEventHandler(this.dlList_DragEnter);
-            this.dlList.BeginDrag += new System.EventHandler<EWSoftware.ListControls.DataListBeginDragEventArgs>(this.dlList_BeginDrag);
-            this.dlList.DragOver += new System.Windows.Forms.DragEventHandler(this.dlList_DragOver);
-            this.dlList.ItemDataBound += new System.EventHandler<EWSoftware.ListControls.DataListEventArgs>(this.dlList_ItemDataBound);
+            dlList.AllowDrop = true;
+            dlList.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dlList.CaptionText = "Names and Addresses";
+            dlList.CaptionVisible = true;
+            dlList.Location = new Point(15, 12);
+            dlList.Name = "dlList";
+            dlList.Size = new Size(652, 626);
+            dlList.TabIndex = 0;
+            dlList.ItemDataBound += this.dlList_ItemDataBound;
+            dlList.BeginDrag += this.dlList_BeginDrag;
+            dlList.DragDrop += this.dlList_DragDrop;
+            dlList.DragEnter += this.dlList_DragEnter;
+            dlList.DragOver += this.dlList_DragOver;
             // 
             // btnSave
             // 
-            this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSave.Location = new System.Drawing.Point(122, 445);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(104, 28);
-            this.btnSave.TabIndex = 9;
-            this.btnSave.Text = "&Save Data";
-            this.toolTip1.SetToolTip(this.btnSave, "Save all changes");
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            btnSave.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnSave.Location = new Point(122, 681);
+            btnSave.Name = "btnSave";
+            btnSave.Size = new Size(104, 32);
+            btnSave.TabIndex = 9;
+            btnSave.Text = "&Save Data";
+            toolTip1.SetToolTip(btnSave, "Save all changes");
+            btnSave.Click += this.btnSave_Click;
             // 
             // pgProps
             // 
-            this.pgProps.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.pgProps.LineColor = System.Drawing.SystemColors.ScrollBar;
-            this.pgProps.Location = new System.Drawing.Point(611, 12);
-            this.pgProps.Name = "pgProps";
-            this.pgProps.Size = new System.Drawing.Size(321, 390);
-            this.pgProps.TabIndex = 1;
-            this.pgProps.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.pgProps_PropertyValueChanged);
+            pgProps.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
+            pgProps.LineColor = SystemColors.ScrollBar;
+            pgProps.Location = new Point(673, 12);
+            pgProps.Name = "pgProps";
+            pgProps.Size = new Size(321, 626);
+            pgProps.TabIndex = 1;
+            pgProps.PropertyValueChanged += this.pgProps_PropertyValueChanged;
             // 
             // btnAddDSRow
             // 
-            this.btnAddDSRow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAddDSRow.Location = new System.Drawing.Point(280, 445);
-            this.btnAddDSRow.Name = "btnAddDSRow";
-            this.btnAddDSRow.Size = new System.Drawing.Size(104, 28);
-            this.btnAddDSRow.TabIndex = 10;
-            this.btnAddDSRow.Text = "Add Row";
-            this.toolTip1.SetToolTip(this.btnAddDSRow, "Add row directly to the data source");
-            this.btnAddDSRow.Click += new System.EventHandler(this.btnAddDSRow_Click);
+            btnAddDSRow.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnAddDSRow.Location = new Point(280, 681);
+            btnAddDSRow.Name = "btnAddDSRow";
+            btnAddDSRow.Size = new Size(104, 32);
+            btnAddDSRow.TabIndex = 10;
+            btnAddDSRow.Text = "Add Row";
+            toolTip1.SetToolTip(btnAddDSRow, "Add row directly to the data source");
+            btnAddDSRow.Click += this.btnAddDSRow_Click;
             // 
             // btnDelDSRow
             // 
-            this.btnDelDSRow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDelDSRow.Location = new System.Drawing.Point(572, 445);
-            this.btnDelDSRow.Name = "btnDelDSRow";
-            this.btnDelDSRow.Size = new System.Drawing.Size(104, 28);
-            this.btnDelDSRow.TabIndex = 13;
-            this.btnDelDSRow.Text = "Del DS Row";
-            this.toolTip1.SetToolTip(this.btnDelDSRow, "Delete row directly from data source");
-            this.btnDelDSRow.Click += new System.EventHandler(this.btnDelDSRow_Click);
+            btnDelDSRow.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnDelDSRow.Location = new Point(572, 681);
+            btnDelDSRow.Name = "btnDelDSRow";
+            btnDelDSRow.Size = new Size(104, 32);
+            btnDelDSRow.TabIndex = 13;
+            btnDelDSRow.Text = "Del DS Row";
+            toolTip1.SetToolTip(btnDelDSRow, "Delete row directly from data source");
+            btnDelDSRow.Click += this.btnDelDSRow_Click;
             // 
             // btnModRow
             // 
-            this.btnModRow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnModRow.Location = new System.Drawing.Point(682, 445);
-            this.btnModRow.Name = "btnModRow";
-            this.btnModRow.Size = new System.Drawing.Size(104, 28);
-            this.btnModRow.TabIndex = 14;
-            this.btnModRow.Text = "Modify Row";
-            this.toolTip1.SetToolTip(this.btnModRow, "Modify row directly in data source");
-            this.btnModRow.Click += new System.EventHandler(this.btnModRow_Click);
+            btnModRow.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnModRow.Location = new Point(682, 681);
+            btnModRow.Name = "btnModRow";
+            btnModRow.Size = new Size(104, 32);
+            btnModRow.TabIndex = 14;
+            btnModRow.Text = "Modify Row";
+            toolTip1.SetToolTip(btnModRow, "Modify row directly in data source");
+            btnModRow.Click += this.btnModRow_Click;
             // 
             // btnGetValue
             // 
-            this.btnGetValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnGetValue.Location = new System.Drawing.Point(343, 408);
-            this.btnGetValue.Name = "btnGetValue";
-            this.btnGetValue.Size = new System.Drawing.Size(75, 28);
-            this.btnGetValue.TabIndex = 6;
-            this.btnGetValue.Text = "&Get";
-            this.toolTip1.SetToolTip(this.btnGetValue, "Get the specified column from the specified row");
-            this.btnGetValue.Click += new System.EventHandler(this.btnGetValue_Click);
+            btnGetValue.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnGetValue.Location = new Point(354, 644);
+            btnGetValue.Name = "btnGetValue";
+            btnGetValue.Size = new Size(75, 32);
+            btnGetValue.TabIndex = 6;
+            btnGetValue.Text = "&Get";
+            toolTip1.SetToolTip(btnGetValue, "Get the specified column from the specified row");
+            btnGetValue.Click += this.btnGetValue_Click;
             // 
             // label1
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label1.Location = new System.Drawing.Point(390, 449);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(106, 23);
-            this.label1.TabIndex = 11;
-            this.label1.Text = "Del/Mod Row";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label1.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            label1.Location = new Point(390, 685);
+            label1.Name = "label1";
+            label1.Size = new Size(106, 23);
+            label1.TabIndex = 11;
+            label1.Text = "Del/Mod Row";
+            label1.TextAlign = ContentAlignment.MiddleRight;
             // 
             // udcRowNumber
             // 
-            this.udcRowNumber.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.udcRowNumber.Location = new System.Drawing.Point(502, 449);
-            this.udcRowNumber.Maximum = new decimal(new int[] {
-            99999,
-            0,
-            0,
-            0});
-            this.udcRowNumber.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.udcRowNumber.Name = "udcRowNumber";
-            this.udcRowNumber.Size = new System.Drawing.Size(64, 22);
-            this.udcRowNumber.TabIndex = 12;
-            this.udcRowNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.udcRowNumber.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            udcRowNumber.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            udcRowNumber.Location = new Point(502, 685);
+            udcRowNumber.Maximum = new decimal(new int[] { 99999, 0, 0, 0 });
+            udcRowNumber.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            udcRowNumber.Name = "udcRowNumber";
+            udcRowNumber.Size = new Size(64, 27);
+            udcRowNumber.TabIndex = 12;
+            udcRowNumber.TextAlign = HorizontalAlignment.Right;
+            udcRowNumber.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // cboColumns
             // 
-            this.cboColumns.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cboColumns.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboColumns.Items.AddRange(new object[] {
-            "ID",
-            "FirstName",
-            "LastName",
-            "Address",
-            "City",
-            "State",
-            "Zip",
-            "SumValue"});
-            this.cboColumns.Location = new System.Drawing.Point(96, 411);
-            this.cboColumns.Name = "cboColumns";
-            this.cboColumns.Size = new System.Drawing.Size(132, 24);
-            this.cboColumns.TabIndex = 3;
+            cboColumns.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            cboColumns.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboColumns.Items.AddRange(new object[] { "ID", "FirstName", "LastName", "StreetAddress", "City", "State", "Zip", "SumValue" });
+            cboColumns.Location = new Point(107, 647);
+            cboColumns.Name = "cboColumns";
+            cboColumns.Size = new Size(132, 28);
+            cboColumns.TabIndex = 3;
             // 
             // txtValue
             // 
-            this.txtValue.AllowDrop = true;
-            this.txtValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtValue.Location = new System.Drawing.Point(424, 411);
-            this.txtValue.Name = "txtValue";
-            this.txtValue.ReadOnly = true;
-            this.txtValue.Size = new System.Drawing.Size(288, 22);
-            this.txtValue.TabIndex = 7;
-            this.txtValue.TabStop = false;
-            this.txtValue.DragDrop += new System.Windows.Forms.DragEventHandler(this.txtValue_DragDrop);
-            this.txtValue.DragEnter += new System.Windows.Forms.DragEventHandler(this.txtValue_DragEnter);
+            txtValue.AllowDrop = true;
+            txtValue.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            txtValue.Location = new Point(435, 647);
+            txtValue.Name = "txtValue";
+            txtValue.ReadOnly = true;
+            txtValue.Size = new Size(350, 27);
+            txtValue.TabIndex = 7;
+            txtValue.TabStop = false;
+            txtValue.DragDrop += this.txtValue_DragDrop;
+            txtValue.DragEnter += this.txtValue_DragEnter;
             // 
             // txtRowNumber
             // 
-            this.txtRowNumber.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtRowNumber.Location = new System.Drawing.Point(280, 411);
-            this.txtRowNumber.Maximum = new decimal(new int[] {
-            99999,
-            0,
-            0,
-            0});
-            this.txtRowNumber.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.txtRowNumber.Name = "txtRowNumber";
-            this.txtRowNumber.Size = new System.Drawing.Size(56, 22);
-            this.txtRowNumber.TabIndex = 5;
-            this.txtRowNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtRowNumber.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            txtRowNumber.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            txtRowNumber.Location = new Point(291, 647);
+            txtRowNumber.Maximum = new decimal(new int[] { 99999, 0, 0, 0 });
+            txtRowNumber.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            txtRowNumber.Name = "txtRowNumber";
+            txtRowNumber.Size = new Size(56, 27);
+            txtRowNumber.TabIndex = 5;
+            txtRowNumber.TextAlign = HorizontalAlignment.Right;
+            txtRowNumber.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // label6
             // 
-            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label6.Location = new System.Drawing.Point(232, 411);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(48, 23);
-            this.label6.TabIndex = 4;
-            this.label6.Text = "at row";
-            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label6.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            label6.Location = new Point(243, 647);
+            label6.Name = "label6";
+            label6.Size = new Size(48, 23);
+            label6.TabIndex = 4;
+            label6.Text = "at row";
+            label6.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label5
             // 
-            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label5.Location = new System.Drawing.Point(12, 411);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(80, 23);
-            this.label5.TabIndex = 2;
-            this.label5.Text = "G&et column";
-            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label5.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            label5.Location = new Point(11, 649);
+            label5.Name = "label5";
+            label5.Size = new Size(90, 23);
+            label5.TabIndex = 2;
+            label5.Text = "G&et column";
+            label5.TextAlign = ContentAlignment.MiddleRight;
             // 
             // chkShowHeader
             // 
-            this.chkShowHeader.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.chkShowHeader.Checked = true;
-            this.chkShowHeader.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkShowHeader.Location = new System.Drawing.Point(720, 411);
-            this.chkShowHeader.Name = "chkShowHeader";
-            this.chkShowHeader.Size = new System.Drawing.Size(104, 24);
-            this.chkShowHeader.TabIndex = 15;
-            this.chkShowHeader.Text = "Show header";
-            this.chkShowHeader.CheckedChanged += new System.EventHandler(this.chkShowHeader_CheckedChanged);
+            chkShowHeader.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            chkShowHeader.Checked = true;
+            chkShowHeader.CheckState = CheckState.Checked;
+            chkShowHeader.Location = new Point(813, 648);
+            chkShowHeader.Name = "chkShowHeader";
+            chkShowHeader.Size = new Size(142, 24);
+            chkShowHeader.TabIndex = 15;
+            chkShowHeader.Text = "Show header";
+            chkShowHeader.CheckedChanged += this.chkShowHeader_CheckedChanged;
             // 
             // chkShowFooter
             // 
-            this.chkShowFooter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.chkShowFooter.Checked = true;
-            this.chkShowFooter.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkShowFooter.Location = new System.Drawing.Point(832, 411);
-            this.chkShowFooter.Name = "chkShowFooter";
-            this.chkShowFooter.Size = new System.Drawing.Size(104, 24);
-            this.chkShowFooter.TabIndex = 16;
-            this.chkShowFooter.Text = "Show footer";
-            this.chkShowFooter.CheckedChanged += new System.EventHandler(this.chkShowFooter_CheckedChanged);
+            chkShowFooter.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            chkShowFooter.Checked = true;
+            chkShowFooter.CheckState = CheckState.Checked;
+            chkShowFooter.Location = new Point(813, 678);
+            chkShowFooter.Name = "chkShowFooter";
+            chkShowFooter.Size = new Size(142, 24);
+            chkShowFooter.TabIndex = 16;
+            chkShowFooter.Text = "Show footer";
+            chkShowFooter.CheckedChanged += this.chkShowFooter_CheckedChanged;
             // 
             // DataListTestForm
             // 
-            this.ClientSize = new System.Drawing.Size(944, 485);
-            this.Controls.Add(this.chkShowFooter);
-            this.Controls.Add(this.chkShowHeader);
-            this.Controls.Add(this.cboColumns);
-            this.Controls.Add(this.btnGetValue);
-            this.Controls.Add(this.txtValue);
-            this.Controls.Add(this.txtRowNumber);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.udcRowNumber);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.btnModRow);
-            this.Controls.Add(this.btnDelDSRow);
-            this.Controls.Add(this.btnAddDSRow);
-            this.Controls.Add(this.pgProps);
-            this.Controls.Add(this.btnSave);
-            this.Controls.Add(this.dlList);
-            this.Controls.Add(this.btnLoad);
-            this.MinimumSize = new System.Drawing.Size(795, 190);
+            this.ClientSize = new Size(1006, 721);
+            this.Controls.Add(chkShowFooter);
+            this.Controls.Add(chkShowHeader);
+            this.Controls.Add(cboColumns);
+            this.Controls.Add(btnGetValue);
+            this.Controls.Add(txtValue);
+            this.Controls.Add(txtRowNumber);
+            this.Controls.Add(label6);
+            this.Controls.Add(label5);
+            this.Controls.Add(udcRowNumber);
+            this.Controls.Add(label1);
+            this.Controls.Add(btnModRow);
+            this.Controls.Add(btnDelDSRow);
+            this.Controls.Add(btnAddDSRow);
+            this.Controls.Add(pgProps);
+            this.Controls.Add(btnSave);
+            this.Controls.Add(dlList);
+            this.Controls.Add(btnLoad);
+            this.MinimumSize = new Size(795, 190);
             this.Name = "DataListTestForm";
             this.ShowInTaskbar = false;
-            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.SizeGripStyle = SizeGripStyle.Show;
+            this.StartPosition = FormStartPosition.CenterScreen;
             this.Text = "Test Data List Control";
-            this.Closing += new System.ComponentModel.CancelEventHandler(this.DataListTestForm_Closing);
-            ((System.ComponentModel.ISupportInitialize)(this.udcRowNumber)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.txtRowNumber)).EndInit();
+            this.Closing += this.DataListTestForm_Closing;
+            ((ISupportInitialize)udcRowNumber).EndInit();
+            ((ISupportInitialize)txtRowNumber).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
 
-		private System.Windows.Forms.Button btnLoad;
+        private System.Windows.Forms.Button btnLoad;
 		private EWSoftware.ListControls.DataList dlList;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.PropertyGrid pgProps;

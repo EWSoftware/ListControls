@@ -2,8 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : ComboBoxTestForm.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 04/09/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/02/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This is used to demonstrate the AutoCompleteComboBox and MultiColumnComboBox controls
 //
@@ -17,26 +17,20 @@
 // 04/17/2005  EFW  Created the code
 //===============================================================================================================
 
-using System;
 using System.Collections;
-using System.Data;
-using System.Data.OleDb;
-using System.Windows.Forms;
-
-using EWSoftware.ListControls;
 
 namespace ListControlDemoCS
 {
     /// <summary>
     /// This is used to demonstrate the AutoCompleteComboBox and MultiColumnComboBox controls
     /// </summary>
-    public partial class ComboBoxTestForm : System.Windows.Forms.Form
+    public partial class ComboBoxTestForm : Form
     {
         #region Private data members
         //=====================================================================
 
-        private readonly OleDbDataAdapter adapter;
-        private readonly DataSet demoData, productData;
+        private readonly List<DemoTable> demoData;
+        private readonly List<ProductInfo> productInfo;
 
         #endregion
 
@@ -46,7 +40,7 @@ namespace ListControlDemoCS
         /// <summary>
         /// Constructor
         /// </summary>
-		public ComboBoxTestForm()
+        public ComboBoxTestForm()
         {
             InitializeComponent();
 
@@ -54,30 +48,18 @@ namespace ListControlDemoCS
             cboAutoComp.BindingContext = new BindingContext();
             cboMultiCol.BindingContext = new BindingContext();
 
-            demoData = new DataSet();
-            productData = new DataSet();
-
             try
             {
-                using(var dbConn = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\TestData.mdb"))
-                {
-                    // Load some data for the demo
-                    using(var cmd = new OleDbCommand("Select * From DemoTable Order By Label", dbConn))
-                    {
-                        cmd.CommandType = CommandType.Text;
-                        adapter = new OleDbDataAdapter(cmd);
+                using var dc = new DemoDataContext();
 
-                        adapter.Fill(demoData);
-
-                        // Use a named table for this one
-                        adapter.TableMappings.Add("Table", "ProductInfo");
-                        cmd.CommandText = "Select * From ProductInfo Order By ProductName";
-                        adapter.Fill(productData);
-                    }
-                }
+                demoData = [.. dc.DemoTable.OrderBy(d => d.Label)];
+                productInfo = [.. dc.ProductInfo.OrderBy(p => p.ProductName)];
             }
-            catch(OleDbException ex)
+            catch(SqlException ex)
             {
+                demoData = [];
+                productInfo = [];
+
                 MessageBox.Show(ex.Message);
             }
 
@@ -98,11 +80,11 @@ namespace ListControlDemoCS
         /// <param name="dataSource">The variable used to receive the data source</param>
         /// <param name="displayMember">The variable used to receive the display member name</param>
         /// <param name="valueMember">The variable used to receive the value member name</param>
-		private void LoadData(IList collection, out object dataSource, out string displayMember,
+		private void LoadData(IList collection, out object? dataSource, out string displayMember,
           out string valueMember)
         {
             // We must have the data
-            if(demoData.Tables.Count == 0 || productData.Tables.Count == 0)
+            if(demoData.Count == 0 || productInfo.Count == 0)
             {
                 MessageBox.Show("Database not found.  It must be located in the demo project's folder.", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Stop);
@@ -112,43 +94,36 @@ namespace ListControlDemoCS
                 return;
             }
 
+            // Data tables, views, and sets are also supported but we won't demonstrate that here
             switch(cboDataSource.SelectedIndex)
             {
-                case 0:     // Data Table
-                    dataSource = demoData.Tables[0];
-                    displayMember = "Label";
-                    valueMember = "ListKey";
+                case 0:     // Demo data (List<DemoData>)
+                    dataSource = demoData;
+                    displayMember = nameof(DemoTable.Label);
+                    valueMember = nameof(DemoTable.ListKey);
                     break;
 
-                case 1:     // Data View
-                    dataSource = demoData.Tables[0].DefaultView;
-                    displayMember = "Label";
-                    valueMember = "ListKey";
+                case 1:     // Product info (List<ProductInfo>)
+                    dataSource = productInfo;
+                    displayMember = nameof(ProductInfo.ProductName);
+                    valueMember = nameof(ProductInfo.ProductID);
                     break;
 
-                case 2:     // Data Set
-                    dataSource = productData;
+                case 2:     // Array List
+                    ArrayList al = new(100);
 
-                    // Use a named table for this one
-                    displayMember = "ProductInfo.ProductName";
-                    valueMember = "ProductInfo.ProductID";
-                    break;
-
-                case 3:     // Array List
-                    ArrayList al = new ArrayList(100);
-
-                    foreach(DataRow dr in productData.Tables[0].Rows)
-                        al.Add(new ListItem(dr["ProductID"], (string)dr["ProductName"]));
+                    foreach(var p in productInfo)
+                        al.Add(new ListItem(p.ProductID, p.ProductName));
 
                     dataSource = al;
-                    displayMember = "Display";     // ListItem description
-                    valueMember = "Value";         // ListItem value
+                    displayMember = nameof(ListItem.Display);
+                    valueMember = nameof(ListItem.Value);
                     break;
 
-                case 4:     // Combo box strings
+                case 3:     // Combo box strings
                     // Like the above but we add the strings directly to the combo box's Items collection
-                    foreach(DataRow dr in productData.Tables[0].Rows)
-                        collection.Add(dr["ProductName"]);
+                    foreach(var p in productInfo)
+                        collection.Add(p.ProductName);
 
                     // The item collection is the data source for this one.  It's a simple string list so there
                     // are no display or value members.
@@ -157,31 +132,10 @@ namespace ListControlDemoCS
                     break;
 
                 default:
-                    // Unknown.  Won't happen but it shuts the compiler up.
                     dataSource = null;
                     displayMember = valueMember = String.Empty;
                     break;
             }
-
-            // Load the column names
-            if(dataSource != null && cboColumns.Items.Count == 0)
-                if(dataSource is ArrayList)
-                {
-                    cboColumns.Items.Add("Display");
-                    cboColumns.Items.Add("Value");
-                }
-                else
-                {
-                    DataTable tbl;
-
-                    if(dataSource is DataSet)
-                        tbl = productData.Tables[0];
-                    else
-                        tbl = demoData.Tables[0];
-
-                    foreach(DataColumn c in tbl.Columns)
-                        cboColumns.Items.Add(c.ColumnName);
-                }
         }
         #endregion
 
@@ -249,7 +203,7 @@ namespace ListControlDemoCS
 
             // Keep it simple.  We'll bind them to the same data but using different instances so no need for
             // binding contexts.
-            LoadData(cboAutoComp.Items, out object dataSource, out string displayMember, out string valueMember);
+            LoadData(cboAutoComp.Items, out object? dataSource, out string displayMember, out string valueMember);
 
             if(dataSource != null)
             {
@@ -268,12 +222,31 @@ namespace ListControlDemoCS
                 cboMultiCol.DisplayMember = displayMember;
                 cboMultiCol.ValueMember = valueMember;
                 cboMultiCol.DataSource = dataSource;
+
+                // Load the column names
+                if(dataSource is ArrayList)
+                {
+                    cboColumns.Items.Add(nameof(ListItem.Display));
+                    cboColumns.Items.Add(nameof(ListItem.Value));
+                }
+                else
+                {
+                    Type dataSourceType;
+
+                    if(cboDataSource.SelectedIndex == 0)
+                        dataSourceType = typeof(DemoTable);
+                    else
+                        dataSourceType = typeof(ProductInfo);
+
+                    foreach(var p in dataSourceType.GetProperties())
+                        cboColumns.Items.Add(p.Name);
+                }
             }
 
             if(cboColumns.Items.Count == 0)
-                cboColumns.Enabled = txtRowNumber.Enabled = btnGetValue.Enabled = false;
+                cboColumns.Enabled = udcRowNumber.Enabled = btnGetValue.Enabled = false;
             else
-                cboColumns.Enabled = txtRowNumber.Enabled = btnGetValue.Enabled = true;
+                cboColumns.Enabled = udcRowNumber.Enabled = btnGetValue.Enabled = true;
         }
 
         /// <summary>
@@ -286,7 +259,7 @@ namespace ListControlDemoCS
             // This can be any column from the data source regardless of whether or not it is displayed.  Note
             // that you can also use cboMultiCol["ColName"] to get a column value from the item indicated by the
             // SelectedIndex property.
-            txtValue.Text = $"{cboColumns.Text} = {cboMultiCol[(int)txtRowNumber.Value, cboColumns.Text]}";
+            txtValue.Text = $"{cboColumns.Text} = {cboMultiCol[(int)udcRowNumber.Value, cboColumns.Text]}";
         }
 
         /// <summary>
@@ -329,13 +302,13 @@ namespace ListControlDemoCS
         private void cboMultiCol_FormatDropDownColumn(object sender, DataGridViewColumnEventArgs e)
         {
             // Format unit price as currency
-            if(e.Column.DataPropertyName == "UnitPrice")
+            if(e.Column.DataPropertyName == nameof(ProductInfo.UnitPrice))
                 e.Column.DefaultCellStyle.Format = "C2";
             else
             {
                 // When bound to an array list, the value is seen as an object so manually right-align the
                 // numeric value.
-                if(cboDataSource.SelectedIndex == 3 && e.Column.DataPropertyName == "Value" &&
+                if(cboDataSource.SelectedIndex == 2 && e.Column.DataPropertyName == nameof(ListItem.Value) &&
                   e.Column.ValueType == typeof(object))
                 {
                     e.Column.HeaderCell.Style.Alignment = e.Column.DefaultCellStyle.Alignment =

@@ -7,9 +7,7 @@ Partial Class DataNavigatorTestForm
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing Then
-                dbConn?.Dispose()
-                daAddresses?.Dispose()
-                dsAddresses?.Dispose()
+                dc?.Dispose()
                 components?.Dispose()
             End If
         Finally
@@ -25,391 +23,390 @@ Partial Class DataNavigatorTestForm
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.components = New System.ComponentModel.Container
-        Me.btnLoad = New System.Windows.Forms.Button
-        Me.dnNav = New EWSoftware.ListControls.DataNavigator
-        Me.btnSave = New System.Windows.Forms.Button
-        Me.pgProps = New System.Windows.Forms.PropertyGrid
-        Me.btnAddDSRow = New System.Windows.Forms.Button
-        Me.btnDelDSRow = New System.Windows.Forms.Button
-        Me.btnModRow = New System.Windows.Forms.Button
-        Me.udcRowNumber = New System.Windows.Forms.NumericUpDown
-        Me.label6 = New System.Windows.Forms.Label
-        Me.toolTip1 = New System.Windows.Forms.ToolTip(Me.components)
-        Me.btnGetValue = New System.Windows.Forms.Button
-        Me.cboColumns = New System.Windows.Forms.ComboBox
-        Me.txtValue = New System.Windows.Forms.TextBox
-        Me.txtRowNumber = New System.Windows.Forms.NumericUpDown
-        Me.label7 = New System.Windows.Forms.Label
-        Me.label8 = New System.Windows.Forms.Label
-        Me.pnlData = New System.Windows.Forms.Panel
-        Me.txtZip = New System.Windows.Forms.TextBox
-        Me.cboState = New EWSoftware.ListControls.MultiColumnComboBox
-        Me.txtCity = New System.Windows.Forms.TextBox
-        Me.txtAddress = New System.Windows.Forms.TextBox
-        Me.txtLName = New System.Windows.Forms.TextBox
-        Me.txtFName = New System.Windows.Forms.TextBox
-        Me.label1 = New System.Windows.Forms.Label
-        Me.lblKey = New System.Windows.Forms.Label
-        Me.label5 = New System.Windows.Forms.Label
-        Me.label4 = New System.Windows.Forms.Label
-        Me.label3 = New System.Windows.Forms.Label
-        Me.label2 = New System.Windows.Forms.Label
-        Me.lblAddRow = New System.Windows.Forms.Label
-        Me.epErrors = New System.Windows.Forms.ErrorProvider(Me.components)
-        Me.txtFindName = New System.Windows.Forms.TextBox
-        Me.clickableLabel1 = New EWSoftware.ListControls.ClickableLabel
-        CType(Me.udcRowNumber, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtRowNumber, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.pnlData.SuspendLayout()
-        CType(Me.cboState, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.epErrors, System.ComponentModel.ISupportInitialize).BeginInit()
+        components = New Container()
+        btnLoad = New Button()
+        dnNav = New DataNavigator()
+        btnSave = New Button()
+        pgProps = New PropertyGrid()
+        btnAddDSRow = New Button()
+        btnDelDSRow = New Button()
+        btnModRow = New Button()
+        udcRowNumber = New NumericUpDown()
+        label6 = New Label()
+        toolTip1 = New ToolTip(components)
+        btnGetValue = New Button()
+        cboColumns = New ComboBox()
+        txtValue = New TextBox()
+        txtRowNumber = New NumericUpDown()
+        label7 = New Label()
+        label8 = New Label()
+        pnlData = New Panel()
+        txtZip = New TextBox()
+        cboState = New MultiColumnComboBox()
+        txtCity = New TextBox()
+        txtAddress = New TextBox()
+        txtLName = New TextBox()
+        txtFName = New TextBox()
+        label1 = New Label()
+        lblKey = New Label()
+        label5 = New Label()
+        label4 = New Label()
+        label3 = New Label()
+        label2 = New Label()
+        lblAddRow = New Label()
+        epErrors = New ErrorProvider(components)
+        txtFindName = New TextBox()
+        clickableLabel1 = New ClickableLabel()
+        CType(udcRowNumber, ISupportInitialize).BeginInit()
+        CType(txtRowNumber, ISupportInitialize).BeginInit()
+        pnlData.SuspendLayout()
+        CType(cboState, ISupportInitialize).BeginInit()
+        CType(epErrors, ISupportInitialize).BeginInit()
         Me.SuspendLayout()
-        '
-        'btnLoad
-        '
-        Me.btnLoad.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnLoad.Location = New System.Drawing.Point(12, 375)
-        Me.btnLoad.Name = "btnLoad"
-        Me.btnLoad.Size = New System.Drawing.Size(104, 28)
-        Me.btnLoad.TabIndex = 8
-        Me.btnLoad.Text = "L&oad Data"
-        Me.toolTip1.SetToolTip(Me.btnLoad, "Load data into the control")
-        '
-        'dnNav
-        '
-        Me.dnNav.Location = New System.Drawing.Point(12, 184)
-        Me.dnNav.Name = "dnNav"
-        Me.dnNav.Size = New System.Drawing.Size(282, 22)
-        Me.dnNav.TabIndex = 1
-        '
-        'btnSave
-        '
-        Me.btnSave.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnSave.Location = New System.Drawing.Point(122, 375)
-        Me.btnSave.Name = "btnSave"
-        Me.btnSave.Size = New System.Drawing.Size(104, 28)
-        Me.btnSave.TabIndex = 9
-        Me.btnSave.Text = "&Save Data"
-        Me.toolTip1.SetToolTip(Me.btnSave, "Save all changes")
-        '
-        'pgProps
-        '
-        Me.pgProps.LineColor = System.Drawing.SystemColors.ScrollBar
-        Me.pgProps.Location = New System.Drawing.Point(512, 12)
-        Me.pgProps.Name = "pgProps"
-        Me.pgProps.Size = New System.Drawing.Size(308, 327)
-        Me.pgProps.TabIndex = 15
-        '
-        'btnAddDSRow
-        '
-        Me.btnAddDSRow.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnAddDSRow.Location = New System.Drawing.Point(284, 375)
-        Me.btnAddDSRow.Name = "btnAddDSRow"
-        Me.btnAddDSRow.Size = New System.Drawing.Size(104, 28)
-        Me.btnAddDSRow.TabIndex = 10
-        Me.btnAddDSRow.Text = "Add DS Row"
-        Me.toolTip1.SetToolTip(Me.btnAddDSRow, "Add row directly to the data source")
-        '
-        'btnDelDSRow
-        '
-        Me.btnDelDSRow.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnDelDSRow.Location = New System.Drawing.Point(565, 375)
-        Me.btnDelDSRow.Name = "btnDelDSRow"
-        Me.btnDelDSRow.Size = New System.Drawing.Size(104, 28)
-        Me.btnDelDSRow.TabIndex = 13
-        Me.btnDelDSRow.Text = "Del DS Row"
-        Me.toolTip1.SetToolTip(Me.btnDelDSRow, "Delete row directly from data source")
-        '
-        'btnModRow
-        '
-        Me.btnModRow.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnModRow.Location = New System.Drawing.Point(675, 375)
-        Me.btnModRow.Name = "btnModRow"
-        Me.btnModRow.Size = New System.Drawing.Size(104, 28)
-        Me.btnModRow.TabIndex = 14
-        Me.btnModRow.Text = "Modify Row"
-        Me.toolTip1.SetToolTip(Me.btnModRow, "Modify row directly in data source")
-        '
-        'udcRowNumber
-        '
-        Me.udcRowNumber.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.udcRowNumber.Location = New System.Drawing.Point(495, 377)
-        Me.udcRowNumber.Maximum = New Decimal(New Integer() {99999, 0, 0, 0})
-        Me.udcRowNumber.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
-        Me.udcRowNumber.Name = "udcRowNumber"
-        Me.udcRowNumber.Size = New System.Drawing.Size(64, 22)
-        Me.udcRowNumber.TabIndex = 12
-        Me.udcRowNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        Me.udcRowNumber.Value = New Decimal(New Integer() {1, 0, 0, 0})
-        '
-        'label6
-        '
-        Me.label6.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.label6.Location = New System.Drawing.Point(390, 377)
-        Me.label6.Name = "label6"
-        Me.label6.Size = New System.Drawing.Size(99, 23)
-        Me.label6.TabIndex = 11
-        Me.label6.Text = "Del/Mod Row"
-        Me.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'btnGetValue
-        '
-        Me.btnGetValue.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnGetValue.Location = New System.Drawing.Point(346, 341)
-        Me.btnGetValue.Name = "btnGetValue"
-        Me.btnGetValue.Size = New System.Drawing.Size(75, 28)
-        Me.btnGetValue.TabIndex = 6
-        Me.btnGetValue.Text = "&Get"
-        Me.toolTip1.SetToolTip(Me.btnGetValue, "Get the specified column from the specified row")
-        '
-        'cboColumns
-        '
-        Me.cboColumns.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.cboColumns.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboColumns.Items.AddRange(New Object() {"ID", "FirstName", "LastName", "Address", "City", "State", "Zip", "SumValue"})
-        Me.cboColumns.Location = New System.Drawing.Point(100, 345)
-        Me.cboColumns.Name = "cboColumns"
-        Me.cboColumns.Size = New System.Drawing.Size(132, 24)
-        Me.cboColumns.TabIndex = 3
-        '
-        'txtValue
-        '
-        Me.txtValue.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtValue.Location = New System.Drawing.Point(427, 345)
-        Me.txtValue.Name = "txtValue"
-        Me.txtValue.ReadOnly = True
-        Me.txtValue.Size = New System.Drawing.Size(352, 22)
-        Me.txtValue.TabIndex = 7
-        Me.txtValue.TabStop = False
-        '
-        'txtRowNumber
-        '
-        Me.txtRowNumber.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.txtRowNumber.Location = New System.Drawing.Point(284, 345)
-        Me.txtRowNumber.Maximum = New Decimal(New Integer() {99999, 0, 0, 0})
-        Me.txtRowNumber.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
-        Me.txtRowNumber.Name = "txtRowNumber"
-        Me.txtRowNumber.Size = New System.Drawing.Size(56, 22)
-        Me.txtRowNumber.TabIndex = 5
-        Me.txtRowNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        Me.txtRowNumber.Value = New Decimal(New Integer() {1, 0, 0, 0})
-        '
-        'label7
-        '
-        Me.label7.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.label7.Location = New System.Drawing.Point(236, 345)
-        Me.label7.Name = "label7"
-        Me.label7.Size = New System.Drawing.Size(48, 23)
-        Me.label7.TabIndex = 4
-        Me.label7.Text = "at row"
-        Me.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        '
-        'label8
-        '
-        Me.label8.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.label8.Location = New System.Drawing.Point(16, 344)
-        Me.label8.Name = "label8"
-        Me.label8.Size = New System.Drawing.Size(80, 23)
-        Me.label8.TabIndex = 2
-        Me.label8.Text = "G&et column"
-        Me.label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'pnlData
-        '
-        Me.pnlData.Controls.Add(Me.txtZip)
-        Me.pnlData.Controls.Add(Me.cboState)
-        Me.pnlData.Controls.Add(Me.txtCity)
-        Me.pnlData.Controls.Add(Me.txtAddress)
-        Me.pnlData.Controls.Add(Me.txtLName)
-        Me.pnlData.Controls.Add(Me.txtFName)
-        Me.pnlData.Controls.Add(Me.label1)
-        Me.pnlData.Controls.Add(Me.lblKey)
-        Me.pnlData.Controls.Add(Me.label5)
-        Me.pnlData.Controls.Add(Me.label4)
-        Me.pnlData.Controls.Add(Me.label3)
-        Me.pnlData.Controls.Add(Me.label2)
-        Me.pnlData.Location = New System.Drawing.Point(12, 40)
-        Me.pnlData.Name = "pnlData"
-        Me.pnlData.Size = New System.Drawing.Size(494, 144)
-        Me.pnlData.TabIndex = 0
-        '
-        'txtZip
-        '
-        Me.txtZip.Location = New System.Drawing.Point(296, 108)
-        Me.txtZip.MaxLength = 10
-        Me.txtZip.Name = "txtZip"
-        Me.txtZip.Size = New System.Drawing.Size(77, 22)
-        Me.txtZip.TabIndex = 11
-        '
-        'cboState
-        '
-        Me.cboState.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboState.Location = New System.Drawing.Point(228, 108)
-        Me.cboState.MaxDropDownItems = 16
-        Me.cboState.Name = "cboState"
-        Me.cboState.Size = New System.Drawing.Size(57, 24)
-        Me.cboState.TabIndex = 10
-        '
-        'txtCity
-        '
-        Me.txtCity.Location = New System.Drawing.Point(92, 108)
-        Me.txtCity.MaxLength = 20
-        Me.txtCity.Name = "txtCity"
-        Me.txtCity.Size = New System.Drawing.Size(125, 22)
-        Me.txtCity.TabIndex = 9
-        '
-        'txtAddress
-        '
-        Me.txtAddress.Location = New System.Drawing.Point(92, 76)
-        Me.txtAddress.MaxLength = 50
-        Me.txtAddress.Name = "txtAddress"
-        Me.txtAddress.Size = New System.Drawing.Size(389, 22)
-        Me.txtAddress.TabIndex = 7
-        '
-        'txtLName
-        '
-        Me.txtLName.Location = New System.Drawing.Point(92, 44)
-        Me.txtLName.MaxLength = 30
-        Me.txtLName.Name = "txtLName"
-        Me.txtLName.Size = New System.Drawing.Size(160, 22)
-        Me.txtLName.TabIndex = 3
-        '
-        'txtFName
-        '
-        Me.txtFName.Location = New System.Drawing.Point(344, 44)
-        Me.txtFName.MaxLength = 20
-        Me.txtFName.Name = "txtFName"
-        Me.txtFName.Size = New System.Drawing.Size(137, 22)
-        Me.txtFName.TabIndex = 5
-        '
-        'label1
-        '
-        Me.label1.Location = New System.Drawing.Point(62, 12)
-        Me.label1.Name = "label1"
-        Me.label1.Size = New System.Drawing.Size(24, 23)
-        Me.label1.TabIndex = 0
-        Me.label1.Text = "ID"
-        Me.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'lblKey
-        '
-        Me.lblKey.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.lblKey.Location = New System.Drawing.Point(92, 12)
-        Me.lblKey.Name = "lblKey"
-        Me.lblKey.Size = New System.Drawing.Size(64, 23)
-        Me.lblKey.TabIndex = 1
-        Me.lblKey.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'label5
-        '
-        Me.label5.BackColor = System.Drawing.Color.Transparent
-        Me.label5.Location = New System.Drawing.Point(3, 108)
-        Me.label5.Name = "label5"
-        Me.label5.Size = New System.Drawing.Size(83, 22)
-        Me.label5.TabIndex = 8
-        Me.label5.Text = "&City/St/Zip"
-        Me.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'label4
-        '
-        Me.label4.BackColor = System.Drawing.Color.Transparent
-        Me.label4.Location = New System.Drawing.Point(10, 76)
-        Me.label4.Name = "label4"
-        Me.label4.Size = New System.Drawing.Size(76, 22)
-        Me.label4.TabIndex = 6
-        Me.label4.Text = "&Address"
-        Me.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'label3
-        '
-        Me.label3.BackColor = System.Drawing.Color.Transparent
-        Me.label3.Location = New System.Drawing.Point(4, 44)
-        Me.label3.Name = "label3"
-        Me.label3.Size = New System.Drawing.Size(82, 22)
-        Me.label3.TabIndex = 2
-        Me.label3.Text = "&Last Name"
-        Me.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'label2
-        '
-        Me.label2.BackColor = System.Drawing.Color.Transparent
-        Me.label2.Location = New System.Drawing.Point(262, 44)
-        Me.label2.Name = "label2"
-        Me.label2.Size = New System.Drawing.Size(76, 22)
-        Me.label2.TabIndex = 4
-        Me.label2.Text = "First Name"
-        Me.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'lblAddRow
-        '
-        Me.lblAddRow.BackColor = System.Drawing.SystemColors.ActiveCaption
-        Me.lblAddRow.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
-        Me.lblAddRow.Location = New System.Drawing.Point(12, 216)
-        Me.lblAddRow.Name = "lblAddRow"
-        Me.lblAddRow.Size = New System.Drawing.Size(494, 24)
-        Me.lblAddRow.TabIndex = 16
-        Me.lblAddRow.Text = "Please click the Add button to add a new row"
-        Me.lblAddRow.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        Me.lblAddRow.Visible = False
-        '
-        'epErrors
-        '
-        Me.epErrors.ContainerControl = Me
-        '
-        'txtFindName
-        '
-        Me.txtFindName.Location = New System.Drawing.Point(127, 12)
-        Me.txtFindName.MaxLength = 30
-        Me.txtFindName.Name = "txtFindName"
-        Me.txtFindName.Size = New System.Drawing.Size(136, 22)
-        Me.txtFindName.TabIndex = 18
-        '
-        'clickableLabel1
-        '
-        Me.clickableLabel1.Location = New System.Drawing.Point(8, 12)
-        Me.clickableLabel1.Name = "clickableLabel1"
-        Me.clickableLabel1.Size = New System.Drawing.Size(113, 23)
-        Me.clickableLabel1.TabIndex = 17
-        Me.clickableLabel1.Text = "&Find Last Name"
-        Me.clickableLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'DataNavigatorTestForm
-        '
-        Me.ClientSize = New System.Drawing.Size(832, 415)
-        Me.Controls.Add(Me.txtFindName)
-        Me.Controls.Add(Me.clickableLabel1)
-        Me.Controls.Add(Me.lblAddRow)
-        Me.Controls.Add(Me.pnlData)
-        Me.Controls.Add(Me.cboColumns)
-        Me.Controls.Add(Me.btnGetValue)
-        Me.Controls.Add(Me.txtValue)
-        Me.Controls.Add(Me.txtRowNumber)
-        Me.Controls.Add(Me.label7)
-        Me.Controls.Add(Me.label8)
-        Me.Controls.Add(Me.udcRowNumber)
-        Me.Controls.Add(Me.label6)
-        Me.Controls.Add(Me.btnModRow)
-        Me.Controls.Add(Me.btnDelDSRow)
-        Me.Controls.Add(Me.btnAddDSRow)
-        Me.Controls.Add(Me.pgProps)
-        Me.Controls.Add(Me.btnSave)
-        Me.Controls.Add(Me.dnNav)
-        Me.Controls.Add(Me.btnLoad)
+        ' 
+        ' btnLoad
+        ' 
+        btnLoad.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        btnLoad.Location = New Point(12, 681)
+        btnLoad.Name = "btnLoad"
+        btnLoad.Size = New Size(104, 32)
+        btnLoad.TabIndex = 8
+        btnLoad.Text = "L&oad Data"
+        toolTip1.SetToolTip(btnLoad, "Load data into the control")
+        ' 
+        ' dnNav
+        ' 
+        dnNav.Location = New Point(12, 195)
+        dnNav.Name = "dnNav"
+        dnNav.Size = New Size(547, 22)
+        dnNav.TabIndex = 1
+        ' 
+        ' btnSave
+        ' 
+        btnSave.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        btnSave.Location = New Point(122, 681)
+        btnSave.Name = "btnSave"
+        btnSave.Size = New Size(104, 32)
+        btnSave.TabIndex = 9
+        btnSave.Text = "&Save Data"
+        toolTip1.SetToolTip(btnSave, "Save all changes")
+        ' 
+        ' pgProps
+        ' 
+        pgProps.LineColor = SystemColors.ScrollBar
+        pgProps.Location = New Point(565, 12)
+        pgProps.Name = "pgProps"
+        pgProps.Size = New Size(428, 628)
+        pgProps.TabIndex = 15
+        ' 
+        ' btnAddDSRow
+        ' 
+        btnAddDSRow.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        btnAddDSRow.Location = New Point(284, 681)
+        btnAddDSRow.Name = "btnAddDSRow"
+        btnAddDSRow.Size = New Size(104, 32)
+        btnAddDSRow.TabIndex = 10
+        btnAddDSRow.Text = "Add Row"
+        toolTip1.SetToolTip(btnAddDSRow, "Add row directly to the data source")
+        ' 
+        ' btnDelDSRow
+        ' 
+        btnDelDSRow.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        btnDelDSRow.Location = New Point(595, 681)
+        btnDelDSRow.Name = "btnDelDSRow"
+        btnDelDSRow.Size = New Size(104, 32)
+        btnDelDSRow.TabIndex = 13
+        btnDelDSRow.Text = "Del DS Row"
+        toolTip1.SetToolTip(btnDelDSRow, "Delete row directly from data source")
+        ' 
+        ' btnModRow
+        ' 
+        btnModRow.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        btnModRow.Location = New Point(705, 681)
+        btnModRow.Name = "btnModRow"
+        btnModRow.Size = New Size(104, 32)
+        btnModRow.TabIndex = 14
+        btnModRow.Text = "Modify Row"
+        toolTip1.SetToolTip(btnModRow, "Modify row directly in data source")
+        ' 
+        ' udcRowNumber
+        ' 
+        udcRowNumber.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        udcRowNumber.Location = New Point(525, 683)
+        udcRowNumber.Maximum = New Decimal(New Integer() {99999, 0, 0, 0})
+        udcRowNumber.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
+        udcRowNumber.Name = "udcRowNumber"
+        udcRowNumber.Size = New Size(64, 27)
+        udcRowNumber.TabIndex = 12
+        udcRowNumber.TextAlign = HorizontalAlignment.Right
+        udcRowNumber.Value = New Decimal(New Integer() {1, 0, 0, 0})
+        ' 
+        ' label6
+        ' 
+        label6.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        label6.Location = New Point(394, 686)
+        label6.Name = "label6"
+        label6.Size = New Size(125, 23)
+        label6.TabIndex = 11
+        label6.Text = "Del/Mod Row"
+        label6.TextAlign = ContentAlignment.MiddleRight
+        ' 
+        ' btnGetValue
+        ' 
+        btnGetValue.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        btnGetValue.Location = New Point(377, 643)
+        btnGetValue.Name = "btnGetValue"
+        btnGetValue.Size = New Size(75, 32)
+        btnGetValue.TabIndex = 6
+        btnGetValue.Text = "&Get"
+        toolTip1.SetToolTip(btnGetValue, "Get the specified column from the specified row")
+        ' 
+        ' cboColumns
+        ' 
+        cboColumns.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        cboColumns.DropDownStyle = ComboBoxStyle.DropDownList
+        cboColumns.Items.AddRange(New Object() {"ID", "FirstName", "LastName", "StreetAddress", "City", "State", "Zip", "SumValue"})
+        cboColumns.Location = New Point(122, 647)
+        cboColumns.Name = "cboColumns"
+        cboColumns.Size = New Size(132, 28)
+        cboColumns.TabIndex = 3
+        ' 
+        ' txtValue
+        ' 
+        txtValue.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
+        txtValue.Location = New Point(458, 646)
+        txtValue.Name = "txtValue"
+        txtValue.ReadOnly = True
+        txtValue.Size = New Size(536, 27)
+        txtValue.TabIndex = 7
+        txtValue.TabStop = False
+        ' 
+        ' txtRowNumber
+        ' 
+        txtRowNumber.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        txtRowNumber.Location = New Point(315, 647)
+        txtRowNumber.Maximum = New Decimal(New Integer() {99999, 0, 0, 0})
+        txtRowNumber.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
+        txtRowNumber.Name = "txtRowNumber"
+        txtRowNumber.Size = New Size(56, 27)
+        txtRowNumber.TabIndex = 5
+        txtRowNumber.TextAlign = HorizontalAlignment.Right
+        txtRowNumber.Value = New Decimal(New Integer() {1, 0, 0, 0})
+        ' 
+        ' label7
+        ' 
+        label7.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        label7.Location = New Point(261, 649)
+        label7.Name = "label7"
+        label7.Size = New Size(48, 23)
+        label7.TabIndex = 4
+        label7.Text = "at row"
+        label7.TextAlign = ContentAlignment.MiddleCenter
+        ' 
+        ' label8
+        ' 
+        label8.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        label8.Location = New Point(18, 649)
+        label8.Name = "label8"
+        label8.Size = New Size(98, 23)
+        label8.TabIndex = 2
+        label8.Text = "G&et column"
+        label8.TextAlign = ContentAlignment.MiddleRight
+        ' 
+        ' pnlData
+        ' 
+        pnlData.Controls.Add(txtZip)
+        pnlData.Controls.Add(cboState)
+        pnlData.Controls.Add(txtCity)
+        pnlData.Controls.Add(txtAddress)
+        pnlData.Controls.Add(txtLName)
+        pnlData.Controls.Add(txtFName)
+        pnlData.Controls.Add(label1)
+        pnlData.Controls.Add(lblKey)
+        pnlData.Controls.Add(label5)
+        pnlData.Controls.Add(label4)
+        pnlData.Controls.Add(label3)
+        pnlData.Controls.Add(label2)
+        pnlData.Location = New Point(12, 45)
+        pnlData.Name = "pnlData"
+        pnlData.Size = New Size(547, 144)
+        pnlData.TabIndex = 0
+        ' 
+        ' txtZip
+        ' 
+        txtZip.Location = New Point(347, 110)
+        txtZip.MaxLength = 10
+        txtZip.Name = "txtZip"
+        txtZip.Size = New Size(77, 27)
+        txtZip.TabIndex = 11
+        ' 
+        ' cboState
+        ' 
+        cboState.DropDownStyle = ComboBoxStyle.DropDownList
+        cboState.Location = New Point(275, 110)
+        cboState.MaxDropDownItems = 16
+        cboState.Name = "cboState"
+        cboState.Size = New Size(66, 29)
+        cboState.TabIndex = 10
+        ' 
+        ' txtCity
+        ' 
+        txtCity.Location = New Point(109, 110)
+        txtCity.MaxLength = 20
+        txtCity.Name = "txtCity"
+        txtCity.Size = New Size(160, 27)
+        txtCity.TabIndex = 9
+        ' 
+        ' txtAddress
+        ' 
+        txtAddress.Location = New Point(109, 77)
+        txtAddress.MaxLength = 50
+        txtAddress.Name = "txtAddress"
+        txtAddress.Size = New Size(407, 27)
+        txtAddress.TabIndex = 7
+        ' 
+        ' txtLName
+        ' 
+        txtLName.Location = New Point(109, 44)
+        txtLName.MaxLength = 30
+        txtLName.Name = "txtLName"
+        txtLName.Size = New Size(160, 27)
+        txtLName.TabIndex = 3
+        ' 
+        ' txtFName
+        ' 
+        txtFName.Location = New Point(379, 44)
+        txtFName.MaxLength = 20
+        txtFName.Name = "txtFName"
+        txtFName.Size = New Size(137, 27)
+        txtFName.TabIndex = 5
+        ' 
+        ' label1
+        ' 
+        label1.Location = New Point(71, 12)
+        label1.Name = "label1"
+        label1.Size = New Size(32, 23)
+        label1.TabIndex = 0
+        label1.Text = "ID"
+        label1.TextAlign = ContentAlignment.MiddleRight
+        ' 
+        ' lblKey
+        ' 
+        lblKey.BorderStyle = BorderStyle.Fixed3D
+        lblKey.Location = New Point(109, 12)
+        lblKey.Name = "lblKey"
+        lblKey.Size = New Size(64, 23)
+        lblKey.TabIndex = 1
+        lblKey.TextAlign = ContentAlignment.MiddleLeft
+        ' 
+        ' label5
+        ' 
+        label5.BackColor = Color.Transparent
+        label5.Location = New Point(6, 112)
+        label5.Name = "label5"
+        label5.Size = New Size(97, 22)
+        label5.TabIndex = 8
+        label5.Text = "&City/St/Zip"
+        label5.TextAlign = ContentAlignment.MiddleRight
+        ' 
+        ' label4
+        ' 
+        label4.BackColor = Color.Transparent
+        label4.Location = New Point(27, 79)
+        label4.Name = "label4"
+        label4.Size = New Size(76, 22)
+        label4.TabIndex = 6
+        label4.Text = "&Address"
+        label4.TextAlign = ContentAlignment.MiddleRight
+        ' 
+        ' label3
+        ' 
+        label3.BackColor = Color.Transparent
+        label3.Location = New Point(8, 46)
+        label3.Name = "label3"
+        label3.Size = New Size(95, 22)
+        label3.TabIndex = 2
+        label3.Text = "&Last Name"
+        label3.TextAlign = ContentAlignment.MiddleRight
+        ' 
+        ' label2
+        ' 
+        label2.BackColor = Color.Transparent
+        label2.Location = New Point(280, 46)
+        label2.Name = "label2"
+        label2.Size = New Size(93, 22)
+        label2.TabIndex = 4
+        label2.Text = "First Name"
+        label2.TextAlign = ContentAlignment.MiddleRight
+        ' 
+        ' lblAddRow
+        ' 
+        lblAddRow.BackColor = SystemColors.ActiveCaption
+        lblAddRow.ForeColor = SystemColors.ActiveCaptionText
+        lblAddRow.Location = New Point(12, 220)
+        lblAddRow.Name = "lblAddRow"
+        lblAddRow.Size = New Size(547, 24)
+        lblAddRow.TabIndex = 16
+        lblAddRow.Text = "Please click the Add button to add a new row"
+        lblAddRow.TextAlign = ContentAlignment.MiddleCenter
+        lblAddRow.Visible = False
+        ' 
+        ' epErrors
+        ' 
+        epErrors.ContainerControl = Me
+        ' 
+        ' txtFindName
+        ' 
+        txtFindName.Location = New Point(154, 12)
+        txtFindName.MaxLength = 30
+        txtFindName.Name = "txtFindName"
+        txtFindName.Size = New Size(160, 27)
+        txtFindName.TabIndex = 18
+        ' 
+        ' clickableLabel1
+        ' 
+        clickableLabel1.Location = New Point(12, 14)
+        clickableLabel1.Name = "clickableLabel1"
+        clickableLabel1.Size = New Size(136, 23)
+        clickableLabel1.TabIndex = 17
+        clickableLabel1.Text = "&Find Last Name"
+        clickableLabel1.TextAlign = ContentAlignment.MiddleRight
+        ' 
+        ' DataNavigatorTestForm
+        ' 
+        Me.ClientSize = New Size(1006, 721)
+        Me.Controls.Add(txtFindName)
+        Me.Controls.Add(clickableLabel1)
+        Me.Controls.Add(lblAddRow)
+        Me.Controls.Add(pnlData)
+        Me.Controls.Add(cboColumns)
+        Me.Controls.Add(btnGetValue)
+        Me.Controls.Add(txtValue)
+        Me.Controls.Add(txtRowNumber)
+        Me.Controls.Add(label7)
+        Me.Controls.Add(label8)
+        Me.Controls.Add(udcRowNumber)
+        Me.Controls.Add(label6)
+        Me.Controls.Add(btnModRow)
+        Me.Controls.Add(btnDelDSRow)
+        Me.Controls.Add(btnAddDSRow)
+        Me.Controls.Add(pgProps)
+        Me.Controls.Add(btnSave)
+        Me.Controls.Add(dnNav)
+        Me.Controls.Add(btnLoad)
         Me.KeyPreview = True
-        Me.MinimumSize = New System.Drawing.Size(840, 336)
+        Me.MinimumSize = New Size(850, 375)
         Me.Name = "DataNavigatorTestForm"
         Me.ShowInTaskbar = False
-        Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
+        Me.SizeGripStyle = SizeGripStyle.Show
+        Me.StartPosition = FormStartPosition.CenterScreen
         Me.Text = "Test Data Navigator Control"
-        CType(Me.udcRowNumber, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtRowNumber, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.pnlData.ResumeLayout(False)
-        Me.pnlData.PerformLayout()
-        CType(Me.cboState, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.epErrors, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(udcRowNumber, ISupportInitialize).EndInit()
+        CType(txtRowNumber, ISupportInitialize).EndInit()
+        pnlData.ResumeLayout(False)
+        pnlData.PerformLayout()
+        CType(cboState, ISupportInitialize).EndInit()
+        CType(epErrors, ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
     End Sub

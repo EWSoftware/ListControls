@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : NumericTextBox.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/19/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a simple numeric textbox control used for the row number textbox in the DataList and
 // DataNavigator controls.
@@ -18,18 +18,14 @@
 // 03/20/2005  EFW  Created the code
 //===============================================================================================================
 
-using System.ComponentModel;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
-
 namespace EWSoftware.ListControls
 {
-	/// <summary>
-	/// This is a simple numeric textbox control used for the row number textbox in the <see cref="DataList"/>
+    /// <summary>
+    /// This is a simple numeric textbox control used for the row number textbox in the <see cref="DataList"/>
     /// and <see cref="DataNavigator"/> controls.
-	/// </summary>
-	[ToolboxItem(false)]
-	internal class NumericTextBox : System.Windows.Forms.TextBox
+    /// </summary>
+    [ToolboxItem(false)]
+	internal sealed class NumericTextBox : System.Windows.Forms.TextBox
 	{
         #region Constructor
         //=====================================================================
@@ -69,9 +65,9 @@ namespace EWSoftware.ListControls
         {
             if(m.Msg == 0x0302)     // WM_PASTE
             {
-                string strText = (string)Clipboard.GetDataObject().GetData(typeof(string));
+                string text = (string?)Clipboard.GetDataObject()?.GetData(typeof(string)) ?? String.Empty;
 
-                if(Regex.IsMatch(strText, "[^0-9]"))
+                if(text.Length == 0 || text.Any(c => !Char.IsDigit(c)))
                     return;
             }
 
@@ -85,9 +81,11 @@ namespace EWSoftware.ListControls
         /// <returns>True if handled, false if not</returns>
         protected override bool ProcessDialogKey(Keys keyData)
         {
-            if((keyData & Keys.KeyCode) == Keys.Enter && this.Parent.SelectNextControl(this,
+            if((keyData & Keys.KeyCode) == Keys.Enter && this.Parent!.SelectNextControl(this,
               (keyData & Keys.Shift) == Keys.None, true, true, true))
+            {
                 return true;
+            }
 
             return base.ProcessDialogKey(keyData);
         }

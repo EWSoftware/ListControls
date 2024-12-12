@@ -2,8 +2,8 @@
 ' System  : EWSoftware Data List Control Demonstration Applications
 ' File    : AddressRow.vb
 ' Author  : Eric Woodruff  (Eric@EWoodruff.us)
-' Updated : 04/09/2023
-' Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+' Updated : 12/07/2024
+' Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 '
 ' This is a sample row template control for the DataList demo
 '
@@ -16,8 +16,6 @@
 ' ===============================================================================================================
 ' 10/29/2005  EFW  Created the code
 '================================================================================================================
-
-Imports System.Data
 
 Public Partial Class AddressRow
     Inherits EWSoftware.ListControls.TemplateControl
@@ -52,7 +50,7 @@ Public Partial Class AddressRow
         ' Use the shared data source for the combo box
         cboState.DisplayMember = "State"
         cboState.ValueMember = "State"
-        cboState.DataSource = CType(Me.TemplateParent.SharedDataSources("States"), DataView)
+        cboState.DataSource = CType(Me.TemplateParent.SharedDataSources("States"), List(Of StateCode))
 
         ' Update control states based on the parent's change policy.  This can be omitted if you do not need it.
         Me.ChangePolicyModified()
@@ -60,13 +58,21 @@ Public Partial Class AddressRow
 
     ' Bind the controls to their data source
     Protected Overrides Sub Bind()
-        Me.AddBinding(txtFName, "Text", "FirstName")
-        Me.AddBinding(txtLName, "Text", "LastName")
-        Me.AddBinding(txtAddress, "Text", "Address")
-        Me.AddBinding(txtCity, "Text", "City")
-        Me.AddBinding(cboState, "SelectedValue", "State")
-        Me.AddBinding(txtZip, "Text", "Zip")
-        Me.AddBinding(udcSumValue, "Text", "SumValue")
+        Me.AddBinding(txtFName, nameof(Control.Text), nameof(Address.FirstName))
+        Me.AddBinding(txtLName, nameof(Control.Text), nameof(Address.LastName))
+        Me.AddBinding(txtAddress, nameof(Control.Text), nameof(Address.StreetAddress))
+        Me.AddBinding(txtCity, nameof(Control.Text), nameof(Address.City))
+        Me.AddBinding(txtZip, nameof(Control.Text), nameof(Address.Zip))
+
+        ' We must enable formatting or the bound values for these control types won't get updated for
+        ' some reason.  The sum value is also nullable so it needs a format event handler.
+        Me.AddBinding(cboState, nameof(MultiColumnComboBox.SelectedValue), nameof(Address.State)).FormattingEnabled = True
+        Me.AddBinding(udcSumValue, NameOf(NumericUpDown.Value), NameOf(Address.SumValue), True,
+            Sub(s, e) e.Value = If(e.Value, 0)).FormattingEnabled = True
+
+        ' They also need to update on the property value changing in case the mouse wheel is used
+        udcSumValue.DataBindings(0).DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged
+        cboState.DataBindings(0).DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged
     End Sub
 
     ' Enable or disable the controls based on the edit policy

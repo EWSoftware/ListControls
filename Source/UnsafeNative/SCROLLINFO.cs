@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : SCROLLINFO.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/19/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
+// Updated : 12/02/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains the class that defines the scrollbar info object passed to the Win32 API
 //
@@ -25,25 +25,14 @@ namespace EWSoftware.ListControls.UnsafeNative
     /// This defines the scrollbar info object passed to the Win32 API
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    internal class SCROLLINFO
+    internal sealed class SCROLLINFO
     {
-        internal int cbSize;
+        internal int cbSize = Marshal.SizeOf(typeof(SCROLLINFO));
         internal int fMask;
         internal int nMin;
         internal int nMax;
         internal int nPage;
         internal int nPos;
         internal int nTrackPos;
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        internal SCROLLINFO()
-        {
-            this.cbSize = Marshal.SizeOf(typeof(SCROLLINFO));
-
-            // Not needed but it shuts the compiler up
-            nMin = nMax = nPage = nPos = nTrackPos = 0;
-        }
     }
 }

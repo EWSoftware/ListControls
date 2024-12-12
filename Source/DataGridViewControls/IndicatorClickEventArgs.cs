@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : IndicatorClickEventArgs.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/24/2014
-// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
+// Updated : 12/09/2024
+// Note    : Copyright 2007-2024, Eric Woodruff, All rights reserved
 //
 // This file contains an event arguments class used to provide information about an image index that was clicked
 // in an indicator column.
@@ -18,8 +18,6 @@
 // 05/31/2007  EFW  Created the code
 //===============================================================================================================
 
-using System;
-
 namespace EWSoftware.ListControls.DataGridViewControls
 {
     /// <summary>
@@ -31,23 +29,23 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <summary>
         /// This read-only property can be used to retrieve the column in which the event occurred.
         /// </summary>
-        public int Column { get; private set; }
+        public int Column { get; }
 
         /// <summary>
         /// This read-only property can be used to retrieve the row in which the event occurred
         /// </summary>
-        public int Row { get; private set; }
+        public int Row { get; }
 
         /// <summary>
         /// This read-only property can be used to retrieve the index of the image that was clicked in the cell
         /// </summary>
-        public int ImageIndex { get; private set; }
+        public int ImageIndex { get; }
 
         /// <summary>
         /// This can be used to get the cell value related to the event.  It can also be used to pass back a new
         /// cell value if the cell is editable.
         /// </summary>
-        public object Value { get; set; }
+        public object? Value { get; set; }
 
         /// <summary>
         /// Constructor
@@ -56,7 +54,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="rowIndex">The row in which the event occurred</param>
         /// <param name="clickedIndex">The image index that was clicked</param>
         /// <param name="value">The cell value</param>
-        public IndicatorClickEventArgs(int columnIndex, int rowIndex, int clickedIndex, object value)
+        public IndicatorClickEventArgs(int columnIndex, int rowIndex, int clickedIndex, object? value)
         {
             this.Column = columnIndex;
             this.Row = rowIndex;

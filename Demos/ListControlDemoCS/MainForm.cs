@@ -2,8 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : MainForm.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/06/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/02/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This application is used to demonstrate various features of the EWSoftware List Control classes
 //
@@ -18,18 +18,13 @@
 // 03/06/2006  EFW  Reworked main menu form to use a DataList
 //===============================================================================================================
 
-using System;
-using System.Data;
-using System.Data.OleDb;
-using System.IO;
-using System.Windows.Forms;
 
 namespace ListControlDemoCS
 {
 	/// <summary>
 	/// This is the main form of the EWSoftware List Control demo
 	/// </summary>
-	public partial class MainForm : System.Windows.Forms.Form
+	internal sealed partial class MainForm : Form
 	{
         #region Constructor
         //=====================================================================
@@ -41,36 +36,25 @@ namespace ListControlDemoCS
 		{
 			InitializeComponent();
 
-            if(!File.Exists(@".\TestData.mdb"))
+            DemoDataContext.DatabaseLocation = Path.GetFullPath(@"..\..\..\..\DemoData.mdf");
+
+            if(!File.Exists(DemoDataContext.DatabaseLocation))
             {
-                MessageBox.Show("Unable to locate test database.  It should be in the main project folder " +
-                    "two levels up from the location of this executable.", "List Control Demo",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Unable to locate test database.  It should be in the main project folder",
+                    "List Control Demo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             try
             {
-                using(var dbConn = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\TestData.mdb"))
-                {
-                    // Load the menu data
-                    using(var cmd = new OleDbCommand("Select * From DemoInfo Order By DemoOrder, DemoName", dbConn))
-                    {
-                        cmd.CommandType = CommandType.Text;
+                // Load the menu data
+                using var dc = new DemoDataContext();
 
-                        using(var adapter = new OleDbDataAdapter(cmd))
-                        {
-
-                            DataSet demoData = new DataSet();
-                            adapter.Fill(demoData);
-
-                            // Set the data list's data source and row template
-                            dlMenu.SetDataBinding(demoData.Tables[0], null, typeof(MenuRow));
-                        }
-                    }
-                }
+                // Set the data list's data source and row template
+                dlMenu.SetDataBinding(dc.DemoInfo.OrderBy(d => d.DemoOrder).ThenBy(d => d.DemoName).ToList(),
+                    null, typeof(MenuRow));
             }
-            catch(OleDbException ex)
+            catch(SqlException ex)
             {
                 MessageBox.Show(ex.Message);
             }
@@ -86,9 +70,13 @@ namespace ListControlDemoCS
 		[STAThread]
 		static void Main()
 		{
+#if NET48
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new MainForm());
+#else
+            ApplicationConfiguration.Initialize();
+#endif
+            Application.Run(new MainForm());
 		}
         #endregion
     }

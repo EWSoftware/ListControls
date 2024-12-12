@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : AutoCompleteTextBoxCell.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
-// Note    : Copyright 2008-2023, Eric Woodruff, All rights reserved
+// Updated : 12/09/2024
+// Note    : Copyright 2008-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a data grid view cell object that hosts a textbox with the auto-complete properties
 // exposed.
@@ -18,9 +18,6 @@
 // 02/07/2008  EFW  Created the code
 //===============================================================================================================
 
-using System;
-using System.Windows.Forms;
-
 namespace EWSoftware.ListControls.DataGridViewControls
 {
     /// <summary>
@@ -34,9 +31,9 @@ namespace EWSoftware.ListControls.DataGridViewControls
 
         private AutoCompleteMode mode;
         private AutoCompleteSource source;
-        private AutoCompleteStringCollection customSource;
+        private AutoCompleteStringCollection? customSource;
 
-        private TextBox editingTextBox;
+        private TextBox? editingTextBox;
 
         #endregion
 
@@ -54,8 +51,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
             {
                 mode = value;
 
-                if(this.OwnsEditingTextBox(base.RowIndex))
-                    editingTextBox.AutoCompleteMode = value;
+                if(this.OwnsEditingTextBox(this.RowIndex))
+                    editingTextBox!.AutoCompleteMode = value;
             }
         }
 
@@ -70,20 +67,19 @@ namespace EWSoftware.ListControls.DataGridViewControls
             {
                 source = value;
 
-                if(this.OwnsEditingTextBox(base.RowIndex))
-                    editingTextBox.AutoCompleteSource = value;
+                if(this.OwnsEditingTextBox(this.RowIndex))
+                    editingTextBox!.AutoCompleteSource = value;
             }
         }
 
         /// <summary>
         /// Gets or sets a custom auto-completion source.
         /// </summary>
-        public AutoCompleteStringCollection AutoCompleteCustomSource
+        public AutoCompleteStringCollection? AutoCompleteCustomSource
         {
             get
             {
-                if(customSource == null)
-                    customSource = new AutoCompleteStringCollection();
+                customSource ??= [];
 
                 return customSource;
             }
@@ -91,8 +87,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
             {
                 customSource = value;
 
-                if(this.OwnsEditingTextBox(base.RowIndex))
-                    editingTextBox.AutoCompleteCustomSource = value;
+                if(this.OwnsEditingTextBox(this.RowIndex))
+                    editingTextBox!.AutoCompleteCustomSource = value;
             }
         }
         #endregion
@@ -162,7 +158,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
 
             base.InitializeEditingControl(rowIndex, initialFormattedValue, dataGridViewCellStyle);
 
-            editingTextBox = base.DataGridView.EditingControl as TextBox;
+            editingTextBox = this.DataGridView?.EditingControl as TextBox;
 
             if(editingTextBox != null)
             {

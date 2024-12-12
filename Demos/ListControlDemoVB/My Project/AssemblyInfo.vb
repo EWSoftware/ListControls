@@ -2,8 +2,8 @@
 ' System  : EWSoftware Data List Control Demonstration Applications
 ' File    : AssemblyInfo.vb
 ' Author  : Eric Woodruff  (Eric@EWoodruff.us)
-' Updated : 04/09/2023
-' Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+' Updated : 12/02/2024
+' Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 '
 ' EWSoftware Window Forms list control demo application
 '
@@ -28,7 +28,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyTitle("EWSoftware Windows Forms List Controls Demo")>
 <Assembly: AssemblyDescription("This is used to demonstrate the capabilities of the EWSoftware List Controls.")>
 <Assembly: AssemblyCompany("Eric Woodruff")>
-<Assembly: AssemblyCopyright("Copyright \xA9 2005-2023, Eric Woodruff, All Rights Reserved")>
+<Assembly: AssemblyCopyright("Copyright \xA9 2005-2024, Eric Woodruff, All Rights Reserved")>
 <Assembly: AssemblyCulture("")>
 #If DEBUG
 <Assembly: AssemblyConfiguration("Debug")>
@@ -52,5 +52,5 @@ Imports System.Runtime.InteropServices
 '      Day of release
 '      Revision (typically zero unless multiple releases are made on the same day)
 '
-<Assembly: AssemblyVersion("2023.4.9.0")>
-<Assembly: AssemblyFileVersion("23.4.9.0")>
+<Assembly: AssemblyVersion("2024.12.2.0")>
+<Assembly: AssemblyFileVersion("24.12.2.0")>

@@ -2,8 +2,8 @@
 ' System  : EWSoftware Data List Control Demonstration Applications
 ' File    : MenuRow.vb
 ' Author  : Eric Woodruff  (Eric@EWoodruff.us)
-' Updated : 04/09/2023
-' Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+' Updated : 12/02/2024
+' Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 '
 ' This is used as a row template for the main menu form's data list
 '
@@ -17,11 +17,6 @@
 ' 03/06/2006  EFW  Created the code
 ' 03/02/2007  EFW  Added extended tree view control demo
 '================================================================================================================
-
-Imports System.Data
-Imports System.Reflection
-
-Imports EWSoftware.ListControls
 
 Public Partial Class MenuRow
     Inherits EWSoftware.ListControls.TemplateControl
@@ -43,21 +38,26 @@ Public Partial Class MenuRow
 
     ' Bind the controls to their data source
     Protected Overrides Sub Bind()
-        Dim drv As DataRowView = CType(Me.RowSource, DataRowView)
+        Dim demoInfo As DemoInfo = CType(Me.RowSource, DemoInfo)
 
-        Me.AddBinding(lblDemoName, "Text", "DemoName")
-        Me.AddBinding(lblDemoDesc, "Text", "DemoDesc")
+        Me.AddBinding(Me.lblDemoName, NameOf(Control.Text), NameOf(Database.DemoInfo.DemoName))
+        Me.AddBinding(Me.lblDemoDesc, NameOf(Control.Text), NameOf(Database.DemoInfo.DemoDesc))
 
         ' Hide the button if there is no demo
-        btnDemo.Visible = CType(drv("HasDemoYN"), Boolean)
+        btnDemo.Visible = demoInfo.HasDemoYN
 
         ' Show the image for the related control if there is one
-        If CType(drv("UseControlImageYN"), Boolean) = True Then
+        If demoInfo.UseControlImageYN Then
             Dim asm As [Assembly] = GetType(TemplateControl).Assembly
 
-            Dim image As New Bitmap(asm.GetManifestResourceStream($"EWSoftware.ListControls.{drv("DemoName")}.bmp"))
-            image.MakeTransparent()
-            lblDemoImage.Image = image
+            Dim stream As Stream = asm.GetManifestResourceStream($"EWSoftware.ListControls.{demoInfo.DemoName}.bmp")
+
+            If stream IsNot Nothing Then
+                Dim image As new BitMap(stream)
+                image.MakeTransparent()
+
+                lblDemoImage.Image = image
+            End If
         Else
             lblDemoImage.Visible = False
         End If
@@ -65,40 +65,40 @@ Public Partial Class MenuRow
 
     ' View the demo for the selected item
     Private Sub btnDemo_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnDemo.Click
-        Dim drv As DataRowView = CType(Me.RowSource, DataRowView)
+        Dim demoInfo As DemoInfo = CType(Me.RowSource, DemoInfo)
 
-        Select Case CType(drv("DemoName"), String)
-            Case "CheckBoxList"
+        Select Case demoInfo.DemoName
+            Case NameOf(CheckBoxList)
                 Using dlg As New CheckBoxListTestForm
                     dlg.ShowDialog()
                 End Using
 
-            Case "DataList"
+            Case NameOf(DataList)
                 Using dlg As New DataListTestForm
                     dlg.ShowDialog()
                 End Using
 
-            Case "DataNavigator"
+            Case NameOf(DataNavigator)
                 Using dlg AS New DataNavigatorTestForm
                     dlg.ShowDialog()
                 End Using
 
-            Case "ExtendedTreeView"
+            Case NameOf(ExtendedTreeView)
                 Using dlg As new ExtendedTreeViewTestForm()
                     dlg.ShowDialog()
                 End Using
 
-            Case "MultiColumnComboBox"
+            Case NameOf(MultiColumnComboBox)
                 Using dlg As New ComboBoxTestForm
                     dlg.ShowDialog()
                 End Using
 
-            Case "RadioButtonList"
+            Case NameOf(RadioButtonList)
                 Using dlg As New RadioButtonListTestForm
                     dlg.ShowDialog()
                 End Using
 
-            Case "UserControlComboBox"
+            Case NameOf(UserControlComboBox)
                 Using dlg As New UserControlComboTestForm
                     dlg.ShowDialog()
                 End Using
@@ -109,7 +109,7 @@ Public Partial Class MenuRow
                 End Using
 
             Case Else
-                MessageBox.Show("Unknown demo.  Please contact tech support", "List Control Demo",
+                MessageBox.Show("Unknown demo.  Please contact tech support.", "List Control Demo",
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
 
         End Select

@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : DataList.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/11/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a control that allows you to specify a user control template to display and edit
 // information from a data source similar in nature to the DataList web server control, the sub-form control or
@@ -23,23 +23,18 @@
 
 // Ignore Spelling: typeof
 
-using System;
 using System.Collections;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Drawing.Design;
 using System.Globalization;
-using System.Reflection;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls
 {
-	/// <summary>
-	/// This control allows you to specify a user control template to display and edit information from a data
+    /// <summary>
+    /// This control allows you to specify a user control template to display and edit information from a data
     /// source similar in nature to the <c>DataList</c> web server control, the sub-form control or continuous
     /// forms detail section in a Microsoft Access form, or the <c>DataRepeater</c> control from Visual Basic 6.
-	/// </summary>
+    /// </summary>
     [DefaultEvent("Current"), DefaultProperty("DataSource"),
       Description("A template-based list control used for displaying or editing information in a data source")]
 	public class DataList : UserControl
@@ -47,19 +42,19 @@ namespace EWSoftware.ListControls
         #region Private data members
         //=====================================================================
 
-        private RowPanel pnlRows;
-        private ImageList ilButtons;
-        private Button btnFirst;
-        private Button btnPrev;
-        private Button btnNext;
-        private Button btnLast;
-        internal Button btnAdd;
-        private NumericTextBox txtRowNum;
-        private Label lblRowCount;
-        internal Button btnDelete;
-        private Timer tmrRepeat;
-        private ClickableLabel lblCaption;
-        private IContainer components;
+        private RowPanel pnlRows = null!;
+        private ImageList ilButtons = null!;
+        private Button btnFirst = null!;
+        private Button btnPrev = null!;
+        private Button btnNext = null!;
+        private Button btnLast = null!;
+        internal Button btnAdd = null!;
+        private NumericTextBox txtRowNum = null!;
+        private Label lblRowCount = null!;
+        internal Button btnDelete = null!;
+        private System.Windows.Forms.Timer tmrRepeat = null!;
+        private ClickableLabel lblCaption = null!;
+        private Container components = null!;
 
         // Border properties
         private int borderWidth;
@@ -74,23 +69,23 @@ namespace EWSoftware.ListControls
         private Shortcut shortcutAdd, shortcutDel, shortcutRowNum, shortcutSwitchSection;
 
         // Auto-repeat and selection properties
-        private Button repeatButton;
+        private Button repeatButton = null!;
         private Point lastMousePos;
         private DragMode dragMode;
         private int repeatWait, repeatInterval, selStart, selEnd, lastMouseRow;
         private bool autoRepeating;
 
         // Template and data source information
-        private Type rowTemplate, headerTemplate, footerTemplate;
-        private TemplateControl header, footer;
+        private Type? rowTemplate, headerTemplate, footerTemplate;
+        private TemplateControl? header, footer;
 
-        private object dataSource;
+        private object? dataSource;
         private string dataMember;
-        private CurrencyManager listManager;
+        private CurrencyManager? listManager;
 
         private bool inSetListManager, inAddRow, inDelRow, inBindData, isUndoing, isBinding;
 
-        private Hashtable sharedDataSources;
+        private Hashtable sharedDataSources = null!;
 
         // Display properties
         private readonly SolidBrush brHeaderBack, brHeaderFore, brSelBack, brSelFore;
@@ -124,14 +119,14 @@ namespace EWSoftware.ListControls
         /// </summary>
         [Browsable(false), Description("Returns the CurrencyManager that the data list is currently using to " +
           "get data from the DataSource/DataMember pair")]
-        public CurrencyManager ListManager
+        public CurrencyManager? ListManager
         {
             get
             {
                 if(listManager == null && this.Parent != null && this.BindingContext != null && dataSource != null)
                     return (CurrencyManager)this.BindingContext[dataSource, dataMember];
 
-                return this.listManager;
+                return listManager;
             }
         }
 
@@ -212,7 +207,7 @@ namespace EWSoftware.ListControls
             set
             {
                 if(value == null)
-                    lblCaption.Font = new Font(Control.DefaultFont, FontStyle.Bold);
+                    lblCaption.Font = new Font(DefaultFont, FontStyle.Bold);
                 else
                     lblCaption.Font = value;
 
@@ -783,21 +778,21 @@ namespace EWSoftware.ListControls
         /// This gets or sets the data source for the data list
         /// </summary>
         /// <value>The data source object must support the <see cref="IList"/> interface such as a
-        /// <see cref="System.Data.DataSet"/> or an <see cref="Array"/>.  This property must be set in order for
+        /// <see cref="DataSet"/> or an <see cref="Array"/>.  This property must be set in order for
         /// the control to display information.  If the data source contains multiple items to which the control
         /// can bind, use the <see cref="DataMember"/> property to specify the sub-list to use.</value>
         /// <exception cref="ArgumentException">This is thrown if the data source does not support the
         /// <see cref="IList"/> interface.</exception>
         [Category("Data"), DefaultValue(null), RefreshProperties(RefreshProperties.Repaint),
           AttributeProvider(typeof(IListSource)),
-          TypeConverter("System.Windows.Forms.Design.DataSourceConverter, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"),
+          TypeConverter("Design.DataSourceConverter, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"),
           Description("Set or get the data source for the data list")]
-        public object DataSource
+        public object? DataSource
         {
             get => dataSource;
             set
             {
-                if(value != null && !(value is IList) && !(value is IListSource))
+                if(value != null && value is not IList && value is not IListSource)
                     throw new ArgumentException(LR.GetString("ExBadDataSource"));
 
                 if(dataSource != value)
@@ -823,7 +818,7 @@ namespace EWSoftware.ListControls
         /// This indicates the sub-list (if any) of the <see cref="DataSource"/> to show in the data list
         /// </summary>
         [Category("Data"), DefaultValue(""),
-          Editor("System.Windows.Forms.Design.DataMemberListEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor)),
+          Editor("Design.DataMemberListEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor)),
           Description("Indicates a sub-list of the data source to show in the data list")]
         public string DataMember
         {
@@ -862,7 +857,7 @@ namespace EWSoftware.ListControls
         /// </example>
         [Browsable(false), Description("The template control to use for the rows"),
           DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Type RowTemplate
+        public Type? RowTemplate
         {
             get => rowTemplate;
             set
@@ -897,7 +892,7 @@ namespace EWSoftware.ListControls
         /// </example>
         [Browsable(false), Description("The template control to use for the header"),
           DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Type HeaderTemplate
+        public Type? HeaderTemplate
         {
             get => headerTemplate;
             set
@@ -917,10 +912,10 @@ namespace EWSoftware.ListControls
 
                     headerTemplate = value;
 
-                    if(value != null)
+                    if(headerTemplate != null)
                     {
                         // Create, initialize, and bind the header control
-                        ConstructorInfo ctor = headerTemplate.GetConstructor(Type.EmptyTypes);
+                        ConstructorInfo ctor = headerTemplate.GetConstructor(Type.EmptyTypes)!;
                         header = (TemplateControl)ctor.Invoke(null);
                         header.TabStop = false;
                         header.TemplateParentInternal = this;
@@ -966,7 +961,7 @@ namespace EWSoftware.ListControls
         /// </example>
         [Browsable(false), Description("The template control to use for the footer"),
           DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Type FooterTemplate
+        public Type? FooterTemplate
         {
             get => footerTemplate;
             set
@@ -986,10 +981,10 @@ namespace EWSoftware.ListControls
 
                     footerTemplate = value;
 
-                    if(value != null)
+                    if(footerTemplate != null)
                     {
                         // Create, initialize, and bind the footer control
-                        ConstructorInfo ctor = footerTemplate.GetConstructor(Type.EmptyTypes);
+                        ConstructorInfo ctor = footerTemplate.GetConstructor(Type.EmptyTypes)!;
                         footer = (TemplateControl)ctor.Invoke(null);
                         footer.TabStop = false;
                         footer.TemplateParentInternal = this;
@@ -1044,7 +1039,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <value>This will return null if there is no data source or if there are no rows in the data source</value>
         [Browsable(false), Description("Get a reference to the selected item's row template")]
-        public TemplateControl CurrentItem
+        public TemplateControl? CurrentItem
         {
             get
             {
@@ -1060,7 +1055,7 @@ namespace EWSoftware.ListControls
                     return null;
 
                 // During deletion, there might not be a template control in the given position
-                return (pnlRows.Controls[row] as TemplateControl);
+                return pnlRows.Controls[row] as TemplateControl;
             }
         }
 
@@ -1069,14 +1064,14 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <value>This will return null if there is no header template</value>
         [Browsable(false), Description("Get a reference to the header template control")]
-        public TemplateControl HeaderControl => header;
+        public TemplateControl? HeaderControl => header;
 
         /// <summary>
         /// This is used to get a reference to the current footer template control if one has been specified
         /// </summary>
         /// <value>This will return null if there is no footer template</value>
         [Browsable(false), Description("Get a reference to the footer template control")]
-        public TemplateControl FooterControl => footer;
+        public TemplateControl? FooterControl => footer;
 
         /// <summary>
         /// This can be used to store data sources that are shared amongst all instances of the row, header, and
@@ -1092,8 +1087,7 @@ namespace EWSoftware.ListControls
         {
             get
             {
-                if(sharedDataSources == null)
-                    sharedDataSources = new Hashtable();
+                sharedDataSources ??= [];
 
                 return sharedDataSources;
             }
@@ -1124,14 +1118,7 @@ namespace EWSoftware.ListControls
         /// </code>
         /// </example>
         [Browsable(false), Description("Check to see if the current item is valid")]
-        public bool IsValid
-        {
-            get
-            {
-                TemplateControl tc = this.CurrentItem;
-                return (tc == null || tc.IsValid);
-            }
-        }
+        public bool IsValid => this.CurrentItem?.IsValid ?? true;
 
         /// <summary>
         /// This read-only property can be used to see if the data source has been modified
@@ -1174,7 +1161,7 @@ namespace EWSoftware.ListControls
                     if(dataSource is DataSet ds)
                         return ds.HasChanges();
 
-                    DataTable tbl;
+                    DataTable? tbl;
 
                     if(dataSource is DataView dv)
                         tbl = dv.Table;
@@ -1223,7 +1210,7 @@ namespace EWSoftware.ListControls
         /// source or the column cannot be found, this returns null.</value>
         /// <overloads>There are two overloads for this property</overloads>
         [Browsable(false), Description("Get the specified column from the current row")]
-        public object this[string colName] => this[currentRow, colName];
+        public object? this[string colName] => this[currentRow, colName];
 
         /// <summary>
         /// This can be used to get the value of the specified column in the specified row of the data list's
@@ -1235,7 +1222,7 @@ namespace EWSoftware.ListControls
         /// <value>Returns the entry at the specified column in the specified row.  If the row is out of bounds
         /// or if the column cannot be found, this will return null.</value>
         [Browsable(false), Description("Get the specified column from the specified row")]
-        public object this[int rowIdx, string colName]
+        public object? this[int rowIdx, string colName]
         {
             get
             {
@@ -1243,11 +1230,11 @@ namespace EWSoftware.ListControls
                   colName.Length == 0)
                     return null;
 
-                object oItem = listManager.List[rowIdx];
+                object? oItem = listManager.List[rowIdx];
 
                 if(oItem != null)
                 {
-                    PropertyDescriptor pd = listManager.GetItemProperties().Find(colName, true);
+                    var pd = listManager.GetItemProperties().Find(colName, true);
 
                     if(pd != null)
                         oItem = pd.GetValue(oItem);
@@ -1273,7 +1260,7 @@ namespace EWSoftware.ListControls
         /// <exclude/>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden),
           Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        public override Image BackgroundImage => null;
+        public override Image? BackgroundImage => null;
 
         /// <summary>
         /// The data list does not use this property so it is hidden.  It always returns false.
@@ -1304,7 +1291,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <exclude/>
         [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        public new event EventHandler BackgroundImageChanged;
+        public new event EventHandler? BackgroundImageChanged;
 
 #pragma warning restore 0067
         #endregion
@@ -1316,7 +1303,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when a row item is data bound
         /// </summary>
         [Category("Data"), Description("Occurs when a row item is data bound")]
-        public event EventHandler<DataListEventArgs> ItemDataBound;
+        public event EventHandler<DataListEventArgs>? ItemDataBound;
 
         /// <summary>
         /// This raises the <see cref="ItemDataBound"/> event
@@ -1331,7 +1318,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the header is data bound
         /// </summary>
         [Category("Data"), Description("Occurs when the header is data bound")]
-        public event EventHandler<DataListEventArgs> HeaderDataBound;
+        public event EventHandler<DataListEventArgs>? HeaderDataBound;
 
         /// <summary>
         /// This raises the <see cref="HeaderDataBound"/> event
@@ -1346,7 +1333,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the footer is data bound
         /// </summary>
         [Category("Data"), Description("Occurs when the footer is data bound")]
-        public event EventHandler<DataListEventArgs> FooterDataBound;
+        public event EventHandler<DataListEventArgs>? FooterDataBound;
 
         /// <summary>
         /// This raises the <see cref="FooterDataBound"/> event
@@ -1361,7 +1348,7 @@ namespace EWSoftware.ListControls
         /// This event is raised just prior to adding an item to the data source
         /// </summary>
         [Category("Data"), Description("Occurs just prior to adding an item to the data source")]
-        public event EventHandler<DataListCancelEventArgs> AddingRow;
+        public event EventHandler<DataListCancelEventArgs>? AddingRow;
 
         /// <summary>
         /// This raises the <see cref="AddingRow"/> event
@@ -1376,7 +1363,7 @@ namespace EWSoftware.ListControls
         /// This event is raised after adding an item to the data source
         /// </summary>
         [Category("Data"), Description("Occurs after adding an item to the data source")]
-        public event EventHandler<DataListEventArgs> AddedRow;
+        public event EventHandler<DataListEventArgs>? AddedRow;
 
         /// <summary>
         /// This raises the <see cref="AddedRow"/> event
@@ -1391,7 +1378,7 @@ namespace EWSoftware.ListControls
         /// This event is raised just prior to deleting an item from the data source
         /// </summary>
         [Category("Data"), Description("Occurs just prior to deleting an item from the data source")]
-        public event EventHandler<DataListCancelEventArgs> DeletingRow;
+        public event EventHandler<DataListCancelEventArgs>? DeletingRow;
 
         /// <summary>
         /// This raises the <see cref="DeletingRow"/> event
@@ -1407,7 +1394,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <remarks>If there are no more rows after the deletion, the <see cref="NoRows"/> event is also raised</remarks>
         [Category("Data"), Description("Occurs after deleting an item from the data source")]
-        public event EventHandler<DataListEventArgs> DeletedRow;
+        public event EventHandler<DataListEventArgs>? DeletedRow;
 
         /// <summary>
         /// This raises the <see cref="DeletedRow"/> event
@@ -1425,7 +1412,7 @@ namespace EWSoftware.ListControls
         /// This event is raised just prior to canceling edits to a row via the Escape key
         /// </summary>
         [Category("Data"), Description("Occurs just prior to canceling edits via the Escape key")]
-        public event EventHandler<DataListCancelEventArgs> CancelingEdits;
+        public event EventHandler<DataListCancelEventArgs>? CancelingEdits;
 
         /// <summary>
         /// This raises the <see cref="CancelingEdits"/> event
@@ -1440,7 +1427,7 @@ namespace EWSoftware.ListControls
         /// This event is raised after canceling edits via the Escape key
         /// </summary>
         [Category("Data"), Description("Occurs after canceling edits via the Escape key")]
-        public event EventHandler<DataListEventArgs> CanceledEdits;
+        public event EventHandler<DataListEventArgs>? CanceledEdits;
 
         /// <summary>
         /// This raises the <see cref="CanceledEdits"/> event
@@ -1455,7 +1442,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when a row is made the current row
         /// </summary>
         [Category("Data"), Description("Occurs when a row is made the current row")]
-        public event EventHandler<DataListEventArgs> Current;
+        public event EventHandler<DataListEventArgs>? Current;
 
         /// <summary>
         /// This raises the <see cref="Current"/> event
@@ -1473,7 +1460,7 @@ namespace EWSoftware.ListControls
         /// <remarks>This event can be used to disable bound controls and/or display a message asking the user to
         /// add a new row.</remarks>
         [Category("Data"), Description("Occurs after refresh or deletion when there are no rows in the data source")]
-        public event EventHandler NoRows;
+        public event EventHandler? NoRows;
 
         /// <summary>
         /// This raises the <see cref="NoRows"/> event
@@ -1490,7 +1477,7 @@ namespace EWSoftware.ListControls
         /// <remarks>A drag and drop operation is initiated whenever the mouse button is clicked and held within
         /// an existing selection in the row headers and is then dragged.</remarks>
         [Category("Drag Drop"), Description("Occurs when a drag and drop operation is initiated")]
-        public event EventHandler<DataListBeginDragEventArgs> BeginDrag;
+        public event EventHandler<DataListBeginDragEventArgs>? BeginDrag;
 
         /// <summary>
         /// This raises the <see cref="BeginDrag"/> event
@@ -1505,7 +1492,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="DataSource"/> is changed
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the control's data source changes")]
-        public event EventHandler DataSourceChanged;
+        public event EventHandler? DataSourceChanged;
 
         /// <summary>
         /// This raises the <see cref="DataSourceChanged"/> event
@@ -1521,7 +1508,7 @@ namespace EWSoftware.ListControls
         /// whether or not adds, edits, or deletes are allowed).
         /// </summary>
         [Category("Data"), Description("Occurs when the control's change policy is modified")]
-        public event EventHandler<ChangePolicyEventArgs> ChangePolicyModified;
+        public event EventHandler<ChangePolicyEventArgs>? ChangePolicyModified;
 
         /// <summary>
         /// This raises the <see cref="ChangePolicyModified"/> event for the control and calls the
@@ -1559,7 +1546,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="AddDeleteButtonsVisible"/> property changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the add/delete button visibility changes")]
-        public event EventHandler AddDeleteButtonsVisibleChanged;
+        public event EventHandler? AddDeleteButtonsVisibleChanged;
 
         /// <summary>
         /// This raises the <see cref="AddDeleteButtonsVisibleChanged"/> event
@@ -1574,7 +1561,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="NavigationControlsVisible"/> property changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the navigation button visibility changes")]
-        public event EventHandler NavigationControlsVisibleChanged;
+        public event EventHandler? NavigationControlsVisibleChanged;
 
         /// <summary>
         /// This raises the <see cref="NavigationControlsVisibleChanged"/> event
@@ -1589,7 +1576,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="SeparatorsVisible"/> property changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the separator visibility changes")]
-        public event EventHandler SeparatorsVisibleChanged;
+        public event EventHandler? SeparatorsVisibleChanged;
 
         /// <summary>
         /// This raises the <see cref="SeparatorsVisibleChanged"/> event
@@ -1604,7 +1591,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="SeparatorColor"/> changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the separator color changes")]
-        public event EventHandler SeparatorColorChanged;
+        public event EventHandler? SeparatorColorChanged;
 
         /// <summary>
         /// This raises the <see cref="SeparatorColorChanged"/> event
@@ -1619,7 +1606,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="SeparatorHeight"/> changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the separator color changes")]
-        public event EventHandler SeparatorHeightChanged;
+        public event EventHandler? SeparatorHeightChanged;
 
         /// <summary>
         /// This raises the <see cref="SeparatorHeightChanged"/> event
@@ -1634,7 +1621,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="RowHeadersVisible"/> property changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the row header visibility changes")]
-        public event EventHandler RowHeadersVisibleChanged;
+        public event EventHandler? RowHeadersVisibleChanged;
 
         /// <summary>
         /// This raises the <see cref="RowHeadersVisibleChanged"/> event
@@ -1649,7 +1636,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="RowHeadersFlat"/> property changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the row header flat style changes")]
-        public event EventHandler RowHeadersFlatChanged;
+        public event EventHandler? RowHeadersFlatChanged;
 
         /// <summary>
         /// This raises the <see cref="RowHeadersFlatChanged"/> event
@@ -1664,7 +1651,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="RowHeaderWidth"/> changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the row header width changes")]
-        public event EventHandler RowHeaderWidthChanged;
+        public event EventHandler? RowHeaderWidthChanged;
 
         /// <summary>
         /// This raises the <see cref="RowHeaderWidthChanged"/> event
@@ -1679,7 +1666,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="RowHeaderBackColor"/> changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the row header background color changes")]
-        public event EventHandler RowHeaderBackColorChanged;
+        public event EventHandler? RowHeaderBackColorChanged;
 
         /// <summary>
         /// This raises the <see cref="RowHeaderBackColorChanged"/> event
@@ -1694,7 +1681,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="RowHeaderForeColor"/> changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the row header foreground color changes")]
-        public event EventHandler RowHeaderForeColorChanged;
+        public event EventHandler? RowHeaderForeColorChanged;
 
         /// <summary>
         /// This raises the <see cref="RowHeaderForeColorChanged"/> event
@@ -1709,7 +1696,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="SelectionBackColor"/> changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the row selection background color changes")]
-        public event EventHandler SelectionBackColorChanged;
+        public event EventHandler? SelectionBackColorChanged;
 
         /// <summary>
         /// This raises the <see cref="SelectionBackColorChanged"/> event
@@ -1724,7 +1711,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="SelectionForeColor"/> changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the row selection foreground color changes")]
-        public event EventHandler SelectionForeColorChanged;
+        public event EventHandler? SelectionForeColorChanged;
 
         /// <summary>
         /// This raises the <see cref="SelectionForeColorChanged"/> event
@@ -1739,7 +1726,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="RepeatWait"/> value changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the auto-repeat initial wait interval changes")]
-        public event EventHandler RepeatWaitChanged;
+        public event EventHandler? RepeatWaitChanged;
 
         /// <summary>
         /// This raises the <see cref="RepeatWaitChanged"/> event
@@ -1754,7 +1741,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="RepeatInterval"/> changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the auto-repeat interval changes")]
-        public event EventHandler RepeatIntervalChanged;
+        public event EventHandler? RepeatIntervalChanged;
 
         /// <summary>
         /// This raises the <see cref="RepeatIntervalChanged"/> event
@@ -1818,161 +1805,161 @@ namespace EWSoftware.ListControls
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.components = new System.ComponentModel.Container();
-            System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(DataList));
-            this.pnlRows = new EWSoftware.ListControls.RowPanel();
-            this.btnFirst = new System.Windows.Forms.Button();
-            this.ilButtons = new System.Windows.Forms.ImageList(this.components);
-            this.btnPrev = new System.Windows.Forms.Button();
-            this.btnNext = new System.Windows.Forms.Button();
-            this.btnLast = new System.Windows.Forms.Button();
-            this.btnAdd = new System.Windows.Forms.Button();
-            this.txtRowNum = new EWSoftware.ListControls.NumericTextBox();
-            this.lblRowCount = new System.Windows.Forms.Label();
-            this.btnDelete = new System.Windows.Forms.Button();
+            this.components = new Container();
+            System.Resources.ResourceManager resources = new(typeof(DataList));
+            this.pnlRows = new RowPanel();
+            this.btnFirst = new Button();
+            this.ilButtons = new ImageList(this.components);
+            this.btnPrev = new Button();
+            this.btnNext = new Button();
+            this.btnLast = new Button();
+            this.btnAdd = new Button();
+            this.txtRowNum = new NumericTextBox();
+            this.lblRowCount = new Label();
+            this.btnDelete = new Button();
             this.tmrRepeat = new System.Windows.Forms.Timer(this.components);
-            this.lblCaption = new EWSoftware.ListControls.ClickableLabel();
+            this.lblCaption = new ClickableLabel();
             this.SuspendLayout();
             // 
             // pnlRows
             // 
-            this.pnlRows.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-                | System.Windows.Forms.AnchorStyles.Left) 
-                | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlRows.Anchor = ((AnchorStyles)((((AnchorStyles.Top | AnchorStyles.Bottom) 
+                | AnchorStyles.Left) 
+                | AnchorStyles.Right)));
             this.pnlRows.AutoScroll = true;
-            this.pnlRows.Location = new System.Drawing.Point(0, 24);
+            this.pnlRows.Location = new Point(0, 24);
             this.pnlRows.Name = "pnlRows";
-            this.pnlRows.Size = new System.Drawing.Size(304, 112);
+            this.pnlRows.Size = new Size(304, 112);
             this.pnlRows.TabIndex = 1;
             // 
             // btnFirst
             // 
-            this.btnFirst.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnFirst.Anchor = ((AnchorStyles)((AnchorStyles.Bottom | AnchorStyles.Left)));
             this.btnFirst.Enabled = false;
             this.btnFirst.ImageIndex = 0;
             this.btnFirst.ImageList = this.ilButtons;
-            this.btnFirst.Location = new System.Drawing.Point(0, 144);
+            this.btnFirst.Location = new Point(0, 144);
             this.btnFirst.Name = "btnFirst";
-            this.btnFirst.Size = new System.Drawing.Size(22, 22);
+            this.btnFirst.Size = new Size(22, 22);
             this.btnFirst.TabIndex = 2;
             this.btnFirst.TabStop = false;
-            this.btnFirst.Click += new System.EventHandler(this.btnFirst_Click);
+            this.btnFirst.Click += new EventHandler(this.btnFirst_Click);
             // 
             // ilButtons
             // 
-            this.ilButtons.ImageSize = new System.Drawing.Size(15, 11);
-            this.ilButtons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("ilButtons.ImageStream")));
-            this.ilButtons.TransparentColor = System.Drawing.Color.Lime;
+            this.ilButtons.ImageSize = new Size(15, 11);
+            this.ilButtons.ImageStream = ((ImageListStreamer)(resources.GetObject("ilButtons.ImageStream")!));
+            this.ilButtons.TransparentColor = Color.Lime;
             // 
             // btnPrev
             // 
-            this.btnPrev.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnPrev.Anchor = ((AnchorStyles)((AnchorStyles.Bottom | AnchorStyles.Left)));
             this.btnPrev.Enabled = false;
             this.btnPrev.ImageIndex = 1;
             this.btnPrev.ImageList = this.ilButtons;
-            this.btnPrev.Location = new System.Drawing.Point(22, 144);
+            this.btnPrev.Location = new Point(22, 144);
             this.btnPrev.Name = "btnPrev";
-            this.btnPrev.Size = new System.Drawing.Size(22, 22);
+            this.btnPrev.Size = new Size(22, 22);
             this.btnPrev.TabIndex = 3;
             this.btnPrev.TabStop = false;
-            this.btnPrev.Click += new System.EventHandler(this.btnPrev_Click);
-            this.btnPrev.MouseUp += new System.Windows.Forms.MouseEventHandler(this.btnPrev_MouseUp);
-            this.btnPrev.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btnPrev_MouseDown);
+            this.btnPrev.Click += new EventHandler(this.btnPrev_Click);
+            this.btnPrev.MouseUp += new MouseEventHandler(this.btnPrev_MouseUp);
+            this.btnPrev.MouseDown += new MouseEventHandler(this.btnPrev_MouseDown);
             // 
             // btnNext
             // 
-            this.btnNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnNext.Anchor = ((AnchorStyles)((AnchorStyles.Bottom | AnchorStyles.Left)));
             this.btnNext.Enabled = false;
             this.btnNext.ImageIndex = 2;
             this.btnNext.ImageList = this.ilButtons;
-            this.btnNext.Location = new System.Drawing.Point(107, 144);
+            this.btnNext.Location = new Point(107, 144);
             this.btnNext.Name = "btnNext";
-            this.btnNext.Size = new System.Drawing.Size(22, 22);
+            this.btnNext.Size = new Size(22, 22);
             this.btnNext.TabIndex = 5;
             this.btnNext.TabStop = false;
-            this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
-            this.btnNext.MouseUp += new System.Windows.Forms.MouseEventHandler(this.btnNext_MouseUp);
-            this.btnNext.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btnNext_MouseDown);
+            this.btnNext.Click += new EventHandler(this.btnNext_Click);
+            this.btnNext.MouseUp += new MouseEventHandler(this.btnNext_MouseUp);
+            this.btnNext.MouseDown += new MouseEventHandler(this.btnNext_MouseDown);
             // 
             // btnLast
             // 
-            this.btnLast.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnLast.Anchor = ((AnchorStyles)((AnchorStyles.Bottom | AnchorStyles.Left)));
             this.btnLast.Enabled = false;
             this.btnLast.ImageIndex = 3;
             this.btnLast.ImageList = this.ilButtons;
-            this.btnLast.Location = new System.Drawing.Point(129, 144);
+            this.btnLast.Location = new Point(129, 144);
             this.btnLast.Name = "btnLast";
-            this.btnLast.Size = new System.Drawing.Size(22, 22);
+            this.btnLast.Size = new Size(22, 22);
             this.btnLast.TabIndex = 6;
             this.btnLast.TabStop = false;
-            this.btnLast.Click += new System.EventHandler(this.btnLast_Click);
+            this.btnLast.Click += new EventHandler(this.btnLast_Click);
             // 
             // btnAdd
             // 
-            this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnAdd.Anchor = ((AnchorStyles)((AnchorStyles.Bottom | AnchorStyles.Left)));
             this.btnAdd.Enabled = false;
             this.btnAdd.ImageIndex = 4;
             this.btnAdd.ImageList = this.ilButtons;
-            this.btnAdd.Location = new System.Drawing.Point(151, 144);
+            this.btnAdd.Location = new Point(151, 144);
             this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(22, 22);
+            this.btnAdd.Size = new Size(22, 22);
             this.btnAdd.TabIndex = 7;
             this.btnAdd.TabStop = false;
-            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+            this.btnAdd.Click += new EventHandler(this.btnAdd_Click);
             // 
             // txtRowNum
             //
-            this.txtRowNum.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtRowNum.Location = new System.Drawing.Point(47, 144);
+            this.txtRowNum.Anchor = ((AnchorStyles)((AnchorStyles.Bottom | AnchorStyles.Left)));
+            this.txtRowNum.Location = new Point(47, 144);
             this.txtRowNum.MaxLength = 7;
             this.txtRowNum.Name = "txtRowNum";
-            this.txtRowNum.Size = new System.Drawing.Size(57, 22);
+            this.txtRowNum.Size = new Size(57, 22);
             this.txtRowNum.TabIndex = 4;
             this.txtRowNum.TabStop = false;
             this.txtRowNum.Text = "0";
-            this.txtRowNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtRowNum.Leave += new System.EventHandler(this.txtRowNum_Leave);
+            this.txtRowNum.TextAlign = HorizontalAlignment.Right;
+            this.txtRowNum.Leave += new EventHandler(this.txtRowNum_Leave);
             // 
             // lblRowCount
             // 
-            this.lblRowCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblRowCount.Location = new System.Drawing.Point(200, 144);
+            this.lblRowCount.Anchor = ((AnchorStyles)((AnchorStyles.Bottom | AnchorStyles.Left)));
+            this.lblRowCount.Location = new Point(200, 144);
             this.lblRowCount.Name = "lblRowCount";
-            this.lblRowCount.Size = new System.Drawing.Size(88, 22);
+            this.lblRowCount.Size = new Size(88, 22);
             this.lblRowCount.TabIndex = 9;
             this.lblRowCount.Text = "of 0";
-            this.lblRowCount.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblRowCount.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // btnDelete
             // 
-            this.btnDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnDelete.Anchor = ((AnchorStyles)((AnchorStyles.Bottom | AnchorStyles.Left)));
             this.btnDelete.CausesValidation = false;
             this.btnDelete.Enabled = false;
             this.btnDelete.ImageIndex = 5;
             this.btnDelete.ImageList = this.ilButtons;
-            this.btnDelete.Location = new System.Drawing.Point(173, 144);
+            this.btnDelete.Location = new Point(173, 144);
             this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(22, 22);
+            this.btnDelete.Size = new Size(22, 22);
             this.btnDelete.TabIndex = 8;
             this.btnDelete.TabStop = false;
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            this.btnDelete.Click += new EventHandler(this.btnDelete_Click);
             // 
             // tmrRepeat
             // 
-            this.tmrRepeat.Tick += new System.EventHandler(this.tmrRepeat_Tick);
+            this.tmrRepeat.Tick += new EventHandler(this.tmrRepeat_Tick);
             // 
             // lblCaption
             //
             this.lblCaption.AutoEllipsis = true;
-            this.lblCaption.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.lblCaption.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblCaption.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-            this.lblCaption.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.lblCaption.Location = new System.Drawing.Point(0, 0);
+            this.lblCaption.BackColor = SystemColors.ActiveCaption;
+            this.lblCaption.Dock = DockStyle.Top;
+            this.lblCaption.Font = new Font("Microsoft Sans Serif", 7.8F, FontStyle.Bold, GraphicsUnit.Point, ((System.Byte)(0)));
+            this.lblCaption.ForeColor = SystemColors.ActiveCaptionText;
+            this.lblCaption.Location = new Point(0, 0);
             this.lblCaption.Name = "lblCaption";
-            this.lblCaption.Size = new System.Drawing.Size(304, 23);
+            this.lblCaption.Size = new Size(304, 23);
             this.lblCaption.TabIndex = 0;
-            this.lblCaption.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblCaption.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // DataList
             // 
@@ -1987,7 +1974,7 @@ namespace EWSoftware.ListControls
             this.Controls.Add(this.btnFirst);
             this.Controls.Add(this.pnlRows);
             this.Name = "DataList";
-            this.Size = new System.Drawing.Size(304, 168);
+            this.Size = new Size(304, 168);
             this.ResumeLayout(false);
 
         }
@@ -2067,7 +2054,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         private void ResetCaptionFont()
         {
-            this.CaptionFont = null;
+            this.CaptionFont = null!;
         }
         #endregion
 
@@ -2151,7 +2138,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         internal void InitializeAndBindVisibleRows()
         {
-            TemplateControl tc;
+            TemplateControl? tc;
 
             int row, rowPos, fillRange, maxRows, multiplier = (showSep) ? 2 : 1;
 
@@ -2217,7 +2204,7 @@ namespace EWSoftware.ListControls
         {
             string[] relationParts = dataMember.Split('.');
 
-            CurrencyManager cm = (CurrencyManager)this.BindingContext[dataSource, relationParts[0]];
+            var cm = (CurrencyManager?)this.BindingContext![dataSource!, relationParts[0]];
 
             if(cm != null)
             {
@@ -2225,7 +2212,7 @@ namespace EWSoftware.ListControls
                     cm.EndCurrentEdit();
 
                 // ListChanged happens less frequently and is more efficient with regard to resets
-                IBindingList bl = cm.List as IBindingList;
+                var bl = cm.List as IBindingList;
 
                 if(connect)
                 {
@@ -2251,11 +2238,11 @@ namespace EWSoftware.ListControls
         /// <summary>
         /// This is used to rebind the list when the related data source position changes
         /// </summary>
-        private void RelatedPosition_Changed(object sender, EventArgs e)
+        private void RelatedPosition_Changed(object? sender, EventArgs e)
         {
             if(!inSetListManager && !inAddRow && !inDelRow && !inBindData)
             {
-//                System.Diagnostics.Debug.WriteLine(this.Name + ": Related Position Changed");
+//                Debug.WriteLine(this.Name + ": Related Position Changed");
 
                 this.CommitChanges();
                 changePolicy.UpdatePolicy(allowAdditions, allowEdits, allowDeletes);
@@ -2263,7 +2250,7 @@ namespace EWSoftware.ListControls
 
                 // We seem to lose the data source ListChanged event handler here every so often so ensure it is
                 // hooked back up.  I didn't disconnect it so where does it go??
-                if(listManager.List is IBindingList bl)
+                if(listManager!.List is IBindingList bl)
                 {
                     // Disconnect it first in case it didn't go away
                     bl.ListChanged -= DataSource_ListChanged;
@@ -2275,7 +2262,7 @@ namespace EWSoftware.ListControls
         /// <summary>
         /// This is used to rebind rows when a related data source item changes
         /// </summary>
-        private void RelatedList_Changed(object sender, ListChangedEventArgs e)
+        private void RelatedList_Changed(object? sender, ListChangedEventArgs e)
         {
             TemplateControl tc;
             IList list;
@@ -2284,7 +2271,7 @@ namespace EWSoftware.ListControls
             if(inSetListManager || inAddRow || inDelRow || inBindData || e.NewIndex == -1)
                 return;
 
-//            System.Diagnostics.Debug.WriteLine(this.Name + ": Related List Changed: " +
+//            Debug.WriteLine(this.Name + ": Related List Changed: " +
 //                e.ListChangedType.ToString() + "  Old Index: " + e.OldIndex.ToString() +
 //                "  New Index: " + e.NewIndex.ToString() +
 //                "  List Count: " + listManager.Count);
@@ -2300,7 +2287,7 @@ namespace EWSoftware.ListControls
                     break;
 
                 case ListChangedType.ItemChanged:
-                    list = listManager.List;
+                    list = listManager!.List;
                     listCount = list.Count;
 
                     if(showSep)
@@ -2325,7 +2312,7 @@ namespace EWSoftware.ListControls
         /// <summary>
         /// This is used to rebind rows when a related data source item changes
         /// </summary>
-        private void RelatedItem_Changed(object sender, ItemChangedEventArgs ea)
+        private void RelatedItem_Changed(object? sender, ItemChangedEventArgs ea)
         {
             TemplateControl tc;
             IList list;
@@ -2336,15 +2323,16 @@ namespace EWSoftware.ListControls
                 this.CommitChanges();
                 changePolicy.UpdatePolicy(allowAdditions, allowEdits, allowDeletes);
 
-//                System.Diagnostics.Debug.WriteLine(this.Name + ": Related Item Changed: " + "Index: " + ea.Index.ToString());
+//                Debug.WriteLine(this.Name + ": Related Item Changed: " + "Index: " + ea.Index.ToString());
 
-                list = listManager.List;
+                list = listManager!.List;
                 listCount = list.Count;
 
                 if(showSep)
                     incr = 2;
 
                 for(row = listRow = 0; row < listCount; listRow++, row += incr)
+                {
                     if(row < pnlRows.Controls.Count)
                     {
                         tc = (TemplateControl)pnlRows.Controls[row];
@@ -2353,13 +2341,14 @@ namespace EWSoftware.ListControls
                         tc.HasBeenBound = true;
                         OnItemDataBound(new DataListEventArgs(listRow, tc));
                     }
+                }
             }
         }
 
         /// <summary>
         /// This is called when the data source's meta data changes in some way
         /// </summary>
-        private void DataSource_MetaDataChanged(object sender, EventArgs e)
+        private void DataSource_MetaDataChanged(object? sender, EventArgs e)
         {
             if(!inSetListManager && !inAddRow && !inDelRow && !inBindData)
                 SetListManager(dataSource, dataMember, true);
@@ -2368,7 +2357,7 @@ namespace EWSoftware.ListControls
         /// <summary>
         /// This is called when the data source is changed in some way
         /// </summary>
-        private void DataSource_ListChanged(object sender, ListChangedEventArgs e)
+        private void DataSource_ListChanged(object? sender, ListChangedEventArgs e)
         {
             TemplateControl tc;
             int row;
@@ -2378,7 +2367,7 @@ namespace EWSoftware.ListControls
             if(dataSource == null || inSetListManager || inAddRow || inDelRow || inBindData)
                 return;
 
-//            System.Diagnostics.Debug.WriteLine(this.Name + ": List Changed: " +
+//            Debug.WriteLine(this.Name + ": List Changed: " +
 //                e.ListChangedType.ToString() + "  Old Index: " + e.OldIndex.ToString() +
 //                "  New Index: " + e.NewIndex.ToString() +
 //                "  List Count: " + listManager.Count);
@@ -2395,7 +2384,7 @@ namespace EWSoftware.ListControls
 
                     // Rows inserted anywhere but at the end are treated as
                     // a reset.
-                    if(row < listManager.Count - 1)
+                    if(row < listManager!.Count - 1)
                         this.BindData();
                     else
                     {
@@ -2411,7 +2400,7 @@ namespace EWSoftware.ListControls
 
                 case ListChangedType.ItemDeleted:
                     this.DeleteRowInternal(e.NewIndex, true);
-                    btnDelete.Enabled = (changePolicy.AllowDeletes && listManager.Count > 0);
+                    btnDelete.Enabled = (changePolicy.AllowDeletes && listManager!.Count > 0);
                     break;
 
                 case ListChangedType.ItemMoved:
@@ -2429,7 +2418,7 @@ namespace EWSoftware.ListControls
                     if(row < pnlRows.Controls.Count)
                     {
                         tc = (TemplateControl)pnlRows.Controls[row];
-                        tc.SetRowSourceInternal(listManager.List[e.NewIndex]);
+                        tc.SetRowSourceInternal(listManager!.List[e.NewIndex]);
                         tc.Bind();
                         tc.HasBeenBound = true;
                         OnItemDataBound(new DataListEventArgs(e.NewIndex, tc));
@@ -2446,11 +2435,11 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="ea">The event arguments</param>
-        private void DataSource_ItemChanged(object sender, ItemChangedEventArgs ea)
+        private void DataSource_ItemChanged(object? sender, ItemChangedEventArgs ea)
         {
             if(ea.Index == -1 && !inSetListManager && !inAddRow && !inDelRow && !inBindData)
             {
-//                System.Diagnostics.Debug.WriteLine(this.Name + ": Item Changed: " + "Index: " + ea.Index.ToString());
+//                Debug.WriteLine(this.Name + ": Item Changed: " + "Index: " + ea.Index.ToString());
 
                 changePolicy.UpdatePolicy(allowAdditions, allowEdits, allowDeletes);
                 this.BindData();
@@ -2462,10 +2451,10 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void DataSource_PositionChanged(object sender, EventArgs e)
+        private void DataSource_PositionChanged(object? sender, EventArgs e)
         {
             bool hasList = (listManager != null);
-            int nRow, curRow = (hasList) ? listManager.Position : -1;
+            int nRow, curRow = (hasList) ? listManager!.Position : -1;
 
             // Ignore calls in the following cases.  It'll refresh when it's all done.
             if(inAddRow || inDelRow || inBindData)
@@ -2514,11 +2503,11 @@ namespace EWSoftware.ListControls
 
                 if(!autoRepeating)
                 {
-                    btnNext.Enabled = hasList && (curRow < listManager.Count - 1 ||
+                    btnNext.Enabled = hasList && (curRow < listManager!.Count - 1 ||
                         (changePolicy.AllowAdditions && listManager.Count != 0));
                 }
 
-                btnLast.Enabled = hasList && (curRow < listManager.Count - 1);
+                btnLast.Enabled = hasList && (curRow < listManager!.Count - 1);
             }
         }
 
@@ -2527,7 +2516,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void txtRowNum_Leave(object sender, System.EventArgs e)
+        private void txtRowNum_Leave(object? sender, EventArgs e)
         {
             Control c;
             bool updateText;
@@ -2585,13 +2574,13 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void RowTemplate_Enter(object sender, System.EventArgs e)
+        private void RowTemplate_Enter(object? sender, EventArgs e)
         {
             // Ignore calls in the following cases.  It'll refresh when it's all done.
             if(inAddRow || inDelRow || inBindData)
                 return;
 
-            int row = pnlRows.Controls.IndexOf((Control)sender);
+            int row = pnlRows.Controls.IndexOf((Control?)sender);
 
             if(showSep)
                 row /= 2;
@@ -2604,10 +2593,10 @@ namespace EWSoftware.ListControls
                     listManager.Position = row;
                 else
                 {
-                    TemplateControl tc = (TemplateControl)sender;
+                    var tc = (TemplateControl?)sender;
 
                     // It should be the new row template
-                    if(tc.IsNewRowInternal)
+                    if(tc?.IsNewRowInternal ?? false)
                     {
                         try
                         {
@@ -2639,11 +2628,11 @@ namespace EWSoftware.ListControls
         /// This is used to remove the new row added for the new row template when it loses focus and nothing was
         /// changed.
         /// </summary>
-        private void RowTemplate_Leave(object sender, System.EventArgs e)
+        private void RowTemplate_Leave(object? sender, EventArgs e)
         {
-            TemplateControl tc = (TemplateControl)sender;
+            var tc = (TemplateControl?)sender;
 
-            if(tc.IsNewRowInternal)
+            if(tc?.IsNewRowInternal ?? false)
             {
                 if(tc.HasBeenBound)
                 {
@@ -2652,7 +2641,7 @@ namespace EWSoftware.ListControls
                     tc.SetRowSourceInternal(null);
                 }
 
-                lblRowCount.Text = LR.GetString("DLNavRowCount", listManager.Count);
+                lblRowCount.Text = LR.GetString("DLNavRowCount", listManager!.Count);
 
                 btnAdd.Enabled = changePolicy.AllowAdditions;
                 btnDelete.Enabled = (changePolicy.AllowDeletes && listManager.Count > 0);
@@ -2664,11 +2653,11 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void btnFirst_Click(object sender, System.EventArgs e)
+        private void btnFirst_Click(object? sender, EventArgs e)
         {
             if(this.ContainsFocus)
             {
-                listManager.Position = 0;
+                listManager!.Position = 0;
                 this.Select(-1, -1, -1);
             }
         }
@@ -2678,9 +2667,9 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void btnPrev_Click(object sender, System.EventArgs e)
+        private void btnPrev_Click(object? sender, EventArgs e)
         {
-            if(this.ContainsFocus && listManager.Position > 0)
+            if(this.ContainsFocus && listManager!.Position > 0)
             {
                 listManager.Position--;
                 this.Select(-1, -1, -1);
@@ -2692,7 +2681,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event parameters</param>
-        private void btnPrev_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
+        private void btnPrev_MouseDown(object? sender, MouseEventArgs e)
         {
             if(this.ContainsFocus)
             {
@@ -2707,7 +2696,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event parameters</param>
-        private void btnPrev_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
+        private void btnPrev_MouseUp(object? sender, MouseEventArgs e)
         {
             tmrRepeat.Enabled = false;
         }
@@ -2717,11 +2706,11 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void btnNext_Click(object sender, System.EventArgs e)
+        private void btnNext_Click(object? sender, EventArgs e)
         {
             if(this.ContainsFocus)
             {
-                if(listManager.Position < listManager.Count - 1)
+                if(listManager!.Position < listManager.Count - 1)
                     listManager.Position++;
                 else
                     if(changePolicy.AllowAdditions)
@@ -2736,7 +2725,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event parameters</param>
-        private void btnNext_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
+        private void btnNext_MouseDown(object? sender, MouseEventArgs e)
         {
             if(this.ContainsFocus)
             {
@@ -2751,7 +2740,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event parameters</param>
-        private void btnNext_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
+        private void btnNext_MouseUp(object? sender, MouseEventArgs e)
         {
             tmrRepeat.Enabled = false;
         }
@@ -2761,11 +2750,11 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void btnLast_Click(object sender, System.EventArgs e)
+        private void btnLast_Click(object? sender, EventArgs e)
         {
             if(this.ContainsFocus)
             {
-                listManager.Position = listManager.Count - 1;
+                listManager!.Position = listManager.Count - 1;
                 this.Select(-1, -1, -1);
             }
         }
@@ -2775,7 +2764,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event parameters</param>
-        private void btnAdd_Click(object sender, System.EventArgs e)
+        private void btnAdd_Click(object? sender, EventArgs e)
         {
             if(this.ContainsFocus)
                 this.MoveTo(RowPosition.NewRow);
@@ -2786,7 +2775,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event parameters</param>
-        private void btnDelete_Click(object sender, System.EventArgs e)
+        private void btnDelete_Click(object? sender, EventArgs e)
         {
             if(this.ContainsFocus)
                 this.DeleteRow(currentRow);
@@ -2797,7 +2786,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event parameters</param>
-        private void tmrRepeat_Tick(object sender, System.EventArgs e)
+        private void tmrRepeat_Tick(object? sender, EventArgs e)
         {
             // Only repeat while the cursor is in the button
             Point p = repeatButton.PointToClient(Cursor.Position);
@@ -2819,11 +2808,13 @@ namespace EWSoftware.ListControls
                 // If the start or end of the set is reached, turn the timer off.  When starting the repeat from
                 // the "new row" placeholder, the button loses focus so we return focus to it so that when you
                 // let go, the right row has the focus.
-                if(!repeatButton.Enabled || (!changePolicy.AllowAdditions && currentRow >= listManager.Count - 1))
+                if(!repeatButton.Enabled || (!changePolicy.AllowAdditions && currentRow >= listManager!.Count - 1))
                     tmrRepeat.Enabled = false;
                 else
+                {
                     if(!repeatButton.Focused)
                         repeatButton.Focus();
+                }
             }
         }
 
@@ -2833,7 +2824,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="ds">The data source to check</param>
         /// <param name="member">The data member to check</param>
-        private void EnforceValidDataMember(object ds, string member)
+        private void EnforceValidDataMember(object? ds, string? member)
         {
             if(ds != null && member != null && member.Length != 0 && this.Parent != null &&
               this.BindingContext != null)
@@ -2859,7 +2850,7 @@ namespace EWSoftware.ListControls
         /// something really changed.</param>
         /// <exception cref="ArgumentException">This is thrown if the data member cannot be found in the data
         /// source.</exception>
-        private void SetListManager(object newDataSource, string newDataMember, bool force)
+        private void SetListManager(object? newDataSource, string? newDataMember, bool force)
         {
             bool dataSrcChanged = dataSource != newDataSource;
             bool dataMbrChanged = dataMember != newDataMember;
@@ -2974,7 +2965,7 @@ namespace EWSoftware.ListControls
                 }
 
                 // Create the row template items
-                ConstructorInfo ctor = rowTemplate.GetConstructor(Type.EmptyTypes);
+                ConstructorInfo ctor = rowTemplate.GetConstructor(Type.EmptyTypes)!;
                 rowHeight = -1;
 
     			for(idx = 0; idx < listManager.Count; idx++, top += rowHeight, sepTop += rowHeight)
@@ -3016,14 +3007,12 @@ namespace EWSoftware.ListControls
                 // Something in the data binding hierarchy tends to eat exceptions that occur during binding and
                 // you never see them (i.e. bad field names in a binding).  This logs them to the debugger if one
                 // is attached.
-                if(System.Diagnostics.Debugger.IsAttached)
+                if(Debugger.IsAttached)
                 {
-                    // Can't use System.Diagnostics.Debug as it gets excluded from the release build.  This does
+                    // Can't use Debug as it gets excluded from the release build.  This does
                     // the same thing though but is compiled into the release build.
-                    using(var dtl = new System.Diagnostics.DefaultTraceListener())
-                    {
-                        dtl.WriteLine(LR.GetString("ExBindData1", this.Name, ex.Message));
-                    }
+                    using var dtl = new DefaultTraceListener();
+                    dtl.WriteLine(LR.GetString("ExBindData1", this.Name, ex.Message));
                 }
             }
             finally
@@ -3031,6 +3020,7 @@ namespace EWSoftware.ListControls
                 this.CalculateGlyphPoints();
 
                 if(!bindFailed)
+                {
                     if(!changePolicy.AllowAdditions)
                     {
                         this.Invalidate(new Rectangle(0, 0, rowHeaderWidth, this.Height), false);
@@ -3038,6 +3028,7 @@ namespace EWSoftware.ListControls
                     }
                     else
                         this.AddNewRowTemplate();
+                }
 
                 lblRowCount.Text = LR.GetString("DLNavRowCount", (listManager != null) ? listManager.Count : 0);
 
@@ -3057,8 +3048,8 @@ namespace EWSoftware.ListControls
                 catch(Exception ex)
                 {
                     // As above.  Log the exception so that we know it occurred.
-                    if(System.Diagnostics.Debugger.IsAttached)
-                        using(var dtl = new System.Diagnostics.DefaultTraceListener())
+                    if(Debugger.IsAttached)
+                        using(var dtl = new DefaultTraceListener())
                         {
                             dtl.WriteLine(LR.GetString("ExBindData2", this.Name, ex.Message));
                         }
@@ -3092,7 +3083,7 @@ namespace EWSoftware.ListControls
                 top = pnlRows.Controls[pnlRows.Controls.Count - 1].Top +
                     pnlRows.Controls[pnlRows.Controls.Count - 1].Height;
 
-            ConstructorInfo ctor = rowTemplate.GetConstructor(Type.EmptyTypes);
+            ConstructorInfo ctor = rowTemplate.GetConstructor(Type.EmptyTypes)!;
             TemplateControl tc = (TemplateControl)ctor.Invoke(null);
 
             // This is going to get used right away so initialize it now
@@ -3123,8 +3114,7 @@ namespace EWSoftware.ListControls
                     width = tc.Width;
 
                 width += (pnlRows.AutoScrollPosition.X * -1);
-                Separator sep = new Separator(sepColor, sepHeight, width, pnlRows.AutoScrollPosition.X,
-                    top + tc.Height);
+                Separator sep = new(sepColor, sepHeight, width, pnlRows.AutoScrollPosition.X, top + tc.Height);
                 pnlRows.Controls.Add(sep);
             }
 
@@ -3174,18 +3164,20 @@ namespace EWSoftware.ListControls
 
                 // Set the control's row source and add a new "new row" template
                 tc.IsNewRowInternal = false;
-                tc.SetRowSourceInternal(listManager.List[listManager.Count - 1]);
+                tc.SetRowSourceInternal(listManager!.List[listManager.Count - 1]);
                 AddNewRowTemplate();
             }
             else
             {
-                idx = listManager.Count - 1;
+                idx = listManager!.Count - 1;
 
                 if(pnlRows.Controls.Count != 0)
+                {
                     top = pnlRows.Controls[pnlRows.Controls.Count - 1].Top +
                         pnlRows.Controls[pnlRows.Controls.Count - 1].Height - 1;
+                }
 
-                ConstructorInfo ctor = rowTemplate.GetConstructor(Type.EmptyTypes);
+                ConstructorInfo ctor = rowTemplate!.GetConstructor(Type.EmptyTypes)!;
                 tc = (TemplateControl)ctor.Invoke(null);
                 tc.TemplateParentInternal = this;
                 tc.InitializeTemplate();
@@ -3212,8 +3204,7 @@ namespace EWSoftware.ListControls
                         width = tc.Width;
 
                     width += (pnlRows.AutoScrollPosition.X * -1);
-                    Separator sep = new Separator(sepColor, sepHeight, width, pnlRows.AutoScrollPosition.X,
-                        top + tc.Height);
+                    Separator sep = new(sepColor, sepHeight, width, pnlRows.AutoScrollPosition.X, top + tc.Height);
                     pnlRows.Controls.Add(sep);
                 }
 
@@ -3264,12 +3255,13 @@ namespace EWSoftware.ListControls
 
             // If someone besides us removed the row, remove the row template without asking
             if(!externalRequest)
+            {
                 try
                 {
                     inDelRow = true;
 
                     // See if the user will allow the delete to occur
-                    DataListCancelEventArgs ce = new DataListCancelEventArgs(delRow, tc);
+                    DataListCancelEventArgs ce = new(delRow, tc);
 
                     // Allow the row template a chance to allow or deny the deletion.  It has the current row
                     // values in its controls which may or may not be in the data source yet due to the way data
@@ -3297,6 +3289,7 @@ namespace EWSoftware.ListControls
                 {
                     inDelRow = false;
                 }
+            }
 
             Cursor oldCursor = this.Cursor;
 
@@ -3320,11 +3313,12 @@ namespace EWSoftware.ListControls
                 }
 
                 // Delete the row from the data source if it is there
-                if(!externalRequest && delRow < listManager.Count)
+                if(!externalRequest && delRow < listManager!.Count)
                     listManager.RemoveAt(delRow);
 
                 // Adjust the row selection if necessary
                 if(selStart != -1)
+                {
                     if(delRow >= selStart && delRow <= selEnd)
                     {
                         selEnd--;
@@ -3333,11 +3327,14 @@ namespace EWSoftware.ListControls
                             selStart = selEnd = -1;
                     }
                     else
+                    {
                         if(delRow < selStart)
                         {
                             selStart--;
                             selEnd--;
                         }
+                    }
+                }
 
                 // Adjust the position of the other controls and rebind them to their new row
                 while(ctlRow < cc.Count)
@@ -3345,11 +3342,9 @@ namespace EWSoftware.ListControls
                     c = cc[ctlRow];
                     c.Top -= rowHeight;
 
-                    tc = c as TemplateControl;
-
-                    if(tc != null && !tc.IsNewRowInternal)
+                    if(c is TemplateControl t && !t.IsNewRowInternal)
                     {
-                        tc.SetRowSourceInternal(listManager.List[delRow]);
+                        t.SetRowSourceInternal(listManager!.List[delRow]);
                         delRow++;
                     }
 
@@ -3365,7 +3360,7 @@ namespace EWSoftware.ListControls
                 pnlRows.ResumeLayout();
             }
 
-            lblRowCount.Text = LR.GetString("DLNavRowCount", listManager.Count);
+            lblRowCount.Text = LR.GetString("DLNavRowCount", listManager!.Count);
 
             if(rowHeadersVisible)
             {
@@ -3411,17 +3406,14 @@ namespace EWSoftware.ListControls
         /// <returns>Always returns true</returns>
         private bool HandleEscapeKey()
         {
-            TemplateControl tc;
-            int row;
-
-            tc = this.CurrentItem;
+            var tc = this.CurrentItem;
 
             if(tc != null && !tc.IsNewRowInternal)
             {
                 // Row may not be the same afterwards if canceling changes on the new row
-                row = currentRow;
+                int row = currentRow;
 
-                DataListCancelEventArgs ce = new DataListCancelEventArgs(row, tc);
+                DataListCancelEventArgs ce = new(row, tc);
 
                 OnCancelingEdits(ce);
 
@@ -3450,16 +3442,13 @@ namespace EWSoftware.ListControls
         /// list lets it handle the key instead so that you can page up/down through its text.</remarks>
         private bool HandlePageUpPageDownKeys(Keys key, bool ctrlPressed)
         {
-            ContainerControl cc;
-            TemplateControl tc;
-            TextBoxBase tb;
-            Control ctl;
+            TextBoxBase? tb;
             int  row;
             bool handled = false;
 
-            tc = this.CurrentItem;
+            var tc = this.CurrentItem;
 
-            if(tc != null && listManager.Count != 0)
+            if(tc != null && listManager!.Count != 0)
             {
                 // If Control is pressed, jump to the first or last row
                 if(key == Keys.PageUp)
@@ -3488,13 +3477,11 @@ namespace EWSoftware.ListControls
                 else
                 {
                     // Get the active control
-                    ctl = tc.ActiveControl;
+                    var ctl = tc.ActiveControl;
 
                     while(ctl != null)
                     {
-                        cc = ctl as ContainerControl;
-
-                        if(cc == null)
+                        if(ctl is not ContainerControl cc)
                             break;
 
                         ctl = cc.ActiveControl;
@@ -3505,11 +3492,12 @@ namespace EWSoftware.ListControls
                     tb = ctl as TextBoxBase;
                 }
 
-                if(tb == null || tb.Multiline == false || tb.SelectionLength == tb.Text.Length)
+                if(tb == null || !tb.Multiline || tb.SelectionLength == tb.Text.Length)
                 {
                     if(row < 0)
                         this.MoveTo(RowPosition.FirstRow);
                     else
+                    {
                         if(row >= listManager.Count)
                         {
                             if(changePolicy.AllowAdditions)
@@ -3519,6 +3507,7 @@ namespace EWSoftware.ListControls
                         }
                         else
                             this.MoveTo(row);
+                    }
 
                     handled = true;
                 }
@@ -3565,11 +3554,11 @@ namespace EWSoftware.ListControls
             }
 
             if(focusHeader)
-                header.Focus();
+                header!.Focus();
             else
             {
                 if(focusFooter)
-                    footer.Focus();
+                    footer!.Focus();
                 else
                 {
                     if(focusDetail)
@@ -3643,7 +3632,7 @@ namespace EWSoftware.ListControls
                 // Change the focus to the next or prior control?
                 if(key == Keys.Tab)
                 {
-                    if(ctrlPressed && this.Parent.SelectNextControl(this, (keyData & Keys.Shift) == Keys.None,
+                    if(ctrlPressed && this.Parent!.SelectNextControl(this, (keyData & Keys.Shift) == Keys.None,
                       true, true, true))
                     {
                         keyHandled = true;
@@ -3691,8 +3680,7 @@ namespace EWSoftware.ListControls
         protected override bool ProcessMnemonic(char charCode)
         {
             bool processed = false;
-
-            TemplateControl tc = this.CurrentItem;
+            var tc = this.CurrentItem;
 
             if(tc != null)
             {
@@ -3726,8 +3714,8 @@ namespace EWSoftware.ListControls
 
             if(!this.DesignMode && !this.Focused && this.Parent != null)
             {
-                IContainerControl container = null;
-                Control parent = this.Parent;
+                IContainerControl? container = null;
+                Control? parent = this.Parent;
 
                 // Find the container so that we can set its active control to ourself
                 while(container == null && parent != null)
@@ -3738,7 +3726,7 @@ namespace EWSoftware.ListControls
 
                 if(container != null)
                 {
-                    TemplateControl tc = this.CurrentItem;
+                    var tc = this.CurrentItem;
 
                     // Select the current item, the header, the footer, or the row number control
                     if(tc != null)
@@ -3840,7 +3828,7 @@ namespace EWSoftware.ListControls
                 if(row < 0)
                     row = 0;
                 else
-                    if(row >= listManager.Count)
+                    if(row >= listManager!.Count)
                         row = listManager.Count - 1;
 
                 if(row != lastMouseRow)
@@ -3992,7 +3980,6 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            TemplateControl tc;
             int idx;
 
             if(e == null)
@@ -4011,7 +3998,7 @@ namespace EWSoftware.ListControls
             if(this.ContainsFocus && listManager != null && listManager.Count != 0 && e.Y > pnlRows.Top &&
               e.Y < pnlRows.Bottom)
             {
-                tc = this.CurrentItem;
+                var tc = this.CurrentItem;
 
                 // Don't move if the current row is not valid
                 if(tc != null && !tc.IsValid)
@@ -4118,7 +4105,7 @@ namespace EWSoftware.ListControls
                 if(row < 0)
                     row = 0;
                 else
-                    if(row >= listManager.Count)
+                    if(row >= listManager!.Count)
                         row = listManager.Count - 1;
 
                 if(showSep)
@@ -4153,9 +4140,9 @@ namespace EWSoftware.ListControls
         {
             if(this.ContainsFocus && dragMode != DragMode.None)
             {
-                if(currentRow != lastMouseRow && lastMouseRow < listManager.Count)
+                if(currentRow != lastMouseRow && lastMouseRow < listManager!.Count)
                 {
-                    TemplateControl tc = this.CurrentItem;
+                    var tc = this.CurrentItem;
 
                     // Changing the position commits the new row so get rid of it if nothing has changed
                     if(tc != null && tc.IsNewRowInternal)
@@ -4213,10 +4200,8 @@ namespace EWSoftware.ListControls
                 return;
 
             Graphics g = e.Graphics;
-
-            TemplateControl tc;
+            TemplateControl? tc;
             Point[] pts;
-
             int row, rowPos, fillRange, maxRows, glyphPosY, multiplier = (showSep) ? 2 : 1;
 
             if(listManager != null && pnlRows.Controls.Count != 0)
@@ -4381,7 +4366,7 @@ namespace EWSoftware.ListControls
             // WM_SETFOCUS
             if(m.Msg == 0x0007 && listManager != null && listManager.Count != 0)
             {
-                TemplateControl tc = this.CurrentItem;
+                var tc = this.CurrentItem;
 
                 if(tc != null)
                 {
@@ -4403,7 +4388,7 @@ namespace EWSoftware.ListControls
         /// <param name="member">The data member in the data source to use, if any</param>
         /// <param name="rowTemplateType">The template control type to use for creating the rows</param>
         /// <overloads>There are two overloads for this method</overloads>
-        public void SetDataBinding(object dataSource, string member, Type rowTemplateType)
+        public void SetDataBinding(object dataSource, string? member, Type rowTemplateType)
         {
             this.RowTemplate = null;
             this.SetListManager(dataSource, member, false);
@@ -4420,7 +4405,7 @@ namespace EWSoftware.ListControls
         /// <param name="rowTemplateType">The template control type to use for creating the rows</param>
         /// <param name="headerTemplateType">The template control type to use for creating the header, if any</param>
         /// <param name="footerTemplateType">The template control type to use for creating the footer, if any</param>
-        public void SetDataBinding(object dataSource, string member, Type rowTemplateType, Type headerTemplateType,
+        public void SetDataBinding(object dataSource, string? member, Type rowTemplateType, Type headerTemplateType,
           Type footerTemplateType)
         {
             this.RowTemplate = this.HeaderTemplate = this.FooterTemplate = null;
@@ -4594,7 +4579,7 @@ namespace EWSoftware.ListControls
         {
             if(listManager != null && listManager.Count != 0)
             {
-                TemplateControl tc = this.CurrentItem;
+                var tc = this.CurrentItem;
 
                 if(tc != null)
                 {
@@ -4602,8 +4587,10 @@ namespace EWSoftware.ListControls
                     if(tc.IsNewRowInternal)
                         listManager.CancelCurrentEdit();
                     else
+                    {
                         if(tc.RowSource != null)
-                            tc.BindingContext[tc.RowSource].EndCurrentEdit();
+                            tc.BindingContext![tc.RowSource].EndCurrentEdit();
+                    }
                 }
 
                 listManager.EndCurrentEdit();
@@ -4629,16 +4616,16 @@ namespace EWSoftware.ListControls
                 try
                 {
                     isUndoing = true;
-                    TemplateControl tc = this.CurrentItem;
+                    var tc = this.CurrentItem;
 
                     if(tc != null && tc.RowSource != null)
                     {
-                        DataRowView drv = tc.RowSource as DataRowView;
+                        var drv = tc.RowSource as DataRowView;
 
                         // A DataRowView object will not exist in the data source if it is the new row.  If so,
                         // ignore the request.
                         if((drv == null || !drv.IsNew) && !tc.IsNewRowInternal)
-                            tc.BindingContext[tc.RowSource].CancelCurrentEdit();
+                            tc.BindingContext![tc.RowSource].CancelCurrentEdit();
                     }
 
                     listManager.CancelCurrentEdit();
@@ -4801,10 +4788,8 @@ namespace EWSoftware.ListControls
             if(key == null)
                 throw new ArgumentNullException(nameof(key), LR.GetString("ExNullFindParam"));
 
-            PropertyDescriptorCollection coll = listManager.GetItemProperties();
-            PropertyDescriptor prop = coll.Find(member, true);
-
-            if(prop == null)
+            PropertyDescriptorCollection coll = listManager!.GetItemProperties();
+            PropertyDescriptor prop = coll.Find(member, true) ??
                 throw new ArgumentOutOfRangeException(nameof(member), member, LR.GetString("ExInvalidMember"));
 
             if(listManager.List is IBindingList bl && bl.SupportsSearching)
@@ -4918,7 +4903,6 @@ namespace EWSoftware.ListControls
         {
             bool found;
             int length, idx;
-            string propValue;
 
             if(listManager == null || listManager.Count == 0)
                 return -1;
@@ -4933,9 +4917,7 @@ namespace EWSoftware.ListControls
                 throw new ArgumentNullException(nameof(key), LR.GetString("ExNullFindParam"));
 
             PropertyDescriptorCollection coll = listManager.GetItemProperties();
-            PropertyDescriptor prop = coll.Find(member, true);
-
-            if(prop == null)
+            PropertyDescriptor prop = coll.Find(member, true) ??
                 throw new ArgumentOutOfRangeException(nameof(member), member, LR.GetString("ExInvalidMember"));
 
             length = key.Length;
@@ -4944,7 +4926,7 @@ namespace EWSoftware.ListControls
             while(true)
             {
                 idx++;
-                propValue = prop.GetValue(listManager.List[idx]).ToString();
+                string? propValue = prop.GetValue(listManager.List[idx])?.ToString();
 
                 if(exactMatch)
                     found = String.Equals(key, propValue, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);

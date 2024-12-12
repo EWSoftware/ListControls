@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : BaseListControl.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/06/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/11/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a base list control class used to contain the common item collection and data binding
 // elements for many of the list controls in this library.
@@ -18,13 +18,9 @@
 // 04/16/2005  EFW  Created the code
 //===============================================================================================================
 
-using System;
 using System.Collections;
-using System.ComponentModel;
-using System.Drawing;
 using System.Drawing.Design;
 using System.Globalization;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls
 {
@@ -72,7 +68,7 @@ namespace EWSoftware.ListControls
             /// <returns>Returns a negative value if x is less than y, zero if they are equal, or a positive
             /// value if x is greater than y.  The results are inverted if the sort order is descending.  If the
             /// sort order is set to <c>None</c> all items are treated as equal.</returns>
-            public int Compare(object x, object y)
+            public int Compare(object? x, object? y)
             {
                 ListSortOrder order = listControl.SortOrder;
 
@@ -90,7 +86,7 @@ namespace EWSoftware.ListControls
                 if(y == null)
                     return (order == ListSortOrder.Ascending) ? 1 : -1;
 
-                string textX = listControl.GetItemText(x), textY = listControl.GetItemText(y);
+                string? textX = listControl.GetItemText(x), textY = listControl.GetItemText(y);
 
                 if(order == ListSortOrder.Ascending)
                     return Application.CurrentCulture.CompareInfo.Compare(textX, textY, CompareOptions.StringSort);
@@ -112,8 +108,8 @@ namespace EWSoftware.ListControls
         {
             //=================================================================
 
-            private IComparer comparer;
-            private ArrayList innerList;
+            private IComparer comparer = null!;
+            private ArrayList innerList = null!;
             private readonly BaseListControl owner;
 
             //=================================================================
@@ -143,8 +139,7 @@ namespace EWSoftware.ListControls
             {
                 get
                 {
-                    if(comparer == null)
-                        comparer = new ItemComparer(owner);
+                    comparer ??= new ItemComparer(owner);
 
                     return comparer;
                 }
@@ -163,8 +158,7 @@ namespace EWSoftware.ListControls
             {
                 get
                 {
-                    if(innerList == null)
-                        innerList = new ArrayList();
+                    innerList ??= [];
 
                     return innerList;
                 }
@@ -187,21 +181,21 @@ namespace EWSoftware.ListControls
             /// <exception cref="ArgumentOutOfRangeException">This is thrown if the index value is not within the
             /// bounds of the collection.</exception>
             [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-            public object this[int index]
+            public object? this[int index]
             {
                 get
                 {
                     if(index < 0 && index >= this.InnerList.Count)
                         throw new ArgumentOutOfRangeException(nameof(index), index, LR.GetString("ExItemIndexOutOfRange"));
 
-                    return this.InnerList[index];
+                    return this.InnerList[index]!;
                 }
                 set
                 {
                     if(owner.DataSource != null)
                         throw new ArgumentException(LR.GetString("ExDataSourceLocksItems"));
 
-                    this.SetItemInternal(index, value);
+                    this.SetItemInternal(index, value!);
                 }
             }
 
@@ -254,9 +248,9 @@ namespace EWSoftware.ListControls
             /// <see cref="IList"/> implementation to add an item to the collection
             /// </summary>
             /// <param name="item">The item to add</param>
-            int IList.Add(object item)
+            int IList.Add(object? item)
             {
-                return this.Add(item);
+                return this.Add(item!);
             }
 
             /// <summary>
@@ -329,9 +323,9 @@ namespace EWSoftware.ListControls
             /// </summary>
             /// <param name="value">The value for which to look</param>
             /// <returns>True if it is in the collection, false if not</returns>
-            public bool Contains(object value)
+            public bool Contains(object? value)
             {
-                return (this.IndexOf(value) != -1);
+                return (this.IndexOf(value!) != -1);
             }
 
             /// <summary>
@@ -359,7 +353,7 @@ namespace EWSoftware.ListControls
             /// <param name="value">The value for which to get the index</param>
             /// <returns>The index of the item or -1 if not found</returns>
             /// <exception cref="ArgumentNullException">This is thrown if the item is null</exception>
-            public int IndexOf(object value)
+            public int IndexOf(object? value)
             {
                 if(value == null)
                     throw new ArgumentNullException(nameof(value), LR.GetString("ExNullParameter"));
@@ -379,7 +373,7 @@ namespace EWSoftware.ListControls
             /// bounds of the collection.</exception>
             /// <exception cref="ArgumentException">This is thrown if an attempt is made to add a value to the
             /// collection when a data source is in use.</exception>
-            public void Insert(int index, object value)
+            public void Insert(int index, object? value)
             {
                 if(owner.DataSource != null)
                     throw new ArgumentException(LR.GetString("ExDataSourceLocksItems"));
@@ -403,7 +397,7 @@ namespace EWSoftware.ListControls
             /// Remove the specified value from the collection
             /// </summary>
             /// <param name="value">The value to remove</param>
-            public void Remove(object value)
+            public void Remove(object? value)
             {
                 int idx = this.InnerList.IndexOf(value);
 
@@ -481,7 +475,7 @@ namespace EWSoftware.ListControls
         //====================================================================
 
         // List control items and state information
-        private BaseListControl.ObjectCollection itemsCollection;
+        private ObjectCollection? itemsCollection;
         private ListSortOrder sortOrder;
         private FlatStyle flatStyle;
 
@@ -490,8 +484,8 @@ namespace EWSoftware.ListControls
         private int  initCount, defaultSelection, selectedIndex;
 
         // Data binding stuff
-        private object dataSource;
-        private CurrencyManager dataManager;
+        private object? dataSource;
+        private CurrencyManager? dataManager;
         private BindingMemberInfo displayMember;
         private BindingMemberInfo valueMember;
 
@@ -513,7 +507,7 @@ namespace EWSoftware.ListControls
         /// data-bound control, the default is a null reference. </remarks>
         [Browsable(false), Description("Returns the CurrencyManager that the list control is currently using " +
           "to get data from the data source.")]
-        public CurrencyManager DataManager => dataManager;
+        public CurrencyManager? DataManager => dataManager;
 
         /// <summary>
         /// This is used to set or get the text for the list control
@@ -526,22 +520,27 @@ namespace EWSoftware.ListControls
         {
             get
             {
-                if(base.DesignMode)
+                if(this.DesignMode)
                     return base.Text;
 
                 if(this.SelectedIndex == -1)
-                    return null;
+                    return null!;
 
-                return this.GetItemText(this.SelectedItem);
+                return this.GetItemText(this.SelectedItem)!;
             }
+// Not sure why this warns about a difference in nullability as I can't see one so suppress it for now
+#pragma warning disable CS8765
             set
+#pragma warning restore CS8765
             {
                 base.Text = value;
 
-                if(!base.DesignMode)
+                if(!this.DesignMode)
+                {
                     if(value == null)
                         this.SelectedIndex = -1;
                     else
+                    {
                         if((this.SelectedItem == null || !String.Equals(value,
                           this.GetItemText(this.SelectedItem), StringComparison.Ordinal)))
                         {
@@ -564,6 +563,8 @@ namespace EWSoftware.ListControls
                             // Value was null or no match was found
                             this.SelectedIndex = -1;
                         }
+                    }
+                }
             }
         }
 
@@ -599,7 +600,7 @@ namespace EWSoftware.ListControls
           AttributeProvider(typeof(IListSource)),
           TypeConverter("System.Windows.Forms.Design.DataSourceConverter, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"),
           Description("Indicates the list that the control will use to get its items")]
-        public object DataSource
+        public object? DataSource
         {
             get => dataSource;
             set
@@ -645,7 +646,7 @@ namespace EWSoftware.ListControls
             get => displayMember.BindingMember;
             set
             {
-                BindingMemberInfo bmi = new BindingMemberInfo(value);
+                BindingMemberInfo bmi = new(value);
 
                 if(!bmi.Equals(displayMember))
                     this.SetDataConnection(dataSource, bmi, false);
@@ -670,11 +671,11 @@ namespace EWSoftware.ListControls
             get => valueMember.BindingMember;
             set
             {
-                BindingMemberInfo bmi = new BindingMemberInfo(value);
+                BindingMemberInfo bmi = new(value);
 
                 if(!bmi.Equals(valueMember))
                 {
-                    if(this.DisplayMember.Length == 0)
+                    if((this.DisplayMember?.Length ?? 0) == 0)
                         this.SetDataConnection(dataSource, bmi, false);
 
                     if(dataManager != null && bmi.BindingMember.Length != 0 && !this.BindingMemberInfoInDataManager(bmi))
@@ -702,8 +703,7 @@ namespace EWSoftware.ListControls
         {
             get
             {
-                if(itemsCollection == null)
-                    itemsCollection = new ObjectCollection(this);
+                itemsCollection ??= new ObjectCollection(this);
 
                 return itemsCollection;
             }
@@ -734,7 +734,7 @@ namespace EWSoftware.ListControls
         /// value.</para></value>
         [Browsable(false), Bindable(true), Description("The currently selected item in the list control"),
           DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public object SelectedItem
+        public object? SelectedItem
         {
             get
             {
@@ -745,16 +745,16 @@ namespace EWSoftware.ListControls
             }
             set
             {
-                int nIdx;
+                int idx;
 
                 if(itemsCollection != null)
                 {
                     if(value != null)
                     {
-                        nIdx = itemsCollection.IndexOf(value);
+                        idx = itemsCollection.IndexOf(value);
 
-                        if(nIdx != -1)
-                            this.SelectedIndex = nIdx;
+                        if(idx != -1)
+                            this.SelectedIndex = idx;
                     }
                     else
                         this.SelectedIndex = -1;
@@ -774,7 +774,7 @@ namespace EWSoftware.ListControls
         [Category("Data"), DefaultValue(null), Bindable(true), Browsable(false),
           Description("The current value of the ValueMember property of the currently selected item"),
           DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public object SelectedValue
+        public object? SelectedValue
         {
             get
             {
@@ -785,7 +785,7 @@ namespace EWSoftware.ListControls
             }
             set
             {
-                if(dataManager != null)
+                if(dataManager != null && value != null)
                     this.SelectedIndex = this.Find(value);
             }
         }
@@ -837,7 +837,7 @@ namespace EWSoftware.ListControls
                 enforceDefaultSelection = value;
                 OnEnforceDefaultSelectionChanged(EventArgs.Empty);
 
-                if(value && this.SelectedIndex == -1 && this.Items.Count != 0 && !base.DesignMode)
+                if(value && this.SelectedIndex == -1 && this.Items.Count != 0 && !this.DesignMode)
                     this.SelectedIndex = this.DefaultSelection;
             }
         }
@@ -863,7 +863,7 @@ namespace EWSoftware.ListControls
                 OnDefaultSelectionChanged(EventArgs.Empty);
 
                 if(dataSource != null && this.EnforceDefaultSelection && this.SelectedIndex == -1 &&
-                  this.Items.Count != 0 && !base.DesignMode)
+                  this.Items.Count != 0 && !this.DesignMode)
                     this.SelectedIndex = defaultSelection;
             }
         }
@@ -890,7 +890,7 @@ namespace EWSoftware.ListControls
                         if(this.Items[0] is ValueType)
                             name = "ValueType";
                         else
-                            name = this.Items[0].GetType().Name;
+                            name = this.Items[0]!.GetType().Name;
                     }
 
                     return name;
@@ -932,7 +932,7 @@ namespace EWSoftware.ListControls
         /// null.</value>
         /// <overloads>There are two overloads for this property</overloads>
         [Browsable(false), Description("Get the specified column from the current row")]
-        public object this[string colName] => this[this.SelectedIndex, colName];
+        public object? this[string colName] => this[this.SelectedIndex, colName];
 
         /// <summary>
         /// This can be used to get the value of the specified column in the specified row of the list control's
@@ -944,18 +944,18 @@ namespace EWSoftware.ListControls
         /// <value>Returns the entry at the specified column in the specified row.  If the row is out of bounds
         /// or if the column cannot be found, this will return null.</value>
         [Browsable(false), Description("Get the specified column from the specified row")]
-        public object this[int rowIdx, string colName]
+        public object? this[int rowIdx, string colName]
         {
             get
             {
                 if(rowIdx < 0 || rowIdx >= this.Items.Count || colName == null || colName.Length == 0)
                     return null;
 
-                object oItem = this.Items[rowIdx];
+                object? oItem = this.Items[rowIdx];
 
                 if(oItem != null)
                 {
-                    PropertyDescriptor pd;
+                    PropertyDescriptor? pd;
 
                     if(dataManager != null)
                         pd = dataManager.GetItemProperties().Find(colName, true);
@@ -986,7 +986,7 @@ namespace EWSoftware.ListControls
         /// <exclude/>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden),
           Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        public override Image BackgroundImage => null;
+        public override Image? BackgroundImage => null;
 
         /// <summary>
         /// List controls do not use this property so it is hidden.  It always returns the base class's value.
@@ -1017,14 +1017,14 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <exclude/>
         [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        public new event EventHandler BackgroundImageChanged;
+        public new event EventHandler? BackgroundImageChanged;
 
         /// <summary>
         /// List controls do not use the load event so it is hidden
         /// </summary>
         /// <exclude/>
         [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        public new event EventHandler Load;
+        public new event EventHandler? Load;
 
 #pragma warning restore 0067
         #endregion
@@ -1036,7 +1036,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="DataSource"/> is changed
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the control's data source changes")]
-        public event EventHandler DataSourceChanged;
+        public event EventHandler? DataSourceChanged;
 
         /// <summary>
         /// This raises the <see cref="DataSourceChanged"/> event
@@ -1058,7 +1058,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="DisplayMember"/> changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the control's display member changes")]
-        public event EventHandler DisplayMemberChanged;
+        public event EventHandler? DisplayMemberChanged;
 
         /// <summary>
         /// This raises the <see cref="DisplayMemberChanged"/> event
@@ -1076,7 +1076,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="ValueMember"/> changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the control's value member changes")]
-        public event EventHandler ValueMemberChanged;
+        public event EventHandler? ValueMemberChanged;
 
         /// <summary>
         /// This raises the <see cref="ValueMemberChanged"/> event
@@ -1091,7 +1091,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="SelectedIndex"/> changes
         /// </summary>
         [Category("Behavior"), Description("Occurs when the selected index changes")]
-        public event EventHandler SelectedIndexChanged;
+        public event EventHandler? SelectedIndexChanged;
 
         /// <summary>
         /// This raises the <see cref="SelectedIndexChanged"/> event
@@ -1111,7 +1111,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="SelectedValue"/> changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the control's selected value changes")]
-        public event EventHandler SelectedValueChanged;
+        public event EventHandler? SelectedValueChanged;
 
         /// <summary>
         /// This raises the <see cref="SelectedValueChanged"/> event
@@ -1128,7 +1128,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="SelectedItem"/> changes
         /// </summary>
         [Category("Behavior"), Description("Occurs when the selected item changes")]
-        public event EventHandler SelectedItemChanged;
+        public event EventHandler? SelectedItemChanged;
 
         /// <summary>
         /// This raises the <see cref="SelectedItemChanged"/> event
@@ -1149,7 +1149,7 @@ namespace EWSoftware.ListControls
         /// </remarks>
         [Category("Behavior"),
           Description("Occurs when the control has changed in some way that requires sub-controls to be recreated")]
-        public event EventHandler SubControlsRefreshed;
+        public event EventHandler? SubControlsRefreshed;
 
         /// <summary>
         /// This raises the <see cref="SubControlsRefreshed"/> event
@@ -1164,7 +1164,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="EnforceDefaultSelection"/> property changes
         /// </summary>
         [Category("Behavior"), Description("Occurs when Enforce Default Selection changes")]
-        public event EventHandler EnforceDefaultSelectionChanged;
+        public event EventHandler? EnforceDefaultSelectionChanged;
 
         /// <summary>
         /// This raises the <see cref="EnforceDefaultSelectionChanged"/> event
@@ -1179,7 +1179,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="DefaultSelection"/> changes
         /// </summary>
         [Category("Behavior"), Description("Occurs when the default selection changes")]
-        public event EventHandler DefaultSelectionChanged;
+        public event EventHandler? DefaultSelectionChanged;
 
         /// <summary>
         /// This raises the <see cref="DefaultSelectionChanged"/> event
@@ -1267,7 +1267,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void DataManager_ItemChanged(object sender, ItemChangedEventArgs e)
+        private void DataManager_ItemChanged(object? sender, ItemChangedEventArgs e)
         {
             DataManager_ItemChanged(sender, e.Index);
         }
@@ -1278,14 +1278,14 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="index">The index of the item being changed in the list</param>
-        private void DataManager_ItemChanged(object sender, int index)
+        private void DataManager_ItemChanged(object? sender, int index)
         {
             if(sender is CurrencyManager dm)
             {
                 if(index == -1)
                     this.SetItemsCore(dm.List);
                 else
-                    this.SetItemCore(index, dm.List[index]);
+                    this.SetItemCore(index, dm.List[index]!);
             }
         }
 
@@ -1294,7 +1294,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void DataManager_PositionChanged(object sender, EventArgs e)
+        private void DataManager_PositionChanged(object? sender, EventArgs e)
         {
             if(dataManager != null && dataManager.Position < this.Items.Count)
                 this.SelectedIndex = dataManager.Position;
@@ -1305,7 +1305,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void DataSource_Disposed(object sender, EventArgs e)
+        private void DataSource_Disposed(object? sender, EventArgs e)
         {
             this.SetDataConnection(null, new BindingMemberInfo(String.Empty), true);
         }
@@ -1362,7 +1362,7 @@ namespace EWSoftware.ListControls
         /// something really changed.</param>
         /// <exception cref="ArgumentException">This is thrown if the display member cannot be found in the data
         /// source.</exception>
-        private void SetDataConnection(object newDataSource, BindingMemberInfo newDisplayMember, bool force)
+        private void SetDataConnection(object? newDataSource, BindingMemberInfo newDisplayMember, bool force)
         {
             bool dataSourceChanged = dataSource != newDataSource;
             bool displayMemberChanged = !displayMember.Equals(newDisplayMember);
@@ -1378,7 +1378,7 @@ namespace EWSoftware.ListControls
                 if(dataSource is IComponent c2)
                     c2.Disposed += DataSource_Disposed;
 
-                CurrencyManager cm = null;
+                CurrencyManager? cm = null;
 
                 // Touching the BindingContext for the first time creates one and we don't want to come here
                 // again yet.
@@ -1434,20 +1434,19 @@ namespace EWSoftware.ListControls
         /// This is used to perform item searches
         /// </summary>
         /// <param name="searchString">The string for which to search</param>
-        /// <param name="items">The item collection to search</param>
         /// <param name="startIndex">The item after which to start the search</param>
         /// <param name="exact">True for an exact match search, false to find the first item that starts with the
         /// specified text.</param>
-        private int FindStringInternal(string searchString, IList items, int startIndex, bool exact)
+        private int FindStringInternal(string searchString, int startIndex, bool exact)
         {
             bool found;
 
-            if(searchString == null || items == null)
+            if(searchString == null || this.Items == null)
                 return -1;
 
             int length = searchString.Length, idx = startIndex;
 
-            if(startIndex < -1 || startIndex >= items.Count - 1)
+            if(startIndex < -1 || startIndex >= this.Items.Count - 1)
                 idx = startIndex = -1;
 
             while(true)
@@ -1455,10 +1454,10 @@ namespace EWSoftware.ListControls
                 idx++;
 
                 if(exact)
-                    found = String.Equals(searchString, this.GetItemText(items[idx]), StringComparison.OrdinalIgnoreCase);
+                    found = String.Equals(searchString, this.GetItemText(this.Items[idx]), StringComparison.OrdinalIgnoreCase);
                 else
                 {
-                    found = String.Compare(searchString, 0, this.GetItemText(items[idx]), 0, length,
+                    found = String.Compare(searchString, 0, this.GetItemText(this.Items[idx]), 0, length,
                         StringComparison.OrdinalIgnoreCase) == 0;
                 }
 
@@ -1466,7 +1465,7 @@ namespace EWSoftware.ListControls
                     return idx;
 
                 // If we hit the end loop back to the start
-                if(idx == items.Count - 1)
+                if(idx == this.Items.Count - 1)
                     idx = -1;
 
                 // If we've been all the way through, give up
@@ -1497,7 +1496,7 @@ namespace EWSoftware.ListControls
         /// <param name="item">The item from which to get the info</param>
         /// <returns>The found property value or the item itself if not found</returns>
         /// <overloads>There are two overloads for this method</overloads>
-        protected object FilterItemOnProperty(object item)
+        protected object? FilterItemOnProperty(object item)
         {
             return this.FilterItemOnProperty(item, displayMember.BindingField);
         }
@@ -1508,13 +1507,13 @@ namespace EWSoftware.ListControls
         /// <param name="item">The item from which to get the info</param>
         /// <param name="field">The field on which to get the info</param>
         /// <returns>The found property value or the item itself if not found</returns>
-        protected object FilterItemOnProperty(object item, string field)
+        protected object? FilterItemOnProperty(object? item, string field)
         {
             if(item != null && field != null && field.Length > 0)
             {
                 try
                 {
-                    PropertyDescriptor pd;
+                    PropertyDescriptor? pd;
 
                     if(dataManager != null)
                         pd = dataManager.GetItemProperties().Find(field, true);
@@ -1528,14 +1527,12 @@ namespace EWSoftware.ListControls
                 {
                     // Should this really eat exceptions?  The .NET ListControl class does.  We'll log them for
                     // debugging purposes for the time being.
-                    if(System.Diagnostics.Debugger.IsAttached)
+                    if(Debugger.IsAttached)
                     {
                         // Can't use System.Diagnostics.Debug as it gets excluded from the release build.  This
                         // does the same thing though but is compiled into the release build.
-                        using(var dtl = new System.Diagnostics.DefaultTraceListener())
-                        {
-                            dtl.WriteLine(LR.GetString("ExFilterItemOnProp", this.Name, ex.Message));
-                        }
+                        using var dtl = new DefaultTraceListener();
+                        dtl.WriteLine(LR.GetString("ExFilterItemOnProp", this.Name, ex.Message));
                     }
                 }
             }
@@ -1549,7 +1546,7 @@ namespace EWSoftware.ListControls
         /// <param name="index">The index of the item to refresh</param>
         protected virtual void RefreshItem(int index)
         {
-            this.Items.SetItemInternal(index, this.Items[index]);
+            this.Items.SetItemInternal(index, this.Items[index]!);
         }
 
         /// <summary>
@@ -1558,18 +1555,18 @@ namespace EWSoftware.ListControls
         protected virtual void RefreshItems()
         {
             int currentIdx = this.SelectedIndex;
-            BaseListControl.ObjectCollection collection = itemsCollection;
+            ObjectCollection? collection = itemsCollection;
 
             this.BeginInit();
 
-            object[] items = null;
+            object[]? items = null;
 
             if(dataManager != null && dataManager.Count != -1)
             {
                 items = new object[dataManager.Count];
 
                 for(int idx = 0; idx < items.Length; idx++)
-                    items[idx] = dataManager.List[idx];
+                    items[idx] = dataManager.List[idx]!;
             }
             else
                 if(collection != null)
@@ -1639,13 +1636,13 @@ namespace EWSoftware.ListControls
         {
             if(this.SelectedIndex != -1)
             {
-                object oItem = this.Items[this.SelectedIndex];
+                object? oItem = this.Items[this.SelectedIndex];
 
                 if(oItem != null)
-                    this.Text = this.GetItemText(oItem);
+                    this.Text = this.GetItemText(oItem)!;
             }
             else
-                this.Text = null;
+                this.Text = null!;
 
             this.Invalidate();
         }
@@ -1678,15 +1675,15 @@ namespace EWSoftware.ListControls
             string valueMemberField = valueMember.BindingField;
 
             if(valueMemberField.Length == 0)
-                return this.FindStringInternal(key.ToString(), this.Items, -1, true);
+                return this.FindStringInternal(key.ToString()!, -1, true);
 
-            PropertyDescriptorCollection coll = dataManager.GetItemProperties();
-            PropertyDescriptor prop = coll.Find(valueMemberField, true);
+            PropertyDescriptorCollection? coll = dataManager?.GetItemProperties();
+            PropertyDescriptor? prop = coll?.Find(valueMemberField, true);
 
             if(prop == null)
                 return -1;
 
-            if(dataManager.List is IBindingList bl && bl.SupportsSearching)
+            if(dataManager?.List is IBindingList bl && bl.SupportsSearching)
             {
                 idx = bl.Find(prop, key);
 
@@ -1696,9 +1693,12 @@ namespace EWSoftware.ListControls
                     return idx;
             }
 
-            for(idx = 0; idx < dataManager.List.Count; idx++)
-                if(key.Equals(prop.GetValue(dataManager.List[idx])))
-                    return idx;
+            if(dataManager != null)
+            {
+                for(idx = 0; idx < dataManager.List.Count; idx++)
+                    if(key.Equals(prop.GetValue(dataManager.List[idx])))
+                        return idx;
+            }
 
             return -1;
         }
@@ -1733,7 +1733,7 @@ namespace EWSoftware.ListControls
             if(startIndex < -1 || startIndex >= itemsCollection.Count)
                 throw new ArgumentOutOfRangeException(nameof(startIndex), startIndex, LR.GetString("ExInvalidItemIndex"));
 
-            return FindStringInternal(searchText, this.Items, startIndex, false);
+            return FindStringInternal(searchText, startIndex, false);
         }
 
         /// <summary>
@@ -1766,7 +1766,7 @@ namespace EWSoftware.ListControls
             if(startIndex < -1 || startIndex >= itemsCollection.Count)
                 throw new ArgumentOutOfRangeException(nameof(startIndex), startIndex, LR.GetString("ExInvalidItemIndex"));
 
-            return FindStringInternal(searchText, this.Items, startIndex, true);
+            return FindStringInternal(searchText, startIndex, true);
         }
 
         /// <summary>
@@ -1774,7 +1774,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="item">The item for which to get the display value</param>
         /// <returns>The display text for the specified item</returns>
-        public string GetItemText(object item)
+        public string? GetItemText(object? item)
         {
             item = this.FilterItemOnProperty(item, displayMember.BindingField);
 

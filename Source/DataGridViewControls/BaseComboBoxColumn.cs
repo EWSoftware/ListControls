@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : BaseComboBoxColumn.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
-// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
+// Updated : 12/08/2024
+// Note    : Copyright 2007-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a data grid view column object that acts as an abstract base class for the combo box
 // columns derived from it.
@@ -18,10 +18,7 @@
 // 06/07/2007  EFW  Created the code
 //===============================================================================================================
 
-using System;
-using System.ComponentModel;
 using System.Drawing.Design;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls.DataGridViewControls
 {
@@ -35,6 +32,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         //=====================================================================
 
         private int defaultSelection;
+
         #endregion
 
         #region Properties
@@ -51,12 +49,12 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <exception cref="InvalidCastException">This is thrown if the specified cell template is not a
         /// <see cref="BaseComboBoxCell"/>.</exception>
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public override DataGridViewCell CellTemplate
+        public override DataGridViewCell? CellTemplate
         {
             get => base.CellTemplate;
             set
             {
-                BaseComboBoxCell cell = value as BaseComboBoxCell;
+                BaseComboBoxCell? cell = value as BaseComboBoxCell;
 
                 if(value != null && cell == null)
                     throw new InvalidCastException(LR.GetString("ExWrongCellTemplateType", "BaseComboBoxCell"));
@@ -64,7 +62,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 base.CellTemplate = value;
 
                 if(value != null)
-                    cell.TemplateComboBoxColumn = this;
+                    cell!.TemplateComboBoxColumn = this;
             }
         }
 
@@ -86,7 +84,6 @@ namespace EWSoftware.ListControls.DataGridViewControls
             set
             {
                 DataGridViewRowCollection rows;
-                BaseComboBoxCell cell;
                 int count, idx;
 
                 if(this.ComboBoxCellTemplate == null)
@@ -94,20 +91,18 @@ namespace EWSoftware.ListControls.DataGridViewControls
 
                 this.ComboBoxCellTemplate.DisplayStyle = value;
 
-                if(base.DataGridView != null)
+                if(this.DataGridView != null)
                 {
-                    rows = base.DataGridView.Rows;
+                    rows = this.DataGridView.Rows;
                     count = rows.Count;
 
                     for(idx = 0; idx < count; idx++)
                     {
-                        cell = rows.SharedRow(idx).Cells[base.Index] as BaseComboBoxCell;
-
-                        if(cell != null)
+                        if(rows.SharedRow(idx).Cells[this.Index] is BaseComboBoxCell cell)
                             cell.DisplayStyleInternal = value;
                     }
 
-                    base.DataGridView.InvalidateColumn(base.Index);
+                    this.DataGridView.InvalidateColumn(this.Index);
                 }
             }
         }
@@ -130,7 +125,6 @@ namespace EWSoftware.ListControls.DataGridViewControls
             set
             {
                 DataGridViewRowCollection rows;
-                BaseComboBoxCell cell;
                 int count, idx;
 
                 if(this.ComboBoxCellTemplate == null)
@@ -138,20 +132,18 @@ namespace EWSoftware.ListControls.DataGridViewControls
 
                 this.ComboBoxCellTemplate.DisplayStyleForCurrentCellOnly = value;
 
-                if(base.DataGridView != null)
+                if(this.DataGridView != null)
                 {
-                    rows = base.DataGridView.Rows;
+                    rows = this.DataGridView.Rows;
                     count = rows.Count;
 
                     for(idx = 0; idx < count; idx++)
                     {
-                        cell = rows.SharedRow(idx).Cells[base.Index] as BaseComboBoxCell;
-
-                        if(cell != null)
+                        if(rows.SharedRow(idx).Cells[this.Index] is BaseComboBoxCell cell)
                             cell.DisplayStyleForCurrentCellOnlyInternal = value;
                     }
 
-                    base.DataGridView.InvalidateColumn(base.Index);
+                    this.DataGridView.InvalidateColumn(this.Index);
                 }
             }
         }
@@ -173,7 +165,6 @@ namespace EWSoftware.ListControls.DataGridViewControls
             set
             {
                 DataGridViewRowCollection rows;
-                BaseComboBoxCell cell;
                 int count, idx;
 
                 if(this.ComboBoxCellTemplate == null)
@@ -183,22 +174,20 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 {
                     this.ComboBoxCellTemplate.FlatStyle = value;
 
-                    if(base.DataGridView != null)
+                    if(this.DataGridView != null)
                     {
-                        rows = base.DataGridView.Rows;
+                        rows = this.DataGridView.Rows;
                         count = rows.Count;
 
                         for(idx = 0; idx < count; idx++)
                         {
-                            cell = rows.SharedRow(idx).Cells[base.Index] as BaseComboBoxCell;
-
-                            if(cell != null)
+                            if(rows.SharedRow(idx).Cells[this.Index] is BaseComboBoxCell cell)
                                 cell.FlatStyleInternal = value;
                         }
 
                         // Notify the grid view of the change so that it can resize the column and its rows if
                         // necessary.
-                        DataGridViewHelper.OnColumnCommonChange(base.DataGridView, base.Index);
+                        DataGridViewHelper.OnColumnCommonChange(this.DataGridView, this.Index);
                     }
                 }
             }
@@ -221,7 +210,6 @@ namespace EWSoftware.ListControls.DataGridViewControls
             set
             {
                 DataGridViewRowCollection rows;
-                BaseComboBoxCell cell;
                 int count, idx;
 
                 if(this.ComboBoxCellTemplate == null)
@@ -231,16 +219,14 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 {
                     this.ComboBoxCellTemplate.MaxDropDownItems = value;
 
-                    if(base.DataGridView != null)
+                    if(this.DataGridView != null)
                     {
-                        rows = base.DataGridView.Rows;
+                        rows = this.DataGridView.Rows;
                         count = rows.Count;
 
                         for(idx = 0; idx < count; idx++)
                         {
-                            cell = rows.SharedRow(idx).Cells[base.Index] as BaseComboBoxCell;
-
-                            if(cell != null)
+                            if(rows.SharedRow(idx).Cells[this.Index] is BaseComboBoxCell cell)
                                 cell.MaxDropDownItems = value;
                         }
                     }
@@ -274,7 +260,6 @@ namespace EWSoftware.ListControls.DataGridViewControls
             set
             {
                 DataGridViewRowCollection rows;
-                BaseComboBoxCell cell;
                 int count, idx;
 
                 if(this.ComboBoxCellTemplate == null)
@@ -284,16 +269,14 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 {
                     this.ComboBoxCellTemplate.SortOrder = value;
 
-                    if(base.DataGridView != null)
+                    if(this.DataGridView != null)
                     {
-                        rows = base.DataGridView.Rows;
+                        rows = this.DataGridView.Rows;
                         count = rows.Count;
 
                         for(idx = 0; idx < count; idx++)
                         {
-                            cell = rows.SharedRow(idx).Cells[base.Index] as BaseComboBoxCell;
-
-                            if(cell != null)
+                            if(rows.SharedRow(idx).Cells[this.Index] is BaseComboBoxCell cell)
                                 cell.SortOrder = value;
                         }
                     }
@@ -322,7 +305,6 @@ namespace EWSoftware.ListControls.DataGridViewControls
             set
             {
                 DataGridViewRowCollection rows;
-                BaseComboBoxCell cell;
                 int count, idx;
 
                 if(this.ComboBoxCellTemplate == null)
@@ -330,22 +312,20 @@ namespace EWSoftware.ListControls.DataGridViewControls
 
                 this.ComboBoxCellTemplate.DisplayMember = value;
 
-                if(base.DataGridView != null)
+                if(this.DataGridView != null)
                 {
-                    rows = base.DataGridView.Rows;
+                    rows = this.DataGridView.Rows;
                     count = rows.Count;
 
                     for(idx = 0; idx < count; idx++)
                     {
-                        cell = rows.SharedRow(idx).Cells[base.Index] as BaseComboBoxCell;
-
-                        if(cell != null)
+                        if(rows.SharedRow(idx).Cells[this.Index] is BaseComboBoxCell cell)
                             cell.DisplayMember = value;
                     }
 
                     // Notify the grid view of the change so that it can resize the column and its rows if
                     // necessary.
-                    DataGridViewHelper.OnColumnCommonChange(base.DataGridView, base.Index);
+                    DataGridViewHelper.OnColumnCommonChange(this.DataGridView, this.Index);
                 }
             }
         }
@@ -371,7 +351,6 @@ namespace EWSoftware.ListControls.DataGridViewControls
             set
             {
                 DataGridViewRowCollection rows;
-                BaseComboBoxCell cell;
                 int count, idx;
 
                 if(this.ComboBoxCellTemplate == null)
@@ -379,22 +358,20 @@ namespace EWSoftware.ListControls.DataGridViewControls
 
                 this.ComboBoxCellTemplate.ValueMember = value;
 
-                if(base.DataGridView != null)
+                if(this.DataGridView != null)
                 {
-                    rows = base.DataGridView.Rows;
+                    rows = this.DataGridView.Rows;
                     count = rows.Count;
 
                     for(idx = 0; idx < count; idx++)
                     {
-                        cell = rows.SharedRow(idx).Cells[base.Index] as BaseComboBoxCell;
-
-                        if(cell != null)
+                        if(rows.SharedRow(idx).Cells[this.Index] is BaseComboBoxCell cell)
                             cell.ValueMember = value;
                     }
 
                     // Notify the grid view of the change so that it can resize
                     // the column and its rows if necessary.
-                    DataGridViewHelper.OnColumnCommonChange(base.DataGridView, base.Index);
+                    DataGridViewHelper.OnColumnCommonChange(this.DataGridView, this.Index);
                 }
             }
         }
@@ -405,7 +382,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         [Category("Data"), DefaultValue(null), RefreshProperties(RefreshProperties.Repaint),
           AttributeProvider(typeof(IListSource)), Description("The data source that populates the selections " +
             "for the combo boxes")]
-        public object DataSource
+        public object? DataSource
         {
             get
             {
@@ -417,7 +394,6 @@ namespace EWSoftware.ListControls.DataGridViewControls
             set
             {
                 DataGridViewRowCollection rows;
-                BaseComboBoxCell cell;
                 int count, idx;
 
                 if(this.ComboBoxCellTemplate == null)
@@ -425,22 +401,20 @@ namespace EWSoftware.ListControls.DataGridViewControls
 
                 this.ComboBoxCellTemplate.DataSource = value;
 
-                if(base.DataGridView != null)
+                if(this.DataGridView != null)
                 {
-                    rows = base.DataGridView.Rows;
+                    rows = this.DataGridView.Rows;
                     count = rows.Count;
 
                     for(idx = 0; idx < count; idx++)
                     {
-                        cell = rows.SharedRow(idx).Cells[base.Index] as BaseComboBoxCell;
-
-                        if(cell != null)
+                        if(rows.SharedRow(idx).Cells[this.Index] is BaseComboBoxCell cell)
                             cell.DataSource = value;
                     }
 
                     // Notify the grid view of the change so that it can resize the column and its rows if
                     // necessary.
-                    DataGridViewHelper.OnColumnCommonChange(base.DataGridView, base.Index);
+                    DataGridViewHelper.OnColumnCommonChange(this.DataGridView, this.Index);
                 }
             }
         }
@@ -489,7 +463,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 if(this.ComboBoxCellTemplate == null)
                     throw new InvalidOperationException(LR.GetString("ExCellTemplateRequired"));
 
-                return this.ComboBoxCellTemplate.GetItems(base.DataGridView);
+                return this.ComboBoxCellTemplate.GetItems(this.DataGridView);
             }
         }
         #endregion
@@ -503,22 +477,15 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// </summary>
         internal void OnItemsCollectionChanged()
         {
-            DataGridViewRowCollection rows;
-            BaseComboBoxCell cell;
-            int count, idx;
-            object[] items;
-
-            if(base.DataGridView != null)
+            if(this.DataGridView != null)
             {
-                rows = base.DataGridView.Rows;
-                count = rows.Count;
-                items = this.ComboBoxCellTemplate.Items.InnerList.ToArray();
+                var rows = this.DataGridView.Rows;
+                int count = rows.Count;
+                var items = this.ComboBoxCellTemplate.Items.InnerList.ToArray();
 
-                for(idx = 0; idx < count; idx++)
+                for(int idx = 0; idx < count; idx++)
                 {
-                    cell = rows.SharedRow(idx).Cells[base.Index] as BaseComboBoxCell;
-
-                    if(cell != null)
+                    if(rows.SharedRow(idx).Cells[this.Index] is BaseComboBoxCell cell)
                     {
                         cell.Items.ClearInternal();
                         cell.Items.AddRangeInternal(items);
@@ -526,7 +493,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 }
 
                 // Notify the grid view of the change so that it can resize the column and its rows if necessary
-                DataGridViewHelper.OnColumnCommonChange(base.DataGridView, base.Index);
+                DataGridViewHelper.OnColumnCommonChange(this.DataGridView, this.Index);
             }
         }
         #endregion

@@ -22,37 +22,37 @@ Partial Class MainForm
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
-        Me.dlMenu = New EWSoftware.ListControls.DataList()
-        Me.SuspendLayout
-        '
-        'dlMenu
-        '
-        Me.dlMenu.AllowAdditions = false
-        Me.dlMenu.AllowDeletes = false
-        Me.dlMenu.AllowEdits = false
-        Me.dlMenu.BackColor = System.Drawing.SystemColors.Window
-        Me.dlMenu.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.dlMenu.Location = New System.Drawing.Point(0, 0)
-        Me.dlMenu.Name = "dlMenu"
-        Me.dlMenu.NavigationControlsVisible = false
-        Me.dlMenu.RowHeadersVisible = false
-        Me.dlMenu.SeparatorsVisible = false
-        Me.dlMenu.Size = New System.Drawing.Size(732, 584)
-        Me.dlMenu.TabIndex = 1
-        '
-        'MainForm
-        '
-        Me.ClientSize = New System.Drawing.Size(732, 584)
-        Me.Controls.Add(Me.dlMenu)
-        Me.Icon = CType(resources.GetObject("$this.Icon"),System.Drawing.Icon)
-        Me.MaximumSize = New System.Drawing.Size(750, 2048)
-        Me.MinimumSize = New System.Drawing.Size(750, 615)
+        Dim resources As ComponentResourceManager = New ComponentResourceManager(GetType(MainForm))
+        dlMenu = New DataList()
+        Me.SuspendLayout()
+        ' 
+        ' dlMenu
+        ' 
+        dlMenu.AllowAdditions = False
+        dlMenu.AllowDeletes = False
+        dlMenu.AllowEdits = False
+        dlMenu.BackColor = SystemColors.Window
+        dlMenu.Dock = DockStyle.Fill
+        dlMenu.Location = New Point(0, 0)
+        dlMenu.Name = "dlMenu"
+        dlMenu.NavigationControlsVisible = False
+        dlMenu.RowHeadersVisible = False
+        dlMenu.SeparatorsVisible = False
+        dlMenu.Size = New Size(982, 721)
+        dlMenu.TabIndex = 1
+        ' 
+        ' MainForm
+        ' 
+        Me.ClientSize = New Size(982, 721)
+        Me.Controls.Add(dlMenu)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), Icon)
+        Me.MaximumSize = New Size(1000, 2048)
+        Me.MinimumSize = New Size(1000, 615)
         Me.Name = "MainForm"
-        Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "EWSoftware List Controls Demo"
-        Me.ResumeLayout(false)
+        Me.SizeGripStyle = SizeGripStyle.Show
+        Me.StartPosition = FormStartPosition.CenterScreen
+        Me.Text = "EWSoftware List Controls Visual Basic Demo"
+        Me.ResumeLayout(False)
 
     End Sub
 

@@ -2,7 +2,7 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : ExtendedTreeView.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 10/29/2024
+// Updated : 12/10/2024
 // Note    : Copyright 2007-2024, Eric Woodruff, All rights reserved
 //
 // This file contains an extended tree view control that is fully owner-drawn to overcome some limitations in
@@ -19,14 +19,8 @@
 // 01/09/2007  EFW  Created the code
 //===============================================================================================================
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Reflection;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls
 {
@@ -54,7 +48,7 @@ namespace EWSoftware.ListControls
         private static readonly ImageList ilPlusMinus, ilCheckbox;
 
         // Instance expando image list
-        private ImageList ilExpando;
+        private ImageList? ilExpando;
 
         // State information
         private int idxCollapse, idxExpand, idxChecked, idxUnchecked, idxMixed;
@@ -119,7 +113,7 @@ namespace EWSoftware.ListControls
         /// </value>
         [Category("Appearance"), DefaultValue(null),
           Description("Specify a custom image list for the expando (+/-) images")]
-        public ImageList ExpandoImageList
+        public ImageList? ExpandoImageList
         {
             get => ilExpando;
             set
@@ -134,7 +128,7 @@ namespace EWSoftware.ListControls
 
                     ilExpando = value;
 
-                    if(value != null)
+                    if(ilExpando != null)
                     {
                         ilExpando.RecreateHandle += this.ImageList_RecreateHandle;
                         ilExpando.Disposed += this.ImageList_Disposed;
@@ -207,7 +201,7 @@ namespace EWSoftware.ListControls
             {
                 syncParentChildCheckedState = value;
 
-                if(base.CheckBoxes && value)
+                if(this.CheckBoxes && value)
                     this.SynchronizeCheckedStates();
             }
         }
@@ -221,7 +215,7 @@ namespace EWSoftware.ListControls
         {
             get
             {
-                List<TreeNode> list = new List<TreeNode>();
+                List<TreeNode> list = [];
 
                 foreach(TreeNode n in this)
                     if(n.Checked)
@@ -290,7 +284,7 @@ namespace EWSoftware.ListControls
         /// <summary>
         /// This is reimplemented to change the image list based on the current settings
         /// </summary>
-        public new ImageList StateImageList
+        public new ImageList? StateImageList
         {
             get
             {
@@ -335,7 +329,7 @@ namespace EWSoftware.ListControls
         ///   region="Tree Node Indexer Example" />
         /// </example>
         [Description("Get the specified column from the current row")]
-        public TreeNode this[string name]
+        public TreeNode? this[string name]
         {
             get
             {
@@ -356,7 +350,7 @@ namespace EWSoftware.ListControls
         /// This is used to hide the base class's draw node event which is not used by this control
         /// </summary>
         [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        public new event DrawTreeNodeEventHandler DrawNode;
+        public new event DrawTreeNodeEventHandler? DrawNode;
 
 #pragma warning restore 0067
 
@@ -369,7 +363,7 @@ namespace EWSoftware.ListControls
         /// <see cref="TreeNode.StateImageIndex"/> or a <see cref="TreeNode.StateImageKey"/> defined.</remarks>
         [Category("Action"), Description("Occurs after a click is detected on a node's state image or the " +
           "space bar is hit on the selected node.")]
-        public event TreeViewEventHandler ChangeStateImage;
+        public event TreeViewEventHandler? ChangeStateImage;
 
         /// <summary>
         /// This raises the <see cref="ChangeStateImage"/> event
@@ -388,7 +382,7 @@ namespace EWSoftware.ListControls
         /// <example>See <see cref="DrawTreeNodeExtendedEventArgs(Graphics , TreeNode , TreeNodeStates , Rectangle )"/>
         /// for an example of custom drawing the tree nodes.</example>
         [Category("Behavior"), Description("Occurs before the node is drawn.")]
-        public event EventHandler<DrawTreeNodeExtendedEventArgs> TreeNodeDrawing;
+        public event EventHandler<DrawTreeNodeExtendedEventArgs>? TreeNodeDrawing;
 
         /// <summary>
         /// This raises the <see cref="TreeNodeDrawing"/> event
@@ -409,7 +403,7 @@ namespace EWSoftware.ListControls
         /// <example>See <see cref="DrawTreeNodeExtendedEventArgs(Graphics , TreeNode , TreeNodeStates , Rectangle )"/>
         /// for an example of custom drawing the tree nodes.</example>
         [Category("Behavior"), Description("Occurs after the node has been drawn.")]
-        public event EventHandler<DrawTreeNodeExtendedEventArgs> TreeNodeDrawn;
+        public event EventHandler<DrawTreeNodeExtendedEventArgs>? TreeNodeDrawn;
 
         /// <summary>
         /// This raises the <see cref="TreeNodeDrawn"/> event
@@ -431,7 +425,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void ImageList_RecreateHandle(object sender, EventArgs e)
+        private void ImageList_RecreateHandle(object? sender, EventArgs e)
         {
             if(this.IsHandleCreated)
                 this.Invalidate(true);
@@ -442,7 +436,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void ImageList_Disposed(object sender, EventArgs e)
+        private void ImageList_Disposed(object? sender, EventArgs e)
         {
             this.ExpandoImageList = null;
         }
@@ -520,9 +514,9 @@ namespace EWSoftware.ListControls
 
             if(child.StateImageIndex == (int)NodeCheckState.Mixed)
                 parent.StateImageIndex = (int)NodeCheckState.Mixed;
-            else if(ExtendedTreeView.AllChildrenChecked(parent))
+            else if(AllChildrenChecked(parent))
                 parent.StateImageIndex = (int)NodeCheckState.Checked;
-            else if(ExtendedTreeView.AllChildrenUnchecked(parent))
+            else if(AllChildrenUnchecked(parent))
                 parent.StateImageIndex = (int)NodeCheckState.Unchecked;
             else
                 parent.StateImageIndex = (int)NodeCheckState.Mixed;
@@ -554,7 +548,7 @@ namespace EWSoftware.ListControls
         /// </example>
         public IEnumerator GetEnumerator()
         {
-            TreeNode start = (this.Nodes.Count == 0) ? null : this.Nodes[0];
+            TreeNode start = (this.Nodes.Count == 0) ? null! : this.Nodes[0];
 
             return new TreeNodeEnumerator(start, true);
         }
@@ -596,8 +590,8 @@ namespace EWSoftware.ListControls
         /// </summary>
         public ExtendedTreeView() : base()
         {
-            base.DrawMode = TreeViewDrawMode.OwnerDrawAll;
-            base.LineColor = Color.Silver;
+            this.DrawMode = TreeViewDrawMode.OwnerDrawAll;
+            this.LineColor = Color.Silver;
 
             drawDefaultImages = allowCollapse = true;
 
@@ -615,26 +609,26 @@ namespace EWSoftware.ListControls
             ilCheckbox = new ImageList { ImageSize = new Size(13, 13) };
 
             ilPlusMinus.Images.Add(new Bitmap(asm.GetManifestResourceStream(
-                ResourcePath + "UnthemedCollapse.bmp")), Color.Magenta);
+                ResourcePath + "UnthemedCollapse.bmp")!), Color.Magenta);
             ilPlusMinus.Images.Add(new Bitmap(asm.GetManifestResourceStream(
-                ResourcePath + "UnthemedExpand.bmp")), Color.Magenta);
+                ResourcePath + "UnthemedExpand.bmp")!), Color.Magenta);
             ilPlusMinus.Images.Add(new Bitmap(asm.GetManifestResourceStream(
-                ResourcePath + "ThemedCollapse.bmp")), Color.Magenta);
+                ResourcePath + "ThemedCollapse.bmp")!), Color.Magenta);
             ilPlusMinus.Images.Add(new Bitmap(asm.GetManifestResourceStream(
-                ResourcePath + "ThemedExpand.bmp")), Color.Magenta);
+                ResourcePath + "ThemedExpand.bmp")!), Color.Magenta);
 
             ilCheckbox.Images.Add(new Bitmap(asm.GetManifestResourceStream(
-                ResourcePath + "UnthemedUnchecked.bmp")), Color.Magenta);
+                ResourcePath + "UnthemedUnchecked.bmp")!), Color.Magenta);
             ilCheckbox.Images.Add(new Bitmap(asm.GetManifestResourceStream(
-                ResourcePath + "UnthemedChecked.bmp")), Color.Magenta);
+                ResourcePath + "UnthemedChecked.bmp")!), Color.Magenta);
             ilCheckbox.Images.Add(new Bitmap(asm.GetManifestResourceStream(
-                ResourcePath + "UnthemedMixed.bmp")), Color.Magenta);
+                ResourcePath + "UnthemedMixed.bmp")!), Color.Magenta);
             ilCheckbox.Images.Add(new Bitmap(asm.GetManifestResourceStream(
-                ResourcePath + "ThemedUnchecked.bmp")), Color.Magenta);
+                ResourcePath + "ThemedUnchecked.bmp")!), Color.Magenta);
             ilCheckbox.Images.Add(new Bitmap(asm.GetManifestResourceStream(
-                ResourcePath + "ThemedChecked.bmp")), Color.Magenta);
+                ResourcePath + "ThemedChecked.bmp")!), Color.Magenta);
             ilCheckbox.Images.Add(new Bitmap(asm.GetManifestResourceStream(
-                ResourcePath + "ThemedMixed.bmp")), Color.Magenta);
+                ResourcePath + "ThemedMixed.bmp")!), Color.Magenta);
         }
         #endregion
 
@@ -704,35 +698,35 @@ namespace EWSoftware.ListControls
                 switch(key)
                 {
                     case Keys.Space:
-                        if(!base.CheckBoxes && base.StateImageList != null && base.SelectedNode != null &&
-                          base.SelectedNode.StateImageIndex != -1)
+                        if(!base.CheckBoxes && base.StateImageList != null && this.SelectedNode != null &&
+                          this.SelectedNode.StateImageIndex != -1)
                         {
-                            OnChangeStateImage(new TreeViewEventArgs(base.SelectedNode, TreeViewAction.ByKeyboard));
+                            OnChangeStateImage(new TreeViewEventArgs(this.SelectedNode, TreeViewAction.ByKeyboard));
                             keyHandled = true;
                         }
                         break;
 
                     case Keys.F2:
-                        if(base.LabelEdit && base.SelectedNode != null)
+                        if(this.LabelEdit && this.SelectedNode != null)
                         {
-                            base.SelectedNode.BeginEdit();
+                            this.SelectedNode.BeginEdit();
                             keyHandled = true;
                         }
                         break;
 
                     case Keys.K:
-                        if(ctrlPressed && (base.ShowPlusMinus || allowCollapse))
+                        if(ctrlPressed && (this.ShowPlusMinus || allowCollapse))
                         {
-                            node = base.SelectedNode;
+                            node = this.SelectedNode;
 
                             if(shiftPressed)
                             {
-                                base.CollapseAll();
+                                this.CollapseAll();
 
                                 // Reselect the last node if it is a parent node
                                 if(node != null && node.Parent == null)
                                 {
-                                    base.SelectedNode = node;
+                                    this.SelectedNode = node;
                                     node.EnsureVisible();
                                 }
                             }
@@ -746,10 +740,10 @@ namespace EWSoftware.ListControls
                     case Keys.E:
                         if(ctrlPressed)
                         {
-                            node = base.SelectedNode;
+                            node = this.SelectedNode;
 
                             if(shiftPressed)
-                                base.ExpandAll();
+                                this.ExpandAll();
                             else
                                 node?.ExpandAll();
 
@@ -763,7 +757,7 @@ namespace EWSoftware.ListControls
                         break;
                 }
 
-                if(keyHandled == true)
+                if(keyHandled)
                     return true;
             }
 
@@ -785,13 +779,13 @@ namespace EWSoftware.ListControls
 
             Graphics g = e.Graphics;
             Rectangle bounds = e.Bounds;
-            TreeNode parent, node = e.Node;
-            ImageList ilCheckState = null, ilPM = null;
-            DrawTreeNodeExtendedEventArgs extArgs = null;
+            TreeNode? parent, node = e.Node;
+            ImageList ilCheckState = null!, ilPM = null!;
+            DrawTreeNodeExtendedEventArgs? extArgs = null;
 
             Color lineColor, bgColor, fgColor, bgTextColor = Color.Empty;
 
-            int height, imgHeight, width, top, left, lineLevel, indent = base.Indent, level = node.Level;
+            int height, imgHeight, width, top, left, lineLevel, indent = this.Indent, level = node!.Level;
 
             // Ignore if there is nothing to draw or if disposing
             if(bounds.IsEmpty || node.TreeView.Nodes.Count == 0)
@@ -804,21 +798,21 @@ namespace EWSoftware.ListControls
                 #region Determine the images
 
                 // Determine the images
-                if(base.ImageList != null)
+                if(this.ImageList != null)
                 {
-                    imgHeight = base.ImageList.ImageSize.Height;
+                    imgHeight = this.ImageList.ImageSize.Height;
 
                     string imageKey;
 
-                    if(base.SelectedNode == node)
+                    if(this.SelectedNode == node)
                     {
                         extArgs.ImageIndex = node.SelectedImageIndex;
                         imageKey = node.SelectedImageKey;
 
                         if(extArgs.ImageIndex == -1 && imageKey.Length == 0 && drawDefaultImages)
                         {
-                            extArgs.ImageIndex = base.SelectedImageIndex;
-                            imageKey = base.SelectedImageKey;
+                            extArgs.ImageIndex = this.SelectedImageIndex;
+                            imageKey = this.SelectedImageKey;
                         }
                     }
                     else
@@ -828,13 +822,13 @@ namespace EWSoftware.ListControls
 
                         if(extArgs.ImageIndex == -1 && imageKey.Length == 0 && drawDefaultImages)
                         {
-                            extArgs.ImageIndex = base.ImageIndex;
-                            imageKey = base.ImageKey;
+                            extArgs.ImageIndex = this.ImageIndex;
+                            imageKey = this.ImageKey;
                         }
                     }
 
                     if(imageKey.Length != 0)
-                        extArgs.ImageIndex = base.ImageList.Images.IndexOfKey(imageKey);
+                        extArgs.ImageIndex = this.ImageList.Images.IndexOfKey(imageKey);
 
                     if(extArgs.ImageIndex != -1)
                         extArgs.NodeParts |= NodeParts.NodeImage;
@@ -879,19 +873,19 @@ namespace EWSoftware.ListControls
 
                 #region Determine the colors
                 // Determine the colors to use
-                lineColor = base.LineColor;
+                lineColor = this.LineColor;
 
                 if((e.State & (TreeNodeStates.Focused | TreeNodeStates.Selected)) == (TreeNodeStates.Focused |
                   TreeNodeStates.Selected))
                 {
-                    if(base.FullRowSelect)
+                    if(this.FullRowSelect)
                     {
                         bgColor = SystemColors.Highlight;
                         lineColor = SystemColors.HighlightText;
                     }
                     else
                     {
-                        bgColor = node.BackColor.IsEmpty ? base.BackColor : node.BackColor;
+                        bgColor = node.BackColor.IsEmpty ? this.BackColor : node.BackColor;
                         bgTextColor = SystemColors.Highlight;
                     }
 
@@ -899,21 +893,21 @@ namespace EWSoftware.ListControls
                 }
                 else
                 {
-                    if((e.State & TreeNodeStates.Selected) == 0 || base.HideSelection || !base.Enabled)
+                    if((e.State & TreeNodeStates.Selected) == 0 || this.HideSelection || !this.Enabled)
                     {
-                        bgColor = node.BackColor.IsEmpty ? base.BackColor : node.BackColor;
-                        fgColor = node.ForeColor.IsEmpty ? base.ForeColor : node.ForeColor;
+                        bgColor = node.BackColor.IsEmpty ? this.BackColor : node.BackColor;
+                        fgColor = node.ForeColor.IsEmpty ? this.ForeColor : node.ForeColor;
                     }
                     else
                     {
-                        if(base.FullRowSelect)
+                        if(this.FullRowSelect)
                         {
                             bgColor = SystemColors.Control;
                             lineColor = SystemColors.ControlText;
                         }
                         else
                         {
-                            bgColor = node.BackColor.IsEmpty ? base.BackColor : node.BackColor;
+                            bgColor = node.BackColor.IsEmpty ? this.BackColor : node.BackColor;
                             bgTextColor = SystemColors.Control;
                         }
 
@@ -937,22 +931,22 @@ namespace EWSoftware.ListControls
                 // position.
                 height = (imgHeight + 2) / 2;
                 extArgs.LinePosition = bounds.Left + (height / 2) + 7 +
-                    (base.Indent * (level - (base.ShowRootLines ? 0 : 1)));
+                    (this.Indent * (level - (this.ShowRootLines ? 0 : 1)));
                 extArgs.LineWidth = indent - (height / 2) - 5;
 
-                if(base.ShowLines)
+                if(this.ShowLines)
                 {
                     extArgs.NodeParts |= NodeParts.Lines;
                     bounds.Offset((level * indent) + 2, 0);
 
-                    if(base.ShowRootLines)
+                    if(this.ShowRootLines)
                         bounds.Offset(indent, 0);
                 }
                 else
                 {
                     bounds.Offset((level * indent) + 2, 0);
 
-                    if(base.ShowPlusMinus && base.ShowRootLines)
+                    if(this.ShowPlusMinus && this.ShowRootLines)
                         bounds.Offset(indent, 0);
                 }
                 #endregion
@@ -970,7 +964,7 @@ namespace EWSoftware.ListControls
                         ilPM = ilPlusMinus;
 
                     // The position is based on the line position
-                    height = Math.Min(ilPM.ImageSize.Height, base.ItemHeight);
+                    height = Math.Min(ilPM.ImageSize.Height, this.ItemHeight);
                     left = extArgs.LinePosition - (height / 2);
 
                     if(bounds.Height % 2 != 0)
@@ -1010,7 +1004,7 @@ namespace EWSoftware.ListControls
 
                     // Position the image based on the image height
                     height = Math.Min(imgHeight, bounds.Height);
-                    width = Math.Min(base.ImageList.ImageSize.Width, height);
+                    width = Math.Min(this.ImageList!.ImageSize.Width, height);
                     top = bounds.Top + ((bounds.Height - height) / 2);
 
                     extArgs.ImageBounds = new Rectangle(bounds.Left + 1, top, width, height);
@@ -1021,7 +1015,7 @@ namespace EWSoftware.ListControls
                 #region Determine the font and the bounds of the node's text
 
                 if(node.NodeFont == null)
-                    extArgs.Font = base.Font;
+                    extArgs.Font = this.Font;
                 else
                     extArgs.Font = node.NodeFont;
 
@@ -1067,15 +1061,14 @@ namespace EWSoftware.ListControls
                     while(lineLevel != 0 && parent != null)
                     {
                         if(parent.NextNode != null || lineLevel == level)
-                            ExtendedTreeView.DrawLineParts(g, extArgs.LinePen, parent, bounds, left, width,
-                                (lineLevel != level));
+                            DrawLineParts(g, extArgs.LinePen, parent, bounds, left, width, (lineLevel != level));
 
                         lineLevel--;
                         left -= indent;
                         parent = parent.Parent;
                     }
 
-                    if(base.ShowRootLines)
+                    if(this.ShowRootLines)
                     {
                         if(node.Parent == null)
                             ExtendedTreeView.DrawLineParts(g, extArgs.LinePen, node, bounds, left, width, false);
@@ -1109,7 +1102,7 @@ namespace EWSoftware.ListControls
 
                 if((extArgs.NodeParts & NodeParts.NodeImage) != 0)
                 {
-                    base.ImageList.Draw(g, extArgs.ImageBounds.Left, extArgs.ImageBounds.Top,
+                    this.ImageList!.Draw(g, extArgs.ImageBounds.Left, extArgs.ImageBounds.Top,
                         extArgs.ImageBounds.Width, extArgs.ImageBounds.Height, extArgs.ImageIndex);
                 }
 
@@ -1118,7 +1111,7 @@ namespace EWSoftware.ListControls
                     if(extArgs.TextBackgroundBrush != null)
                         g.FillRectangle(extArgs.TextBackgroundBrush, extArgs.TextBounds);
 
-                    if(base.Enabled)
+                    if(this.Enabled)
                     {
                         g.DrawString(extArgs.Text, extArgs.Font, extArgs.TextForegroundBrush, extArgs.TextBounds,
                             extArgs.StringFormat);
@@ -1132,7 +1125,7 @@ namespace EWSoftware.ListControls
                     // Draw the focus rectangle on the focused item
                     if((e.State & TreeNodeStates.Focused) != 0)
                     {
-                        ControlPaint.DrawFocusRectangle(g, (!base.FullRowSelect) ? extArgs.TextBounds : e.Bounds,
+                        ControlPaint.DrawFocusRectangle(g, (!this.FullRowSelect) ? extArgs.TextBounds : e.Bounds,
                             fgColor, (!bgTextColor.IsEmpty) ? bgTextColor : bgColor);
                     }
                 }
@@ -1158,14 +1151,14 @@ namespace EWSoftware.ListControls
         {
             if(e != null && syncParentChildCheckedState)
             {
-                TreeNode node = e.Node;
+                TreeNode node = e.Node!;
                 bool hasOtherCheckedItems = false;
 
                 // If changing the check state of a parent node, change the check state of higher parent nodes
                 // but don't do anything else.
                 if(checkingParent)
                 {
-                    if(node.Checked && node.Parent != null && node.Parent.Checked == false)
+                    if(node.Checked && node.Parent != null && !node.Parent.Checked)
                         node.Parent.Checked = true;
 
                     base.OnAfterCheck(e);
@@ -1176,7 +1169,7 @@ namespace EWSoftware.ListControls
                 {
                     this.BeginUpdate();
 
-                    if(node.Checked && node.Parent != null && node.Parent.Checked == false)
+                    if(node.Checked && node.Parent != null && !node.Parent.Checked)
                     {
                         try
                         {
@@ -1190,19 +1183,23 @@ namespace EWSoftware.ListControls
                     }
 
                     if(node.Nodes.Count != 0)
+                    {
                         foreach(TreeNode subNode in node.Nodes)
                             if(subNode.Checked != node.Checked)
                                 subNode.Checked = node.Checked;
+                    }
 
                     // If unchecked and it was the last checked item for the parent, uncheck the parent too
                     if(!node.Checked && node.Parent != null)
                     {
                         foreach(TreeNode subNode in node.Parent.Nodes)
+                        {
                             if(subNode.Checked)
                             {
                                 hasOtherCheckedItems = true;
                                 break;
                             }
+                        }
 
                         if(!hasOtherCheckedItems)
                             node.Parent.Checked = false;
@@ -1412,9 +1409,7 @@ namespace EWSoftware.ListControls
         /// tree view.</exception>
         public bool GetNodeChecked(string name)
         {
-            TreeNode node = this[name];
-
-            if(node == null)
+            TreeNode node = this[name] ??
                 throw new ArgumentOutOfRangeException(nameof(name), name, LR.GetString("ExNodeNameOutOfRange"));
 
             return node.Checked;
@@ -1431,9 +1426,7 @@ namespace EWSoftware.ListControls
         /// tree view.</exception>
         public NodeCheckState GetNodeCheckState(string name)
         {
-            TreeNode node = this[name];
-
-            if(node == null)
+            TreeNode node = this[name] ??
                 throw new ArgumentOutOfRangeException(nameof(name), name, LR.GetString("ExNodeNameOutOfRange"));
 
             if(syncParentChildCheckedState)
@@ -1448,9 +1441,9 @@ namespace EWSoftware.ListControls
         /// <param name="name">The node name to find in the tree view</param>
         /// <param name="check">True to check the node, false to uncheck it</param>
         /// <returns>The node with the specified name or null if the node could not be found</returns>
-        public TreeNode SetNodeChecked(string name, bool check)
+        public TreeNode? SetNodeChecked(string name, bool check)
         {
-            TreeNode node = this[name];
+            TreeNode? node = this[name];
 
             if(node != null)
                 node.Checked = check;

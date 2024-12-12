@@ -18,12 +18,6 @@
 ' 03/06/2006  EFW  Reworked main menu form to use a DataList
 '================================================================================================================
 
-Imports System.Data
-Imports System.Data.OleDb
-Imports System.IO
-
- #Disable Warning CA2000
-
 Public Partial Class MainForm
     Inherits Form
 
@@ -33,37 +27,29 @@ Public Partial Class MainForm
         ' Required for Windows Form Designer support
         InitializeComponent()
 
-        If Not File.Exists(".\TestData.mdb") Then
-            MessageBox.Show("Unable to locate test database.  It should be in the main project folder one " &
-                "level up from the location of this executable.", "List Control Demo",
-                MessageBoxButtons.OK, MessageBoxIcon.Error)
+        DemoDataContext.DatabaseLocation = Path.GetFullPath("..\..\..\..\DemoData.mdf")
+
+        If Not File.Exists(DemoDataContext.DatabaseLocation) Then
+            MessageBox.Show("Unable to locate test database.  It should be in the main project folder",
+                "List Control Demo", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return
         End If
 
         Try
-            Using dbConn As New OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\TestData.mdb")
-                ' Load the menu data
-                Using cmd As New OleDbCommand("Select * From DemoInfo Order By DemoOrder, DemoName", dbConn) With {
-                    .CommandType = CommandType.Text
-                }
-                    Using adapter As New OleDbDataAdapter(cmd)
-                        Dim demoData As New DataSet
-
-                        adapter.Fill(demoData)
-
-                        ' Set the data list's data source and row template
-                        dlMenu.SetDataBinding(demoData.Tables(0), Nothing, GetType(MenuRow))
-                    End Using
-                End Using
+            ' Load the menu data
+            Using dc As New DemoDataContext()
+                ' Set the data list's data source and row template
+                dlMenu.SetDataBinding(dc.DemoInfo.OrderBy(Function(d) d.DemoOrder).ThenBy(
+                    Function(d) d.DemoName).ToList(), Nothing, GetType(MenuRow))
             End Using
-
-        Catch ex As OleDbException
+      
+        Catch ex As SqlException
             MessageBox.Show(ex.Message)
-
         End Try
 
     End Sub
 
+#If NET40
     ' The main entry point for the application
     <STAThread> _
     Shared Sub Main()
@@ -71,7 +57,6 @@ Public Partial Class MainForm
         Application.SetCompatibleTextRenderingDefault(False)
     	Application.Run(New MainForm())
     End Sub
+#End If
 
 End Class
-
-#Enable Warning CA2000

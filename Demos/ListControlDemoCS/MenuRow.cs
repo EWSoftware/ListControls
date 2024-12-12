@@ -2,8 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : MenuRow.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 10/01/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
+// Updated : 12/02/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This is used as a row template for the main menu form's data list
 //
@@ -18,22 +18,13 @@
 // 01/19/2007  EFW  Added extended tree view control demo
 //===============================================================================================================
 
-using System;
-using System.Data;
-using System.Drawing;
-using System.Globalization;
-using System.Reflection;
-using System.Windows.Forms;
-
-using EWSoftware.ListControls;
-
 namespace ListControlDemoCS
 {
-	/// <summary>
-	/// This is used as a row template for the main menu form's data list
-	/// </summary>
-	public partial class MenuRow : EWSoftware.ListControls.TemplateControl
-	{
+    /// <summary>
+    /// This is used as a row template for the main menu form's data list
+    /// </summary>
+    public partial class MenuRow : TemplateControl
+    {
         #region Constructor
         //=====================================================================
 
@@ -41,11 +32,11 @@ namespace ListControlDemoCS
         /// Constructor
         /// </summary>
 		public MenuRow()
-		{
+        {
             // At runtime, actual initialization is deferred until needed
             if(this.DesignMode)
                 InitializeComponent();
-		}
+        }
         #endregion
 
         #region Method overrides
@@ -64,23 +55,28 @@ namespace ListControlDemoCS
         /// </summary>
         protected override void Bind()
         {
-            DataRowView drv = (DataRowView)this.RowSource;
+            var demoInfo = (DemoInfo)this.RowSource!;
 
-            this.AddBinding(lblDemoName, "Text", "DemoName");
-            this.AddBinding(lblDemoDesc, "Text", "DemoDesc");
+            this.AddBinding(lblDemoName, nameof(Control.Text), nameof(DemoInfo.DemoName));
+            this.AddBinding(lblDemoDesc, nameof(Control.Text), nameof(DemoInfo.DemoDesc));
 
             // Hide the button if there is no demo
-            btnDemo.Visible = (bool)drv["HasDemoYN"];
+            btnDemo.Visible = demoInfo.HasDemoYN;
 
             // Show the image for the related control if there is one
-            if((bool)drv["UseControlImageYN"])
+            if(demoInfo.UseControlImageYN)
             {
                 Assembly asm = typeof(TemplateControl).Assembly;
 
-                Bitmap image = new Bitmap(asm.GetManifestResourceStream(String.Format(
-                    CultureInfo.InvariantCulture, "EWSoftware.ListControls.{0}.bmp", drv["DemoName"])));
-                image.MakeTransparent();
-                lblDemoImage.Image = image;
+                var stream = asm.GetManifestResourceStream($"EWSoftware.ListControls.{demoInfo.DemoName}.bmp");
+
+                if(stream != null)
+                {
+                    Bitmap image = new(stream);
+                    image.MakeTransparent();
+
+                    lblDemoImage.Image = image;
+                }
             }
             else
                 lblDemoImage.Visible = false;
@@ -95,70 +91,70 @@ namespace ListControlDemoCS
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void btnDemo_Click(object sender, System.EventArgs e)
+        private void btnDemo_Click(object sender, EventArgs e)
         {
-            DataRowView drv = (DataRowView)this.RowSource;
+            var demoInfo = (DemoInfo)this.RowSource!;
 
-            switch((string)drv["DemoName"])
+            switch(demoInfo.DemoName)
             {
-                case "CheckBoxList":
-                    using(CheckBoxListTestForm dlg = new CheckBoxListTestForm())
+                case nameof(CheckBoxList):
+                    using(CheckBoxListTestForm dlg = new())
                     {
                         dlg.ShowDialog();
                     }
                     break;
 
-                case "DataList":
-                    using(DataListTestForm dlg = new DataListTestForm())
+                case nameof(DataList):
+                    using(DataListTestForm dlg = new())
                     {
                         dlg.ShowDialog();
                     }
                     break;
 
-                case "DataNavigator":
-                    using(DataNavigatorTestForm dlg = new DataNavigatorTestForm())
+                case nameof(DataNavigator):
+                    using(DataNavigatorTestForm dlg = new())
                     {
                         dlg.ShowDialog();
                     }
                     break;
 
-                case "ExtendedTreeView":
-                    using(ExtendedTreeViewTestForm dlg = new ExtendedTreeViewTestForm())
+                case nameof(ExtendedTreeView):
+                    using(ExtendedTreeViewTestForm dlg = new())
                     {
                         dlg.ShowDialog();
                     }
                     break;
 
-                case "MultiColumnComboBox":
-                    using(ComboBoxTestForm dlg = new ComboBoxTestForm())
+                case nameof(MultiColumnComboBox):
+                    using(ComboBoxTestForm dlg = new())
                     {
                         dlg.ShowDialog();
                     }
                     break;
 
-                case "RadioButtonList":
-                    using(RadioButtonListTestForm dlg = new RadioButtonListTestForm())
+                case nameof(RadioButtonList):
+                    using(RadioButtonListTestForm dlg = new())
                     {
                         dlg.ShowDialog();
                     }
                     break;
 
-                case "UserControlComboBox":
-                    using(UserControlComboTestForm dlg = new UserControlComboTestForm())
+                case nameof(UserControlComboBox):
+                    using(UserControlComboTestForm dlg = new())
                     {
                         dlg.ShowDialog();
                     }
                     break;
 
                 case "Relationship Test":
-                    using(RelationTestForm dlg = new RelationTestForm())
+                    using(RelationTestForm dlg = new())
                     {
                         dlg.ShowDialog();
                     }
                     break;
 
                 default:
-                    MessageBox.Show("Unknown demo.  Please contact tech support", "List Control Demo",
+                    MessageBox.Show("Unknown demo.  Please contact tech support.", "List Control Demo",
                         MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     break;
             }

@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : DataListCancelEventArgs.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/30/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
+// Updated : 12/11/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains the event argument class used for various cancelable data list events (adding, deleting,
 // etc.).
@@ -36,7 +36,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="idx">The row index of the template item</param>
         /// <param name="templateItem">The item related to the event</param>
-		public DataListCancelEventArgs(int idx, TemplateControl templateItem) : base(idx, templateItem)
+		public DataListCancelEventArgs(int idx, TemplateControl? templateItem) : base(idx, templateItem)
 		{
 		}
 	}

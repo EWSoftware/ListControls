@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : RowControlCollection.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/19/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a derived ControlCollection class that hooks up a LocationChanged event to the first
 // control so that the overall containing DataList control can scroll the header and footer horizontally in
@@ -19,9 +19,6 @@
 // 06/20/2005  EFW  Created the code
 //===============================================================================================================
 
-using System;
-using System.Windows.Forms;
-
 namespace EWSoftware.ListControls
 {
 	/// <summary>
@@ -29,13 +26,14 @@ namespace EWSoftware.ListControls
     /// <c>LocationChanged</c> event to the first control so that the overall containing <see cref="DataList"/>
     /// control can scroll the header and footer horizontally in unison with the rows.
 	/// </summary>
-	internal class RowControlCollection : Control.ControlCollection
+	internal sealed class RowControlCollection : Control.ControlCollection
 	{
         #region Private data members
         //=====================================================================
 
-        private Control locationControl;
-        private RowPanel rowPanel;
+        private Control? locationControl;
+        private readonly RowPanel rowPanel;
+
         #endregion
 
         #region Constructor
@@ -58,14 +56,17 @@ namespace EWSoftware.ListControls
         /// Track location changes on the first control added
         /// </summary>
         /// <param name="value">The control to add</param>
-        public override void Add(Control value)
+        public override void Add(Control? value)
         {
-            base.Add(value);
-
-            if(locationControl == null)
+            if(value != null)
             {
-                locationControl = value;
-                locationControl.LocationChanged += Control_LocationChanged;
+                base.Add(value);
+
+                if(locationControl == null)
+                {
+                    locationControl = value;
+                    locationControl.LocationChanged += Control_LocationChanged;
+                }
             }
         }
 
@@ -74,6 +75,9 @@ namespace EWSoftware.ListControls
         /// </summary>
         public override void Clear()
         {
+            if(locationControl != null)
+                locationControl.LocationChanged -= Control_LocationChanged;
+
             locationControl = null;
             base.Clear();
         }
@@ -82,18 +86,25 @@ namespace EWSoftware.ListControls
         /// Connect a new location tracker if our original goes away
         /// </summary>
         /// <param name="value">The control to remove</param>
-        public override void Remove(Control value)
+        public override void Remove(Control? value)
         {
-            base.Remove(value);
+            if(value != null)
+            {
+                base.Remove(value);
 
-            if(locationControl == value)
-                if(this.Count != 0)
+                if(locationControl == value)
                 {
-                    locationControl = this[0];
-                    locationControl.LocationChanged += Control_LocationChanged;
+                    locationControl.LocationChanged -= Control_LocationChanged;
+
+                    if(this.Count != 0)
+                    {
+                        locationControl = this[0];
+                        locationControl.LocationChanged += Control_LocationChanged;
+                    }
+                    else
+                        locationControl = null;
                 }
-                else
-                    locationControl = null;
+            }
         }
 
         /// <summary>
@@ -102,9 +113,9 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void Control_LocationChanged(object sender, EventArgs e)
+        private void Control_LocationChanged(object? sender, EventArgs e)
         {
-            ((DataList)rowPanel.Parent).AdjustHeaderFooterPosition(locationControl.Left);
+            ((DataList?)rowPanel.Parent)?.AdjustHeaderFooterPosition(locationControl!.Left);
         }
         #endregion
     }

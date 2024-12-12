@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFrameworks>net6.0-windows;net40</TargetFrameworks>
+		<TargetFrameworks>net8.0-windows;net48</TargetFrameworks>
 		<UseWindowsForms>true</UseWindowsForms>
 		<GenerateAssemblyTitleAttribute>False</GenerateAssemblyTitleAttribute>
 		<GenerateAssemblyVersionAttribute>False</GenerateAssemblyVersionAttribute>
@@ -16,25 +16,65 @@
 		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
 		<ApplicationIcon>App.ico</ApplicationIcon>
 		<PlatformTarget>AnyCPU</PlatformTarget>
+		<LangVersion>latest</LangVersion>
+		<!-- There's no fix for the image list binary resources so we have to turn this warning off (MSB3825) -->
+		<GenerateResourceWarnOnBinaryFormatterUse>false</GenerateResourceWarnOnBinaryFormatterUse>
+		<StartupObject>Sub Main</StartupObject>
+		<MyType>WindowsForms</MyType>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<None Update="My Project\Application.myapp">
+			<Generator>MyApplicationCodeGenerator</Generator>
+			<LastGenOutput>Application.Designer.vb</LastGenOutput>
+		</None>
+		<Compile Update="My Project\Application.Designer.vb">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Application.myapp</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
 	<ItemGroup>
 		<Content Include="App.ico" />
 	</ItemGroup>
+	
 	<ItemGroup>
-		<Content Include="..\TestData.mdb" Link="TestData.mdb">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
+		<None Include="..\DemoData.mdf" Link="Database\DemoData.mdf" />
+		<None Include="..\DemoData_log.ldf" Link="Database\DemoData_log.ldf" />
 	</ItemGroup>
+
 	<ItemGroup>
 		<ProjectReference Include="..\..\Source\EWSoftware.ListControls.csproj" />
 	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
-		<PackageReference Include="System.Data.OleDb">
-			<Version>7.0.0</Version>
-		</PackageReference>
-	</ItemGroup>
+
 	<ItemGroup>
+		<Import Include="System.ComponentModel" />
+		<Import Include="System.ComponentModel.DataAnnotations" />
+		<Import Include="System.ComponentModel.DataAnnotations.Schema" />
+		<Import Include="System.Data" />
+		<Import Include="System.Data.Common" />
 		<Import Include="System.Drawing" />
+		<Import Include="System.Diagnostics" />
+		<Import Include="System.IO" />
+		<Import Include="System.Reflection" />
 		<Import Include="System.Windows.Forms" />
+		<Import Include="Microsoft.Data.SqlClient" />
+		<Import Include="Microsoft.EntityFrameworkCore" />
+		<Import Include="EWSoftware.ListControls" />
+		<Import Include="ListControlDemoVB.Database" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- The .NET Standard version of Entity Framework is older and has some vulnerabilities we can't address so
+		     we don't need telling about them. -->
+		<NuGetAuditSuppress Include="https://github.com/advisories/GHSA-98g6-xh36-x2p7" />
+		<NuGetAuditSuppress Include="https://github.com/advisories/GHSA-8g2p-5pqh-5jmc" />
+		<NuGetAuditSuppress Include="https://github.com/advisories/GHSA-59j7-ghrg-fj52" />
+		<NuGetAuditSuppress Include="https://github.com/advisories/GHSA-5crp-9r3c-p9vr" />
+
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.32" Condition="'$(TargetFramework)' == 'net48'" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" Condition="'$(TargetFramework)' == 'net8.0-windows'" />
+		<PackageReference Include="System.Data.OleDb" Version="7.0.0" Condition="'$(TargetFramework)' == 'net8.0-windows'" />
 	</ItemGroup>
 </Project>

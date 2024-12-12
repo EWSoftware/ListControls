@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : DrawTreeNodeExtendedEventArgs.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 04/09/2023
-// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2007-2024, Eric Woodruff, All rights reserved
 //
 // This file contains an event arguments class used to provide information for the ExtendedTreeView's
 // TreeNodeDrawing and TreeNodeDrawn events.
@@ -17,10 +17,6 @@
 // ==============================================================================================================
 // 01/14/2007  EFW  Created the code
 //===============================================================================================================
-
-using System;
-using System.Drawing;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls
 {
@@ -38,20 +34,12 @@ namespace EWSoftware.ListControls
         #region Private data members
         //=====================================================================
 
-        private readonly Graphics graphics;
-        private readonly TreeNode node;
-        private readonly TreeNodeStates state;
-
-        private NodeParts nodeParts;
         private string text;
-        private int imageIndex, stateImageIndex, linePos, lineWidth;
 
-        private Rectangle nodeBounds, expandoBounds, stateBounds, imageBounds, textBounds;
-
-        private StringFormat sf;
-        private Font font;
-        private Pen linePen;
-        private Brush bgBrush, bgTextBrush, fgBrush;
+        private Font font = null!;
+        private Pen linePen = null!;
+        private Brush? bgBrush = null!, bgTextBrush = null!, fgBrush = null!;
+        private StringFormat? sf = null!;
 
         #endregion
 
@@ -61,17 +49,17 @@ namespace EWSoftware.ListControls
         /// <summary>
         /// This read-only property returns the graphics object
         /// </summary>
-        public Graphics Graphics => graphics;
+        public Graphics Graphics { get; }
 
         /// <summary>
         /// This read-only property returns the tree node being drawn
         /// </summary>
-        public TreeNode Node => node;
+        public TreeNode Node { get; }
 
         /// <summary>
         /// This read-only property returns the current state of the tree node to draw
         /// </summary>
-        public TreeNodeStates State => state;
+        public TreeNodeStates State { get; }
 
         /// <summary>
         /// This is used to set or get the parts of the node to draw
@@ -80,61 +68,45 @@ namespace EWSoftware.ListControls
         /// <remarks>If you handle the <see cref="ExtendedTreeView.TreeNodeDrawing"/> event and custom draw one
         /// or more parts of the node, you should turn of the corresponding bit flags in this member so that the
         /// tree view will not draw them.</remarks>
-        public NodeParts NodeParts
-        {
-            get => nodeParts;
-            set => nodeParts = value;
-        }
+        public NodeParts NodeParts { get; set; }
 
         /// <summary>
         /// This read-only property returns the overall bounds of the node to draw
         /// </summary>
-        public Rectangle NodeBounds => nodeBounds;
+        public Rectangle NodeBounds { get; }
 
         /// <summary>
         /// This is used to set or get the bounds of the expando image (+/-) if it is drawn
         /// </summary>
-        public Rectangle ExpandoBounds
-        {
-            get => expandoBounds;
-            set => expandoBounds = value;
-        }
+        public Rectangle ExpandoBounds { get; set; }
 
         /// <summary>
         /// This is used to set or get the bounds of the checkbox or state image if it is drawn
         /// </summary>
-        public Rectangle StateBounds
-        {
-            get => stateBounds;
-            set => stateBounds = value;
-        }
+        public Rectangle StateBounds { get; set; }
 
         /// <summary>
         /// This is used to set or get the bounds of the node image if it is drawn
         /// </summary>
-        public Rectangle ImageBounds
-        {
-            get => imageBounds;
-            set => imageBounds = value;
-        }
+        public Rectangle ImageBounds { get; set; }
 
         /// <summary>
         /// This is used to set or get the bounds of the node text
         /// </summary>
         /// <value>This value is calculated automatically when the text is set if a font has been defined</value>
-        public Rectangle TextBounds
-        {
-            get => textBounds;
-            set => textBounds = value;
-        }
+        public Rectangle TextBounds { get; set; }
 
         /// <summary>
         /// This is used to set or get the string format to use when drawing the text
         /// </summary>
         public StringFormat StringFormat
         {
-            get => sf;
-            set => sf = value;
+            get => sf!;
+            set
+            {
+                sf?.Dispose();
+                sf = value;
+            }
         }
 
         /// <summary>
@@ -147,15 +119,16 @@ namespace EWSoftware.ListControls
             get => text;
             set
             {
-                text = value;
+                text = value ?? String.Empty;
 
                 // Reset the bounds based on the new text
                 if(font != null)
                 {
-                    SizeF size = graphics.MeasureString(text, font, new SizeF(999999F, nodeBounds.Height), sf);
+                    SizeF size = this.Graphics.MeasureString(text, font, new SizeF(999999F, this.NodeBounds.Height),
+                        this.StringFormat);
 
-                    textBounds = new Rectangle(textBounds.Left, nodeBounds.Top, (int)size.Width + 2,
-                        nodeBounds.Height);
+                    this.TextBounds = new Rectangle(this.TextBounds.Left, this.NodeBounds.Top, (int)size.Width + 2,
+                        this.NodeBounds.Height);
                 }
             }
         }
@@ -165,11 +138,7 @@ namespace EWSoftware.ListControls
         /// <see cref="TreeView.ImageList"/>.
         /// </summary>
         /// <value>If set to -1, no image is drawn</value>
-        public int ImageIndex
-        {
-            get => imageIndex;
-            set => imageIndex = value;
-        }
+        public int ImageIndex { get; set; }
 
         /// <summary>
         /// This is used to set or get the index of the state image to draw on the node from the tree view's
@@ -177,11 +146,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <value>If set to -1, no image is drawn.  This is also used to specify which image is drawn based on
         /// the node's checked state if the tree view's <see cref="TreeView.CheckBoxes"/> is set to true.</value>
-        public int StateImageIndex
-        {
-            get => stateImageIndex;
-            set => stateImageIndex = value;
-        }
+        public int StateImageIndex { get; set; }
 
         /// <summary>
         /// This is used to set or get the font used to draw the node text
@@ -192,8 +157,7 @@ namespace EWSoftware.ListControls
             set
             {
                 // Only dispose of the font if it isn't the tree view's or the node's font
-                if(font != null && (object)font != (object)node.NodeFont &&
-                  (object)font != (object)node.TreeView.Font)
+                if(font != null && font != this.Node.NodeFont && font != this.Node.TreeView.Font)
                     font.Dispose();
 
                 font = value;
@@ -218,28 +182,20 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <value>This represents the position of the line closest to the node text.  The position of all outer
         /// lines can be determined by subtracting the tree view's <see cref="TreeView.Indent"/> value.</value>
-        public int LinePosition
-        {
-            get => linePos;
-            set => linePos = value;
-        }
+        public int LinePosition { get; set; }
 
         /// <summary>
         /// This is used to set or get the width of the horizontal line connecting the vertical node line to the
         /// node image or text.
         /// </summary>
-        public int LineWidth
-        {
-            get => lineWidth;
-            set => lineWidth = value;
-        }
+        public int LineWidth { get; set; }
 
         /// <summary>
         /// This is used to set or get the brush used to draw the node's background
         /// </summary>
         public Brush BackgroundBrush
         {
-            get => bgBrush;
+            get => bgBrush!;
             set
             {
                 bgBrush?.Dispose();
@@ -254,7 +210,7 @@ namespace EWSoftware.ListControls
         /// <value>This will be null if <see cref="TreeView.FullRowSelect"/> is true</value>
         public Brush TextBackgroundBrush
         {
-            get => bgTextBrush;
+            get => bgTextBrush!;
             set
             {
                 bgTextBrush?.Dispose();
@@ -267,7 +223,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         public Brush TextForegroundBrush
         {
-            get => fgBrush;
+            get => fgBrush!;
             set
             {
                 fgBrush?.Dispose();
@@ -299,12 +255,14 @@ namespace EWSoftware.ListControls
 		public DrawTreeNodeExtendedEventArgs(Graphics g, TreeNode treeNode, TreeNodeStates nodeState,
           Rectangle bounds)
 		{
-            graphics = g;
-            node = treeNode;
-            state = nodeState;
-            nodeBounds = bounds;
-            nodeParts = NodeParts.Background;
-            imageIndex = stateImageIndex = -1;
+            this.Graphics = g;
+            this.Node = treeNode;
+            this.State = nodeState;
+            this.NodeBounds = bounds;
+            this.NodeParts = NodeParts.Background;
+            this.ImageIndex = this.StateImageIndex = -1;
+
+            text = String.Empty;
 		}
         #endregion
 
@@ -339,11 +297,13 @@ namespace EWSoftware.ListControls
         protected virtual void Dispose(bool disposing)
         {
             // There are no unmanaged resources in this class.  Just dispose of the graphics objects.
-            this.Font = null;
-            this.LinePen = null;
-            this.BackgroundBrush = null;
-            this.TextBackgroundBrush = null;
-            this.TextForegroundBrush = null;
+            this.Font = null!;
+
+            linePen?.Dispose();
+            bgBrush?.Dispose();
+            bgTextBrush?.Dispose();
+            fgBrush?.Dispose();
+            sf?.Dispose();
         }
         #endregion
     }

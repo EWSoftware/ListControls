@@ -22,53 +22,55 @@ namespace ListControlDemoCS
 
         #region Component Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
-            this.txtPhoneNumber = new System.Windows.Forms.TextBox();
-            this.epErrors = new System.Windows.Forms.ErrorProvider();
-            this.btnDelete = new System.Windows.Forms.Button();
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            components = new Container();
+            txtPhoneNumber = new MaskedTextBox();
+            epErrors = new ErrorProvider(components);
+            btnDelete = new Button();
+            ((ISupportInitialize)epErrors).BeginInit();
             this.SuspendLayout();
             // 
             // txtPhoneNumber
             // 
-            this.txtPhoneNumber.Location = new System.Drawing.Point(4, 9);
-            this.txtPhoneNumber.MaxLength = 20;
-            this.txtPhoneNumber.Name = "txtPhoneNumber";
-            this.txtPhoneNumber.Size = new System.Drawing.Size(156, 22);
-            this.txtPhoneNumber.TabIndex = 0;
-            this.txtPhoneNumber.Text = "";
+            txtPhoneNumber.Location = new Point(4, 9);
+            txtPhoneNumber.Mask = "(000) 000-0000";
+            txtPhoneNumber.Name = "txtPhoneNumber";
+            txtPhoneNumber.Size = new Size(156, 27);
+            txtPhoneNumber.TabIndex = 0;
             // 
             // epErrors
             // 
-            this.epErrors.ContainerControl = this;
+            epErrors.ContainerControl = this;
             // 
             // btnDelete
             // 
-            this.btnDelete.Location = new System.Drawing.Point(176, 8);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(75, 25);
-            this.btnDelete.TabIndex = 1;
-            this.btnDelete.Text = "&Delete";
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            btnDelete.Location = new Point(178, 6);
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(75, 32);
+            btnDelete.TabIndex = 1;
+            btnDelete.Text = "&Delete";
+            btnDelete.Click += this.btnDelete_Click;
             // 
             // PhoneRow
             // 
-            this.Controls.Add(this.btnDelete);
-            this.Controls.Add(this.txtPhoneNumber);
+            this.Controls.Add(btnDelete);
+            this.Controls.Add(txtPhoneNumber);
             this.Name = "PhoneRow";
-            this.Size = new System.Drawing.Size(256, 40);
-            this.Validating += new System.ComponentModel.CancelEventHandler(this.PhoneRow_Validating);
+            this.Size = new Size(256, 40);
+            this.Validating += this.PhoneRow_Validating;
+            ((ISupportInitialize)epErrors).EndInit();
             this.ResumeLayout(false);
-
+            this.PerformLayout();
         }
         #endregion
 
         private System.Windows.Forms.ErrorProvider epErrors;
-        private System.Windows.Forms.TextBox txtPhoneNumber;
+        private System.Windows.Forms.MaskedTextBox txtPhoneNumber;
         private System.Windows.Forms.Button btnDelete;
     }
 }

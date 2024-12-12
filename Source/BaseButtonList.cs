@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : BaseButtonList.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains an abstract base button list control that supports data binding, layout options, and data
 // source indexers and serves as the base class for the RadioButtonList and CheckBoxList controls.
@@ -19,11 +19,6 @@
 // 12/09/2005  EFW  Various improvements, fixes, and modifications
 // 05/01/2006  EFW  Added support for UseMnemonic
 //===============================================================================================================
-
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls
 {
@@ -47,19 +42,19 @@ namespace EWSoftware.ListControls
         private const int RightAlignments = (int)(ContentAlignment.TopRight | ContentAlignment.MiddleRight |
             ContentAlignment.BottomRight);
 
-        private Panel pnlButtons;
+        private Panel pnlButtons = null!;
 
         // Title properties
         private readonly SolidBrush brBackground, brTitleBack, brTitleFore;
         private readonly StringFormat sfTitle;
         private Pen penTitleBorder;
         private Font fontTitle;
-        private string titleText;
+        private string? titleText;
 
         // Border style, border width, and image list
         private Border3DStyle borderStyle;
         private int borderTop;
-        private ImageList ilImages;
+        private ImageList? ilImages;
 
         // Layout
         private ContentAlignment checkAlign, imageAlign, textAlign;
@@ -188,7 +183,7 @@ namespace EWSoftware.ListControls
         /// The index will wrap around if there are more items than there are images thus repeating images for
         /// those items that are outside the range of the image list.</value>
         [Category("Appearance"), DefaultValue(null), Description("The image list for the buttons")]
-        public ImageList ImageList
+        public ImageList? ImageList
         {
             get => ilImages;
             set
@@ -209,7 +204,7 @@ namespace EWSoftware.ListControls
 
                     ilImages = value;
 
-                    if(value != null)
+                    if(ilImages != null)
                     {
                         ilImages.RecreateHandle += ListRecreated;
                         ilImages.Disposed += ListDisposed;
@@ -221,7 +216,7 @@ namespace EWSoftware.ListControls
                         bb = (ButtonBase)c;
                         bb.Text = bb.Text.Trim();
 
-                        if(value == null)
+                        if(ilImages == null)
                         {
                             bb.ImageIndex = -1;
                             bb.ImageList = null;
@@ -412,7 +407,7 @@ namespace EWSoftware.ListControls
         /// <value>If set to null or an empty string (the default), no title is displayed</value>
         [Category("Title"), DefaultValue(null), Browsable(true), RefreshProperties(RefreshProperties.Repaint),
           Bindable(true), EditorBrowsable(EditorBrowsableState.Always)]
-        public string TitleText
+        public string? TitleText
         {
             get => titleText;
             set
@@ -507,7 +502,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="ListBackColor"/> changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the list background color changes")]
-        public event EventHandler ListBackColorChanged;
+        public event EventHandler? ListBackColorChanged;
 
         /// <summary>
         /// This raises the <see cref="ListBackColorChanged"/> event
@@ -522,7 +517,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="BorderStyle"/> changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the border style changes")]
-        public event EventHandler BorderStyleChanged;
+        public event EventHandler? BorderStyleChanged;
 
         /// <summary>
         /// This raises the <see cref="BorderStyleChanged"/> event
@@ -537,7 +532,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="TitleText"/> changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the title text changes")]
-        public event EventHandler TitleTextChanged;
+        public event EventHandler? TitleTextChanged;
 
         /// <summary>
         /// This raises the <see cref="TitleTextChanged"/> event
@@ -552,7 +547,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="TitleBorderColor"/> changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the title border color changes")]
-        public event EventHandler TitleBorderColorChanged;
+        public event EventHandler? TitleBorderColorChanged;
 
         /// <summary>
         /// This raises the <see cref="TitleBorderColorChanged"/> event
@@ -567,7 +562,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="TitleBackColor"/> changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the title background color changes")]
-        public event EventHandler TitleBackColorChanged;
+        public event EventHandler? TitleBackColorChanged;
 
         /// <summary>
         /// This raises the <see cref="TitleBackColorChanged"/> event
@@ -582,7 +577,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="TitleForeColor"/> changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the title foreground color changes")]
-        public event EventHandler TitleForeColorChanged;
+        public event EventHandler? TitleForeColorChanged;
 
         /// <summary>
         /// This raises the <see cref="TitleForeColorChanged"/> event
@@ -597,7 +592,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="TitleFont"/> changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the title font changes")]
-        public event EventHandler TitleFontChanged;
+        public event EventHandler? TitleFontChanged;
 
         /// <summary>
         /// This raises the <see cref="TitleFontChanged"/> event
@@ -701,7 +696,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void pnlButtons_MouseDown(object sender, MouseEventArgs e)
+        private void pnlButtons_MouseDown(object? sender, MouseEventArgs e)
         {
             if(this.SelectedIndex != -1 && pnlButtons.Controls.Count != 0)
             {
@@ -718,7 +713,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void ImageList_RecreateHandle(object sender, EventArgs e)
+        private void ImageList_RecreateHandle(object? sender, EventArgs e)
         {
             if(base.IsHandleCreated)
                 base.Invalidate(true);
@@ -729,7 +724,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void ImageList_Disposed(object sender, EventArgs e)
+        private void ImageList_Disposed(object? sender, EventArgs e)
         {
             this.ImageList = null;
         }
@@ -764,7 +759,7 @@ namespace EWSoftware.ListControls
         /// based on their settings.</param>
         private void LayoutSingleRow(int itemHeight, int extraWidth, int commonWidth)
         {
-            Size proposed = new Size(Int32.MaxValue, Int32.MaxValue);
+            Size proposed = new(Int32.MaxValue, Int32.MaxValue);
             SizeF size;
             int left = padding.Left;
 
@@ -805,7 +800,7 @@ namespace EWSoftware.ListControls
         /// sized to the widest item in that column.</param>
         private void LayoutDownThenAcross(int itemHeight, int extraWidth, int commonWidth)
         {
-            Size proposed = new Size(Int32.MaxValue, Int32.MaxValue);
+            Size proposed = new(Int32.MaxValue, Int32.MaxValue);
             Control ctl;
             SizeF size;
             int first, top, maxWidth, current = 0, left = padding.Left, bottom = pnlButtons.Height - padding.Bottom;
@@ -906,7 +901,7 @@ namespace EWSoftware.ListControls
         /// sized to the widest item in that column.</param>
         private void LayoutAcrossThenDown(int itemHeight, int extraWidth, int commonWidth)
         {
-            Size proposed = new Size(Int32.MaxValue, Int32.MaxValue);
+            Size proposed = new(Int32.MaxValue, Int32.MaxValue);
             Control ctl;
             SizeF size;
 
@@ -1134,7 +1129,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event parameters</param>
         protected override void OnLayout(LayoutEventArgs e)
         {
-            Size proposed = new Size(Int32.MaxValue, Int32.MaxValue);
+            Size proposed = new(Int32.MaxValue, Int32.MaxValue);
 
             // Start out with 4 extra pixels to provide padding for variations in the actual text widths
             int borderWidth, itemHeight, spaceWidth = 0, commonWidth = -1, extraWidth = 4;

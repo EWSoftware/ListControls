@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : MultiColumnComboBoxCell.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/07/2023
-// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
+// Updated : 12/09/2024
+// Note    : Copyright 2007-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a data grid view cell object that hosts a multi-column combo box
 //
@@ -16,10 +16,6 @@
 // ==============================================================================================================
 // 04/21/2007  EFW  Created the code
 //===============================================================================================================
-
-using System;
-using System.Drawing;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls.DataGridViewControls
 {
@@ -59,7 +55,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 dropDownWidth = value;
 
                 if(this.OwnsEditingComboBox(this.RowIndex))
-                    ((MultiColumnComboBox)this.EditingComboBox).DropDownWidth = value;
+                    ((MultiColumnComboBox)this.EditingComboBox!).DropDownWidth = value;
             }
         }
 
@@ -97,17 +93,13 @@ namespace EWSoftware.ListControls.DataGridViewControls
           DataGridViewCellStyle dataGridViewCellStyle)
         {
             MultiColumnComboBoxColumn owner = (MultiColumnComboBoxColumn)this.OwningColumn;
-            MultiColumnComboBoxEditingControl box;
-            string text;
 
             if(dataGridViewCellStyle == null)
                 throw new ArgumentNullException(nameof(dataGridViewCellStyle));
 
             base.InitializeEditingControl(rowIndex, initialFormattedValue, dataGridViewCellStyle);
 
-            box = this.DataGridView.EditingControl as MultiColumnComboBoxEditingControl;
-
-            if(box != null)
+            if(this.DataGridView!.EditingControl is MultiColumnComboBoxEditingControl box)
             {
                 if((this.GetInheritedState(rowIndex) & DataGridViewElementStates.Selected) ==
                   DataGridViewElementStates.Selected)
@@ -117,7 +109,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 box.MaxDropDownItems = this.MaxDropDownItems;
                 box.DropDownWidth = dropDownWidth;
                 box.DataSource = null;
-                box.DisplayMember = box.ValueMember = null;
+                box.DisplayMember = box.ValueMember = String.Empty;
                 box.ColumnFilter.Clear();
                 box.Items.Clear();
 
@@ -137,14 +129,11 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 box.DataSource = this.DataSource;
 
                 if(this.HasItemCollection && this.DataSource == null && this.Items.Count > 0)
-                    box.Items.AddRange(this.Items.InnerList.ToArray());
+                    box.Items.AddRange(this.Items.InnerList.ToArray()!);
 
                 box.SortOrder = this.SortOrder;
                 box.FlatStyle = this.FlatStyle;
-
-                text = initialFormattedValue as string;
-
-                box.Text = text ?? String.Empty;
+                box.Text = initialFormattedValue as string ?? String.Empty;
 
                 if(box.SelectedIndex == -1 && box.Items.Count != 0)
                     box.SelectedIndex = 0;
@@ -170,6 +159,6 @@ namespace EWSoftware.ListControls.DataGridViewControls
         {
             return $"MultiColumnComboBoxCell {{ ColumnIndex={this.ColumnIndex}, RowIndex={this.RowIndex} }}";
         }
-#endregion
+        #endregion
     }
 }

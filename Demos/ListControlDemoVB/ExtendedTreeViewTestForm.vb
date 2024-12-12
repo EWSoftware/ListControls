@@ -2,8 +2,8 @@
 ' System  : EWSoftware Data List Control Demonstration Applications
 ' File    : ExtendedTreeViewDemo.cs
 ' Author  : Eric Woodruff
-' Updated : 04/09/2023
-' Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
+' Updated : 12/02/2024
+' Note    : Copyright 2007-2024, Eric Woodruff, All rights reserved
 '
 ' This form is used to demonstrate the extended tree view control
 '
@@ -20,8 +20,6 @@
 ' Ignore Spelling: Fld
 
 Imports System.Drawing.Drawing2D
-
-Imports EWSoftware.ListControls
 
 Public Class ExtendedTreeViewTestForm
     ''' <summary>
@@ -68,8 +66,7 @@ Public Class ExtendedTreeViewTestForm
     ''' <param name="s">The sender of the event</param>
     ''' <param name="e">The event arguments</param>
     Private Sub pgProps_PropertyValueChanged(ByVal s As System.Object, _
-      ByVal e As System.Windows.Forms.PropertyValueChangedEventArgs) _
-      Handles pgProps.PropertyValueChanged
+      ByVal e As PropertyValueChangedEventArgs) Handles pgProps.PropertyValueChanged
         tvExtTree.Invalidate()
         tvExtTree.Update()
     End Sub
@@ -80,7 +77,7 @@ Public Class ExtendedTreeViewTestForm
     ''' <param name="sender">The sender of the event</param>
     ''' <param name="e">The event arguments</param>
     Private Sub chkLargeImages_CheckedChanged(ByVal sender As System.Object, _
-       ByVal e As System.EventArgs) Handles chkLargeImages.CheckedChanged
+       ByVal e As EventArgs) Handles chkLargeImages.CheckedChanged
         Dim newHeight As Integer
 
         tvExtTree.BeginUpdate()
@@ -111,7 +108,7 @@ Public Class ExtendedTreeViewTestForm
     ''' <param name="sender">The sender of the event</param>
     ''' <param name="e">The event arguments</param>
     Private Sub chkStateImages_CheckedChanged(ByVal sender As System.Object, _
-      ByVal e As System.EventArgs) Handles chkStateImages.CheckedChanged
+      ByVal e As EventArgs) Handles chkStateImages.CheckedChanged
         tvExtTree.BeginUpdate()
 
         If chkStateImages.Checked Then
@@ -130,7 +127,7 @@ Public Class ExtendedTreeViewTestForm
     ''' <param name="sender">The sender of the event</param>
     ''' <param name="e">The event arguments</param>
     Private Sub chkExpandoImages_CheckedChanged(ByVal sender As System.Object, _
-      ByVal e As System.EventArgs) Handles chkExpandoImages.CheckedChanged
+      ByVal e As EventArgs) Handles chkExpandoImages.CheckedChanged
         tvExtTree.BeginUpdate()
 
         If chkExpandoImages.Checked Then
@@ -150,7 +147,7 @@ Public Class ExtendedTreeViewTestForm
     ''' <param name="sender">The sender of the event</param>
     ''' <param name="e">The event arguments</param>
     Private Sub chkFormDrawNode_CheckedChanged(ByVal sender As System.Object, _
-      ByVal e As System.EventArgs) Handles chkFormDrawNode.CheckedChanged
+      ByVal e As EventArgs) Handles chkFormDrawNode.CheckedChanged
         ' When enabled, clicks on the extra text drawn by the event will cause the node to get selected too
         tvExtTree.SelectOnRightOfLabelClick = chkFormDrawNode.Checked
 
@@ -164,19 +161,23 @@ Public Class ExtendedTreeViewTestForm
     ''' <param name="sender">The sender of the event</param>
     ''' <param name="e">The event arguments</param>
     Private Sub tvExtTree_ChangeStateImage(ByVal sender As System.Object, _
-      ByVal e As System.Windows.Forms.TreeViewEventArgs) Handles tvExtTree.ChangeStateImage
-        Dim idx As Integer = e.Node.StateImageIndex
+      ByVal e As TreeViewEventArgs) Handles tvExtTree.ChangeStateImage
 
-        idx += 1
+        If e.Node IsNot Nothing Then
+            Dim idx As Integer = e.Node.StateImageIndex
 
-        If idx > 4 Then
-            idx = 0
+            idx += 1
+
+            If idx > 4 Then
+                idx = 0
+            End If
+
+            e.Node.StateImageIndex = idx
         End If
-
-        e.Node.StateImageIndex = idx
     End Sub
 
     #Region "TreeNodeDrawing Example"
+
     ''' <summary>
     ''' Test TreeNodeDrawing event handler.  This occurs before the tree
     ''' view draws the node.
@@ -184,7 +185,7 @@ Public Class ExtendedTreeViewTestForm
     ''' <param name="sender">The sender of the event</param>
     ''' <param name="e">The event arguments</param>
     Private Sub tvExtTree_TreeNodeDrawing(ByVal sender As System.Object, _
-      ByVal e As EWSoftware.ListControls.DrawTreeNodeExtendedEventArgs) _
+      ByVal e As DrawTreeNodeExtendedEventArgs) _
       Handles tvExtTree.TreeNodeDrawing
         If Not chkFormDrawNode.Checked Then
             Return
@@ -221,6 +222,7 @@ Public Class ExtendedTreeViewTestForm
     #End Region
 
     #Region "TreeNodeDrawn Example"
+
     ''' <summary>
     ''' Test TreeNodeDrawn event handler.  This occurs after the tree view
     ''' has drawn the node.
@@ -228,7 +230,7 @@ Public Class ExtendedTreeViewTestForm
     ''' <param name="sender">The sender of the event</param>
     ''' <param name="e">The event arguments</param>
     Private Sub tvExtTree_TreeNodeDrawn(ByVal sender As System.Object, _
-      ByVal e As EWSoftware.ListControls.DrawTreeNodeExtendedEventArgs) _
+      ByVal e As DrawTreeNodeExtendedEventArgs) _
       Handles tvExtTree.TreeNodeDrawn
         Dim pen As Pen
         Dim top As Integer
@@ -256,7 +258,7 @@ Public Class ExtendedTreeViewTestForm
     ''' <param name="sender">The sender of the event</param>
     ''' <param name="e">The event arguments</param>
     Private Sub btnEnumTree_Click(ByVal sender As System.Object, _
-      ByVal e As System.EventArgs) Handles btnEnumTree.Click
+      ByVal e As EventArgs) Handles btnEnumTree.Click
         '#Region "Enumerate ExtendedTreeView control"
         Dim node As TreeNode
         txtEnumResults.Text = Nothing
@@ -273,7 +275,7 @@ Public Class ExtendedTreeViewTestForm
     ''' </summary>
     ''' <param name="sender">The sender of the event</param>
     ''' <param name="e">The event arguments</param>
-    Private Sub btnEnumNode_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) _
+    Private Sub btnEnumNode_Click(ByVal sender As System.Object, ByVal e As EventArgs) _
         Handles btnEnumNode.Click, btnEnumNodeSibs.Click
 
         '#Region "TreeNodeEnumerator Example"
@@ -322,7 +324,7 @@ Public Class ExtendedTreeViewTestForm
     ''' </summary>
     ''' <param name="sender">The sender of the event</param>
     ''' <param name="e">The event argument</param>
-    Private Sub btnFindNode_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) _
+    Private Sub btnFindNode_Click(ByVal sender As System.Object, ByVal e As EventArgs) _
         Handles btnFindNode.Click
 
         '#Region "Tree Node Indexer Example"
@@ -358,7 +360,7 @@ Public Class ExtendedTreeViewTestForm
     ''' </summary>
     ''' <param name="sender">The sender of the event</param>
     ''' <param name="e">The event arguments</param>
-    Private Sub btnCheckedNames_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) _
+    Private Sub btnCheckedNames_Click(ByVal sender As System.Object, ByVal e As EventArgs) _
         Handles btnCheckedNames.Click
 
         If tvExtTree.CheckBoxes = False Then
@@ -379,7 +381,7 @@ Public Class ExtendedTreeViewTestForm
     ''' </summary>
     ''' <param name="sender">The sender of the event</param>
     ''' <param name="e">The event arguments</param>
-    Private Sub btnCheckedText_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) _
+    Private Sub btnCheckedText_Click(ByVal sender As System.Object, ByVal e As EventArgs) _
         Handles btnCheckedText.Click
 
         If tvExtTree.CheckBoxes = False Then

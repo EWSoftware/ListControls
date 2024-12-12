@@ -2,8 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : DataNavigatorTestForm.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/06/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/07/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This is used to demonstrate the DataNavigator control
 //
@@ -17,14 +17,6 @@
 // 04/17/2005  EFW  Created the code
 //===============================================================================================================
 
-using System;
-using System.ComponentModel;
-using System.Data;
-using System.Data.OleDb;
-using System.Windows.Forms;
-
-using EWSoftware.ListControls;
-
 namespace ListControlDemoCS
 {
     /// <summary>
@@ -35,10 +27,7 @@ namespace ListControlDemoCS
         #region Private data members
         //=====================================================================
 
-        private OleDbConnection dbConn;
-        private OleDbDataAdapter daAddresses;
-        private DataSet dsAddresses;
-        private bool clearingDataSet;
+        private DemoDataContext dc = null!;
         private string lastSearch;
 
         #endregion
@@ -55,9 +44,6 @@ namespace ListControlDemoCS
 
             lastSearch = String.Empty;
 
-            // Create the data source for the demo
-            CreateDataSource();
-
             // Set the data navigator as the object for the property grid
             pgProps.SelectedObject = dnNav;
             pgProps.Refresh();
@@ -67,123 +53,8 @@ namespace ListControlDemoCS
         }
         #endregion
 
-        #region Helper methods
-        //=====================================================================
-
-        /// <summary>
-        /// Create the data source for the demo.
-        /// </summary>
-        /// <remarks>You can use the designer to create the data source and use strongly typed data sets.  For
-        /// this demo, we'll do it by hand.
-        /// </remarks>
-        private void CreateDataSource()
-        {
-            // The test database should be in the project folder
-            dbConn = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\TestData.mdb");
-            daAddresses = new OleDbDataAdapter();
-            dsAddresses = new DataSet();
-
-            // Set the table name
-            daAddresses.TableMappings.Add("Table", "Addresses");
-
-            // In a real application we wouldn't use literal SQL but we will for the demo
-            daAddresses.SelectCommand = new OleDbCommand("Select * From Addresses Order By LastName", dbConn);
-
-            daAddresses.DeleteCommand = new OleDbCommand("Delete From Addresses Where ID = @paramID", dbConn);
-            daAddresses.DeleteCommand.Parameters.Add(new OleDbParameter("@paramID", OleDbType.Integer, 0,
-                ParameterDirection.Input, false, 0, 0, "ID", DataRowVersion.Original, null));
-
-            daAddresses.InsertCommand = new OleDbCommand(
-                "INSERT INTO Addresses (FirstName, LastName, Address, City, State, Zip, SumValue) " +
-                "VALUES (@paramFN, @paramLN, @paramAddress, @paramCity, @paramState, @paramZip, @paramSumValue)",
-                dbConn);
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramFirstName", OleDbType.VarWChar,
-                20, "FirstName"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramLastName", OleDbType.VarWChar, 30,
-                "LastName"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramAddress", OleDbType.VarWChar, 50,
-                "Address"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramCity", OleDbType.VarWChar, 20,
-                "City"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramState", OleDbType.VarWChar, 2,
-                "State"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramZip", OleDbType.VarWChar, 10,
-                "Zip"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramSumValue", OleDbType.Integer, 0,
-                "SumValue"));
-
-            daAddresses.UpdateCommand = new OleDbCommand(
-                "UPDATE Addresses SET FirstName = @paramFirstName, LastName = @paramLastName, " +
-                "Address = @paramAddress, City = @paramCity, State = @paramState, Zip = @paramZip, " +
-                "SumValue = @paramSumValue WHERE ID = @paramID", dbConn);
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramFirstName", OleDbType.VarWChar,
-                20, "FirstName"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramLastName", OleDbType.VarWChar, 30,
-                "LastName"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramAddress", OleDbType.VarWChar, 50,
-                "Address"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramCity", OleDbType.VarWChar, 20,
-                "City"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramState", OleDbType.VarWChar, 2,
-                "State"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramZip", OleDbType.VarWChar, 10,
-                "Zip"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramSumValue", OleDbType.Integer, 0,
-                "SumValue"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramID", OleDbType.Integer, 0,
-                ParameterDirection.Input, false, 0, 0, "ID", System.Data.DataRowVersion.Original, null));
-
-            // Fill in the schema for auto-increment etc
-            daAddresses.FillSchema(dsAddresses, SchemaType.Mapped);
-
-            // Bind the controls to the data source.  Since we are using a data set, we need to use fully
-            // qualified names.
-            txtFName.DataBindings.Add(new Binding("Text", dsAddresses, "Addresses.FirstName"));
-            txtLName.DataBindings.Add(new Binding("Text", dsAddresses, "Addresses.LastName"));
-            txtAddress.DataBindings.Add(new Binding("Text", dsAddresses, "Addresses.Address"));
-            txtCity.DataBindings.Add(new Binding("Text", dsAddresses, "Addresses.City"));
-            cboState.DataBindings.Add(new Binding("SelectedValue", dsAddresses, "Addresses.State"));
-            txtZip.DataBindings.Add(new Binding("Text", dsAddresses, "Addresses.Zip"));
-            lblKey.DataBindings.Add(new Binding("Text", dsAddresses, "Addresses.ID"));
-
-            // Connect the Row Updated event so that we can retrieve the new primary key values as they are
-            // identity values.
-            daAddresses.RowUpdated += daAddresses_RowUpdated;
-
-            // Load the state codes for the row template's shared data source
-            using(var daStates = new OleDbDataAdapter("Select State, StateDesc From States", dbConn))
-            {
-                DataTable dtStates = new DataTable();
-                daStates.Fill(dtStates);
-
-                // Add a blank row to allow no selection
-                dtStates.Rows.InsertAt(dtStates.NewRow(), 0);
-
-                cboState.DisplayMember = cboState.ValueMember = "State";
-                cboState.DataSource = dtStates.DefaultView;
-            }
-        }
-        #endregion
-
         #region Event handlers
         //=====================================================================
-
-        /// <summary>
-        /// Get the new primary key on added rows
-        /// </summary>
-        /// <param name="sender">The sender of the event</param>
-        /// <param name="e">The event arguments</param>
-        private void daAddresses_RowUpdated(object sender, OleDbRowUpdatedEventArgs e)
-        {
-            if(e.Status == UpdateStatus.Continue && e.StatementType == StatementType.Insert)
-            {
-                using(var cmd = new OleDbCommand("Select @@Identity", dbConn))
-                {
-                    e.Row["ID"] = cmd.ExecuteScalar();
-                    e.Row.AcceptChanges();
-                }
-            }
-        }
 
         /// <summary>
         /// Disable or enable the controls based on the change policy
@@ -192,7 +63,7 @@ namespace ListControlDemoCS
         /// <param name="e">The event arguments</param>
         private void dnNav_ChangePolicyModified(object sender, ChangePolicyEventArgs e)
         {
-            if(pnlData.Enabled != e.AllowEdits || (e.AllowEdits == false && e.AllowAdditions == true))
+            if(pnlData.Enabled != e.AllowEdits || (!e.AllowEdits && e.AllowAdditions))
             {
                 pnlData.Enabled = e.AllowEdits;
 
@@ -245,8 +116,7 @@ namespace ListControlDemoCS
         /// <param name="e">The event arguments</param>
         private void dnNav_NoRows(object sender, EventArgs e)
         {
-            // Ignore if clearing for reload
-            if(!clearingDataSet && dnNav.AllowEdits == true)
+            if(dnNav.AllowEdits)
             {
                 pnlData.Enabled = false;
                 lblAddRow.Visible = true;
@@ -277,7 +147,7 @@ namespace ListControlDemoCS
         /// <param name="e">The event arguments</param>
         private void dnNav_AddedRow(object sender, DataNavigatorEventArgs e)
         {
-            if(pnlData.Enabled == false && dnNav.AllowEdits == true)
+            if(!pnlData.Enabled && dnNav.AllowEdits)
             {
                 pnlData.Enabled = true;
                 lblAddRow.Visible = false;
@@ -304,7 +174,7 @@ namespace ListControlDemoCS
         {
             DialogResult dr;
 
-            if(dnNav.HasChanges)
+            if(dc.ChangeTracker.HasChanges())
             {
                 dr = MessageBox.Show("Do you want to save your changes?  Click YES to save your changes, NO " +
                     "to discard them, or CANCEL to stay here and make further changes.", "Data Navigator Test",
@@ -313,13 +183,15 @@ namespace ListControlDemoCS
                 if(dr == DialogResult.Cancel)
                     e.Cancel = true;
                 else
-                    if(dr == DialogResult.Yes)
                 {
-                    btnSave_Click(sender, e);
+                    if(dr == DialogResult.Yes)
+                    {
+                        btnSave_Click(sender, e);
 
-                    // If it didn't work, stay here
-                    if(dnNav.HasChanges)
-                        e.Cancel = true;
+                        // If it didn't work, stay here
+                        if(dc.ChangeTracker.HasChanges())
+                            e.Cancel = true;
+                    }
                 }
             }
         }
@@ -335,49 +207,81 @@ namespace ListControlDemoCS
 
             try
             {
-                if(dnNav.DataSource == null)
-                {
-                    // Initial load
-                    daAddresses.Fill(dsAddresses);
+                epErrors.Clear();
 
-                    // We could set the DataMember and DataSource properties individually.  This does the same
-                    // thing in one step.
-                    dnNav.SetDataBinding(dsAddresses, "Addresses");
-                }
-                else
+                if(dc?.ChangeTracker.HasChanges() ?? false)
                 {
-                    epErrors.Clear();
+                    dr = MessageBox.Show("Do you want to save your changes?  Click YES to save your " +
+                        "changes, NO to discard them, or CANCEL to stay here and make further changes.",
+                        "DataList Test", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question,
+                        MessageBoxDefaultButton.Button3);
 
-                    if(dnNav.HasChanges)
+                    if(dr == DialogResult.Cancel)
+                        return;
+
+                    if(dr == DialogResult.Yes)
                     {
-                        dr = MessageBox.Show("Do you want to save your changes?  Click YES to save your " +
-                            "changes, NO to discard them, or CANCEL to stay here and make further changes.",
-                            "DataList Test", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question,
-                            MessageBoxDefaultButton.Button3);
+                        btnSave_Click(sender, e);
 
-                        if(dr == DialogResult.Cancel)
+                        // If it didn't work, don't do anything
+                        if(dc.ChangeTracker.HasChanges())
                             return;
-
-                        if(dr == DialogResult.Yes)
-                        {
-                            btnSave_Click(sender, e);
-
-                            // If it didn't work, don't do anything
-                            if(dnNav.HasChanges)
-                                return;
-                        }
                     }
-
-                    // Reload it
-                    pnlData.Enabled = true;
-                    lblAddRow.Visible = false;
-
-                    clearingDataSet = true;
-                    dsAddresses.Clear();
-                    clearingDataSet = false;
-
-                    daAddresses.Fill(dsAddresses);
                 }
+
+                // Reload the data.  Create a new data context since we're reloading the information.  The
+                // old context may have changes we no longer care about.
+                dc = new DemoDataContext();
+
+                pnlData.Enabled = true;
+                lblAddRow.Visible = false;
+
+                if(cboState.DataSource == null)
+                {
+                    var states = dc.StateCodes.ToList();
+
+                    states.Insert(0, new StateCode { State = String.Empty, StateDesc = String.Empty });
+
+                    cboState.DisplayMember = cboState.ValueMember = nameof(StateCode.State);
+                    cboState.DataSource = states;
+                }
+
+                // For entity framework we need to load the entities
+                dc.Addresses.Load();
+
+                // Apply a sort by last name
+                var pdc = TypeDescriptor.GetProperties(typeof(Address));
+                var pd = pdc[nameof(Address.LastName)];
+                var dataSource = dc.Addresses.Local.ToObservableCollection().ToBindingList();
+
+                ((IBindingList)dataSource).ApplySort(pd!, ListSortDirection.Ascending);
+
+                // Bind the controls to the data source
+                txtFName.DataBindings.Clear();
+                txtLName.DataBindings.Clear();
+                txtAddress.DataBindings.Clear();
+                txtCity.DataBindings.Clear();
+                cboState.DataBindings.Clear();
+                txtZip.DataBindings.Clear();
+                lblKey.DataBindings.Clear();
+
+                txtFName.DataBindings.Add(new Binding(nameof(Control.Text), dataSource, nameof(Address.FirstName)));
+                txtLName.DataBindings.Add(new Binding(nameof(Control.Text), dataSource, nameof(Address.LastName)));
+                txtAddress.DataBindings.Add(new Binding(nameof(Control.Text), dataSource, nameof(Address.StreetAddress)));
+                txtCity.DataBindings.Add(new Binding(nameof(Control.Text), dataSource, nameof(Address.City)));
+                cboState.DataBindings.Add(new Binding(nameof(MultiColumnComboBox.SelectedValue), dataSource,
+                    nameof(Address.State)));
+                txtZip.DataBindings.Add(new Binding(nameof(Control.Text), dataSource, nameof(Address.Zip)));
+                lblKey.DataBindings.Add(new Binding(nameof(Control.Text), dataSource, nameof(Address.ID)));
+
+                // We must enable formatting or the bound values for these control types won't get updated for
+                // some reason.  They also need to update on the property value changing in case the mouse wheel
+                // is used.
+                cboState.DataBindings[0].FormattingEnabled = true;
+                cboState.DataBindings[0].DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+
+                // We could set each binding property individually, but this is more efficient
+                dnNav.SetDataBinding(dataSource, null);
             }
             catch(Exception ex)
             {
@@ -395,12 +299,21 @@ namespace ListControlDemoCS
             if(dnNav.DataSource == null)
                 btnLoad_Click(sender, e);
             else
-                if(dnNav.IsValid)
             {
-                // We must commit any pending changes
-                dnNav.CommitChanges();
+                if(dnNav.IsValid)
+                {
+                    // We must commit any pending changes
+                    dnNav.CommitChanges();
 
-                daAddresses.Update(dsAddresses);
+                    // There may be a row added for the placeholder that needs removing
+                    var removeRows = dc.ChangeTracker.Entries<Address>().Select(a => a.Entity).Where(
+                        a => a.LastName == null).ToList();
+
+                    if(removeRows.Count != 0)
+                        dc.RemoveRange(removeRows);
+
+                    dc.SaveChanges();
+                }
             }
         }
 
@@ -420,13 +333,17 @@ namespace ListControlDemoCS
                 // committed and adding a new row here puts this one ahead of it.
                 dnNav.CommitChanges();
 
-                DataRow r = dsAddresses.Tables[0].NewRow();
+                var bl = (BindingList<Address>)dnNav.DataSource;
 
-                r["FirstName"] = "External";
-                r["LastName"] = "Row";
+                bl.Add(new Address
+                {
+                    FirstName = "External",
+                    LastName = "Row",
+                    LastModified = BitConverter.GetBytes(DateTime.Now.Ticks)
+                });
 
-                dsAddresses.Tables[0].Rows.Add(r);
                 dnNav.MoveTo(RowPosition.LastRow);
+                dnNav.Focus();
             }
         }
 
@@ -443,19 +360,17 @@ namespace ListControlDemoCS
             {
                 // Use the currency manager as the data set's row collection may have been changed and the
                 // indexes won't match up to the actual rows.
-                CurrencyManager cm = dnNav.ListManager;
+                CurrencyManager cm = dnNav.ListManager!;
 
                 int row = (int)udcRowNumber.Value;
 
                 if(row > 0 && row <= cm.Count)
                 {
-                    DataRowView drv = (DataRowView)cm.List[row - 1];
+                    dnNav.CancelChanges();
 
-                    // If it's an uncommitted new row, just cancel the changes.  Otherwise, delete the row.
-                    if(drv.IsNew)
-                        dnNav.CancelChanges();
-                    else
-                        drv.Row.Delete();
+                    var bl = (BindingList<Address>)dnNav.DataSource;
+
+                    bl.RemoveAt(row - 1);
                 }
                 else
                     MessageBox.Show("Not a valid row number");
@@ -478,14 +393,17 @@ namespace ListControlDemoCS
 
                 // Use the currency manager as the data set's row collection may have been changed and the
                 // indexes won't match up to the actual rows.
-                CurrencyManager cm = dnNav.ListManager;
+                CurrencyManager cm = dnNav.ListManager!;
 
                 int row = (int)udcRowNumber.Value;
 
                 if(row > 0 && row <= cm.Count)
                 {
-                    DataRowView drv = (DataRowView)cm.List[row - 1];
-                    drv.Row["Address"] = "Modified externally";
+                    var address = (Address)cm.List[row - 1]!;
+                    address.StreetAddress = "Modified externally";
+
+                    dnNav.MoveTo(row - 1);
+                    dnNav.Focus();
                 }
                 else
                     MessageBox.Show("Not a valid row number");
@@ -512,14 +430,13 @@ namespace ListControlDemoCS
         /// <param name="e">The event arguments</param>
         private void txtFindName_TextChanged(object sender, EventArgs e)
         {
-            int startRow, row;
-
             if(txtFindName.Text.Length > 0)
             {
-                startRow = (txtFindName.Text.Length <= lastSearch.Length) ? -1 : dnNav.CurrentRow - 1;
+                int startRow = (txtFindName.Text.Length <= lastSearch.Length) ? -1 : dnNav.CurrentRow - 1;
 
                 lastSearch = txtFindName.Text;
-                row = dnNav.FindString("LastName", txtFindName.Text, startRow);
+                
+                int row = dnNav.FindString(nameof(Address.LastName), txtFindName.Text, startRow);
 
                 if(row != -1)
                     dnNav.MoveTo(row);

@@ -2,8 +2,8 @@
 ' System  : EWSoftware Data List Control Demonstration Applications
 ' File    : AddressHeader.vb
 ' Author  : Eric Woodruff  (Eric@EWoodruff.us)
-' Updated : 10/02/2014
-' Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
+' Updated : 12/07/2024
+' Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 '
 ' This is a sample header template control for the DataList demo
 '
@@ -17,13 +17,8 @@
 ' 10/29/2005  EFW  Created the code
 '================================================================================================================
 
-Imports System
-Imports System.Windows.Forms
-
-Imports EWSoftware.ListControls
-
 Public Partial Class AddressHeader
-    Inherits EWSoftware.ListControls.TemplateControl
+    Inherits TemplateControl
 
     Private lastSearch As String
 
@@ -42,7 +37,7 @@ Public Partial Class AddressHeader
     Protected Overrides Sub Bind()
         ' If the DataList uses a DataSet you must use the fully qualified field name in header and footer
         ' controls as they are bound to the data source as a whole.
-        Me.AddBinding(lblKey, "Text", "Addresses.ID")
+        Me.AddBinding(lblKey, NameOf(Control.Text), NameOf(Address.ID))
     End Sub
 
     ' Find an entry by last name (incremental search)

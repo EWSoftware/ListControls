@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : UserControlComboBoxColumn.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
-// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2007-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a data grid view column object that hosts user control combo box cells
 //
@@ -19,8 +19,6 @@
 
 // Ignore Spelling: typeof
 
-using System;
-using System.ComponentModel;
 using System.Globalization;
 
 namespace EWSoftware.ListControls.DataGridViewControls
@@ -33,7 +31,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         #region Private data members
         //=====================================================================
 
-        private Type dropDownControl;
+        private Type? dropDownControl;
 
         #endregion
 
@@ -58,7 +56,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// </example>
         [Browsable(false), Description("The user control type to use for the drop-down"),
           DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public Type DropDownControl
+		public Type? DropDownControl
         {
             get => dropDownControl;
             set

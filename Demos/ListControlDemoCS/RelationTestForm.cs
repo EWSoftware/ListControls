@@ -2,8 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : RelationTestForm.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/06/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/08/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This is used to demonstrate how the data navigator and data list controls can be used with related data
 // sources in a data set.
@@ -19,30 +19,18 @@
 // 05/05/2007  EFW  Added demo of data binding the CheckBoxList and RadioButtonList controls
 //===============================================================================================================
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Data.OleDb;
-using System.Windows.Forms;
-
-using EWSoftware.ListControls;
-
 namespace ListControlDemoCS
 {
-	/// <summary>
+    /// <summary>
     /// This is used to demonstrate how the data navigator and data list controls can be used with related data
     /// sources in a data set.
-	/// </summary>
-	public partial class RelationTestForm : System.Windows.Forms.Form
-	{
+    /// </summary>
+    public partial class RelationTestForm : Form
+    {
         #region Private data members
         //=====================================================================
 
-        private OleDbConnection dbConn;
-        private OleDbDataAdapter daAddresses, daPhones;
-        private DataSet dsAddresses;
-        private bool clearingDataSet;
+        private DemoDataContext dc = null!;
         private string lastSearch;
 
         #endregion
@@ -54,265 +42,20 @@ namespace ListControlDemoCS
         /// Constructor
         /// </summary>
 		public RelationTestForm()
-		{
-			InitializeComponent();
+        {
+            InitializeComponent();
 
             lastSearch = String.Empty;
 
-            // Create the data source for the demo
-            CreateDataSource();
+            dlPhones.RowTemplate = typeof(PhoneRow);
 
             // Load data by default
             btnLoad_Click(this, EventArgs.Empty);
-		}
-        #endregion
-
-        #region Helper methods
-        //=====================================================================
-
-        /// <summary>
-        /// Create the data source for the demo
-        /// </summary>
-        /// <remarks>You can use the designer to create the data source and use strongly typed data sets.  For
-        /// this demo, we'll do it by hand.
-        /// </remarks>
-        private void CreateDataSource()
-        {
-            // The test database should be in the project folder
-            dbConn = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\TestData.mdb");
-            daAddresses = new OleDbDataAdapter();
-            daPhones = new OleDbDataAdapter();
-            dsAddresses = new DataSet();
-
-            // Set the table name
-            daAddresses.TableMappings.Add("Table", "Addresses");
-
-            // In a real application we wouldn't use literal SQL but we will for the demo
-            daAddresses.SelectCommand = new OleDbCommand("Select * From Addresses Order By LastName", dbConn);
-
-            daAddresses.DeleteCommand = new OleDbCommand("Delete From Addresses Where ID = @paramID", dbConn);
-            daAddresses.DeleteCommand.Parameters.Add(new OleDbParameter("@paramID", OleDbType.Integer, 0,
-                ParameterDirection.Input, false, 0, 0, "ID", DataRowVersion.Original, null));
-
-            daAddresses.InsertCommand = new OleDbCommand(
-                "INSERT INTO Addresses (FirstName, LastName, Address, City, State, Zip, SumValue, Domestic, " +
-                "International, Postal, Parcel, Home, Business, ContactType) " +
-                "VALUES (@paramFN, @paramLN, @paramAddress, @paramCity, @paramState, @paramZip, " +
-                "@paramSumValue, @paramDomestic, @paramInternational, @paramPostal, @paramParcel, " +
-                "@paramHome, @paramBusiness, @paramContactType)", dbConn);
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramFirstName", OleDbType.VarWChar,
-                20, "FirstName"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramLastName", OleDbType.VarWChar,
-                30, "LastName"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramAddress", OleDbType.VarWChar,
-                50, "Address"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramCity", OleDbType.VarWChar, 20,
-                "City"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramState", OleDbType.VarWChar, 2,
-                "State"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramZip", OleDbType.VarWChar, 10,
-                "Zip"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramSumValue", OleDbType.Integer, 0,
-                "SumValue"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramDomestic", OleDbType.Boolean, 0,
-                "Domestic"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramInternational", OleDbType.Boolean,
-                0, "International"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramPostal", OleDbType.Boolean, 0,
-                "Postal"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramParcel", OleDbType.Boolean, 0,
-                "Parcel"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramHome", OleDbType.Boolean, 0,
-                "Home"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramBusiness", OleDbType.Boolean, 0,
-                "Business"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramContactType", OleDbType.Char, 1,
-                "ContactType"));
-
-            daAddresses.UpdateCommand = new OleDbCommand(
-                "UPDATE Addresses SET FirstName = @paramFirstName, LastName = @paramLastName, " +
-                "Address = @paramAddress, City = @paramCity, State = @paramState, Zip = @paramZip, " +
-                "SumValue = @paramSumValue, Domestic = @paramDomestic, International = @paramInternational, " +
-                "Postal = @paramPostal, Parcel = @paramParcel, Home = @paramHome, Business = @paramBusiness, " +
-                "ContactType = @paramContactType WHERE ID = @paramID", dbConn);
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramFirstName", OleDbType.VarWChar,
-                20, "FirstName"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramLastName", OleDbType.VarWChar, 30,
-                "LastName"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramAddress", OleDbType.VarWChar, 50,
-                "Address"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramCity", OleDbType.VarWChar, 20,
-                "City"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramState", OleDbType.VarWChar, 2,
-                "State"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramZip", OleDbType.VarWChar, 10,
-                "Zip"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramSumValue", OleDbType.Integer, 0,
-                "SumValue"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramDomestic", OleDbType.Boolean, 0,
-                "Domestic"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramInternational", OleDbType.Boolean,
-                0, "International"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramPostal", OleDbType.Boolean, 0,
-                "Postal"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramParcel", OleDbType.Boolean, 0,
-                "Parcel"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramHome", OleDbType.Boolean, 0,
-                "Home"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramBusiness", OleDbType.Boolean, 0,
-                "Business"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramContactType", OleDbType.Char, 1,
-                "ContactType"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramID", OleDbType.Integer, 0,
-                ParameterDirection.Input, false, 0, 0, "ID", System.Data.DataRowVersion.Original, null));
-
-            // Fill in the schema for auto-increment etc.
-            daAddresses.FillSchema(dsAddresses, SchemaType.Mapped);
-
-            // Bind the controls to the data source.  Since we are using a data set, we need to use fully
-            // qualified names.
-            txtFName.DataBindings.Add(new Binding("Text", dsAddresses, "Addresses.FirstName"));
-            txtLName.DataBindings.Add(new Binding("Text", dsAddresses, "Addresses.LastName"));
-            txtAddress.DataBindings.Add(new Binding("Text", dsAddresses, "Addresses.Address"));
-            txtCity.DataBindings.Add(new Binding("Text", dsAddresses, "Addresses.City"));
-            cboState.DataBindings.Add(new Binding("SelectedValue", dsAddresses, "Addresses.State"));
-            txtZip.DataBindings.Add(new Binding("Text", dsAddresses, "Addresses.Zip"));
-            lblKey.DataBindings.Add(new Binding("Text", dsAddresses, "Addresses.ID"));
-
-            // Connect the Row Updated event so that we can retrieve the new primary key values as they are
-            // identity values.
-            daAddresses.RowUpdated += daAddresses_RowUpdated;
-
-            // The checkboxes in the checkbox list can also be bound to members of a different data source.  To
-            // do this, set the BindingMembersDataSource and specify the members to which each checkbox is bound
-            // in the BindingMembers collection property.  In this demo, the BindingMembers are specified via the
-            // designer.  However, we could do it in code as well as shown here:
-            //
-            // cblAddressTypes.BindingMembers.AddRange(new string[] { "Addresses.Domestic",
-            //     "Addresses.International", "Addresses.Postal", "Addresses.Parcel", "Addresses.Home",
-            //     "Addresses.Business"});
-            //
-            // As above, since we are binding to a DataSet, we must specify the fully qualified names.  Also note
-            // that there is a BindingMembersBindingContext property that can be set if the binding members data
-            // source is in a binding context different than the checkbox list's data source.
-            //
-            // Note that we could assign a data source for the checkbox list items as well similar to the radio
-            // button list data source below but in this case, the list is simple so it's added to the Items
-            // collection via the designer.
-            cblAddressTypes.BindingMembersDataSource = dsAddresses;
-
-            // Create the data source for the radio button list items
-            List<ListItem> contactTypeList = new List<ListItem>
-            {
-                new ListItem("B", "Business"),
-                new ListItem("P", "Personal"),
-                new ListItem("O", "Other")
-            };
-
-            rblContactType.DisplayMember = "Display";
-            rblContactType.ValueMember = "Value";
-            rblContactType.DataSource = contactTypeList;
-
-            // Bind the radio button list to the ContactType field.  Since it can be null, we'll add a Parse
-            // event to default the value to "Business" if it's null.  This wouldn't be needed for fields that
-            // are never null (i.e. those with a default value).
-            Binding b = new Binding("SelectedValue", dsAddresses, "Addresses.ContactType");
-            b.Format += ContactType_Format;
-            rblContactType.DataBindings.Add(b);
-
-            // Set up the phone info data adapter
-            daPhones.SelectCommand = new OleDbCommand("Select * From Phones Order By ID, PhoneNumber", dbConn);
-
-            daPhones.DeleteCommand = new OleDbCommand("Delete From Phones Where PhoneKey = @paramPhoneKey", dbConn);
-            daPhones.DeleteCommand.Parameters.Add(new OleDbParameter("@paramPhoneKey", OleDbType.Integer, 0,
-                ParameterDirection.Input, false, 0, 0, "PhoneKey", DataRowVersion.Original, null));
-
-            daPhones.InsertCommand = new OleDbCommand("INSERT INTO Phones (ID, PhoneNumber) VALUES (@paramID, " +
-                "@paramPhoneNumber)", dbConn);
-            daPhones.InsertCommand.Parameters.Add(new OleDbParameter("@paramID", OleDbType.Integer, 0, "ID"));
-            daPhones.InsertCommand.Parameters.Add(new OleDbParameter("@paramPhoneNumber", OleDbType.VarWChar, 20,
-                "PhoneNumber"));
-
-            daPhones.UpdateCommand = new OleDbCommand(
-                "UPDATE Phones SET PhoneNumber = @paramPhoneNumber WHERE PhoneKey = @paramPhoneKey", dbConn);
-            daPhones.UpdateCommand.Parameters.Add(new OleDbParameter("@paramPhoneNumber", OleDbType.VarWChar, 20,
-                "PhoneNumber"));
-            daPhones.UpdateCommand.Parameters.Add(new OleDbParameter("@paramPhoneKey", OleDbType.Integer, 0,
-                ParameterDirection.Input, false, 0, 0, "PhoneKey", DataRowVersion.Original, null));
-
-            // Connect the Row Updated event so that we can retrieve the new primary key values as they are
-            // identity values.
-            daPhones.RowUpdated += daPhones_RowUpdated;
-
-            // Load the state codes for the row template's shared data source
-            using(var daStates = new OleDbDataAdapter("Select State, StateDesc From States", dbConn))
-            {
-                DataTable dtStates = new DataTable();
-                daStates.Fill(dtStates);
-
-                // Add a blank row to allow no selection
-                dtStates.Rows.InsertAt(dtStates.NewRow(), 0);
-
-                cboState.DisplayMember = cboState.ValueMember = "State";
-                cboState.DataSource = dtStates.DefaultView;
-            }
         }
         #endregion
 
         #region Event handlers
         //=====================================================================
-
-        /// <summary>
-        /// This converts null values to a default type for the bound radio button list
-        /// </summary>
-        /// <param name="sender">The sender of the event</param>
-        /// <param name="e">The event arguments</param>
-        private void ContactType_Format(object sender, ConvertEventArgs e)
-        {
-            if(e.Value == null || e.Value == DBNull.Value)
-                e.Value = "B";
-        }
-
-        /// <summary>
-        /// Get the new primary key on added rows
-        /// </summary>
-        /// <param name="sender">The sender of the event</param>
-        /// <param name="e">The event arguments</param>
-        private void daAddresses_RowUpdated(object sender, OleDbRowUpdatedEventArgs e)
-        {
-            if(e.Status == UpdateStatus.Continue && e.StatementType == StatementType.Insert)
-            {
-                using(var cmd = new OleDbCommand("Select @@Identity", dbConn))
-                {
-                    e.Row["ID"] = cmd.ExecuteScalar();
-                    e.Row.AcceptChanges();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Get the new primary key on added rows
-        /// </summary>
-        /// <param name="sender">The sender of the event</param>
-        /// <param name="e">The event arguments</param>
-        private void daPhones_RowUpdated(object sender, OleDbRowUpdatedEventArgs e)
-        {
-            if(e.Status == UpdateStatus.Continue && e.StatementType == StatementType.Insert)
-            {
-                using(var cmd = new OleDbCommand("Select @@Identity", dbConn))
-                {
-                    e.Row["PhoneKey"] = cmd.ExecuteScalar();
-                    e.Row.AcceptChanges();
-                }
-            }
-
-            // Ignore deletions that don't find their row.  The cascade delete took care of them already.
-            if(e.StatementType == StatementType.Delete && e.RecordsAffected == 0 && e.Status == UpdateStatus.ErrorsOccurred)
-            {
-                e.Status = UpdateStatus.Continue;
-                e.Row.AcceptChanges();
-            }
-        }
 
         /// <summary>
         /// Require a first and last name
@@ -368,12 +111,10 @@ namespace ListControlDemoCS
         /// <param name="e">The event arguments</param>
         private void dnNav_NoRows(object sender, EventArgs e)
         {
-            // Ignore if clearing for reload
-            if(!clearingDataSet && dnNav.AllowEdits == true)
+            if(dnNav.AllowEdits)
             {
-                pnlData.Enabled = false;
                 lblAddRow.Visible = true;
-                dlPhones.Enabled = false;
+                pnlData.Enabled = dlPhones.Enabled = false;
             }
         }
 
@@ -401,11 +142,10 @@ namespace ListControlDemoCS
         /// <param name="e">The event arguments</param>
         private void dnNav_AddedRow(object sender, DataNavigatorEventArgs e)
         {
-            if(pnlData.Enabled == false && dnNav.AllowEdits == true)
+            if(!pnlData.Enabled && dnNav.AllowEdits)
             {
-                pnlData.Enabled = true;
                 lblAddRow.Visible = false;
-                dlPhones.Enabled = true;
+                pnlData.Enabled = dlPhones.Enabled = true;
             }
         }
 
@@ -418,7 +158,7 @@ namespace ListControlDemoCS
         {
             DialogResult dr;
 
-            if(dnNav.HasChanges || dlPhones.HasChanges)
+            if(dc.ChangeTracker.HasChanges())
             {
                 dr = MessageBox.Show("Do you want to save your changes?  Click YES to save your changes, NO " +
                     "to discard them, or CANCEL to stay here and make further changes.", "Relationship Test",
@@ -427,14 +167,16 @@ namespace ListControlDemoCS
                 if(dr == DialogResult.Cancel)
                     e.Cancel = true;
                 else
+                {
                     if(dr == DialogResult.Yes)
                     {
                         btnSave_Click(sender, e);
 
                         // If it didn't work, stay here
-                        if(dnNav.HasChanges || dlPhones.HasChanges)
+                        if(dc.ChangeTracker.HasChanges())
                             e.Cancel = true;
                     }
+                }
             }
         }
 
@@ -444,78 +186,137 @@ namespace ListControlDemoCS
         /// <param name="s">The sender of the event</param>
         /// <param name="e">The event arguments</param>
 		private void btnLoad_Click(object sender, EventArgs e)
-		{
+        {
             DialogResult dr;
 
             try
             {
-                if(dnNav.DataSource == null)
+                epErrors.Clear();
+
+                if(dc?.ChangeTracker.HasChanges() ?? false)
                 {
-                    // Fill the data set.  Both tables are related so they go in the same data set
-                    daAddresses.Fill(dsAddresses, "Addresses");
-                    daPhones.Fill(dsAddresses, "Phones");
+                    dr = MessageBox.Show("Do you want to save your changes?  Click YES to save your " +
+                        "changes, NO to discard them, or CANCEL to stay here and make further changes.",
+                        "Relationship Test", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question,
+                        MessageBoxDefaultButton.Button3);
 
-                    // Relate the two tables
-                    dsAddresses.Relations.Add("AddrPhone", dsAddresses.Tables["Addresses"].Columns["ID"],
-                        dsAddresses.Tables["Phones"].Columns["ID"]);
+                    if(dr == DialogResult.Cancel)
+                        return;
 
-                    // We could set the DataMember and DataSource properties individually.  This does the same
-                    // thing in one step.
-                    dnNav.SetDataBinding(dsAddresses, "Addresses");
-
-                    // Use the relationship as the data source for the phone number data list
-                    dlPhones.SetDataBinding(dsAddresses, "Addresses.AddrPhone", typeof(PhoneRow));
-                }
-                else
-                {
-                    epErrors.Clear();
-
-                    if(dnNav.HasChanges || dlPhones.HasChanges)
+                    if(dr == DialogResult.Yes)
                     {
-                        dr = MessageBox.Show("Do you want to save your changes?  Click YES to save your " +
-                            "changes, NO to discard them, or CANCEL to stay here and make further changes.",
-                            "Relationship Test", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question,
-                            MessageBoxDefaultButton.Button3);
+                        btnSave_Click(sender, e);
 
-                        if(dr == DialogResult.Cancel)
+                        // If it didn't work, don't do anything
+                        if(dc.ChangeTracker.HasChanges())
                             return;
-
-                        if(dr == DialogResult.Yes)
-                        {
-                            btnSave_Click(sender, e);
-
-                            // If it didn't work, don't do anything
-                            if(dnNav.HasChanges || dlPhones.HasChanges)
-                                return;
-                        }
                     }
-
-                    // Reload it
-                    pnlData.Enabled = true;
-                    lblAddRow.Visible = false;
-
-                    // When using a related data list, you must clear its data source and reset it afterwards
-                    // when reloading the data set.  If not, it may generate errors as it tries to rebind on data
-                    // that no longer exists.  This is a problem with the way data binding works in .NET.
-                    dlPhones.DataSource = null;
-
-                    clearingDataSet = true;
-                    dsAddresses.Clear();
-                    clearingDataSet = false;
-
-                    daAddresses.Fill(dsAddresses, "Addresses");
-                    daPhones.Fill(dsAddresses, "Phones");
-
-                    // Reset the data source on the related phone list
-                    dlPhones.DataMember = "Addresses.AddrPhone";
-                    dlPhones.DataSource = dsAddresses;
                 }
+
+                // Reload the data.  Create a new data context since we're reloading the information.  The
+                // old context may have changes we no longer care about.
+                dc = new DemoDataContext();
+
+                pnlData.Enabled = true;
+                lblAddRow.Visible = false;
+
+                if(cboState.DataSource == null)
+                {
+                    var states = dc.StateCodes.ToList();
+
+                    states.Insert(0, new StateCode { State = String.Empty, StateDesc = String.Empty });
+
+                    cboState.DisplayMember = cboState.ValueMember = nameof(StateCode.State);
+                    cboState.DataSource = states;
+                }
+
+                // For entity framework we need to load the entities
+                dc.Addresses.Load();
+                dc.PhoneNumbers.Load();
+
+                // Apply a sort by last name
+                var pdc = TypeDescriptor.GetProperties(typeof(Address));
+                var pd = pdc[nameof(Address.LastName)];
+                var dataSource = dc.Addresses.Local.ToObservableCollection().ToBindingList();
+
+                ((IBindingList)dataSource).ApplySort(pd!, ListSortDirection.Ascending);
+
+                // Bind the controls to the data source
+                txtFName.DataBindings.Clear();
+                txtLName.DataBindings.Clear();
+                txtAddress.DataBindings.Clear();
+                txtCity.DataBindings.Clear();
+                cboState.DataBindings.Clear();
+                txtZip.DataBindings.Clear();
+                lblKey.DataBindings.Clear();
+                rblContactType.DataBindings.Clear();
+
+                txtFName.DataBindings.Add(new Binding(nameof(Control.Text), dataSource, nameof(Address.FirstName)));
+                txtLName.DataBindings.Add(new Binding(nameof(Control.Text), dataSource, nameof(Address.LastName)));
+                txtAddress.DataBindings.Add(new Binding(nameof(Control.Text), dataSource, nameof(Address.StreetAddress)));
+                txtCity.DataBindings.Add(new Binding(nameof(Control.Text), dataSource, nameof(Address.City)));
+                cboState.DataBindings.Add(new Binding(nameof(MultiColumnComboBox.SelectedValue), dataSource,
+                    nameof(Address.State)));
+                txtZip.DataBindings.Add(new Binding(nameof(Control.Text), dataSource, nameof(Address.Zip)));
+                lblKey.DataBindings.Add(new Binding(nameof(Control.Text), dataSource, nameof(Address.ID)));
+
+                // We must enable formatting or the bound values for these control types won't get updated for
+                // some reason.  They also need to update on the property value changing in case the mouse wheel
+                // is used.
+                cboState.DataBindings[0].FormattingEnabled = true;
+                cboState.DataBindings[0].DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+
+                // When using a related data list, you must clear its data source and reset it afterwards
+                // when reloading the data set.  If not, it may generate errors as it tries to rebind on data
+                // that no longer exists.  This is a problem with the way data binding works in .NET.
+                dlPhones.DataSource = null;
+
+                // The checkboxes in the checkbox list can also be bound to members of a different data source.  To
+                // do this, set the BindingMembersDataSource and specify the members to which each checkbox is bound
+                // in the BindingMembers collection property.  In this demo, the BindingMembers are specified via the
+                // designer.  However, we could do it in code as well as shown here:
+                //
+                // cblAddressTypes.BindingMembers.AddRange(new[] { "Domestic", "International", "Postal", "Parcel",
+                //     "Home", "Business" });
+                //
+                // Also note that there is a BindingMembersBindingContext property that can be set if the binding
+                // members data source is in a binding context different than the checkbox list's data source.
+                //
+                // Note that we could assign a data source for the checkbox list items as well similar to the radio
+                // button list data source below but in this case, the list is simple so it's added to the Items
+                // collection via the designer.
+                cblAddressTypes.BindingMembersDataSource = dataSource;
+
+                // Create the data source for the radio button list items
+                List<ListItem> contactTypeList =
+                [
+                    new('B', "Business"),
+                    new('P', "Personal"),
+                    new('O', "Other")
+                ];
+
+                rblContactType.DisplayMember = "Display";
+                rblContactType.ValueMember = "Value";
+                rblContactType.DataSource = contactTypeList;
+
+                // Bind the radio button list to the ContactType field.  Since it can be null, we'll add a Format
+                // event to default the value to "Business" if it's null.  This wouldn't be needed for fields that
+                // are never null (i.e. those with a default value).
+                Binding b = new(nameof(RadioButtonList.SelectedValue), dataSource, nameof(Address.ContactType));
+                b.Format += (s, e) => e.Value ??= 'B';
+                b.DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+                b.FormattingEnabled = true;
+
+                rblContactType.DataBindings.Add(b);
+
+                // We could set each binding property individually, but this is more efficient
+                dnNav.SetDataBinding(dataSource, null);
             }
             catch(Exception ex)
             {
                 MessageBox.Show(this, ex.Message);
             }
-		}
+        }
 
         /// <summary>
         /// Save the changes
@@ -528,39 +329,27 @@ namespace ListControlDemoCS
                 btnLoad_Click(sender, e);
             else
             {
-                if(dnNav.IsValid && dlPhones.IsValid)
+                if(dc.ChangeTracker.HasChanges())
                 {
                     // We must commit any pending changes
                     dnNav.CommitChanges();
                     dlPhones.CommitChanges();
 
-                    daAddresses.Update(dsAddresses.Tables["Addresses"]);
-                    daPhones.Update(dsAddresses.Tables["Phones"]);
+                    // There may be a row added for the placeholder that needs removing
+                    var removeAddresses = dc.ChangeTracker.Entries<Address>().Select(a => a.Entity).Where(
+                        a => a.LastName == null).ToList();
+
+                    if(removeAddresses.Count != 0)
+                        dc.RemoveRange(removeAddresses);
+
+                    var removePhones = dc.ChangeTracker.Entries<Phone>().Select(a => a.Entity).Where(
+                        a => a.PhoneNumber == null).ToList();
+
+                    if(removePhones.Count != 0)
+                        dc.RemoveRange(removePhones);
+
+                    dc.SaveChanges();
                 }
-            }
-        }
-
-        /// <summary>
-        /// Prevent phone information from being entered if the parent row doesn't yet exist in the related data
-        /// source or is not valid.
-        /// </summary>
-        /// <param name="s">The sender of the event</param>
-        /// <param name="e">The event arguments</param>
-        private void dlPhones_AddingRow(object sender, DataListCancelEventArgs e)
-        {
-            DataRowView drv = (DataRowView)dnNav.ListManager.List[dnNav.CurrentRow];
-
-            if(drv.IsNew)
-            {
-                // The add must always be canceled
-                e.Cancel = true;
-
-                // If not valid, go back to the panel.  If valid, we need to rebind or the related data source
-                // doesn't always pick up on the fact that the parent row got added.
-                if(!dnNav.IsValid)
-                    txtLName.Focus();
-                else
-                    dlPhones.SetDataBinding(dsAddresses, "Addresses.AddrPhone", typeof(PhoneRow));
             }
         }
 
@@ -583,6 +372,48 @@ namespace ListControlDemoCS
                 if(row != -1)
                     dnNav.MoveTo(row);
             }
+        }
+
+        /// <summary>
+        /// To keep the data context aware of additions and deletion automatically would likely require a custom
+        /// binding list.  As such, we'll handle adding and removing phone numbers from the data context.
+        /// </summary>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The event arguments.</param>
+        private void dnNav_Current(object sender, DataNavigatorEventArgs e)
+        {
+            Address? address = (Address?)dnNav.ListManager?.List[dnNav.CurrentRow];
+
+            if(address != null)
+                dlPhones.DataSource = new BindingList<Phone>([.. address.PhoneNumbers]);
+            else
+                dlPhones.DataSource = null;
+        }
+
+        /// <summary>
+        /// Add a new phone number to the address
+        /// </summary>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The event arguments.</param>
+        private void dlPhones_AddedRow(object sender, DataListEventArgs e)
+        {
+            Address address = (Address?)dnNav.ListManager!.List[dnNav.CurrentRow]!;
+            Phone phone = (Phone)e.Item!.RowSource!;
+
+            address.PhoneNumbers.Add(phone);
+        }
+
+        /// <summary>
+        /// Remove a deleted phone entry
+        /// </summary>
+        /// <param name="sender">The sender of the event</param>
+        /// <param name="e">The event arguments.</param>
+        private void dlPhones_DeletingRow(object sender, DataListCancelEventArgs e)
+        {
+            Address address = (Address?)dnNav.ListManager!.List[dnNav.CurrentRow]!;
+            Phone phone = (Phone)e.Item!.RowSource!;
+
+            address.PhoneNumbers.Remove(phone);
         }
         #endregion
     }

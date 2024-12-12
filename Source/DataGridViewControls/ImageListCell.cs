@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : ImageListCell.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
-// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
+// Updated : 12/09/2024
+// Note    : Copyright 2007-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a data grid view cell object that shows images from an image list based on the index
 // retrieved from the cell value.
@@ -17,10 +17,6 @@
 // ==============================================================================================================
 // 05/03/2007  EFW  Created the code
 //===============================================================================================================
-
-using System;
-using System.Drawing;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls.DataGridViewControls
 {
@@ -45,7 +41,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 if(this.NewRowImageIndex != -1)
                     return this.NewRowImageIndex;
 
-                return null;
+                return null!;
             }
         }
 
@@ -103,7 +99,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         protected override Rectangle GetContentBounds(Graphics graphics, DataGridViewCellStyle cellStyle,
           int rowIndex)
         {
-            ImageListColumn owner;
+            ImageListColumn? owner;
             Rectangle r = base.GetContentBounds(graphics, cellStyle, rowIndex);
             Size cellSize, imageSize;
 
@@ -115,10 +111,10 @@ namespace EWSoftware.ListControls.DataGridViewControls
             if(r == Rectangle.Empty)
             {
                 TextFormatFlags flags = BaseDataGridViewCell.ComputeTextFormatFlagsForCellStyleAlignment(
-                    base.DataGridView.RightToLeft == RightToLeft.Yes, cellStyle.Alignment, cellStyle.WrapMode);
+                    this.DataGridView!.RightToLeft == RightToLeft.Yes, cellStyle.Alignment, cellStyle.WrapMode);
                 cellSize = base.GetSize(rowIndex);
 
-                owner = base.OwningColumn as ImageListColumn;
+                owner = this.OwningColumn as ImageListColumn;
 
                 if(owner == null || owner.ImageList == null)
                     imageSize = cellSize;
@@ -168,7 +164,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         protected override void OnContentClick(DataGridViewCellEventArgs e)
         {
             int cellValue = -1;
-            object newValue = this.NewValue;
+            object? newValue = this.NewValue;
 
             if(e == null)
                 throw new ArgumentNullException(nameof(e));
@@ -194,7 +190,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 }
 
                 // Let the user map the value to an index
-                MapIndexEventArgs mapArgs = new MapIndexEventArgs(e.ColumnIndex, e.RowIndex, newValue, cellValue);
+                MapIndexEventArgs mapArgs = new(e.ColumnIndex, e.RowIndex, newValue, cellValue);
                 owner.OnMapValueToIndex(mapArgs);
                 cellValue = mapArgs.Index + 1;
 
@@ -270,7 +266,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
             if(e != null && this.DataGridView != null && !this.ReadOnly && e.KeyCode == Keys.Space && !e.Alt &&
               !e.Control && !e.Shift)
             {
-                DataGridViewCellEventArgs args = new DataGridViewCellEventArgs(base.ColumnIndex, rowIndex);
+                DataGridViewCellEventArgs args = new(base.ColumnIndex, rowIndex);
                 this.RaiseCellClick(args);
 
                 if(this.ColumnIndex < this.DataGridView.Columns.Count && rowIndex < this.DataGridView.Rows.Count)
@@ -314,7 +310,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="rowIndex">The row index of the cell</param>
         protected override void OnMouseLeave(int rowIndex)
         {
-            if(this.OwningColumn is ImageListColumn owner && this.DataGridView.Cursor != owner.OriginalCursor)
+            if(this.OwningColumn is ImageListColumn owner && this.DataGridView!.Cursor != owner.OriginalCursor)
                 this.DataGridView.Cursor = owner.OriginalCursor;
 
             base.OnMouseLeave(rowIndex);
@@ -326,10 +322,10 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="value">The value to be use in determining the image</param>
         /// <param name="rowIndex">The index of the cell's parent row</param>
         /// <returns>The image that should be displayed in the cell</returns>
-        protected override object GetCellImage(object value, int rowIndex)
+        protected override object? GetCellImage(object? value, int rowIndex)
         {
             // Use the image from the image list
-            Image cellImage = null;
+            Image? cellImage = null;
             int cellValue = -1;
 
             if(this.OwningColumn is ImageListColumn owner && owner.ImageList != null)
@@ -348,7 +344,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 }
 
                 // Let the user map the value to an index
-                MapIndexEventArgs mapArgs = new MapIndexEventArgs(owner.Index, rowIndex, value, cellValue);
+                MapIndexEventArgs mapArgs = new(owner.Index, rowIndex, value, cellValue);
                 owner.OnMapValueToIndex(mapArgs);
                 cellValue = mapArgs.Index;
 

@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : MultiColumnComboBox.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 04/09/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a multi-column combo box control that supports all features of the standard Windows Forms
 // combo box but displays a multi-column drop-down list and has some extra features such as auto-completion and
@@ -19,11 +19,7 @@
 // 03/01/2005  EFW  Created the code
 //===============================================================================================================
 
-using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Drawing.Design;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls
 {
@@ -39,7 +35,7 @@ namespace EWSoftware.ListControls
         //====================================================================
 
         private int dropDownWidth;
-        private StringCollection scColumnFilter;
+        private StringCollection scColumnFilter = null!;
 
         #endregion
 
@@ -132,8 +128,7 @@ namespace EWSoftware.ListControls
         {
             get
             {
-                if(scColumnFilter == null)
-                    scColumnFilter = new StringCollection();
+                scColumnFilter ??= [];
 
                 return scColumnFilter;
             }
@@ -159,7 +154,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="DropDownWidth"/> changes
         /// </summary>
 		[Category("Property Changed"), Description("Occurs when the drop-down width changes")]
-        public event EventHandler DropDownWidthChanged;
+        public event EventHandler? DropDownWidthChanged;
 
         /// <summary>
         /// This raises the <see cref="DropDownWidthChanged"/> event
@@ -174,7 +169,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the a dropdown column needs to be for formatted
         /// </summary>
 		[Category("DropDown"), Description("Occurs when a drop-down column needs to be formatted")]
-        public event EventHandler<DataGridViewColumnEventArgs> FormatDropDownColumn;
+        public event EventHandler<DataGridViewColumnEventArgs>? FormatDropDownColumn;
 
         /// <summary>
         /// This raises the <see cref="FormatDropDownColumn"/> event
@@ -253,7 +248,7 @@ namespace EWSoftware.ListControls
             base.OnSelectedIndexChanged(e);
 
             if(this.DroppedDown)
-                ((MultiColumnDropDown)this.DropDownInterface).SelectItem(this.SelectedIndex);
+                ((MultiColumnDropDown)this.DropDownInterface!).SelectItem(this.SelectedIndex);
         }
 
         /// <summary>
@@ -300,7 +295,7 @@ namespace EWSoftware.ListControls
 
             if(this.DroppedDown && this.DropDownStyle != ComboBoxStyle.Simple)
             {
-                this.DropDownInterface.ScrollDropDown(e.Delta / SystemInformation.MouseWheelScrollDelta *
+                this.DropDownInterface!.ScrollDropDown(e.Delta / SystemInformation.MouseWheelScrollDelta *
                     SystemInformation.MouseWheelScrollLines * -1);
             }
             else

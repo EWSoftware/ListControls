@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : CheckBoxList.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a multi-selection checkbox list that supports data binding, layout options, and data
 // source indexers.
@@ -22,13 +22,8 @@
 //                  BindingMembers.
 //===============================================================================================================
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.Drawing.Design;
 using System.Globalization;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls
 {
@@ -46,9 +41,9 @@ namespace EWSoftware.ListControls
         private bool inSelectedIndex, threeState;
 
         // Checkbox data source and data binding members
-        private BindingContext bindingContext;
-        private object bindingDataSource;
-        private StringCollection bindingMembers;
+        private BindingContext? bindingContext;
+        private object? bindingDataSource;
+        private StringCollection bindingMembers = null!;
 
         #endregion
 
@@ -211,7 +206,7 @@ namespace EWSoftware.ListControls
         /// the checked state changes on each of the checkboxes in the list.</value>
         [Browsable(false), Description("The binding context to use when binding checkboxes to members in " +
           "BindingMembersDataSource")]
-        public BindingContext BindingMembersBindingContext
+        public BindingContext? BindingMembersBindingContext
         {
             get => bindingContext;
             set
@@ -234,7 +229,7 @@ namespace EWSoftware.ListControls
           AttributeProvider(typeof(IListSource)),
           TypeConverter("System.Windows.Forms.Design.DataSourceConverter, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"),
           Description("Specifies a data source for use with BindingMembers to bind each checkbox to a data member")]
-        public object BindingMembersDataSource
+        public object? BindingMembersDataSource
         {
             get => bindingDataSource;
             set
@@ -264,7 +259,7 @@ namespace EWSoftware.ListControls
             {
                 if(bindingMembers == null)
                 {
-                    bindingMembers = new StringCollection();
+                    bindingMembers = [];
                     bindingMembers.ListChanged += BindingMembers_ListChanged;
                 }
 
@@ -281,16 +276,16 @@ namespace EWSoftware.ListControls
 		{
 			get
             {
-                CheckBox cb;
-                List<object> list = new List<object>();
+                List<object> list = [];
                 ControlCollection checkboxes = this.ButtonPanel.Controls;
 
                 for(int idx = 0; idx < checkboxes.Count; idx++)
                 {
-                    cb = checkboxes[idx] as CheckBox;
-
-                    if(cb.CheckState == CheckState.Checked || cb.CheckState == CheckState.Indeterminate)
-                        list.Add(this.Items[idx]);
+                    if(checkboxes[idx] is CheckBox cb && (cb.CheckState == CheckState.Checked ||
+                      cb.CheckState == CheckState.Indeterminate))
+                    {
+                        list.Add(this.Items[idx]!);
+                    }
                 }
 
                 return new CheckedItemsCollection(this, list);
@@ -306,16 +301,16 @@ namespace EWSoftware.ListControls
 		{
 			get
             {
-                CheckBox cb;
-                List<int> list = new List<int>();
+                List<int> list = [];
                 ControlCollection checkboxes = this.ButtonPanel.Controls;
 
                 for(int idx = 0; idx < checkboxes.Count; idx++)
                 {
-                    cb = checkboxes[idx] as CheckBox;
-
-                    if(cb.CheckState == CheckState.Checked || cb.CheckState == CheckState.Indeterminate)
+                    if(checkboxes[idx] is CheckBox cb && (cb.CheckState == CheckState.Checked ||
+                      cb.CheckState == CheckState.Indeterminate))
+                    {
                         list.Add(idx);
+                    }
                 }
 
                 return new CheckedIndicesCollection(list);
@@ -330,7 +325,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the check state of a list item changes
         /// </summary>
 		[Category("Action"), Description("Occurs when the check state of a list item changes")]
-        public event EventHandler<ItemCheckStateEventArgs> ItemCheckStateChanged;
+        public event EventHandler<ItemCheckStateEventArgs>? ItemCheckStateChanged;
 
         /// <summary>
         /// This raises the <see cref="ItemCheckStateChanged"/> event
@@ -345,7 +340,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="ThreeState"/> property changes
         /// </summary>
 		[Category("Action"), Description("Occurs when the ThreeState property changes")]
-        public event EventHandler ThreeStateChanged;
+        public event EventHandler? ThreeStateChanged;
 
         /// <summary>
         /// This raises the <see cref="ThreeStateChanged"/> event
@@ -379,7 +374,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void BindingMember_Format(object sender, ConvertEventArgs e)
+        private void BindingMember_Format(object? sender, ConvertEventArgs e)
         {
             // If null and three state checkboxes are allowed, use Indeterminate.  If two state, use false.
             if(e.Value == null || e.Value == DBNull.Value)
@@ -394,12 +389,12 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void BindingMember_Parse(object sender, ConvertEventArgs e)
+        private void BindingMember_Parse(object? sender, ConvertEventArgs e)
         {
-            CheckState state = (CheckState)e.Value;
+            CheckState? state = (CheckState?)e.Value;
 
-            if(state == CheckState.Indeterminate)
-                e.Value = threeState ? (object)DBNull.Value : false;
+            if(state == null || state == CheckState.Indeterminate)
+                e.Value = threeState ? DBNull.Value : false;
             else
                 e.Value = state == CheckState.Checked;
         }
@@ -409,7 +404,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void BindingMembers_ListChanged(object sender, ListChangedEventArgs e)
+        private void BindingMembers_ListChanged(object? sender, ListChangedEventArgs e)
         {
             this.RefreshSubControls();
         }
@@ -419,9 +414,9 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void CheckBox_Enter(object sender, EventArgs e)
+        private void CheckBox_Enter(object? sender, EventArgs e)
         {
-            this.SelectedIndex = this.ButtonPanel.Controls.IndexOf((CheckBox)sender);
+            this.SelectedIndex = this.ButtonPanel.Controls.IndexOf((CheckBox?)sender);
         }
 
         /// <summary>
@@ -429,12 +424,12 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void CheckBox_CheckStateChanged(object sender, EventArgs e)
+        private void CheckBox_CheckStateChanged(object? sender, EventArgs e)
         {
-            CheckBox cb = sender as CheckBox;
+            CheckBox? cb = sender as CheckBox;
 
             this.OnItemCheckStateChanged(new ItemCheckStateEventArgs(this.ButtonPanel.Controls.IndexOf(cb),
-                cb.CheckState));
+                cb?.CheckState ?? CheckState.Indeterminate));
         }
         #endregion
 
@@ -480,9 +475,9 @@ namespace EWSoftware.ListControls
                 // In .NET 2.0, we could use the UseMnemonic property but it doesn't work with FlatStyle.System
                 // so we'll modify the text which works with it and with .NET 1.1.
                 if(this.UseMnemonic)
-                    cb.Text = this.GetItemText(oItem).Replace("&&", "&");
+                    cb.Text = this.GetItemText(oItem)?.Replace("&&", "&");
                 else
-                    cb.Text = this.GetItemText(oItem).Replace("&", "&&");
+                    cb.Text = this.GetItemText(oItem)?.Replace("&", "&&");
 
                 cb.Appearance = this.Appearance;
                 cb.FlatStyle = this.FlatStyle;
@@ -502,12 +497,13 @@ namespace EWSoftware.ListControls
                     // If we have a data source and available members, bind the checkbox's CheckState to the
                     // member.
                     if(bindingDataSource != null)
-                        if(memberIdx < bindingMembers.Count)
+                    {
+                        if(memberIdx < this.BindingMembers.Count)
                         {
                             if(bindingContext != null)
                                 cb.BindingContext = bindingContext;
 
-                            b = new Binding("CheckState", bindingDataSource, bindingMembers[memberIdx]);
+                            b = new Binding("CheckState", bindingDataSource, this.BindingMembers[memberIdx]);
                             b.Format += BindingMember_Format;
                             b.Parse += BindingMember_Parse;
                             cb.DataBindings.Add(b);
@@ -515,6 +511,7 @@ namespace EWSoftware.ListControls
                         }
                         else
                             throw new InvalidOperationException(LR.GetString("ExTooFewBindingMembers"));
+                    }
                 }
 
                 if(this.ImageList != null)

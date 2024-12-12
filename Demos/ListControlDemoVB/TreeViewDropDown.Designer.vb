@@ -22,59 +22,57 @@ Partial Class TreeViewDropDown
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.tvItems = New System.Windows.Forms.TreeView
-        Me.chkExcludeDiscontinued = New System.Windows.Forms.CheckBox
-        Me.btnSelect = New System.Windows.Forms.Button
-        Me.btnCancel = New System.Windows.Forms.Button
+        tvItems = New TreeView()
+        chkExcludeDiscontinued = New CheckBox()
+        btnSelect = New Button()
+        btnCancel = New Button()
         Me.SuspendLayout()
-        '
-        'tvItems
-        '
-        Me.tvItems.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tvItems.HideSelection = False
-        Me.tvItems.Location = New System.Drawing.Point(8, 8)
-        Me.tvItems.Name = "tvItems"
-        Me.tvItems.Size = New System.Drawing.Size(234, 208)
-        Me.tvItems.TabIndex = 0
-        '
-        'chkExcludeDiscontinued
-        '
-        Me.chkExcludeDiscontinued.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.chkExcludeDiscontinued.Location = New System.Drawing.Point(8, 218)
-        Me.chkExcludeDiscontinued.Name = "chkExcludeDiscontinued"
-        Me.chkExcludeDiscontinued.Size = New System.Drawing.Size(216, 24)
-        Me.chkExcludeDiscontinued.TabIndex = 1
-        Me.chkExcludeDiscontinued.Text = "&Exclude discontinued products"
-        '
-        'btnSelect
-        '
-        Me.btnSelect.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnSelect.Location = New System.Drawing.Point(108, 244)
-        Me.btnSelect.Name = "btnSelect"
-        Me.btnSelect.Size = New System.Drawing.Size(64, 25)
-        Me.btnSelect.TabIndex = 2
-        Me.btnSelect.Text = "&Select"
-        '
-        'btnCancel
-        '
-        Me.btnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnCancel.Location = New System.Drawing.Point(178, 244)
-        Me.btnCancel.Name = "btnCancel"
-        Me.btnCancel.Size = New System.Drawing.Size(64, 25)
-        Me.btnCancel.TabIndex = 3
-        Me.btnCancel.Text = "&Cancel"
-        '
-        'TreeViewDropDown
-        '
-        Me.Controls.Add(Me.btnCancel)
-        Me.Controls.Add(Me.btnSelect)
-        Me.Controls.Add(Me.chkExcludeDiscontinued)
-        Me.Controls.Add(Me.tvItems)
-        Me.MinimumSize = New System.Drawing.Size(240, 150)
+        ' 
+        ' tvItems
+        ' 
+        tvItems.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
+        tvItems.HideSelection = False
+        tvItems.Location = New Point(8, 3)
+        tvItems.Name = "tvItems"
+        tvItems.Size = New Size(284, 228)
+        tvItems.TabIndex = 0
+        ' 
+        ' chkExcludeDiscontinued
+        ' 
+        chkExcludeDiscontinued.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        chkExcludeDiscontinued.Location = New Point(8, 237)
+        chkExcludeDiscontinued.Name = "chkExcludeDiscontinued"
+        chkExcludeDiscontinued.Size = New Size(284, 24)
+        chkExcludeDiscontinued.TabIndex = 1
+        chkExcludeDiscontinued.Text = "&Exclude discontinued products"
+        ' 
+        ' btnSelect
+        ' 
+        btnSelect.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
+        btnSelect.Location = New Point(146, 267)
+        btnSelect.Name = "btnSelect"
+        btnSelect.Size = New Size(70, 30)
+        btnSelect.TabIndex = 2
+        btnSelect.Text = "&Select"
+        ' 
+        ' btnCancel
+        ' 
+        btnCancel.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
+        btnCancel.Location = New Point(222, 267)
+        btnCancel.Name = "btnCancel"
+        btnCancel.Size = New Size(70, 30)
+        btnCancel.TabIndex = 3
+        btnCancel.Text = "&Cancel"
+        ' 
+        ' TreeViewDropDown
+        ' 
+        Me.Controls.Add(btnCancel)
+        Me.Controls.Add(btnSelect)
+        Me.Controls.Add(chkExcludeDiscontinued)
+        Me.Controls.Add(tvItems)
+        Me.MinimumSize = New Size(300, 150)
         Me.Name = "TreeViewDropDown"
-        Me.Size = New System.Drawing.Size(250, 272)
+        Me.Size = New Size(300, 300)
         Me.ResumeLayout(False)
 
     End Sub

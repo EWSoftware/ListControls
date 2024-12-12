@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : BaseComboBox.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 04/09/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains an abstract base class for use in creating the MultiColumnComboBox and UserControlComboBox
 // controls.
@@ -19,11 +19,6 @@
 // 12/12/2005  EFW  Added support for Windows XP themes
 // 09/22/2010  EFW  Added designer to show snap lines
 //===============================================================================================================
-
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
 
 using EWSoftware.ListControls.Design;
 using EWSoftware.ListControls.UnsafeNative;
@@ -109,7 +104,7 @@ namespace EWSoftware.ListControls
 
         // Layout information
         private Rectangle rectBackground, rectBorder, rectButton, rectButtonBorder, rectImage, rectText;
-        private Point[] arrow;
+        private readonly Point[] arrow = new Point[3];
 
         // Combo box state information
         private ComboBoxStyle dropDownStyle;
@@ -119,7 +114,6 @@ namespace EWSoftware.ListControls
         private bool autoCompleteEnabled, settingText, drawImage, inDroppedDown;
 
         // The drop-down list and its properties
-        private IDropDown dropDownInterface;
         private Font dropDownFont;
         private Color dropDownBackColor;
 
@@ -216,7 +210,7 @@ namespace EWSoftware.ListControls
                 if(drawImage != value)
                 {
                     drawImage = value;
-                    base.PerformLayout();
+                    this.PerformLayout();
                     this.OnDrawImageChanged(EventArgs.Empty);
                 }
             }
@@ -265,7 +259,7 @@ namespace EWSoftware.ListControls
                     // We draw the text in DropDownList mode
                     txtValue.Visible = !(dropDownStyle == ComboBoxStyle.DropDownList);
                     this.UpdateText();
-                    base.PerformLayout();
+                    this.PerformLayout();
                     this.OnDropDownStyleChanged(EventArgs.Empty);
                 }
             }
@@ -319,48 +313,44 @@ namespace EWSoftware.ListControls
           DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DroppedDown
         {
-            get
-            {
-                if(dropDownInterface == null)
-                    return false;
-
-                return dropDownInterface.Visible;
-            }
+            get => this.DropDownInterface?.Visible ?? false;
             set
             {
                 if(dropDownStyle != ComboBoxStyle.Simple && this.Enabled && this.Visible)
                 {
                     inDroppedDown = true;
 
-                    if(value == true)
+                    if(value)
                     {
-                        if(dropDownInterface == null)
+                        if(this.DropDownInterface == null)
                             this.CreateDropDown();
 
-                        dropDownInterface.ShowDropDown();
+                        this.DropDownInterface!.ShowDropDown();
 
                         // An odd sequence of events related to updates to bound controls can cause the drop-down
                         // to get disposed.  If that happens, we'll do it again.
-                        if(dropDownInterface == null)
+                        if(this.DropDownInterface == null)
                         {
                             this.CreateDropDown();
-                            dropDownInterface.ShowDropDown();
+                            this.DropDownInterface!.ShowDropDown();
                         }
 
                         OnDropDown(EventArgs.Empty);
                     }
                     else
-                        if(dropDownInterface != null && dropDownInterface.Visible)
+                    {
+                        if(this.DropDownInterface?.Visible ?? false)
                         {
-                            dropDownInterface.Visible = false;
+                            this.DropDownInterface.Visible = false;
                             OnCloseUp(EventArgs.Empty);
 
                             // Fire the appropriate event
-                            if(this.SelectedIndex != dropDownInterface.StartIndex)
+                            if(this.SelectedIndex != this.DropDownInterface.StartIndex)
                                 OnSelectionChangeCommitted(EventArgs.Empty);
                             else
                                 OnSelectionChangeCanceled(EventArgs.Empty);
                         }
+                    }
 
                     inDroppedDown = false;
                 }
@@ -418,7 +408,7 @@ namespace EWSoftware.ListControls
         {
             get
             {
-                if(dropDownStyle == ComboBoxStyle.DropDownList || base.DesignMode)
+                if(dropDownStyle == ComboBoxStyle.DropDownList || this.DesignMode)
                     return base.EnforceDefaultSelection;
 
                 return false;
@@ -428,7 +418,7 @@ namespace EWSoftware.ListControls
                 base.EnforceDefaultSelection = value;
 
                 if(value && this.SelectedIndex == -1 && dropDownStyle == ComboBoxStyle.DropDownList &&
-                  base.Items.Count != 0 && !base.DesignMode)
+                  this.Items.Count != 0 && !this.DesignMode)
                     this.SelectedIndex = this.DefaultSelection;
             }
         }
@@ -448,7 +438,7 @@ namespace EWSoftware.ListControls
                 base.DefaultSelection = value;
 
                 if(this.EnforceDefaultSelection && this.SelectedIndex == -1 &&
-                  dropDownStyle == ComboBoxStyle.DropDownList && base.Items.Count != 0 && !base.DesignMode)
+                  dropDownStyle == ComboBoxStyle.DropDownList && this.Items.Count != 0 && !this.DesignMode)
                     this.SelectedIndex = value;
             }
         }
@@ -506,6 +496,7 @@ namespace EWSoftware.ListControls
                     this.UpdateText();
                     this.OnTextChanged(EventArgs.Empty);
                     this.OnSelectedItemChanged(EventArgs.Empty);
+                    this.OnSelectedValueChanged(EventArgs.Empty);
                     this.OnSelectedIndexChanged(EventArgs.Empty);
                 }
             }
@@ -601,11 +592,8 @@ namespace EWSoftware.ListControls
         /// <summary>
         /// This allows the derived classes access to the drop-down interface
         /// </summary>
-        internal IDropDown DropDownInterface
-        {
-            get => dropDownInterface;
-            set => dropDownInterface = value;
-        }
+        internal IDropDown? DropDownInterface { get; set; }
+
         #endregion
 
         #region Events
@@ -615,7 +603,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="DrawImage"/> property changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the DrawImage property changes")]
-        public event EventHandler DrawImageChanged;
+        public event EventHandler? DrawImageChanged;
 
         /// <summary>
         /// This raises the <see cref="DrawImageChanged"/> event
@@ -630,7 +618,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="AllowAutoCompletion"/> property changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the auto-completion option changes")]
-        public event EventHandler AllowAutoCompletionChanged;
+        public event EventHandler? AllowAutoCompletionChanged;
 
         /// <summary>
         /// This raises the <see cref="AllowAutoCompletionChanged"/> event
@@ -645,7 +633,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="DropDownBackColor"/> changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the drop-down background color changes")]
-        public event EventHandler DropDownBackColorChanged;
+        public event EventHandler? DropDownBackColorChanged;
 
         /// <summary>
         /// This raises the <see cref="DropDownBackColorChanged"/> event
@@ -702,7 +690,7 @@ namespace EWSoftware.ListControls
         /// </list></remarks>
         [Category("Behavior"),
           Description("Occurs when the control needs to draw the image to the left of the text value")]
-        public event DrawItemEventHandler DrawItemImage;
+        public event DrawItemEventHandler? DrawItemImage;
 
         /// <summary>
         /// This raises the <see cref="DrawItemImage"/> event
@@ -718,7 +706,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="DropDownStyle"/> changes
         /// </summary>
         [Category("Behavior"), Description("Occurs when the control's drop down style changes")]
-        public event EventHandler DropDownStyleChanged;
+        public event EventHandler? DropDownStyleChanged;
 
         /// <summary>
         /// This raises the <see cref="DropDownStyleChanged"/> event
@@ -736,7 +724,7 @@ namespace EWSoftware.ListControls
         /// <remarks>This event always occurs after the <see cref="CloseUp"/> event</remarks>
         [Category("Behavior"), Description("Occurs when the item changes in the drop-down list " +
             "and the change is committed when the drop-down closes")]
-        public event EventHandler SelectionChangeCommitted;
+        public event EventHandler? SelectionChangeCommitted;
 
         /// <summary>
         /// This raises the <see cref="SelectionChangeCommitted"/> event
@@ -756,7 +744,7 @@ namespace EWSoftware.ListControls
         /// <remarks>This event always occurs after the <see cref="CloseUp"/> event</remarks>
         [Category("Behavior"), Description("Occurs when the item does not change in the " +
             "drop-down list and the drop-down closes")]
-        public event EventHandler SelectionChangeCanceled;
+        public event EventHandler? SelectionChangeCanceled;
 
         /// <summary>
         /// This raises the <see cref="SelectionChangeCanceled"/> event
@@ -773,7 +761,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the drop-down is shown
         /// </summary>
         [Category("Behavior"), Description("Occurs when the drop down is displayed")]
-        public event EventHandler DropDown;
+        public event EventHandler? DropDown;
 
         /// <summary>
         /// This raises the <see cref="DropDown"/> event
@@ -788,7 +776,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the drop-down is closed
         /// </summary>
         [Category("Behavior"), Description("Occurs when the drop down is closed")]
-        public event EventHandler CloseUp;
+        public event EventHandler? CloseUp;
 
         /// <summary>
         /// This raises the <see cref="CloseUp"/> event
@@ -803,7 +791,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when the <see cref="DropDownFont"/> changes
         /// </summary>
         [Category("Property Changed"), Description("Occurs when the drop-down font changes")]
-        public event EventHandler DropDownFontChanged;
+        public event EventHandler? DropDownFontChanged;
 
         /// <summary>
         /// This raises the <see cref="DropDownFontChanged"/> event
@@ -823,7 +811,7 @@ namespace EWSoftware.ListControls
         /// or reject it).  Canceling this event is equivalent to canceling the <c>Validating</c> event.  If not
         /// canceled, the <c>Validating</c> event is called as usual.</remarks>
         [Category("Behavior"), Description("Occurs during validation when the text is not in the item list")]
-        public event CancelEventHandler NotInList;
+        public event CancelEventHandler? NotInList;
 
         /// <summary>
         /// This raises the <see cref="NotInList"/> event
@@ -908,7 +896,7 @@ namespace EWSoftware.ListControls
         {
             if(dropDownStyle != ComboBoxStyle.Simple)
             {
-                dropDownInterface.Visible = false;
+                this.DropDownInterface!.Visible = false;
                 OnCloseUp(EventArgs.Empty);
             }
 
@@ -927,7 +915,7 @@ namespace EWSoftware.ListControls
         {
             if(dropDownStyle != ComboBoxStyle.Simple)
             {
-                dropDownInterface.Visible = false;
+                this.DropDownInterface!.Visible = false;
                 OnCloseUp(EventArgs.Empty);
             }
 
@@ -941,7 +929,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void txtValue_TextChanged(object sender, EventArgs e)
+        private void txtValue_TextChanged(object? sender, EventArgs e)
         {
             this.OnTextChanged(e);
         }
@@ -951,7 +939,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void txtValue_GotFocus(object sender, EventArgs e)
+        private void txtValue_GotFocus(object? sender, EventArgs e)
         {
             this.OnGotFocus(e);
         }
@@ -961,7 +949,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void txtValue_LostFocus(object sender, EventArgs e)
+        private void txtValue_LostFocus(object? sender, EventArgs e)
         {
             this.OnLostFocus(e);
         }
@@ -971,7 +959,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void txtValue_Click(object sender, EventArgs e)
+        private void txtValue_Click(object? sender, EventArgs e)
         {
             this.OnClick(e);
         }
@@ -981,7 +969,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void txtValue_DoubleClick(object sender, EventArgs e)
+        private void txtValue_DoubleClick(object? sender, EventArgs e)
         {
             this.OnDoubleClick(e);
         }
@@ -991,7 +979,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void txtValue_MouseDown(object sender, MouseEventArgs e)
+        private void txtValue_MouseDown(object? sender, MouseEventArgs e)
         {
             this.OnMouseDown(e);
         }
@@ -1001,7 +989,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void txtValue_MouseUp(object sender, MouseEventArgs e)
+        private void txtValue_MouseUp(object? sender, MouseEventArgs e)
         {
             this.OnMouseUp(e);
         }
@@ -1011,7 +999,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void txtValue_KeyDown(object sender, KeyEventArgs e)
+        private void txtValue_KeyDown(object? sender, KeyEventArgs e)
         {
             // Call the base version as the text box already called HandleKeys
             base.OnKeyDown(e);
@@ -1022,7 +1010,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void txtValue_KeyPress(object sender, KeyPressEventArgs e)
+        private void txtValue_KeyPress(object? sender, KeyPressEventArgs e)
         {
             this.OnKeyPress(e);
         }
@@ -1032,7 +1020,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void txtValue_KeyUp(object sender, KeyEventArgs e)
+        private void txtValue_KeyUp(object? sender, KeyEventArgs e)
         {
             this.OnKeyUp(e);
         }
@@ -1042,7 +1030,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        void txtValue_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        void txtValue_PreviewKeyDown(object? sender, PreviewKeyDownEventArgs e)
         {
             this.OnPreviewKeyDown(e);
         }
@@ -1153,8 +1141,7 @@ namespace EWSoftware.ListControls
                     hTheme = IntPtr.Zero;
                 }
 
-                if(dropDownInterface != null)
-                    ((Control)dropDownInterface).Dispose();
+                ((Control?)this.DropDownInterface)?.Dispose();
 
                 dropDownFont?.Dispose();
             }
@@ -1319,14 +1306,16 @@ namespace EWSoftware.ListControls
             // If setting text and not in Drop Down List mode, keep the text that is being assigned
             if(this.SelectedIndex != -1)
             {
-                object item = this.Items[this.SelectedIndex];
+                object? item = this.Items[this.SelectedIndex];
 
                 if(item != null)
-                    this.Text = this.GetItemText(item);
+                    this.Text = this.GetItemText(item)!;
             }
             else
+            {
                 if(!settingText || this.DropDownStyle == ComboBoxStyle.DropDownList)
-                    this.Text = null;
+                    this.Text = null!;
+            }
 
             txtValue.SelectAll();
             this.Invalidate();
@@ -1455,11 +1444,11 @@ namespace EWSoftware.ListControls
                 if(this.Height < height * 2)
                     this.Height = height * 2;
 
-                if(dropDownInterface != null)
+                if(this.DropDownInterface != null)
                 {
-                    dropDownInterface.Top = txtValue.Height + (borderWidth * 2) + 2;
-                    dropDownInterface.Width = this.Width;
-                    dropDownInterface.Height = this.Height - txtValue.Height - (borderWidth * 2) - 2;
+                    this.DropDownInterface.Top = txtValue.Height + (borderWidth * 2) + 2;
+                    this.DropDownInterface.Width = this.Width;
+                    this.DropDownInterface.Height = this.Height - txtValue.Height - (borderWidth * 2) - 2;
                 }
             }
 
@@ -1483,7 +1472,6 @@ namespace EWSoftware.ListControls
                     rectButtonBorder = rectButton;
                     rectButtonBorder.Inflate(1, 1);
 
-                    arrow = new Point[3];
                     arrow[2] = new Point(rectButtonBorder.Left + (rectButtonBorder.Width / 2),
                         rectButtonBorder.Top + (rectButtonBorder.Height / 2) + 2);
                     arrow[0] = new Point(arrow[2].X - 2, arrow[2].Y - 3);
@@ -1503,7 +1491,6 @@ namespace EWSoftware.ListControls
                     rectButtonBorder = rectButton;
                     rectButtonBorder.Inflate(1, 1);
 
-                    arrow = new Point[3];
                     arrow[2] = new Point(rectButtonBorder.Left + (rectButtonBorder.Width / 2),
                         rectButtonBorder.Top + (rectButtonBorder.Height / 2) + 2);
                     arrow[0] = new Point(arrow[2].X - 2, arrow[2].Y - 3);
@@ -1526,7 +1513,7 @@ namespace EWSoftware.ListControls
 
             // Enforce the default selection
             if(this.EnforceDefaultSelection && this.SelectedIndex == -1 &&
-              dropDownStyle == ComboBoxStyle.DropDownList && !base.DesignMode)
+              dropDownStyle == ComboBoxStyle.DropDownList && !this.DesignMode)
                 if(this.DefaultSelection < this.Items.Count)
                     this.SelectedIndex = this.DefaultSelection;
                 else
@@ -1594,22 +1581,20 @@ namespace EWSoftware.ListControls
                 g.ReleaseHdc(hDC);
 
                 // Fill the text area with the background color
-                using(Brush bb = new SolidBrush(backColor))
+                using Brush bb = new SolidBrush(backColor);
+                Rectangle textBg = new(rectBackground.Location, rectBackground.Size);
+
+                textBg.Inflate(-2, -2);
+
+                if(dropDownStyle != ComboBoxStyle.Simple)
+                    textBg.Width -= rectButton.Width;
+                else
                 {
-                    Rectangle textBg = new Rectangle(rectBackground.Location, rectBackground.Size);
-
-                    textBg.Inflate(-2, -2);
-
-                    if(dropDownStyle != ComboBoxStyle.Simple)
-                        textBg.Width -= rectButton.Width;
-                    else
-                    {
-                        textBg.Height -= 1;
-                        textBg.Width -= 1;
-                    }
-
-                    g.FillRectangle(bb, textBg);
+                    textBg.Height -= 1;
+                    textBg.Width -= 1;
                 }
+
+                g.FillRectangle(bb, textBg);
             }
             else
             {
@@ -1641,10 +1626,8 @@ namespace EWSoftware.ListControls
                         {
                             ControlPaint.DrawBorder(g, rectButtonBorder, SystemColors.Window, ButtonBorderStyle.Solid);
 
-                            using(Brush b = new SolidBrush(Color.Black))
-                            {
-                                g.FillPolygon(b, arrow);
-                            }
+                            using Brush b = new SolidBrush(Color.Black);
+                            g.FillPolygon(b, arrow);
                         }
                         else
                             g.FillPolygon(SystemBrushes.ControlDark, arrow);
@@ -1676,17 +1659,13 @@ namespace EWSoftware.ListControls
 
                     if(state == DrawItemState.None)
                     {
-                        using(Brush fb = new SolidBrush(this.ForeColor))
-                        {
-                            g.DrawString(txtValue.Text, txtValue.Font, fb, rectText);
-                        }
+                        using Brush fb = new SolidBrush(this.ForeColor);
+                        g.DrawString(txtValue.Text, txtValue.Font, fb, rectText);
                     }
                     else
                     {
-                        using(Brush fb = new SolidBrush(SystemColors.ControlDark))
-                        {
-                            g.DrawString(txtValue.Text, txtValue.Font, fb, rectText);
-                        }
+                        using Brush fb = new SolidBrush(SystemColors.ControlDark);
+                        g.DrawString(txtValue.Text, txtValue.Font, fb, rectText);
                     }
 
                     rectText.Location = new Point(rectText.Left + 1, rectText.Top - 1);
@@ -1936,5 +1915,3 @@ namespace EWSoftware.ListControls
         #endregion
     }
 }
-
-#pragma warning restore CA2216

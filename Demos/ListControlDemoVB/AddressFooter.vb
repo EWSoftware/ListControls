@@ -2,8 +2,8 @@
 ' System  : EWSoftware Data List Control Demonstration Applications
 ' File    : AddressFooter.vb
 ' Author  : Eric Woodruff  (Eric@EWoodruff.us)
-' Updated : 10/02/2014
-' Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
+' Updated : 12/07/2024
+' Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 '
 ' This is a sample footer template control for the DataList demo.
 '
@@ -17,19 +17,13 @@
 ' 10/29/2005  EFW  Created the code
 '================================================================================================================
 
-Imports System
-Imports System.ComponentModel
-Imports System.Data
-Imports System.Windows.Forms
-
-Imports EWSoftware.ListControls
+Imports System.Globalization
 
 Public Partial Class AddressFooter
-    Inherits EWSoftware.ListControls.TemplateControl
+    Inherits TemplateControl
 
     ' Used to track the current data source for totaling
-    Private bl As IBindingList
-    Private tblItems As DataTable
+    Private addresses As BindingList(Of Address)
 
     Public Sub New()
         MyBase.New()
@@ -44,29 +38,23 @@ Public Partial Class AddressFooter
     Protected Overrides Sub Bind()
         ' The demo uses a data set so we'll get a reference to the table through the list manager
         Dim cm As CurrencyManager = Me.TemplateParent.ListManager
-        Dim newSource As DataTable = CType(cm.List, DataView).Table
+        Dim newSource As BindingList(Of Address) = CType(cm.List, BindingList(Of Address))
 
         ' Hook up the events on the data source to keep the total current
-        If Not newSource.Equals(tblItems) Then
+        If newSource IsNot addresses Then
             ' Disconnect from the old source if necessary
-            If Not (tblItems Is Nothing) Then
-                RemoveHandler bl.ListChanged, AddressOf DataSource_ListChanged
-                RemoveHandler tblItems.RowChanged, AddressOf DataSource_RowChgDel
-                RemoveHandler tblItems.RowDeleted, AddressOf DataSource_RowChgDel
+            If addresses IsNot Nothing Then
+                RemoveHandler addresses.ListChanged, AddressOf DataSource_ListChanged
             End If
 
-            tblItems = newSource
-
-            If Not (tblItems Is Nothing) Then
+            If newSource IsNot Nothing Then
                 ' For the total, we'll sum it whenever a row is added, changed, or deleted
-                bl = CType(cm.List, IBindingList)
+                addresses = newSource
 
-                AddHandler bl.ListChanged, AddressOf DataSource_ListChanged
-                AddHandler tblItems.RowChanged, AddressOf DataSource_RowChgDel
-                AddHandler tblItems.RowDeleted, AddressOf DataSource_RowChgDel
+                AddHandler addresses.ListChanged, AddressOf DataSource_ListChanged
 
                 ' Show the initial total
-                lblTotal.Text = tblItems.Compute("Sum(SumValue)", Nothing).ToString()
+                Me.DataSource_ListChanged(Me, New ListChangedEventArgs(ListChangedType.Reset, 0))
             Else
                 lblTotal.Text = Nothing
             End If
@@ -76,12 +64,8 @@ Public Partial Class AddressFooter
     ' Update the total when a row is added
     Private Sub DataSource_ListChanged(sender As Object, e As ListChangedEventArgs)
         If e.ListChangedType = ListChangedType.ItemAdded Then
-            lblTotal.Text = tblItems.Compute("Sum(SumValue)", Nothing).ToString()
+            lblTotal.Text = addresses.Sum(Function(a) If(a.SumValue, 0)).ToString(CultureInfo.InvariantCulture)
         End If
     End Sub
 
-    ' Update the total when a row is changed or deleted
-    Private Sub DataSource_RowChgDel(sender As Object, e As DataRowChangeEventArgs)
-        lblTotal.Text = tblItems.Compute("Sum(SumValue)", Nothing).ToString()
-    End Sub
 End Class

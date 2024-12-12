@@ -2,8 +2,8 @@
 ' System  : EWSoftware Data List Control Demonstration Applications
 ' File    : DataNavigatorTestForm.vb
 ' Author  : Eric Woodruff  (Eric@EWoodruff.us)
-' Updated : 04/09/2023
-' Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+' Updated : 12/08/2024
+' Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 '
 ' This is used to demonstrate the DataNavigator control
 '
@@ -17,18 +17,10 @@
 ' 10/29/2005  EFW  Created the code
 '================================================================================================================
 
-Imports System.Data
-Imports System.Data.OleDb
-
-Imports EWSoftware.ListControls
-
 Public Partial Class DataNavigatorTestForm
     Inherits Form
 
-    Private dbConn As OleDbConnection
-    Private WithEvents daAddresses As OleDbDataAdapter
-    Private dsAddresses As DataSet
-    Private clearingDataSet As Boolean
+    Private dc As DemoDataContext
     Private lastSearch As String
 
     Public Sub New()
@@ -38,111 +30,12 @@ Public Partial Class DataNavigatorTestForm
 
         lastSearch = String.Empty
 
-        ' Create the data source for the demo
-        CreateDataSource()
-
         ' Set the data navigator as the object for the property grid
         pgProps.SelectedObject = dnNav
         pgProps.Refresh()
 
         ' Load data by default
         btnLoad_Click(Me, EventArgs.Empty)
-    End Sub
-
-    ' Create the data source for the demo.  You can use the designer to create the data source and use strongly
-    ' typed data sets.  For this demo, we'll do it by hand.
-    Private Sub CreateDataSource()
-        ' The test database should be in the project folder
-        dbConn = New OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\TestData.mdb")
-        daAddresses = New OleDbDataAdapter()
-        dsAddresses = New DataSet()
-
-        ' Set the table name
-        daAddresses.TableMappings.Add("Table", "Addresses")
-
-        ' In a real application we wouldn't use literal SQL but we will for the demo
-        daAddresses.SelectCommand = New OleDbCommand("Select * From Addresses Order By LastName", dbConn)
-
-        daAddresses.DeleteCommand = New OleDbCommand("Delete From Addresses Where ID = @paramID", dbConn)
-        daAddresses.DeleteCommand.Parameters.Add(New OleDbParameter("@paramID", OleDbType.Integer, 0,
-            ParameterDirection.Input, False, 0, 0, "ID", DataRowVersion.Original, Nothing))
-
-        daAddresses.InsertCommand = New OleDbCommand(
-            "INSERT INTO Addresses (FirstName, LastName, Address, City, State, Zip, SumValue) " &
-            "VALUES (@paramFN, @paramLN, @paramAddress, @paramCity, @paramState, @paramZip, @paramSumValue)",
-            dbConn)
-        daAddresses.InsertCommand.Parameters.Add(New OleDbParameter("@paramFirstName", OleDbType.VarWChar, 20,
-            "FirstName"))
-        daAddresses.InsertCommand.Parameters.Add(New OleDbParameter("@paramLastName", OleDbType.VarWChar, 30,
-            "LastName"))
-        daAddresses.InsertCommand.Parameters.Add(New OleDbParameter("@paramAddress", OleDbType.VarWChar, 50,
-            "Address"))
-        daAddresses.InsertCommand.Parameters.Add(New OleDbParameter("@paramCity", OleDbType.VarWChar, 20,
-            "City"))
-        daAddresses.InsertCommand.Parameters.Add(New OleDbParameter("@paramState", OleDbType.VarWChar, 2,
-            "State"))
-        daAddresses.InsertCommand.Parameters.Add(New OleDbParameter("@paramZip", OleDbType.VarWChar, 10, "Zip"))
-        daAddresses.InsertCommand.Parameters.Add(New OleDbParameter("@paramSumValue", OleDbType.Integer, 0,
-            "SumValue"))
-
-        daAddresses.UpdateCommand = New OleDbCommand(
-            "UPDATE Addresses SET FirstName = @paramFirstName, LastName = @paramLastName, " &
-            "Address = @paramAddress, City = @paramCity, State = @paramState, Zip = @paramZip, " &
-            "SumValue = @paramSumValue WHERE ID = @paramID", dbConn)
-        daAddresses.UpdateCommand.Parameters.Add(New OleDbParameter("@paramFirstName", OleDbType.VarWChar, 20,
-            "FirstName"))
-        daAddresses.UpdateCommand.Parameters.Add(New OleDbParameter("@paramLastName", OleDbType.VarWChar, 30,
-            "LastName"))
-        daAddresses.UpdateCommand.Parameters.Add(New OleDbParameter("@paramAddress", OleDbType.VarWChar, 50,
-            "Address"))
-        daAddresses.UpdateCommand.Parameters.Add(New OleDbParameter("@paramCity", OleDbType.VarWChar, 20, "City"))
-        daAddresses.UpdateCommand.Parameters.Add(New OleDbParameter("@paramState", OleDbType.VarWChar, 2, "State"))
-        daAddresses.UpdateCommand.Parameters.Add(New OleDbParameter("@paramZip", OleDbType.VarWChar, 10, "Zip"))
-        daAddresses.UpdateCommand.Parameters.Add(New OleDbParameter("@paramSumValue", OleDbType.Integer, 0,
-            "SumValue"))
-        daAddresses.UpdateCommand.Parameters.Add(New OleDbParameter("@paramID", OleDbType.Integer, 0,
-            ParameterDirection.Input, False, 0, 0, "ID", System.Data.DataRowVersion.Original, Nothing))
-
-        ' Fill in the schema for auto-increment etc
-        daAddresses.FillSchema(dsAddresses, SchemaType.Mapped)
-
-        ' Bind the controls to the data source.  Since we are using a data set, we need to use fully qualified
-        ' names.
-        txtFName.DataBindings.Add(New Binding("Text", dsAddresses, "Addresses.FirstName"))
-        txtLName.DataBindings.Add(New Binding("Text", dsAddresses, "Addresses.LastName"))
-        txtAddress.DataBindings.Add(New Binding("Text", dsAddresses, "Addresses.Address"))
-        txtCity.DataBindings.Add(New Binding("Text", dsAddresses, "Addresses.City"))
-        cboState.DataBindings.Add(New Binding("SelectedValue", dsAddresses, "Addresses.State"))
-        txtZip.DataBindings.Add(New Binding("Text", dsAddresses, "Addresses.Zip"))
-        lblKey.DataBindings.Add(New Binding("Text", dsAddresses, "Addresses.ID"))
-
-        ' Connect the Row Updated event so that we can retrieve the new primary key values as they are identity
-        ' values.
-        AddHandler daAddresses.RowUpdated, AddressOf daAddresses_RowUpdated
-#Disable Warning CA2000
-        ' Load the state codes for the row template's shared data source
-        Using daStates As New OleDbDataAdapter("Select State, StateDesc From States", dbConn)
-            Dim dtStates As New DataTable()
-            daStates.Fill(dtStates)
-
-            ' Add a blank row to allow no selection
-            dtStates.Rows.InsertAt(dtStates.NewRow(), 0)
-
-            cboState.DisplayMember = "State"
-            cboState.ValueMember = "State"
-            cboState.DataSource = dtStates.DefaultView
-        End Using
-#Enable Warning CA2000
-    End Sub
-
-    ' Get the new primary key on added rows
-    Private Sub daAddresses_RowUpdated(sender As Object, e As System.Data.OleDb.OleDbRowUpdatedEventArgs)
-        If e.Status = UpdateStatus.[Continue] And e.StatementType = StatementType.Insert Then
-            Using cmd As New OleDbCommand("Select @@Identity", dbConn)
-                e.Row("ID") = cmd.ExecuteScalar()
-                e.Row.AcceptChanges()
-            End Using
-        End If
     End Sub
 
     ' Disable or enable the controls based on the change policy
@@ -186,7 +79,7 @@ Public Partial Class DataNavigatorTestForm
     Private Sub dnNav_NoRows(sender As Object, e As System.EventArgs) _
       Handles dnNav.NoRows
         ' Ignore if clearing for reload
-        If clearingDataSet = False And dnNav.AllowEdits = True Then
+        If dnNav.AllowEdits = True Then
             pnlData.Enabled = False
             lblAddRow.Visible = True
         End If
@@ -226,7 +119,7 @@ Public Partial Class DataNavigatorTestForm
 
         Dim dr As DialogResult
 
-        If dnNav.HasChanges Then
+        If dc.ChangeTracker.HasChanges() Then
             dr = MessageBox.Show("Do you want to save your changes? Click YES to save your changes, NO to " &
                 "discard them, or CANCEL to stay here and make further changes.", "DataNavigator Test",
                 MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3)
@@ -238,7 +131,7 @@ Public Partial Class DataNavigatorTestForm
                     btnSave_Click(sender, e)
 
                     ' If it didn't work, stay here
-                    If dnNav.HasChanges Then
+                    If dc.ChangeTracker.HasChanges() Then
                         e.Cancel = True
                     End If
                 End If
@@ -252,51 +145,86 @@ Public Partial Class DataNavigatorTestForm
         Dim dr As DialogResult
 
         Try
-            If dnNav.DataSource Is Nothing Then
-                ' Initial load
-                daAddresses.Fill(dsAddresses)
+            epErrors.Clear()
 
-                ' We could set the DataMember and DataSource properties individually.  This does the same thing
-                ' in one step.
-                dnNav.SetDataBinding(dsAddresses, "Addresses")
-            Else
-                epErrors.Clear()
+            If dc IsNot Nothing AndAlso dc.ChangeTracker.HasChanges() Then
+                dr = MessageBox.Show("Do you want to save your changes?  Click YES to save your changes, " &
+                    "NO to discard them, or CANCEL to stay here and make further changes.",
+                    "Data Navigator Test", MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Question, MessageBoxDefaultButton.Button3)
 
-                If dnNav.HasChanges Then
-                    dr = MessageBox.Show("Do you want to save your changes?  Click YES to save your changes, " &
-                        "NO to discard them, or CANCEL to stay here and make further changes.",
-                        "Data Navigator Test", MessageBoxButtons.YesNoCancel,
-                        MessageBoxIcon.Question, MessageBoxDefaultButton.Button3)
-
-                    If dr = System.Windows.Forms.DialogResult.Cancel Then
-                        Return
-                    End If
-
-                    If dr = System.Windows.Forms.DialogResult.Yes Then
-                        btnSave_Click(sender, e)
-
-                        ' If it didn't work, don't do anything
-                        If dnNav.HasChanges Then
-                            Return
-                        End If
-                    End If
+                If dr = System.Windows.Forms.DialogResult.Cancel Then
+                    Return
                 End If
 
-                ' Reload it
+                If dr = System.Windows.Forms.DialogResult.Yes Then
+                    btnSave_Click(sender, e)
+
+                    ' If it didn't work, don't do anything
+                    If dc.ChangeTracker.HasChanges() Then
+                        Return
+                    End If
+                End If
+            End If
+
+                ' Reload the data.  Create a new data context since we're reloading the information.  The
+                ' old context may have changes we no longer care about.
+                dc = new DemoDataContext()
+
                 pnlData.Enabled = True
                 lblAddRow.Visible = False
 
-                clearingDataSet = True
-                dsAddresses.Clear()
-                clearingDataSet = False
+                If cboState.DataSource Is Nothing Then
+                    Dim states As List(Of StateCode) = dc.StateCodes.ToList()
 
-                daAddresses.Fill(dsAddresses)
-            End If
-#Disable Warning CA1031
+                    states.Insert(0, new StateCode With { .State = String.Empty, .StateDesc = String.Empty })
+
+                    cboState.DisplayMember = NameOf(StateCode.State)
+                    cboState.ValueMember = NameOf(StateCode.State)
+                    cboState.DataSource = states
+                End If
+
+                ' For entity framework we need to load the entities
+                dc.Addresses.Load()
+
+                ' Apply a sort by last name
+                Dim pdc As PropertyDescriptorCollection = TypeDescriptor.GetProperties(GetType(Address))
+                Dim pd As PropertyDescriptor = pdc(NameOf(Address.LastName))
+                Dim dataSource As BindingList(Of Address) = dc.Addresses.Local.ToObservableCollection().ToBindingList()
+
+                CType(dataSource, IBindingList).ApplySort(pd, ListSortDirection.Ascending)
+
+                ' We could set each binding property individually, but this is more efficient
+                dnNav.SetDataBinding(dataSource, Nothing)
+
+                ' Bind the controls to the data source
+                txtFName.DataBindings.Clear()
+                txtLName.DataBindings.Clear()
+                txtAddress.DataBindings.Clear()
+                txtCity.DataBindings.Clear()
+                cboState.DataBindings.Clear()
+                txtZip.DataBindings.Clear()
+                lblKey.DataBindings.Clear()
+
+                txtFName.DataBindings.Add(New Binding(NameOf(Control.Text), dataSource, NameOf(Address.FirstName)))
+                txtLName.DataBindings.Add(New Binding(NameOf(Control.Text), dataSource, NameOf(Address.LastName)))
+                txtAddress.DataBindings.Add(New Binding(NameOf(Control.Text), dataSource, NameOf(Address.StreetAddress)))
+                txtCity.DataBindings.Add(New Binding(NameOf(Control.Text), dataSource, NameOf(Address.City)))
+                cboState.DataBindings.Add(New Binding(NameOf(MultiColumnComboBox.SelectedValue), dataSource,
+                    NameOf(Address.State)))
+                txtZip.DataBindings.Add(New Binding(NameOf(Control.Text), dataSource, NameOf(Address.Zip)))
+                lblKey.DataBindings.Add(New Binding(NameOf(Control.Text), dataSource, NameOf(Address.ID)))
+
+                ' We must enable formatting or the bound values for these control types won't get updated for
+                ' some reason.  They also need to update on the property value changing in case the mouse wheel
+                ' is used.
+                cboState.DataBindings(0).FormattingEnabled = True
+                cboState.DataBindings(0).DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged
+
         Catch ex As Exception
             MessageBox.Show(Me, ex.Message)
         End Try
-#Enable Warning CA1031
+
 	End Sub
 
     ' Save the changes
@@ -309,7 +237,15 @@ Public Partial Class DataNavigatorTestForm
                 ' We must commit any pending changes
                 dnNav.CommitChanges()
 
-                daAddresses.Update(dsAddresses)
+                ' There may be a row added for the placeholder that needs removing
+                Dim removeRows As List(Of Address) = dc.ChangeTracker.Entries(Of Address)().Select(
+                    Function (a) a.Entity).Where(Function (a) a.LastName Is Nothing).ToList()
+
+                If removeRows.Count <> 0 Then
+                    dc.RemoveRange(removeRows)
+                End If
+
+                dc.SaveChanges()
             End If
         End If
     End Sub
@@ -325,13 +261,17 @@ Public Partial Class DataNavigatorTestForm
             ' adding a new row here puts this one ahead of it.
             dnNav.CommitChanges()
 
-            Dim r As DataRow = dsAddresses.Tables(0).NewRow()
+            Dim bl As BindingList(Of Address) = CType(dnNav.DataSource, BindingList(Of Address))
 
-            r("FirstName") = "External"
-            r("LastName") = "Row"
+            bl.Add(new Address With
+            {
+                .FirstName = "External",
+                .LastName = "Row",
+                .LastModified = BitConverter.GetBytes(DateTime.Now.Ticks)
+            })
 
-            dsAddresses.Tables(0).Rows.Add(r)
             dnNav.MoveTo(RowPosition.LastRow)
+            dnNav.Focus()
         End If
     End Sub
 
@@ -348,14 +288,9 @@ Public Partial Class DataNavigatorTestForm
             Dim row As Integer = CType(udcRowNumber.Value, Integer)
 
             If row > 0 And row <= cm.Count Then
-                Dim drv As DataRowView = CType(cm.List(row - 1), DataRowView)
+                Dim bl As BindingList(Of Address) = CType(dnNav.DataSource, BindingList(Of Address))
 
-                ' If it's an uncommitted new row, just cancel the changes.  Otherwise, delete the row.
-                If drv.IsNew Then
-                    dnNav.CancelChanges()
-                Else
-                    drv.Row.Delete()
-                End If
+                bl.RemoveAt(row - 1)
             Else
                 MessageBox.Show("Not a valid row number")
             End If
@@ -378,8 +313,11 @@ Public Partial Class DataNavigatorTestForm
             Dim row As Integer = CType(udcRowNumber.Value, Integer)
 
             If row > 0 And row <= cm.Count Then
-                Dim drv As DataRowView = CType(cm.List(row - 1), DataRowView)
-                drv.Row("Address") = "Modified externally"
+                Dim address As Address = CType(cm.List(row - 1), Address)
+                address.StreetAddress = "Modified externally"
+
+                dnNav.MoveTo(row - 1)
+                dnNav.Focus()
             Else
                 MessageBox.Show("Not a valid row number")
             End If

@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : NodeCheckState.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/30/2014
-// Note    : Copyright 2006-2014, Eric Woodruff, All rights reserved
+// Updated : 12/08/2024
+// Note    : Copyright 2006-2024, Eric Woodruff, All rights reserved
 //
 // This file contains the enumerated type that defines the node checked states for the ExtendedTreeView control
 //
@@ -16,9 +16,6 @@
 // ==============================================================================================================
 // 01/12/2006  EFW  Created the code
 //===============================================================================================================
-
-using System;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls
 {

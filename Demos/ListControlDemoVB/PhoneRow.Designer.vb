@@ -22,44 +22,47 @@ Partial Class PhoneRow
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.txtPhoneNumber = New System.Windows.Forms.TextBox
-        Me.epErrors = New System.Windows.Forms.ErrorProvider
-        Me.btnDelete = New System.Windows.Forms.Button
+        components = New Container()
+        txtPhoneNumber = New MaskedTextBox()
+        epErrors = New ErrorProvider(components)
+        btnDelete = New Button()
+        CType(epErrors, ISupportInitialize).BeginInit()
         Me.SuspendLayout()
-        '
-        'txtPhoneNumber
-        '
-        Me.txtPhoneNumber.Location = New System.Drawing.Point(4, 9)
-        Me.txtPhoneNumber.MaxLength = 20
-        Me.txtPhoneNumber.Name = "txtPhoneNumber"
-        Me.txtPhoneNumber.Size = New System.Drawing.Size(156, 22)
-        Me.txtPhoneNumber.TabIndex = 0
-        Me.txtPhoneNumber.Text = ""
-        '
-        'epErrors
-        '
-        Me.epErrors.ContainerControl = Me
-        '
-        'btnDelete
-        '
-        Me.btnDelete.Location = New System.Drawing.Point(176, 8)
-        Me.btnDelete.Name = "btnDelete"
-        Me.btnDelete.Size = New System.Drawing.Size(75, 25)
-        Me.btnDelete.TabIndex = 1
-        Me.btnDelete.Text = "&Delete"
-        '
-        'PhoneRow
-        '
-        Me.Controls.Add(Me.btnDelete)
-        Me.Controls.Add(Me.txtPhoneNumber)
+        ' 
+        ' txtPhoneNumber
+        ' 
+        txtPhoneNumber.Location = New Point(4, 9)
+        txtPhoneNumber.Mask = "(000) 000-0000"
+        txtPhoneNumber.Name = "txtPhoneNumber"
+        txtPhoneNumber.Size = New Size(156, 27)
+        txtPhoneNumber.TabIndex = 0
+        ' 
+        ' epErrors
+        ' 
+        epErrors.ContainerControl = Me
+        ' 
+        ' btnDelete
+        ' 
+        btnDelete.Location = New Point(178, 6)
+        btnDelete.Name = "btnDelete"
+        btnDelete.Size = New Size(75, 32)
+        btnDelete.TabIndex = 1
+        btnDelete.Text = "&Delete"
+        ' 
+        ' PhoneRow
+        ' 
+        Me.Controls.Add(btnDelete)
+        Me.Controls.Add(txtPhoneNumber)
         Me.Name = "PhoneRow"
-        Me.Size = New System.Drawing.Size(256, 40)
+        Me.Size = New Size(256, 40)
+        CType(epErrors, ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
 
     Friend WithEvents epErrors As System.Windows.Forms.ErrorProvider
-    Friend WithEvents txtPhoneNumber As System.Windows.Forms.TextBox
+    Friend WithEvents txtPhoneNumber As System.Windows.Forms.MaskedTextBox
     Friend WithEvents btnDelete As System.Windows.Forms.Button
 
 End Class

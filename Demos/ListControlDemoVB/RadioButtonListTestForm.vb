@@ -2,8 +2,8 @@
 ' System  : EWSoftware Data List Control Demonstration Applications
 ' File    : RadioButtonListTestForm.vb
 ' Author  : Eric Woodruff  (Eric@EWoodruff.us)
-' Updated : 04/09/2023
-' Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+' Updated : 12/02/2024
+' Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 '
 ' This is used to demonstrate the RadioButtonList control
 '
@@ -17,42 +17,25 @@
 ' 10/27/2005  EFW  Created the code
 '================================================================================================================
 
-Imports System.Data
-Imports System.Data.OleDb
-
-Imports EWSoftware.ListControls
 
 Public Partial Class RadioButtonListTestForm
     Inherits Form
 
-    Private ReadOnly demoData, productData As DataSet
+    Private ReadOnly demoData As List(Of DemoTable)
+    Private ReadOnly productInfo As List(Of ProductInfo)
 
     Public Sub New()
         MyBase.New()
 
-        'This call is required by the Windows Form Designer.
         InitializeComponent()
 
-        demoData = New DataSet()
-        productData = New DataSet()
-
         Try
-            Using dbConn As New OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\TestData.mdb")
-                ' Load some data for the demo
-                Using cmd As New OleDbCommand("Select * From DemoTable Order By Label", dbConn)
-                    cmd.CommandType = CommandType.Text
-                    Using adapter As New OleDbDataAdapter(cmd)
-                        adapter.Fill(demoData)
-
-                        ' Use a named table for this one
-                        adapter.TableMappings.Add("Table", "ProductInfo")
-                        cmd.CommandText = "Select * From ProductInfo Order By ProductName"
-                        adapter.Fill(productData)
-                    End Using
-                End Using
+            Using dc As New DemoDataContext()
+                demoData = dc.DemoTable.OrderBy(Function (d) d.Label).ToList()
+                productInfo = dc.ProductInfo.OrderBy(Function (p) p.ProductName).ToList()
             End Using
 
-        Catch ex As OleDbException
+        Catch ex As SqlException
             MessageBox.Show(ex.Message)
 
         End Try
@@ -65,17 +48,15 @@ Public Partial Class RadioButtonListTestForm
     End Sub
 
     ' Refresh the display and the radio button list settings after they have changed
-    Private Sub pgProps_PropertyValueChanged(s As object, e As System.Windows.Forms.PropertyValueChangedEventArgs) _
+    Private Sub pgProps_PropertyValueChanged(s As Object, e As PropertyValueChangedEventArgs) _
       Handles pgProps.PropertyValueChanged
         rblDemo.Invalidate()
         rblDemo.Update()
     End Sub
 
     ' Change the data source for the radio button list
-    Private Sub cboDataSource_SelectedIndexChanged(sender As Object, e As System.EventArgs) _
+    Private Sub cboDataSource_SelectedIndexChanged(sender As Object, e As EventArgs) _
         Handles cboDataSource.SelectedIndexChanged
-
-        Dim dr As DataRow, c As DataColumn
 
         ' Suspend updates to the radio button list to speed it up and prevent flickering
         rblDemo.BeginInit()
@@ -90,7 +71,7 @@ Public Partial Class RadioButtonListTestForm
         rblDemo.Items.Clear()
 
         ' We must have the data
-        If demoData.Tables.Count = 0 Or productData.Tables.Count = 0 Then
+        If demoData.Count = 0 Or productInfo.Count = 0 Then
             MessageBox.Show("Database not found.  It must be located in the demo project's folder.", "Error",
                 MessageBoxButtons.OK, MessageBoxIcon.Stop)
 
@@ -98,38 +79,33 @@ Public Partial Class RadioButtonListTestForm
             Return
         End If
 
+        ' Data tables, views, and sets are also supported but we won't demonstrate that here
         Select Case cboDataSource.SelectedIndex
-            Case 0      ' Data Table
-                rblDemo.DisplayMember = "Label"
-                rblDemo.ValueMember = "ListKey"
-                rblDemo.DataSource = demoData.Tables(0)
+            Case 0      ' Demo data (List(Of DemoData))
+                rblDemo.DisplayMember = nameof(DemoTable.Label)
+                rblDemo.ValueMember = nameof(DemoTable.ListKey)
+                rblDemo.DataSource = demoData
 
-            Case 1      ' Data View
-                rblDemo.DisplayMember = "Label"
-                rblDemo.ValueMember = "ListKey"
-                rblDemo.DataSource = demoData.Tables(0).DefaultView
+            Case 1      ' Product info (List(Of ProductInfo))
+                rblDemo.DisplayMember = nameof(DataBase.ProductInfo.ProductName)
+                rblDemo.ValueMember = nameof(Database.ProductInfo.ProductID)
+                rblDemo.DataSource = productInfo
 
-            Case 2      ' Data Set
-                ' Use a named table for this one
-                rblDemo.DisplayMember = "ProductInfo.ProductName"
-                rblDemo.ValueMember = "ProductInfo.ProductID"
-                rblDemo.DataSource = productData
-
-            Case 3      ' Array List
+            Case 2      ' Array List
                 Dim al As New ArrayList(100)
 
-                For Each dr In productData.Tables(0).Rows
-                    al.Add(New ListItem(dr("ProductID"), CType(dr("ProductName"), String)))
+                For Each p In productInfo
+                    al.Add(New ListItem(p.ProductID, p.ProductName))
                 Next
 
-                rblDemo.DisplayMember = "Display"   ' ListItem description
-                rblDemo.ValueMember = "Value"       ' ListItem value
+                rblDemo.DisplayMember = nameof(ListItem.Display)
+                rblDemo.ValueMember = nameof(ListItem.Value)
                 rblDemo.DataSource = al
 
-            Case 4      ' Item collection strings
+            Case 3      ' Item collection strings
                 ' Like the above but we add the strings directly to the radio button list's Items collection
-                For Each dr In productData.Tables(0).Rows
-                    rblDemo.Items.Add(dr("ProductName"))
+                For Each p In productInfo
+                    rblDemo.Items.Add(p.ProductName)
                 Next
 
                 ' The item collection is the data source for this one.  It's a simple string list so there are no
@@ -143,52 +119,52 @@ Public Partial Class RadioButtonListTestForm
         ' Load the column names
         If Not (rblDemo.DataSource Is Nothing) Then
             If TypeOf(rblDemo.DataSource) Is ArrayList Then
-                cboColumns.Items.Add("Display")
-                cboColumns.Items.Add("Value")
+                cboColumns.Items.Add(nameof(ListItem.Display))
+                cboColumns.Items.Add(nameof(ListItem.Value))
             Else
-                Dim tbl As DataTable
+                Dim dataSourceType As Type
 
-                If TypeOf(rblDemo.DataSource) Is DataSet Then
-                    tbl = productData.Tables(0)
+                If cboDataSource.SelectedIndex = 0
+                    dataSourceType = GetType(DemoTable)
                 Else
-                    tbl = demoData.Tables(0)
+                    dataSourceType = GetType(ProductInfo)
                 End If
 
-                For Each c in tbl.Columns
-                    cboColumns.Items.Add(c.ColumnName)
+                For Each p in dataSourceType.GetProperties()
+                    cboColumns.Items.Add(p.Name)
                 Next
             End If
         End If
 
         If cboColumns.Items.Count = 0 Then
             cboColumns.Enabled = False
-            txtRowNumber.Enabled = False
+            udcRowNumber.Enabled = False
             btnGetValue.Enabled = False
         Else
             cboColumns.Enabled = True
-            txtRowNumber.Enabled = True
+            udcRowNumber.Enabled = True
             btnGetValue.Enabled = True
         End If
     End Sub
 
     ' Get a value from the radio button list
-    Private Sub btnGetValue_Click(sender As Object, e As System.EventArgs) _
+    Private Sub btnGetValue_Click(sender As Object, e As EventArgs) _
       Handles btnGetValue.Click
         ' This can be any column from the data source regardless of whether or not it is displayed.  Note that
         ' you can also use rblDemo("ColName") to get a column value from the item indicated by the SelectedIndex
         ' property.
-        txtValue.Text = $"{cboColumns.Text} = {rblDemo(CType(txtRowNumber.Value, Integer), cboColumns.Text)}"
+        txtValue.Text = $"{cboColumns.Text} = {rblDemo(CType(udcRowNumber.Value, Integer), cboColumns.Text)}"
     End Sub
 
     ' Show the current item info when the selected index changes
-    Private Sub rblDemo_SelectedIndexChanged(sender As Object, e As System.EventArgs) _
+    Private Sub rblDemo_SelectedIndexChanged(sender As Object, e As EventArgs) _
       Handles rblDemo.SelectedIndexChanged
         ' Note that SelectedValue is only valid if there is a data source
         txtValue.Text = $"Index = {rblDemo.SelectedIndex}, Value = {rblDemo.SelectedValue}, Text = {rblDemo.Text}"
     End Sub
 
     ' Use or clear the image list
-    Private Sub chkShowImages_CheckedChanged(sender As Object, e As System.EventArgs) _
+    Private Sub chkShowImages_CheckedChanged(sender As Object, e As EventArgs) _
       Handles chkShowImages.CheckedChanged
         If chkShowImages.Checked Then
             ' The image list is not usable with themed radio buttons under .NET 1.1

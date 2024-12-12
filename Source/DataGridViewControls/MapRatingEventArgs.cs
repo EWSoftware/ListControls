@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : MapRatingEventArgs.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/24/2014
-// Note    : Copyright 2007-2014, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2007-2024, Eric Woodruff, All rights reserved
 //
 // This file contains an event arguments class used to map a cell value to a rating value and vice versa
 //
@@ -17,8 +17,6 @@
 // 06/05/2007  EFW  Created the code
 //===============================================================================================================
 
-using System;
-
 namespace EWSoftware.ListControls.DataGridViewControls
 {
     /// <summary>
@@ -29,12 +27,12 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <summary>
         /// This read-only property can be used to retrieve the column in which the event occurred
         /// </summary>
-        public int Column { get; private set; }
+        public int Column { get; }
 
         /// <summary>
         /// This read-only property can be used to retrieve the row in which the event occurred
         /// </summary>
-        public int Row { get; private set; }
+        public int Row { get; }
 
         /// <summary>
         /// The cell value related to the event
@@ -42,7 +40,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <value>For the <see cref="RatingColumn.MapValueToRating"/> event, this is used to pass the value that
         /// needs mapping to a rating.  For the <see cref="RatingColumn.MapRatingToValue"/> event, it is used to
         /// return the value that should be stored in the cell for the specified <see cref="Rating"/>.</value>
-        public object Value { get; set; }
+        public object? Value { get; set; }
 
         /// <summary>
         /// The rating related to the event
@@ -59,7 +57,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="rowIndex">The row in which the event occurred</param>
         /// <param name="cellValue">The cell value</param>
         /// <param name="ratingValue">The rating value</param>
-        public MapRatingEventArgs(int columnIndex, int rowIndex, object cellValue, int ratingValue)
+        public MapRatingEventArgs(int columnIndex, int rowIndex, object? cellValue, int ratingValue)
         {
             this.Column = columnIndex;
             this.Row = rowIndex;

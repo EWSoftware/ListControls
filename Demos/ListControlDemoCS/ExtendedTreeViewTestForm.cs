@@ -2,8 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : ExtendedTreeViewDemo.cs
 // Author  : Eric Woodruff
-// Updated : 01/06/2023
-// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2007-2024, Eric Woodruff, All rights reserved
 //
 // This form is used to demonstrate the extended tree view control.
 //
@@ -19,12 +19,7 @@
 
 // Ignore Spelling: Fld foreach
 
-using System;
-using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Windows.Forms;
-
-using EWSoftware.ListControls;
 
 namespace ListControlDemoCS
 {
@@ -179,14 +174,17 @@ namespace ListControlDemoCS
         /// <param name="e">The event arguments</param>
         private void tvExtTree_ChangeStateImage(object sender, TreeViewEventArgs e)
         {
-            int idx = e.Node.StateImageIndex;
+            if(e.Node != null)
+            {
+                int idx = e.Node.StateImageIndex;
 
-            idx++;
+                idx++;
 
-            if(idx > 4)
-                idx = 0;
+                if(idx > 4)
+                    idx = 0;
 
-            e.Node.StateImageIndex = idx;
+                e.Node.StateImageIndex = idx;
+            }
         }
 
         #region TreeNodeDrawing Example
@@ -300,14 +298,13 @@ namespace ListControlDemoCS
             // For this, we create the enumerator manually and pass it
             // the starting node and a flag indicating whether or not
             // to enumerate the siblings of the starting node as well.
-            TreeNodeEnumerator enumerator = new TreeNodeEnumerator(startNode,
-                enumerateSiblings);
+            TreeNodeEnumerator enumerator = new(startNode, enumerateSiblings);
 
             // Call the MoveNext() method to move through each node.  Use the
             // Current property to access the current node.
             while(enumerator.MoveNext())
             {
-                node = enumerator.Current;
+                node = enumerator.Current!;
 
                 txtEnumResults.AppendText($"Manual Enum: {new String(' ', node.Level * 4)}{node.Text}\r\n");
             }
@@ -340,7 +337,7 @@ namespace ListControlDemoCS
             // Simply use the indexer with the name of the node.  Note that
             // node names aren't necessarily unique (they are in the demo) so
             // it returns the first node found with the given name.
-            TreeNode node = tvExtTree[txtFindName.Text];
+            TreeNode? node = tvExtTree[txtFindName.Text];
 
             if(node != null)
             {
@@ -349,11 +346,13 @@ namespace ListControlDemoCS
                 tvExtTree.Focus();
             }
             else
+            {
                 MessageBox.Show("Unable to find node named '" + name + "'.  " +
                     "The name is case-sensitive.  Use the tool tips or enable " +
                     "the form DrawNode events to verify the node names and " +
                     "try again.", "Tree View Demo", MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
+            }
             #endregion
         }
 
@@ -364,7 +363,7 @@ namespace ListControlDemoCS
         /// <param name="e">The event arguments</param>
         private void btnCheckedNames_Click(object sender, EventArgs e)
         {
-            if(tvExtTree.CheckBoxes == false)
+            if(!tvExtTree.CheckBoxes)
             {
                 MessageBox.Show("The Checkboxes property must be set to true for this to work", "Tree View Demo",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -386,7 +385,7 @@ namespace ListControlDemoCS
         /// <param name="e">The event arguments</param>
         private void btnCheckedText_Click(object sender, EventArgs e)
         {
-            if(tvExtTree.CheckBoxes == false)
+            if(!tvExtTree.CheckBoxes)
             {
                 MessageBox.Show("The Checkboxes property must be set to true for this to work", "Tree View Demo",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);

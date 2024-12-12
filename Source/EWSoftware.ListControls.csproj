@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0-windows;net40</TargetFrameworks>
+		<TargetFrameworks>net8.0-windows;net40</TargetFrameworks>
 		<UseWindowsForms>true</UseWindowsForms>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Company>Eric Woodruff</Company>
-		<Product>EWSoftware Personal Data Interchange Library</Product>
-		<Title>EWSoftware List Controls Library</Title>
+		<Product>EWSoftware Windows Forms List Controls Library</Product>
+		<Title>EWSoftware Windows Forms List Controls Library</Title>
 		<Copyright>Copyright (c) 2005-2024, Eric Woodruff, All Rights Reserved</Copyright>
 		<NeutralLanguage>en</NeutralLanguage>
-		<Version>2024.10.29.0</Version>
-		<FileVersion>24.10.29.0</FileVersion>
+		<Version>2024.12.11.0</Version>
+		<FileVersion>24.12.11.0</FileVersion>
 		<Description>This library contains several Windows Forms controls: combo box controls with extra abilities, a radio button list control, a checkbox list control, a data navigator control, and a template-based data list control.  See the project website for the code, a help file, and demos.</Description>
 		<Authors>Eric Woodruff</Authors>
 		<PackageIconUrl>https://raw.githubusercontent.com/EWSoftware/ListControls/master/EWSListControls.png</PackageIconUrl>
@@ -22,58 +22,32 @@
 		<PackageProjectUrl>https://github.com/EWSoftware/ListControls</PackageProjectUrl>
 		<PackageLicenseExpression>MS-PL</PackageLicenseExpression>
 		<PackageReleaseNotes>Targets .NET Framework 4.0 and later and .NET 6.0 and later (Windows platform only)</PackageReleaseNotes>
+		<PackageReadmeFile>ReadMe.md</PackageReadmeFile>
 		<SignAssembly>true</SignAssembly>
-		<GenerateAssemblyTitleAttribute>False</GenerateAssemblyTitleAttribute>
-		<GenerateAssemblyVersionAttribute>False</GenerateAssemblyVersionAttribute>
-		<GenerateAssemblyFileVersionAttribute>False</GenerateAssemblyFileVersionAttribute>
-		<GenerateAssemblyInformationalVersionAttribute>False</GenerateAssemblyInformationalVersionAttribute>
 		<AssemblyOriginatorKeyFile>EWSListControls.snk</AssemblyOriginatorKeyFile>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
 		<DebugType>pdbonly</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 		<PlatformTarget>AnyCPU</PlatformTarget>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<!-- There's no fix for the image list binary resources so we have to turn this warning off (MSB3825) -->
+		<GenerateResourceWarnOnBinaryFormatterUse>false</GenerateResourceWarnOnBinaryFormatterUse>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="AutoCompleteComboBox.bmp" />
-	  <None Remove="CheckBoxList.bmp" />
-	  <None Remove="ClickableLabel.bmp" />
-	  <None Remove="DataGridViewControls\ImageListColumn.bmp" />
-	  <None Remove="DataGridViewControls\IndicatorColumn.bmp" />
-	  <None Remove="DataGridViewControls\MultiColumnComboBoxColumn.bmp" />
-	  <None Remove="DataGridViewControls\RatingColumn.bmp" />
-	  <None Remove="DataGridViewControls\UserControlComboBoxColumn.bmp" />
-	  <None Remove="DataList.bmp" />
-	  <None Remove="DataNavigator.bmp" />
-	  <None Remove="ExtendedTreeView.bmp" />
-	  <None Remove="Images\RatingStarEmpty.png" />
-	  <None Remove="Images\RatingStarFilled.png" />
-	  <None Remove="Images\RatingStarHot.png" />
-	  <None Remove="Images\ThemedChecked.bmp" />
-	  <None Remove="Images\ThemedCollapse.bmp" />
-	  <None Remove="Images\ThemedExpand.bmp" />
-	  <None Remove="Images\ThemedMixed.bmp" />
-	  <None Remove="Images\ThemedUnchecked.bmp" />
-	  <None Remove="Images\UnthemedChecked.bmp" />
-	  <None Remove="Images\UnthemedCollapse.bmp" />
-	  <None Remove="Images\UnthemedExpand.bmp" />
-	  <None Remove="Images\UnthemedMixed.bmp" />
-	  <None Remove="Images\UnthemedUnchecked.bmp" />
-	  <None Remove="MultiColumnComboBox.bmp" />
-	  <None Remove="RadioButtonList.bmp" />
-	  <None Remove="UserControlComboBox.bmp" />
+		<Using Include="System.ComponentModel" />
+		<Using Include="System.Drawing" />
+		<Using Include="System.Diagnostics" />
+		<Using Include="System.Reflection" />
+		<Using Include="System.Windows.Forms" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<None Include="..\EWSListControls.png" Link="EWSListControls.png" Pack="true" PackagePath="\" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Include="ReadMe.txt">
-			<Pack>true</Pack>
-			<PackagePath>\</PackagePath>
-		</Content>
+		<None Include="ReadMe.md" Pack="True" PackagePath="\" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
@@ -81,32 +55,32 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="AutoCompleteComboBox.bmp" />
-	  <EmbeddedResource Include="CheckBoxList.bmp" />
-	  <EmbeddedResource Include="ClickableLabel.bmp" />
-	  <EmbeddedResource Include="DataGridViewControls\ImageListColumn.bmp" />
-	  <EmbeddedResource Include="DataGridViewControls\IndicatorColumn.bmp" />
-	  <EmbeddedResource Include="DataGridViewControls\MultiColumnComboBoxColumn.bmp" />
-	  <EmbeddedResource Include="DataGridViewControls\RatingColumn.bmp" />
-	  <EmbeddedResource Include="DataGridViewControls\UserControlComboBoxColumn.bmp" />
-	  <EmbeddedResource Include="DataList.bmp" />
-	  <EmbeddedResource Include="DataNavigator.bmp" />
-	  <EmbeddedResource Include="ExtendedTreeView.bmp" />
-	  <EmbeddedResource Include="Images\RatingStarEmpty.png" />
-	  <EmbeddedResource Include="Images\RatingStarFilled.png" />
-	  <EmbeddedResource Include="Images\RatingStarHot.png" />
-	  <EmbeddedResource Include="Images\ThemedChecked.bmp" />
-	  <EmbeddedResource Include="Images\ThemedCollapse.bmp" />
-	  <EmbeddedResource Include="Images\ThemedExpand.bmp" />
-	  <EmbeddedResource Include="Images\ThemedMixed.bmp" />
-	  <EmbeddedResource Include="Images\ThemedUnchecked.bmp" />
-	  <EmbeddedResource Include="Images\UnthemedChecked.bmp" />
-	  <EmbeddedResource Include="Images\UnthemedCollapse.bmp" />
-	  <EmbeddedResource Include="Images\UnthemedExpand.bmp" />
-	  <EmbeddedResource Include="Images\UnthemedMixed.bmp" />
-	  <EmbeddedResource Include="Images\UnthemedUnchecked.bmp" />
-	  <EmbeddedResource Include="MultiColumnComboBox.bmp" />
-	  <EmbeddedResource Include="RadioButtonList.bmp" />
-	  <EmbeddedResource Include="UserControlComboBox.bmp" />
+		<EmbeddedResource Include="AutoCompleteComboBox.bmp" />
+		<EmbeddedResource Include="CheckBoxList.bmp" />
+		<EmbeddedResource Include="ClickableLabel.bmp" />
+		<EmbeddedResource Include="DataGridViewControls\ImageListColumn.bmp" />
+		<EmbeddedResource Include="DataGridViewControls\IndicatorColumn.bmp" />
+		<EmbeddedResource Include="DataGridViewControls\MultiColumnComboBoxColumn.bmp" />
+		<EmbeddedResource Include="DataGridViewControls\RatingColumn.bmp" />
+		<EmbeddedResource Include="DataGridViewControls\UserControlComboBoxColumn.bmp" />
+		<EmbeddedResource Include="DataList.bmp" />
+		<EmbeddedResource Include="DataNavigator.bmp" />
+		<EmbeddedResource Include="ExtendedTreeView.bmp" />
+		<EmbeddedResource Include="Images\RatingStarEmpty.png" />
+		<EmbeddedResource Include="Images\RatingStarFilled.png" />
+		<EmbeddedResource Include="Images\RatingStarHot.png" />
+		<EmbeddedResource Include="Images\ThemedChecked.bmp" />
+		<EmbeddedResource Include="Images\ThemedCollapse.bmp" />
+		<EmbeddedResource Include="Images\ThemedExpand.bmp" />
+		<EmbeddedResource Include="Images\ThemedMixed.bmp" />
+		<EmbeddedResource Include="Images\ThemedUnchecked.bmp" />
+		<EmbeddedResource Include="Images\UnthemedChecked.bmp" />
+		<EmbeddedResource Include="Images\UnthemedCollapse.bmp" />
+		<EmbeddedResource Include="Images\UnthemedExpand.bmp" />
+		<EmbeddedResource Include="Images\UnthemedMixed.bmp" />
+		<EmbeddedResource Include="Images\UnthemedUnchecked.bmp" />
+		<EmbeddedResource Include="MultiColumnComboBox.bmp" />
+		<EmbeddedResource Include="RadioButtonList.bmp" />
+		<EmbeddedResource Include="UserControlComboBox.bmp" />
 	</ItemGroup>
 </Project>

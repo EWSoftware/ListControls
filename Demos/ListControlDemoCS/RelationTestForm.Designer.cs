@@ -15,10 +15,7 @@ namespace ListControlDemoCS
         {
             if(disposing)
             {
-                dbConn?.Dispose();
-                daAddresses?.Dispose();
-                dsAddresses?.Dispose();
-                daPhones?.Dispose();
+                dc?.Dispose();
                 components?.Dispose();
             }
             base.Dispose(disposing);
@@ -26,327 +23,320 @@ namespace ListControlDemoCS
 
         #region Windows Form Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
-            this.components = new System.ComponentModel.Container();
-            this.btnLoad = new System.Windows.Forms.Button();
-            this.dnNav = new EWSoftware.ListControls.DataNavigator();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.pnlData = new System.Windows.Forms.Panel();
-            this.rblContactType = new EWSoftware.ListControls.RadioButtonList();
-            this.cblAddressTypes = new EWSoftware.ListControls.CheckBoxList();
-            this.txtZip = new System.Windows.Forms.TextBox();
-            this.cboState = new EWSoftware.ListControls.MultiColumnComboBox();
-            this.txtCity = new System.Windows.Forms.TextBox();
-            this.txtAddress = new System.Windows.Forms.TextBox();
-            this.txtLName = new System.Windows.Forms.TextBox();
-            this.txtFName = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.lblKey = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.lblAddRow = new System.Windows.Forms.Label();
-            this.epErrors = new System.Windows.Forms.ErrorProvider(this.components);
-            this.dlPhones = new EWSoftware.ListControls.DataList();
-            this.txtFindName = new System.Windows.Forms.TextBox();
-            this.clickableLabel1 = new EWSoftware.ListControls.ClickableLabel();
-            this.pnlData.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.rblContactType)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cblAddressTypes)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cboState)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.epErrors)).BeginInit();
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            components = new Container();
+            btnLoad = new Button();
+            dnNav = new DataNavigator();
+            btnSave = new Button();
+            toolTip1 = new ToolTip(components);
+            pnlData = new Panel();
+            rblContactType = new RadioButtonList();
+            cblAddressTypes = new CheckBoxList();
+            txtZip = new TextBox();
+            cboState = new MultiColumnComboBox();
+            txtCity = new TextBox();
+            txtAddress = new TextBox();
+            txtLName = new TextBox();
+            txtFName = new TextBox();
+            label1 = new Label();
+            lblKey = new Label();
+            label5 = new Label();
+            label4 = new Label();
+            label3 = new Label();
+            label2 = new Label();
+            lblAddRow = new Label();
+            epErrors = new ErrorProvider(components);
+            dlPhones = new DataList();
+            txtFindName = new TextBox();
+            clickableLabel1 = new ClickableLabel();
+            pnlData.SuspendLayout();
+            ((ISupportInitialize)rblContactType).BeginInit();
+            ((ISupportInitialize)cblAddressTypes).BeginInit();
+            ((ISupportInitialize)cboState).BeginInit();
+            ((ISupportInitialize)epErrors).BeginInit();
             this.SuspendLayout();
             // 
             // btnLoad
             // 
-            this.btnLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnLoad.Location = new System.Drawing.Point(12, 387);
-            this.btnLoad.Name = "btnLoad";
-            this.btnLoad.Size = new System.Drawing.Size(104, 28);
-            this.btnLoad.TabIndex = 4;
-            this.btnLoad.Text = "L&oad Data";
-            this.toolTip1.SetToolTip(this.btnLoad, "Load data into the control");
-            this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
+            btnLoad.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnLoad.Location = new Point(12, 388);
+            btnLoad.Name = "btnLoad";
+            btnLoad.Size = new Size(104, 32);
+            btnLoad.TabIndex = 4;
+            btnLoad.Text = "L&oad Data";
+            toolTip1.SetToolTip(btnLoad, "Load data into the control");
+            btnLoad.Click += this.btnLoad_Click;
             // 
             // dnNav
             // 
-            this.dnNav.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.dnNav.Location = new System.Drawing.Point(12, 327);
-            this.dnNav.Name = "dnNav";
-            this.dnNav.Size = new System.Drawing.Size(282, 22);
-            this.dnNav.TabIndex = 1;
-            this.dnNav.DeletingRow += new System.EventHandler<EWSoftware.ListControls.DataNavigatorCancelEventArgs>(this.dnNav_DeletingRow);
-            this.dnNav.Validating += new System.ComponentModel.CancelEventHandler(this.dnNav_Validating);
-            this.dnNav.AddedRow += new System.EventHandler<EWSoftware.ListControls.DataNavigatorEventArgs>(this.dnNav_AddedRow);
-            this.dnNav.CanceledEdits += new System.EventHandler<EWSoftware.ListControls.DataNavigatorEventArgs>(this.dnNav_CanceledEdits);
-            this.dnNav.NoRows += new System.EventHandler(this.dnNav_NoRows);
+            dnNav.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            dnNav.Location = new Point(12, 336);
+            dnNav.Name = "dnNav";
+            dnNav.Size = new Size(600, 22);
+            dnNav.TabIndex = 1;
+            dnNav.AddedRow += this.dnNav_AddedRow;
+            dnNav.DeletingRow += this.dnNav_DeletingRow;
+            dnNav.CanceledEdits += this.dnNav_CanceledEdits;
+            dnNav.Current += this.dnNav_Current;
+            dnNav.NoRows += this.dnNav_NoRows;
+            dnNav.Validating += this.dnNav_Validating;
             // 
             // btnSave
             // 
-            this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSave.Location = new System.Drawing.Point(122, 387);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(104, 28);
-            this.btnSave.TabIndex = 5;
-            this.btnSave.Text = "&Save Data";
-            this.toolTip1.SetToolTip(this.btnSave, "Save all changes");
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            btnSave.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnSave.Location = new Point(122, 388);
+            btnSave.Name = "btnSave";
+            btnSave.Size = new Size(104, 32);
+            btnSave.TabIndex = 5;
+            btnSave.Text = "&Save Data";
+            toolTip1.SetToolTip(btnSave, "Save all changes");
+            btnSave.Click += this.btnSave_Click;
             // 
             // pnlData
             // 
-            this.pnlData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.pnlData.Controls.Add(this.rblContactType);
-            this.pnlData.Controls.Add(this.cblAddressTypes);
-            this.pnlData.Controls.Add(this.txtZip);
-            this.pnlData.Controls.Add(this.cboState);
-            this.pnlData.Controls.Add(this.txtCity);
-            this.pnlData.Controls.Add(this.txtAddress);
-            this.pnlData.Controls.Add(this.txtLName);
-            this.pnlData.Controls.Add(this.txtFName);
-            this.pnlData.Controls.Add(this.label1);
-            this.pnlData.Controls.Add(this.lblKey);
-            this.pnlData.Controls.Add(this.label5);
-            this.pnlData.Controls.Add(this.label4);
-            this.pnlData.Controls.Add(this.label3);
-            this.pnlData.Controls.Add(this.label2);
-            this.pnlData.Location = new System.Drawing.Point(12, 40);
-            this.pnlData.Name = "pnlData";
-            this.pnlData.Size = new System.Drawing.Size(494, 281);
-            this.pnlData.TabIndex = 0;
+            pnlData.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            pnlData.Controls.Add(rblContactType);
+            pnlData.Controls.Add(cblAddressTypes);
+            pnlData.Controls.Add(txtZip);
+            pnlData.Controls.Add(cboState);
+            pnlData.Controls.Add(txtCity);
+            pnlData.Controls.Add(txtAddress);
+            pnlData.Controls.Add(txtLName);
+            pnlData.Controls.Add(txtFName);
+            pnlData.Controls.Add(label1);
+            pnlData.Controls.Add(lblKey);
+            pnlData.Controls.Add(label5);
+            pnlData.Controls.Add(label4);
+            pnlData.Controls.Add(label3);
+            pnlData.Controls.Add(label2);
+            pnlData.Location = new Point(12, 45);
+            pnlData.Name = "pnlData";
+            pnlData.Size = new Size(600, 285);
+            pnlData.TabIndex = 0;
             // 
             // rblContactType
             // 
-            this.rblContactType.ListPadding = new EWSoftware.ListControls.ListPadding(5, 40, 4, 8, 4, 5);
-            this.rblContactType.Location = new System.Drawing.Point(310, 151);
-            this.rblContactType.Name = "rblContactType";
-            this.rblContactType.Size = new System.Drawing.Size(178, 123);
-            this.rblContactType.TabIndex = 13;
-            this.rblContactType.TitleBackColor = System.Drawing.Color.Gainsboro;
-            this.rblContactType.TitleText = "Contact Type";
+            rblContactType.ListPadding = new ListPadding(5, 40, 4, 8, 4, 5);
+            rblContactType.Location = new Point(399, 151);
+            rblContactType.Name = "rblContactType";
+            rblContactType.Size = new Size(198, 123);
+            rblContactType.TabIndex = 13;
+            rblContactType.TitleBackColor = Color.Gainsboro;
+            rblContactType.TitleFont = new Font("Segoe UI", 9F);
+            rblContactType.TitleText = "Contact Type";
             // 
             // cblAddressTypes
             // 
-            this.cblAddressTypes.BindingMembers.AddRange(new string[] {
-            "Addresses.Domestic",
-            "Addresses.International",
-            "Addresses.Postal",
-            "Addresses.Parcel",
-            "Addresses.Home",
-            "Addresses.Business"});
-            this.cblAddressTypes.BindingMembersBindingContext = null;
-            this.cblAddressTypes.Items.AddRange(new object[] {
-            "Domestic",
-            "International",
-            "Postal",
-            "Parcel",
-            "Home",
-            "Business"});
-            this.cblAddressTypes.LayoutMethod = EWSoftware.ListControls.LayoutMethod.DownThenAcross;
-            this.cblAddressTypes.ListPadding = new EWSoftware.ListControls.ListPadding(8, 30, 4, 8, 20, 5);
-            this.cblAddressTypes.Location = new System.Drawing.Point(12, 151);
-            this.cblAddressTypes.Name = "cblAddressTypes";
-            this.cblAddressTypes.Size = new System.Drawing.Size(292, 123);
-            this.cblAddressTypes.TabIndex = 12;
-            this.cblAddressTypes.TitleBackColor = System.Drawing.Color.Gainsboro;
-            this.cblAddressTypes.TitleText = "Address Types";
+            cblAddressTypes.BindingMembers.Add("Domestic");
+            cblAddressTypes.BindingMembers.Add("International");
+            cblAddressTypes.BindingMembers.Add("Postal");
+            cblAddressTypes.BindingMembers.Add("Parcel");
+            cblAddressTypes.BindingMembers.Add("Home");
+            cblAddressTypes.BindingMembers.Add("Business");
+            cblAddressTypes.BindingMembersBindingContext = null;
+            cblAddressTypes.Items.AddRange(new object[] { "Domestic", "International", "Postal", "Parcel", "Home", "Business" });
+            cblAddressTypes.LayoutMethod = LayoutMethod.DownThenAcross;
+            cblAddressTypes.ListPadding = new ListPadding(8, 30, 4, 8, 20, 5);
+            cblAddressTypes.Location = new Point(12, 151);
+            cblAddressTypes.Name = "cblAddressTypes";
+            cblAddressTypes.Size = new Size(381, 123);
+            cblAddressTypes.TabIndex = 12;
+            cblAddressTypes.TitleBackColor = Color.Gainsboro;
+            cblAddressTypes.TitleFont = new Font("Segoe UI", 9F);
+            cblAddressTypes.TitleText = "Address Types";
             // 
             // txtZip
             // 
-            this.txtZip.Location = new System.Drawing.Point(296, 108);
-            this.txtZip.MaxLength = 10;
-            this.txtZip.Name = "txtZip";
-            this.txtZip.Size = new System.Drawing.Size(77, 22);
-            this.txtZip.TabIndex = 11;
+            txtZip.Location = new Point(347, 110);
+            txtZip.MaxLength = 10;
+            txtZip.Name = "txtZip";
+            txtZip.Size = new Size(77, 27);
+            txtZip.TabIndex = 11;
             // 
             // cboState
             // 
-            this.cboState.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboState.Location = new System.Drawing.Point(228, 108);
-            this.cboState.MaxDropDownItems = 16;
-            this.cboState.Name = "cboState";
-            this.cboState.Size = new System.Drawing.Size(57, 24);
-            this.cboState.TabIndex = 10;
+            cboState.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboState.Location = new Point(275, 110);
+            cboState.MaxDropDownItems = 16;
+            cboState.Name = "cboState";
+            cboState.Size = new Size(66, 29);
+            cboState.TabIndex = 10;
             // 
             // txtCity
             // 
-            this.txtCity.Location = new System.Drawing.Point(92, 108);
-            this.txtCity.MaxLength = 20;
-            this.txtCity.Name = "txtCity";
-            this.txtCity.Size = new System.Drawing.Size(125, 22);
-            this.txtCity.TabIndex = 9;
+            txtCity.Location = new Point(109, 110);
+            txtCity.MaxLength = 20;
+            txtCity.Name = "txtCity";
+            txtCity.Size = new Size(160, 27);
+            txtCity.TabIndex = 9;
             // 
             // txtAddress
             // 
-            this.txtAddress.Location = new System.Drawing.Point(92, 76);
-            this.txtAddress.MaxLength = 50;
-            this.txtAddress.Name = "txtAddress";
-            this.txtAddress.Size = new System.Drawing.Size(384, 22);
-            this.txtAddress.TabIndex = 7;
+            txtAddress.Location = new Point(109, 77);
+            txtAddress.MaxLength = 50;
+            txtAddress.Name = "txtAddress";
+            txtAddress.Size = new Size(407, 27);
+            txtAddress.TabIndex = 7;
             // 
             // txtLName
             // 
-            this.txtLName.Location = new System.Drawing.Point(92, 44);
-            this.txtLName.MaxLength = 30;
-            this.txtLName.Name = "txtLName";
-            this.txtLName.Size = new System.Drawing.Size(160, 22);
-            this.txtLName.TabIndex = 3;
+            txtLName.Location = new Point(109, 44);
+            txtLName.MaxLength = 30;
+            txtLName.Name = "txtLName";
+            txtLName.Size = new Size(160, 27);
+            txtLName.TabIndex = 3;
             // 
             // txtFName
             // 
-            this.txtFName.Location = new System.Drawing.Point(344, 44);
-            this.txtFName.MaxLength = 20;
-            this.txtFName.Name = "txtFName";
-            this.txtFName.Size = new System.Drawing.Size(132, 22);
-            this.txtFName.TabIndex = 5;
+            txtFName.Location = new Point(379, 44);
+            txtFName.MaxLength = 20;
+            txtFName.Name = "txtFName";
+            txtFName.Size = new Size(137, 27);
+            txtFName.TabIndex = 5;
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(62, 12);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(24, 23);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "ID";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label1.Location = new Point(71, 12);
+            label1.Name = "label1";
+            label1.Size = new Size(32, 23);
+            label1.TabIndex = 0;
+            label1.Text = "ID";
+            label1.TextAlign = ContentAlignment.MiddleRight;
             // 
             // lblKey
             // 
-            this.lblKey.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.lblKey.Location = new System.Drawing.Point(92, 12);
-            this.lblKey.Name = "lblKey";
-            this.lblKey.Size = new System.Drawing.Size(64, 23);
-            this.lblKey.TabIndex = 1;
-            this.lblKey.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            lblKey.BorderStyle = BorderStyle.Fixed3D;
+            lblKey.Location = new Point(109, 12);
+            lblKey.Name = "lblKey";
+            lblKey.Size = new Size(64, 23);
+            lblKey.TabIndex = 1;
+            lblKey.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // label5
             // 
-            this.label5.BackColor = System.Drawing.Color.Transparent;
-            this.label5.Location = new System.Drawing.Point(2, 108);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(84, 22);
-            this.label5.TabIndex = 8;
-            this.label5.Text = "&City/St/Zip";
-            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label5.BackColor = Color.Transparent;
+            label5.Location = new Point(6, 112);
+            label5.Name = "label5";
+            label5.Size = new Size(97, 22);
+            label5.TabIndex = 8;
+            label5.Text = "&City/St/Zip";
+            label5.TextAlign = ContentAlignment.MiddleRight;
             // 
             // label4
             // 
-            this.label4.BackColor = System.Drawing.Color.Transparent;
-            this.label4.Location = new System.Drawing.Point(10, 76);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(76, 22);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "&Address";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label4.BackColor = Color.Transparent;
+            label4.Location = new Point(27, 79);
+            label4.Name = "label4";
+            label4.Size = new Size(76, 22);
+            label4.TabIndex = 6;
+            label4.Text = "&Address";
+            label4.TextAlign = ContentAlignment.MiddleRight;
             // 
             // label3
             // 
-            this.label3.BackColor = System.Drawing.Color.Transparent;
-            this.label3.Location = new System.Drawing.Point(9, 44);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(77, 22);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "&Last Name";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label3.BackColor = Color.Transparent;
+            label3.Location = new Point(8, 46);
+            label3.Name = "label3";
+            label3.Size = new Size(95, 22);
+            label3.TabIndex = 2;
+            label3.Text = "&Last Name";
+            label3.TextAlign = ContentAlignment.MiddleRight;
             // 
             // label2
             // 
-            this.label2.BackColor = System.Drawing.Color.Transparent;
-            this.label2.Location = new System.Drawing.Point(262, 44);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(76, 22);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "First Name";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label2.BackColor = Color.Transparent;
+            label2.Location = new Point(280, 46);
+            label2.Name = "label2";
+            label2.Size = new Size(93, 22);
+            label2.TabIndex = 4;
+            label2.Text = "First Name";
+            label2.TextAlign = ContentAlignment.MiddleRight;
             // 
             // lblAddRow
             // 
-            this.lblAddRow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblAddRow.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.lblAddRow.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.lblAddRow.Location = new System.Drawing.Point(12, 352);
-            this.lblAddRow.Name = "lblAddRow";
-            this.lblAddRow.Size = new System.Drawing.Size(492, 24);
-            this.lblAddRow.TabIndex = 3;
-            this.lblAddRow.Text = "Please click the Add button to add a new row";
-            this.lblAddRow.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblAddRow.Visible = false;
+            lblAddRow.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            lblAddRow.BackColor = SystemColors.ActiveCaption;
+            lblAddRow.ForeColor = SystemColors.ActiveCaptionText;
+            lblAddRow.Location = new Point(12, 361);
+            lblAddRow.Name = "lblAddRow";
+            lblAddRow.Size = new Size(600, 24);
+            lblAddRow.TabIndex = 3;
+            lblAddRow.Text = "Please click the Add button to add a new row";
+            lblAddRow.TextAlign = ContentAlignment.MiddleCenter;
+            lblAddRow.Visible = false;
             // 
             // epErrors
             // 
-            this.epErrors.ContainerControl = this;
+            epErrors.ContainerControl = this;
             // 
             // dlPhones
             // 
-            this.dlPhones.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.dlPhones.CaptionText = "Phone Numbers";
-            this.dlPhones.CaptionVisible = true;
-            this.dlPhones.Location = new System.Drawing.Point(510, 12);
-            this.dlPhones.Name = "dlPhones";
-            this.dlPhones.Size = new System.Drawing.Size(306, 364);
-            this.dlPhones.TabIndex = 2;
-            this.dlPhones.AddingRow += new System.EventHandler<EWSoftware.ListControls.DataListCancelEventArgs>(this.dlPhones_AddingRow);
+            dlPhones.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
+            dlPhones.CaptionText = "Phone Numbers";
+            dlPhones.CaptionVisible = true;
+            dlPhones.Location = new Point(618, 12);
+            dlPhones.Name = "dlPhones";
+            dlPhones.Size = new Size(376, 373);
+            dlPhones.TabIndex = 2;
+            dlPhones.AddedRow += this.dlPhones_AddedRow;
+            dlPhones.DeletingRow += this.dlPhones_DeletingRow;
             // 
             // txtFindName
             // 
-            this.txtFindName.Location = new System.Drawing.Point(127, 12);
-            this.txtFindName.MaxLength = 30;
-            this.txtFindName.Name = "txtFindName";
-            this.txtFindName.Size = new System.Drawing.Size(136, 22);
-            this.txtFindName.TabIndex = 7;
-            this.txtFindName.TextChanged += new System.EventHandler(this.txtFindName_TextChanged);
+            txtFindName.Location = new Point(154, 12);
+            txtFindName.MaxLength = 30;
+            txtFindName.Name = "txtFindName";
+            txtFindName.Size = new Size(160, 27);
+            txtFindName.TabIndex = 7;
+            txtFindName.TextChanged += this.txtFindName_TextChanged;
             // 
             // clickableLabel1
             // 
-            this.clickableLabel1.Location = new System.Drawing.Point(6, 12);
-            this.clickableLabel1.Name = "clickableLabel1";
-            this.clickableLabel1.Size = new System.Drawing.Size(115, 23);
-            this.clickableLabel1.TabIndex = 6;
-            this.clickableLabel1.Text = "&Find Last Name";
-            this.clickableLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            clickableLabel1.Location = new Point(12, 14);
+            clickableLabel1.Name = "clickableLabel1";
+            clickableLabel1.Size = new Size(136, 23);
+            clickableLabel1.TabIndex = 6;
+            clickableLabel1.Text = "&Find Last Name";
+            clickableLabel1.TextAlign = ContentAlignment.MiddleRight;
             // 
             // RelationTestForm
             // 
-            this.ClientSize = new System.Drawing.Size(828, 427);
-            this.Controls.Add(this.txtFindName);
-            this.Controls.Add(this.dlPhones);
-            this.Controls.Add(this.clickableLabel1);
-            this.Controls.Add(this.lblAddRow);
-            this.Controls.Add(this.pnlData);
-            this.Controls.Add(this.btnSave);
-            this.Controls.Add(this.dnNav);
-            this.Controls.Add(this.btnLoad);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.ClientSize = new Size(1006, 432);
+            this.Controls.Add(txtFindName);
+            this.Controls.Add(dlPhones);
+            this.Controls.Add(clickableLabel1);
+            this.Controls.Add(lblAddRow);
+            this.Controls.Add(pnlData);
+            this.Controls.Add(btnSave);
+            this.Controls.Add(dnNav);
+            this.Controls.Add(btnLoad);
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "RelationTestForm";
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = FormStartPosition.CenterScreen;
             this.Text = "Relationship Test Form";
-            this.Closing += new System.ComponentModel.CancelEventHandler(this.RelationTestForm_Closing);
-            this.pnlData.ResumeLayout(false);
-            this.pnlData.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.rblContactType)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cblAddressTypes)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cboState)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.epErrors)).EndInit();
+            this.Closing += this.RelationTestForm_Closing;
+            pnlData.ResumeLayout(false);
+            pnlData.PerformLayout();
+            ((ISupportInitialize)rblContactType).EndInit();
+            ((ISupportInitialize)cblAddressTypes).EndInit();
+            ((ISupportInitialize)cboState).EndInit();
+            ((ISupportInitialize)epErrors).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
 
-		private System.Windows.Forms.Button btnLoad;
+        private System.Windows.Forms.Button btnLoad;
 		private EWSoftware.ListControls.DataNavigator dnNav;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.ToolTip toolTip1;

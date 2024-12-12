@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : MultiColumnComboBoxColumn.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/05/2023
-// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
+// Updated : 12/09/2024
+// Note    : Copyright 2007-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a data grid view column object that hosts multi-column combo box cells
 //
@@ -17,10 +17,7 @@
 // 04/21/2007  EFW  Created the code
 //===============================================================================================================
 
-using System;
-using System.ComponentModel;
 using System.Drawing.Design;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls.DataGridViewControls
 {
@@ -32,7 +29,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         #region Private data members
         //=====================================================================
 
-        private StringCollection columnFilter;
+        private StringCollection columnFilter = null!;
 
         #endregion
 
@@ -61,7 +58,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// property set to "(null)".</value>
         [Category("Appearance"), DefaultValue(""), Localizable(true),
           Description("The default text to display for columns with null values")]
-        public string DefaultNullText { get; set; }
+        public string DefaultNullText { get; set; } = String.Empty;
 
         /// <summary>
         /// Gets or sets the width of the of the drop-down portion of the combo box
@@ -81,7 +78,6 @@ namespace EWSoftware.ListControls.DataGridViewControls
             set
             {
                 DataGridViewRowCollection rows;
-                MultiColumnComboBoxCell cell;
                 int count, idx;
 
                 if(this.ComboBoxCellTemplate == null)
@@ -98,9 +94,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
 
                         for(idx = 0; idx < count; idx++)
                         {
-                            cell = rows.SharedRow(idx).Cells[this.Index] as MultiColumnComboBoxCell;
-
-                            if(cell != null)
+                            if(rows.SharedRow(idx).Cells[this.Index] is MultiColumnComboBoxCell cell)
                                 cell.DropDownWidth = value;
                         }
                     }
@@ -135,8 +129,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         {
             get
             {
-                if(columnFilter == null)
-                    columnFilter = new StringCollection();
+                columnFilter ??= [];
 
                 return columnFilter;
             }

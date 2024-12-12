@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : ImageListColumn.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 04/09/2023
-// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
+// Updated : 12/09/2024
+// Note    : Copyright 2007-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a data grid view column object that contains ImageListCell objects
 //
@@ -17,11 +17,6 @@
 // 05/03/2007  EFW  Created the code
 //===============================================================================================================
 
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
-
 namespace EWSoftware.ListControls.DataGridViewControls
 {
     /// <summary>
@@ -33,8 +28,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
         #region Private data members
         //=====================================================================
 
-        private ImageList images;
-        private Cursor originalCursor;
+        private ImageList? images;
+        private Cursor? originalCursor;
 
         #endregion
 
@@ -56,7 +51,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// This is used to get or set the image list used for the column's cells
         /// </summary>
         [Category("Behavior"), DefaultValue(null), Description("The image list to use for the column")]
-        public ImageList ImageList
+        public ImageList? ImageList
         {
             get => images;
             set
@@ -74,14 +69,14 @@ namespace EWSoftware.ListControls.DataGridViewControls
 
                     images = value;
 
-                    if(value != null)
+                    if(images != null)
                     {
                         images.RecreateHandle += recreateHandle;
                         images.Disposed += disposeList;
                     }
 
-                    if(base.DataGridView != null)
-                        DataGridViewHelper.OnColumnCommonChange(base.DataGridView, base.Index);
+                    if(this.DataGridView != null)
+                        DataGridViewHelper.OnColumnCommonChange(this.DataGridView, this.Index);
                 }
             }
         }
@@ -92,7 +87,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <value>If not set and <see cref="NullImageIndex"/> is set to -1, the cell will appear blank.  This
         /// property is ignored if <c>NullImageIndex</c> is set to a value other than -1.</value>
         [Category("Behavior"), DefaultValue(null), Description("The image to use for null values (none for blank)")]
-        public Image NullImage { get; set; }
+        public Image? NullImage { get; set; }
 
         /// <summary>
         /// This is used to get or set the image index to use for null values
@@ -122,29 +117,24 @@ namespace EWSoftware.ListControls.DataGridViewControls
             set
             {
                 DataGridViewRowCollection rows;
-                ImageListCell cell;
                 int count, idx;
 
-                cell = (ImageListCell)base.CellTemplate;
-
-                if(cell == null)
+                var cell = (ImageListCell)base.CellTemplate ??
                     throw new InvalidOperationException(LR.GetString("ExCellTemplateRequired"));
 
                 if(cell.NewRowImageIndex != value)
                 {
                     cell.NewRowImageIndex = value;
 
-                    if(base.DataGridView != null)
+                    if(this.DataGridView != null)
                     {
-                        rows = base.DataGridView.Rows;
+                        rows = this.DataGridView.Rows;
                         count = rows.Count;
 
                         for(idx = 0; idx < count; idx++)
                         {
-                            cell = rows.SharedRow(idx).Cells[base.Index] as ImageListCell;
-
-                            if(cell != null)
-                                cell.NewRowImageIndex = value;
+                            if(rows.SharedRow(idx).Cells[this.Index] is ImageListCell c)
+                                c.NewRowImageIndex = value;
                         }
                     }
                 }
@@ -159,7 +149,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// This event is raised when a cell needs to map a cell value to an image index
         /// </summary>
         [Category("Behavior"), Description("Occurs when a cell needs to map a cell value to an image index")]
-        public event EventHandler<MapIndexEventArgs> MapValueToIndex;
+        public event EventHandler<MapIndexEventArgs>? MapValueToIndex;
 
         /// <summary>
         /// This raises the <see cref="MapValueToIndex"/> event
@@ -174,7 +164,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// This event is raised when a cell needs to map an image index to a cell value
         /// </summary>
         [Category("Behavior"), Description("Occurs when a cell needs to map an image index to a cell value")]
-        public event EventHandler<MapIndexEventArgs> MapIndexToValue;
+        public event EventHandler<MapIndexEventArgs>? MapIndexToValue;
 
         /// <summary>
         /// This raises the <see cref="MapIndexToValue"/> event
@@ -210,9 +200,9 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void ImageList_RecreateHandle(object sender, EventArgs e)
+        private void ImageList_RecreateHandle(object? sender, EventArgs e)
         {
-            this.DataGridView?.InvalidateColumn(base.Index);
+            this.DataGridView?.InvalidateColumn(this.Index);
         }
 
         /// <summary>
@@ -220,7 +210,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void ImageList_Disposed(object sender, EventArgs e)
+        private void ImageList_Disposed(object? sender, EventArgs e)
         {
             this.ImageList = null;
         }

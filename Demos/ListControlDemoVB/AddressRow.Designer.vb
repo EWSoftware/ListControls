@@ -22,155 +22,155 @@ Partial Class AddressRow
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.components = New System.ComponentModel.Container
-        Me.cboState = New EWSoftware.ListControls.MultiColumnComboBox
-        Me.txtZip = New System.Windows.Forms.TextBox
-        Me.label4 = New EWSoftware.ListControls.ClickableLabel
-        Me.txtCity = New System.Windows.Forms.TextBox
-        Me.label3 = New EWSoftware.ListControls.ClickableLabel
-        Me.txtAddress = New System.Windows.Forms.TextBox
-        Me.label2 = New EWSoftware.ListControls.ClickableLabel
-        Me.txtLName = New System.Windows.Forms.TextBox
-        Me.label1 = New EWSoftware.ListControls.ClickableLabel
-        Me.txtFName = New System.Windows.Forms.TextBox
-        Me.epErrors = New System.Windows.Forms.ErrorProvider(Me.components)
-        Me.label5 = New EWSoftware.ListControls.ClickableLabel
-        Me.udcSumValue = New System.Windows.Forms.NumericUpDown
-        CType(Me.cboState, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.epErrors, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.udcSumValue, System.ComponentModel.ISupportInitialize).BeginInit()
+        components = New Container()
+        cboState = New MultiColumnComboBox()
+        txtZip = New TextBox()
+        label4 = New ClickableLabel()
+        txtCity = New TextBox()
+        label3 = New ClickableLabel()
+        txtAddress = New TextBox()
+        label2 = New ClickableLabel()
+        txtLName = New TextBox()
+        label1 = New ClickableLabel()
+        txtFName = New TextBox()
+        epErrors = New ErrorProvider(components)
+        label5 = New ClickableLabel()
+        udcSumValue = New NumericUpDown()
+        CType(cboState, ISupportInitialize).BeginInit()
+        CType(epErrors, ISupportInitialize).BeginInit()
+        CType(udcSumValue, ISupportInitialize).BeginInit()
         Me.SuspendLayout()
-        '
-        'cboState
-        '
-        Me.cboState.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboState.Location = New System.Drawing.Point(223, 72)
-        Me.cboState.MaxDropDownItems = 16
-        Me.cboState.Name = "cboState"
-        Me.cboState.Size = New System.Drawing.Size(57, 24)
-        Me.cboState.TabIndex = 8
-        '
-        'txtZip
-        '
-        Me.txtZip.Location = New System.Drawing.Point(288, 72)
-        Me.txtZip.MaxLength = 10
-        Me.txtZip.Name = "txtZip"
-        Me.txtZip.Size = New System.Drawing.Size(77, 22)
-        Me.txtZip.TabIndex = 9
-        '
-        'label4
-        '
-        Me.label4.BackColor = System.Drawing.Color.Transparent
-        Me.label4.Location = New System.Drawing.Point(3, 72)
-        Me.label4.Name = "label4"
-        Me.label4.Size = New System.Drawing.Size(79, 22)
-        Me.label4.TabIndex = 6
-        Me.label4.Text = "&City/St/Zip"
-        Me.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'txtCity
-        '
-        Me.txtCity.Location = New System.Drawing.Point(88, 72)
-        Me.txtCity.MaxLength = 20
-        Me.txtCity.Name = "txtCity"
-        Me.txtCity.Size = New System.Drawing.Size(120, 22)
-        Me.txtCity.TabIndex = 7
-        '
-        'label3
-        '
-        Me.label3.BackColor = System.Drawing.Color.Transparent
-        Me.label3.Location = New System.Drawing.Point(6, 40)
-        Me.label3.Name = "label3"
-        Me.label3.Size = New System.Drawing.Size(76, 22)
-        Me.label3.TabIndex = 4
-        Me.label3.Text = "&Address"
-        Me.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'txtAddress
-        '
-        Me.txtAddress.Location = New System.Drawing.Point(88, 40)
-        Me.txtAddress.MaxLength = 50
-        Me.txtAddress.Name = "txtAddress"
-        Me.txtAddress.Size = New System.Drawing.Size(408, 22)
-        Me.txtAddress.TabIndex = 5
-        '
-        'label2
-        '
-        Me.label2.BackColor = System.Drawing.Color.Transparent
-        Me.label2.Location = New System.Drawing.Point(0, 9)
-        Me.label2.Name = "label2"
-        Me.label2.Size = New System.Drawing.Size(82, 22)
-        Me.label2.TabIndex = 0
-        Me.label2.Text = "&Last Name"
-        Me.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'txtLName
-        '
-        Me.txtLName.Location = New System.Drawing.Point(88, 9)
-        Me.txtLName.MaxLength = 30
-        Me.txtLName.Name = "txtLName"
-        Me.txtLName.Size = New System.Drawing.Size(160, 22)
-        Me.txtLName.TabIndex = 1
-        '
-        'label1
-        '
-        Me.label1.BackColor = System.Drawing.Color.Transparent
-        Me.label1.Location = New System.Drawing.Point(254, 9)
-        Me.label1.Name = "label1"
-        Me.label1.Size = New System.Drawing.Size(81, 22)
-        Me.label1.TabIndex = 2
-        Me.label1.Text = "First Name"
-        Me.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'txtFName
-        '
-        Me.txtFName.Location = New System.Drawing.Point(341, 9)
-        Me.txtFName.MaxLength = 20
-        Me.txtFName.Name = "txtFName"
-        Me.txtFName.Size = New System.Drawing.Size(155, 22)
-        Me.txtFName.TabIndex = 3
-        '
-        'epErrors
-        '
-        Me.epErrors.ContainerControl = Me
-        '
-        'label5
-        '
-        Me.label5.BackColor = System.Drawing.Color.Transparent
-        Me.label5.Location = New System.Drawing.Point(376, 72)
-        Me.label5.Name = "label5"
-        Me.label5.Size = New System.Drawing.Size(58, 22)
-        Me.label5.TabIndex = 10
-        Me.label5.Text = "&Value"
-        Me.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'udcSumValue
-        '
-        Me.udcSumValue.Location = New System.Drawing.Point(440, 72)
-        Me.udcSumValue.Name = "udcSumValue"
-        Me.udcSumValue.Size = New System.Drawing.Size(56, 22)
-        Me.udcSumValue.TabIndex = 11
-        Me.udcSumValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'AddressRow
-        '
-        Me.Controls.Add(Me.udcSumValue)
-        Me.Controls.Add(Me.label5)
-        Me.Controls.Add(Me.cboState)
-        Me.Controls.Add(Me.txtZip)
-        Me.Controls.Add(Me.label4)
-        Me.Controls.Add(Me.txtCity)
-        Me.Controls.Add(Me.label3)
-        Me.Controls.Add(Me.txtAddress)
-        Me.Controls.Add(Me.label2)
-        Me.Controls.Add(Me.txtLName)
-        Me.Controls.Add(Me.label1)
-        Me.Controls.Add(Me.txtFName)
+        ' 
+        ' cboState
+        ' 
+        cboState.DropDownStyle = ComboBoxStyle.DropDownList
+        cboState.Location = New Point(266, 73)
+        cboState.MaxDropDownItems = 16
+        cboState.Name = "cboState"
+        cboState.Size = New Size(66, 29)
+        cboState.TabIndex = 8
+        ' 
+        ' txtZip
+        ' 
+        txtZip.Location = New Point(338, 73)
+        txtZip.MaxLength = 10
+        txtZip.Name = "txtZip"
+        txtZip.Size = New Size(92, 27)
+        txtZip.TabIndex = 9
+        ' 
+        ' label4
+        ' 
+        label4.BackColor = Color.Transparent
+        label4.Location = New Point(3, 73)
+        label4.Name = "label4"
+        label4.Size = New Size(93, 22)
+        label4.TabIndex = 6
+        label4.Text = "&City/St/Zip"
+        label4.TextAlign = ContentAlignment.MiddleRight
+        ' 
+        ' txtCity
+        ' 
+        txtCity.Location = New Point(102, 73)
+        txtCity.MaxLength = 20
+        txtCity.Name = "txtCity"
+        txtCity.Size = New Size(158, 27)
+        txtCity.TabIndex = 7
+        ' 
+        ' label3
+        ' 
+        label3.BackColor = Color.Transparent
+        label3.Location = New Point(20, 42)
+        label3.Name = "label3"
+        label3.Size = New Size(76, 22)
+        label3.TabIndex = 4
+        label3.Text = "&Address"
+        label3.TextAlign = ContentAlignment.MiddleRight
+        ' 
+        ' txtAddress
+        ' 
+        txtAddress.Location = New Point(102, 40)
+        txtAddress.MaxLength = 50
+        txtAddress.Name = "txtAddress"
+        txtAddress.Size = New Size(451, 27)
+        txtAddress.TabIndex = 5
+        ' 
+        ' label2
+        ' 
+        label2.BackColor = Color.Transparent
+        label2.Location = New Point(3, 9)
+        label2.Name = "label2"
+        label2.Size = New Size(93, 22)
+        label2.TabIndex = 0
+        label2.Text = "&Last Name"
+        label2.TextAlign = ContentAlignment.MiddleRight
+        ' 
+        ' txtLName
+        ' 
+        txtLName.Location = New Point(102, 7)
+        txtLName.MaxLength = 30
+        txtLName.Name = "txtLName"
+        txtLName.Size = New Size(177, 27)
+        txtLName.TabIndex = 1
+        ' 
+        ' label1
+        ' 
+        label1.BackColor = Color.Transparent
+        label1.Location = New Point(285, 9)
+        label1.Name = "label1"
+        label1.Size = New Size(92, 22)
+        label1.TabIndex = 2
+        label1.Text = "First Name"
+        label1.TextAlign = ContentAlignment.MiddleRight
+        ' 
+        ' txtFName
+        ' 
+        txtFName.Location = New Point(383, 7)
+        txtFName.MaxLength = 20
+        txtFName.Name = "txtFName"
+        txtFName.Size = New Size(170, 27)
+        txtFName.TabIndex = 3
+        ' 
+        ' epErrors
+        ' 
+        epErrors.ContainerControl = Me
+        ' 
+        ' label5
+        ' 
+        label5.BackColor = Color.Transparent
+        label5.Location = New Point(438, 74)
+        label5.Name = "label5"
+        label5.Size = New Size(53, 22)
+        label5.TabIndex = 10
+        label5.Text = "&Value"
+        label5.TextAlign = ContentAlignment.MiddleRight
+        ' 
+        ' udcSumValue
+        ' 
+        udcSumValue.Location = New Point(497, 72)
+        udcSumValue.Name = "udcSumValue"
+        udcSumValue.Size = New Size(56, 27)
+        udcSumValue.TabIndex = 11
+        udcSumValue.TextAlign = HorizontalAlignment.Right
+        ' 
+        ' AddressRow
+        ' 
+        Me.Controls.Add(udcSumValue)
+        Me.Controls.Add(label5)
+        Me.Controls.Add(cboState)
+        Me.Controls.Add(txtZip)
+        Me.Controls.Add(label4)
+        Me.Controls.Add(txtCity)
+        Me.Controls.Add(label3)
+        Me.Controls.Add(txtAddress)
+        Me.Controls.Add(label2)
+        Me.Controls.Add(txtLName)
+        Me.Controls.Add(label1)
+        Me.Controls.Add(txtFName)
         Me.Name = "AddressRow"
-        Me.Size = New System.Drawing.Size(504, 106)
-        CType(Me.cboState, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.epErrors, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.udcSumValue, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.Size = New Size(580, 108)
+        CType(cboState, ISupportInitialize).EndInit()
+        CType(epErrors, ISupportInitialize).EndInit()
+        CType(udcSumValue, ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

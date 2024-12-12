@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : ItemCheckStateEventArgs.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/30/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains the event argument class used to provide information about a <see cref="CheckBoxList"/>
 // item that had a change in its check state.
@@ -18,9 +18,6 @@
 // 03/20/2005  EFW  Created the code
 //===============================================================================================================
 
-using System;
-using System.Windows.Forms;
-
 namespace EWSoftware.ListControls
 {
 	/// <summary>
@@ -32,12 +29,12 @@ namespace EWSoftware.ListControls
         /// <summary>
         /// Get the index of the item affected
         /// </summary>
-        public int Index { get; private set; }
+        public int Index { get; }
 
         /// <summary>
         /// Get the check state of the item
         /// </summary>
-        public CheckState CheckState { get; private set; }
+        public CheckState CheckState { get; }
 
         /// <summary>
         /// Constructor

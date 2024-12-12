@@ -7,8 +7,6 @@ Partial Class RadioButtonListTestForm
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing Then
-                demoData?.Dispose()
-                productData?.Dispose()
                 components?.Dispose()
             End If
         Finally
@@ -24,180 +22,177 @@ Partial Class RadioButtonListTestForm
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.components = New System.ComponentModel.Container
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(RadioButtonListTestForm))
-        Me.pgProps = New System.Windows.Forms.PropertyGrid
-        Me.grpOptions = New System.Windows.Forms.GroupBox
-        Me.cboColumns = New System.Windows.Forms.ComboBox
-        Me.btnGetValue = New System.Windows.Forms.Button
-        Me.txtRowNumber = New System.Windows.Forms.NumericUpDown
-        Me.label6 = New System.Windows.Forms.Label
-        Me.label5 = New System.Windows.Forms.Label
-        Me.txtValue = New System.Windows.Forms.TextBox
-        Me.cboDataSource = New System.Windows.Forms.ComboBox
-        Me.label1 = New System.Windows.Forms.Label
-        Me.rblDemo = New EWSoftware.ListControls.RadioButtonList
-        Me.chkShowImages = New System.Windows.Forms.CheckBox
-        Me.ilImages = New System.Windows.Forms.ImageList(Me.components)
-        Me.grpOptions.SuspendLayout()
-        CType(Me.txtRowNumber, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.rblDemo, System.ComponentModel.ISupportInitialize).BeginInit()
+        components = New Container()
+        Dim resources As ComponentResourceManager = New ComponentResourceManager(GetType(RadioButtonListTestForm))
+        pgProps = New PropertyGrid()
+        grpOptions = New GroupBox()
+        cboColumns = New ComboBox()
+        btnGetValue = New Button()
+        udcRowNumber = New NumericUpDown()
+        label6 = New Label()
+        label5 = New Label()
+        txtValue = New TextBox()
+        cboDataSource = New ComboBox()
+        label1 = New Label()
+        rblDemo = New RadioButtonList()
+        chkShowImages = New CheckBox()
+        ilImages = New ImageList(components)
+        grpOptions.SuspendLayout()
+        CType(udcRowNumber, ISupportInitialize).BeginInit()
+        CType(rblDemo, ISupportInitialize).BeginInit()
         Me.SuspendLayout()
-        '
-        'pgProps
-        '
-        Me.pgProps.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.pgProps.LineColor = System.Drawing.SystemColors.ScrollBar
-        Me.pgProps.Location = New System.Drawing.Point(6, 0)
-        Me.pgProps.Name = "pgProps"
-        Me.pgProps.Size = New System.Drawing.Size(368, 436)
-        Me.pgProps.TabIndex = 3
-        '
-        'grpOptions
-        '
-        Me.grpOptions.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.grpOptions.Controls.Add(Me.cboColumns)
-        Me.grpOptions.Controls.Add(Me.btnGetValue)
-        Me.grpOptions.Controls.Add(Me.txtRowNumber)
-        Me.grpOptions.Controls.Add(Me.label6)
-        Me.grpOptions.Controls.Add(Me.label5)
-        Me.grpOptions.Controls.Add(Me.txtValue)
-        Me.grpOptions.Controls.Add(Me.cboDataSource)
-        Me.grpOptions.Controls.Add(Me.label1)
-        Me.grpOptions.Location = New System.Drawing.Point(384, 328)
-        Me.grpOptions.Name = "grpOptions"
-        Me.grpOptions.Size = New System.Drawing.Size(440, 120)
-        Me.grpOptions.TabIndex = 1
-        Me.grpOptions.TabStop = False
-        Me.grpOptions.Text = "Options"
-        '
-        'cboColumns
-        '
-        Me.cboColumns.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboColumns.Location = New System.Drawing.Point(104, 56)
-        Me.cboColumns.Name = "cboColumns"
-        Me.cboColumns.Size = New System.Drawing.Size(132, 24)
-        Me.cboColumns.TabIndex = 3
-        '
-        'btnGetValue
-        '
-        Me.btnGetValue.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnGetValue.Location = New System.Drawing.Point(350, 52)
-        Me.btnGetValue.Name = "btnGetValue"
-        Me.btnGetValue.Size = New System.Drawing.Size(75, 28)
-        Me.btnGetValue.TabIndex = 6
-        Me.btnGetValue.Text = "&Get"
-        '
-        'txtRowNumber
-        '
-        Me.txtRowNumber.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.txtRowNumber.Location = New System.Drawing.Point(288, 56)
-        Me.txtRowNumber.Maximum = New Decimal(New Integer() {999, 0, 0, 0})
-        Me.txtRowNumber.Name = "txtRowNumber"
-        Me.txtRowNumber.Size = New System.Drawing.Size(56, 22)
-        Me.txtRowNumber.TabIndex = 5
-        Me.txtRowNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'label6
-        '
-        Me.label6.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.label6.Location = New System.Drawing.Point(240, 56)
-        Me.label6.Name = "label6"
-        Me.label6.Size = New System.Drawing.Size(48, 23)
-        Me.label6.TabIndex = 4
-        Me.label6.Text = "at row"
-        Me.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        '
-        'label5
-        '
-        Me.label5.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.label5.Location = New System.Drawing.Point(9, 56)
-        Me.label5.Name = "label5"
-        Me.label5.Size = New System.Drawing.Size(89, 23)
-        Me.label5.TabIndex = 2
-        Me.label5.Text = "G&et column"
-        Me.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'txtValue
-        '
-        Me.txtValue.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtValue.Location = New System.Drawing.Point(8, 88)
-        Me.txtValue.Name = "txtValue"
-        Me.txtValue.ReadOnly = True
-        Me.txtValue.Size = New System.Drawing.Size(424, 22)
-        Me.txtValue.TabIndex = 7
-        Me.txtValue.TabStop = False
-        '
-        'cboDataSource
-        '
-        Me.cboDataSource.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.cboDataSource.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboDataSource.Items.AddRange(New Object() {"Data Table", "Data View", "Data Set", "Array List", "Strings"})
-        Me.cboDataSource.Location = New System.Drawing.Point(104, 24)
-        Me.cboDataSource.Name = "cboDataSource"
-        Me.cboDataSource.Size = New System.Drawing.Size(132, 24)
-        Me.cboDataSource.TabIndex = 1
-        '
-        'label1
-        '
-        Me.label1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.label1.Location = New System.Drawing.Point(6, 24)
-        Me.label1.Name = "label1"
-        Me.label1.Size = New System.Drawing.Size(92, 23)
-        Me.label1.TabIndex = 0
-        Me.label1.Text = "&Data Source"
-        Me.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'rblDemo
-        '
-        Me.rblDemo.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.rblDemo.Location = New System.Drawing.Point(384, 8)
-        Me.rblDemo.Name = "rblDemo"
-        Me.rblDemo.Size = New System.Drawing.Size(440, 304)
-        Me.rblDemo.TabIndex = 0
-        '
-        'chkShowImages
-        '
-        Me.chkShowImages.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.chkShowImages.Location = New System.Drawing.Point(8, 436)
-        Me.chkShowImages.Name = "chkShowImages"
-        Me.chkShowImages.Size = New System.Drawing.Size(136, 24)
-        Me.chkShowImages.TabIndex = 2
-        Me.chkShowImages.Text = "Use &Image List"
-        '
-        'ilImages
-        '
-        Me.ilImages.ImageStream = CType(resources.GetObject("ilImages.ImageStream"), System.Windows.Forms.ImageListStreamer)
-        Me.ilImages.TransparentColor = System.Drawing.Color.Lime
-        Me.ilImages.Images.SetKeyName(0, "")
-        Me.ilImages.Images.SetKeyName(1, "")
-        Me.ilImages.Images.SetKeyName(2, "")
-        Me.ilImages.Images.SetKeyName(3, "")
-        Me.ilImages.Images.SetKeyName(4, "")
-        '
-        'RadioButtonListTestForm
-        '
-        Me.ClientSize = New System.Drawing.Size(832, 464)
-        Me.Controls.Add(Me.chkShowImages)
-        Me.Controls.Add(Me.rblDemo)
-        Me.Controls.Add(Me.grpOptions)
-        Me.Controls.Add(Me.pgProps)
-        Me.MaximumSize = New System.Drawing.Size(2000, 2000)
-        Me.MinimumSize = New System.Drawing.Size(840, 360)
+        ' 
+        ' pgProps
+        ' 
+        pgProps.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left
+        pgProps.LineColor = SystemColors.ScrollBar
+        pgProps.Location = New Point(6, 0)
+        pgProps.Name = "pgProps"
+        pgProps.Size = New Size(501, 693)
+        pgProps.TabIndex = 3
+        ' 
+        ' grpOptions
+        ' 
+        grpOptions.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
+        grpOptions.Controls.Add(cboColumns)
+        grpOptions.Controls.Add(btnGetValue)
+        grpOptions.Controls.Add(udcRowNumber)
+        grpOptions.Controls.Add(label6)
+        grpOptions.Controls.Add(label5)
+        grpOptions.Controls.Add(txtValue)
+        grpOptions.Controls.Add(cboDataSource)
+        grpOptions.Controls.Add(label1)
+        grpOptions.Location = New Point(513, 585)
+        grpOptions.Name = "grpOptions"
+        grpOptions.Size = New Size(485, 120)
+        grpOptions.TabIndex = 1
+        grpOptions.TabStop = False
+        grpOptions.Text = "Options"
+        ' 
+        ' cboColumns
+        ' 
+        cboColumns.DropDownStyle = ComboBoxStyle.DropDownList
+        cboColumns.Location = New Point(104, 56)
+        cboColumns.Name = "cboColumns"
+        cboColumns.Size = New Size(132, 28)
+        cboColumns.TabIndex = 3
+        ' 
+        ' btnGetValue
+        ' 
+        btnGetValue.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        btnGetValue.Location = New Point(350, 52)
+        btnGetValue.Name = "btnGetValue"
+        btnGetValue.Size = New Size(75, 28)
+        btnGetValue.TabIndex = 6
+        btnGetValue.Text = "&Get"
+        ' 
+        ' udcRowNumber
+        ' 
+        udcRowNumber.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        udcRowNumber.Location = New Point(288, 56)
+        udcRowNumber.Maximum = New Decimal(New Integer() {999, 0, 0, 0})
+        udcRowNumber.Name = "udcRowNumber"
+        udcRowNumber.Size = New Size(56, 27)
+        udcRowNumber.TabIndex = 5
+        udcRowNumber.TextAlign = HorizontalAlignment.Right
+        ' 
+        ' label6
+        ' 
+        label6.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        label6.Location = New Point(240, 56)
+        label6.Name = "label6"
+        label6.Size = New Size(48, 23)
+        label6.TabIndex = 4
+        label6.Text = "at row"
+        label6.TextAlign = ContentAlignment.MiddleCenter
+        ' 
+        ' label5
+        ' 
+        label5.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        label5.Location = New Point(9, 56)
+        label5.Name = "label5"
+        label5.Size = New Size(89, 23)
+        label5.TabIndex = 2
+        label5.Text = "G&et column"
+        label5.TextAlign = ContentAlignment.MiddleRight
+        ' 
+        ' txtValue
+        ' 
+        txtValue.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
+        txtValue.Location = New Point(8, 88)
+        txtValue.Name = "txtValue"
+        txtValue.ReadOnly = True
+        txtValue.Size = New Size(469, 27)
+        txtValue.TabIndex = 7
+        txtValue.TabStop = False
+        ' 
+        ' cboDataSource
+        ' 
+        cboDataSource.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        cboDataSource.DropDownStyle = ComboBoxStyle.DropDownList
+        cboDataSource.Items.AddRange(New Object() {"Demo Data (List(Of DemoData))", "Product Info (List(Of ProductInfo))", "Array List", "Strings"})
+        cboDataSource.Location = New Point(104, 24)
+        cboDataSource.Name = "cboDataSource"
+        cboDataSource.Size = New Size(321, 28)
+        cboDataSource.TabIndex = 1
+        ' 
+        ' label1
+        ' 
+        label1.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        label1.Location = New Point(6, 24)
+        label1.Name = "label1"
+        label1.Size = New Size(92, 23)
+        label1.TabIndex = 0
+        label1.Text = "&Data Source"
+        label1.TextAlign = ContentAlignment.MiddleRight
+        ' 
+        ' rblDemo
+        ' 
+        rblDemo.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
+        rblDemo.Location = New Point(513, 8)
+        rblDemo.Name = "rblDemo"
+        rblDemo.Size = New Size(485, 561)
+        rblDemo.TabIndex = 0
+        rblDemo.TitleFont = New Font("Segoe UI", 9F)
+        ' 
+        ' chkShowImages
+        ' 
+        chkShowImages.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        chkShowImages.Location = New Point(8, 693)
+        chkShowImages.Name = "chkShowImages"
+        chkShowImages.Size = New Size(136, 24)
+        chkShowImages.TabIndex = 2
+        chkShowImages.Text = "Use &Image List"
+        ' 
+        ' ilImages
+        ' 
+        ilImages.ColorDepth = ColorDepth.Depth8Bit
+        ilImages.ImageStream = CType(resources.GetObject("ilImages.ImageStream"), ImageListStreamer)
+        ilImages.TransparentColor = Color.Lime
+        ilImages.Images.SetKeyName(0, "")
+        ilImages.Images.SetKeyName(1, "")
+        ilImages.Images.SetKeyName(2, "")
+        ilImages.Images.SetKeyName(3, "")
+        ilImages.Images.SetKeyName(4, "")
+        ' 
+        ' RadioButtonListTestForm
+        ' 
+        Me.ClientSize = New Size(1006, 721)
+        Me.Controls.Add(chkShowImages)
+        Me.Controls.Add(rblDemo)
+        Me.Controls.Add(grpOptions)
+        Me.Controls.Add(pgProps)
+        Me.MaximumSize = New Size(2000, 2000)
+        Me.MinimumSize = New Size(840, 360)
         Me.Name = "RadioButtonListTestForm"
         Me.ShowInTaskbar = False
-        Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
+        Me.SizeGripStyle = SizeGripStyle.Show
+        Me.StartPosition = FormStartPosition.CenterScreen
         Me.Text = "Radio Button List Test"
-        Me.grpOptions.ResumeLayout(False)
-        Me.grpOptions.PerformLayout()
-        CType(Me.txtRowNumber, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.rblDemo, System.ComponentModel.ISupportInitialize).EndInit()
+        grpOptions.ResumeLayout(False)
+        grpOptions.PerformLayout()
+        CType(udcRowNumber, ISupportInitialize).EndInit()
+        CType(rblDemo, ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -211,7 +206,7 @@ Partial Class RadioButtonListTestForm
     Friend WithEvents ilImages As System.Windows.Forms.ImageList
     Friend WithEvents cboColumns As System.Windows.Forms.ComboBox
     Friend WithEvents btnGetValue As System.Windows.Forms.Button
-    Friend WithEvents txtRowNumber As System.Windows.Forms.NumericUpDown
+    Friend WithEvents udcRowNumber As System.Windows.Forms.NumericUpDown
     Friend WithEvents label6 As System.Windows.Forms.Label
     Friend WithEvents label5 As System.Windows.Forms.Label
     Friend WithEvents cboDataSource As System.Windows.Forms.ComboBox

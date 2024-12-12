@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : ListItem.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This is a simple list item object that can be used as part of a collection suitable for binding to a combo
 // box, radio button list, list box, etc.
@@ -17,8 +17,6 @@
 // ==============================================================================================================
 // 03/01/2005  EFW  Created the code
 //===============================================================================================================
-
-using System;
 
 namespace EWSoftware.ListControls
 {
@@ -84,7 +82,7 @@ namespace EWSoftware.ListControls
             this.Value = value;
 
             if(String.IsNullOrEmpty(text))
-                this.Display = (value != null) ? value.ToString() : String.Empty;
+                this.Display = value?.ToString() ?? String.Empty;
             else
                 this.Display = text;
         }

@@ -2,8 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : PhoneRow.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/06/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/08/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This is a sample row template control for the DataList relationship demo
 //
@@ -17,25 +17,13 @@
 // 12/23/2005  EFW  Created the code
 //===============================================================================================================
 
-using System;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
-
 namespace ListControlDemoCS
 {
 	/// <summary>
 	/// This is a sample row template control for the DataList relationship demo
 	/// </summary>
-	public partial class PhoneRow : EWSoftware.ListControls.TemplateControl
+	public partial class PhoneRow : TemplateControl
 	{
-        #region Private data members
-        //=====================================================================
-
-        // A simple edit for the phone number format
-        private static readonly Regex rePhone = new Regex(@"^\(\d{3}\) \d{3}-\d{4}$");
-
-        #endregion
-
         #region Constructor
         //=====================================================================
 
@@ -83,7 +71,7 @@ namespace ListControlDemoCS
         /// </summary>
         protected override void Bind()
         {
-            this.AddBinding(txtPhoneNumber, "Text", "PhoneNumber");
+            this.AddBinding(txtPhoneNumber, nameof(Control.Text), nameof(Phone.PhoneNumber));
         }
         #endregion
 
@@ -95,7 +83,7 @@ namespace ListControlDemoCS
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void PhoneRow_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        private void PhoneRow_Validating(object sender, CancelEventArgs e)
         {
             epErrors.Clear();
 
@@ -105,13 +93,15 @@ namespace ListControlDemoCS
                 e.Cancel = true;
             }
             else
-                if(!rePhone.IsMatch(txtPhoneNumber.Text))
+            {
+                if(!txtPhoneNumber.MaskCompleted)
                 {
                     epErrors.SetError(txtPhoneNumber, "Please enter a phone number in the format (###) ###-####");
                     e.Cancel = true;
                 }
                 else
                     this.CommitChanges();
+            }
         }
 
         /// <summary>
@@ -119,7 +109,7 @@ namespace ListControlDemoCS
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void btnDelete_Click(object sender, System.EventArgs e)
+        private void btnDelete_Click(object sender, EventArgs e)
         {
             // There appears to be a bug with the Button control.  The click event can fire if it's in another
             // container even if validation prevents it getting the focus.  As such, ignore the click if we

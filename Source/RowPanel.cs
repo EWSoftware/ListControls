@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : RowPanel.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 04/09/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a derived Panel control used to display rows in the DataList control
 //
@@ -18,30 +18,30 @@
 // 02/19/2006  EFW  Reworked scrolling to make redraws much smoother
 //===============================================================================================================
 
-using System;
-using System.ComponentModel;
-using System.Drawing;
 using System.Globalization;
-using System.Reflection;
-using System.Windows.Forms;
 
 using EWSoftware.ListControls.UnsafeNative;
 
 namespace EWSoftware.ListControls
 {
-	/// <summary>
-	/// This is a derived <see cref="Panel"/> control used to display rows in the <see cref="DataList"/> control
-	/// </summary>
-	[ToolboxItem(false)]
-	internal class RowPanel : System.Windows.Forms.Panel
+    /// <summary>
+    /// This is a derived <see cref="Panel"/> control used to display rows in the <see cref="DataList"/> control
+    /// </summary>
+    [ToolboxItem(false)]
+	internal sealed class RowPanel : Panel
 	{
         #region Private data members
         //=====================================================================
 
-        private readonly MethodInfo syncScrollbars;
-        private readonly FieldInfo  eventMouseWheel, layoutSuspendCount;
+        private readonly MethodInfo syncScrollbars = null!;
+#if NET40
+        private readonly FieldInfo eventMouseWheel = null!, isLayoutSuspended = null!;
+#else
+        private readonly FieldInfo eventMouseWheel = null!;
+        private readonly PropertyInfo isLayoutSuspended = null!;
+#endif
+        private NativeToolTipWindow scrollTip = null!;
 
-        private NativeToolTipWindow scrollTip;
         #endregion
 
         #region Constructor
@@ -53,11 +53,23 @@ namespace EWSoftware.ListControls
         internal RowPanel()
         {
             syncScrollbars = typeof(ScrollableControl).GetMethod("SyncScrollbars", BindingFlags.NonPublic |
-                BindingFlags.Instance);
+                BindingFlags.Instance)!;
+
+            // The backing fields differs in the .NET Framework
+#if NET40
             eventMouseWheel = typeof(Control).GetField("EventMouseWheel", BindingFlags.NonPublic |
                 BindingFlags.Static);
-            layoutSuspendCount = typeof(Control).GetField("layoutSuspendCount", BindingFlags.NonPublic |
+            isLayoutSuspended = typeof(Control).GetField("layoutSuspendCount", BindingFlags.NonPublic |
                 BindingFlags.Instance);
+#else
+            eventMouseWheel = typeof(Control).GetField("s_mouseWheelEvent", BindingFlags.NonPublic |
+                BindingFlags.Static)!;
+            isLayoutSuspended = typeof(Control).GetProperty("IsLayoutSuspended", BindingFlags.NonPublic |
+                BindingFlags.Instance)!;
+#endif
+            // See above.  If it stops here, there's a problem.
+            if(syncScrollbars == null || eventMouseWheel == null || isLayoutSuspended == null)
+                Debugger.Break();
 
             // Turn on resize on redraw
             this.SetStyle(ControlStyles.ResizeRedraw, true);
@@ -78,16 +90,11 @@ namespace EWSoftware.ListControls
         /// extra paint events while adjusting the row controls which causes an exception.  This is used by the
         /// data list to see if it should skip painting in those instances.
         /// </remarks>
-        internal bool LayoutSuspended
-        {
-            get
-            {
-                if(layoutSuspendCount == null)
-                    return false;
-
-                return ((byte)layoutSuspendCount.GetValue((Control)this) != 0);
-            }
-        }
+#if NET40
+        internal bool LayoutSuspended => ((byte?)isLayoutSuspended?.GetValue(this) ?? 0) != 0;
+#else
+        internal bool LayoutSuspended => (bool?)isLayoutSuspended?.GetValue(this) ?? false;
+#endif
 
         /// <summary>
         /// This is called by the parent DataList to make a control visible and ensure that all visible rows are
@@ -98,7 +105,7 @@ namespace EWSoftware.ListControls
         {
             this.ScrollControlIntoView(control);
 
-            ((DataList)this.Parent).InitializeAndBindVisibleRows();
+            ((DataList?)this.Parent)?.InitializeAndBindVisibleRows();
         }
 
         /// <summary>
@@ -107,7 +114,7 @@ namespace EWSoftware.ListControls
         /// <param name="newRow">The row to make visible</param>
         internal void ScrollRowIntoView(int newRow)
         {
-            int rowHeight = ((DataList)this.Parent).RowHeight;
+            int rowHeight = ((DataList)this.Parent!).RowHeight;
 
             Message m = Message.Create(this.Handle, 0x0115, new IntPtr(32767), new IntPtr(rowHeight * newRow));
 
@@ -124,10 +131,10 @@ namespace EWSoftware.ListControls
         /// <param name="m">The vertical scroll message parameters</param>
         private void HandleVerticalScroll(ref Message m)
         {
-            TemplateControl tc;
-            DataList owner = (DataList)this.Parent;
+            TemplateControl? tc;
+            DataList owner = (DataList)this.Parent!;
 
-            Rectangle clientRect = base.ClientRectangle, displayRect = base.DisplayRectangle;
+            Rectangle clientRect = this.ClientRectangle, displayRect = this.DisplayRectangle;
 
             int row, fillRange, maxRows, multiplier, rowHeight = owner.RowHeight, curPos = -displayRect.Y;
             int maxPos = -(clientRect.Height - displayRect.Height - rowHeight), scrollEvent = (int)m.WParam & 0xFFFF;
@@ -164,11 +171,10 @@ namespace EWSoftware.ListControls
 
                 case 4:     // Thumb position (end tracking)
                 case 5:     // Thumb track (drag)
-                    if(scrollTip == null)
-                        scrollTip = new NativeToolTipWindow(this);
+                    scrollTip ??= new NativeToolTipWindow(this);
 
                     // Round it to the nearest row start and show the position in a tool tip
-                    curPos = UnsafeNativeMethods.ScrollThumbPosition(base.Handle, 1) / rowHeight * rowHeight;
+                    curPos = UnsafeNativeMethods.ScrollThumbPosition(this.Handle, 1) / rowHeight * rowHeight;
                     scrollTip.ShowTooltip(String.Format(CultureInfo.InvariantCulture, LR.GetString("DLScrollPos"),
                         (curPos / rowHeight) + 1, owner.RowCount));
                     break;
@@ -246,7 +252,7 @@ namespace EWSoftware.ListControls
                 this.SetScrollState(8, true);
                 this.SetDisplayRectLocation(displayRect.X, -curPos);
 
-                syncScrollbars?.Invoke(this, new object[] { this.AutoScroll });
+                syncScrollbars?.Invoke(this, [this.AutoScroll]);
 
                 // Refresh the row headers if they are visible
                 if(owner.RowHeadersVisible)
@@ -255,9 +261,9 @@ namespace EWSoftware.ListControls
 
             if(scrollEvent != 8)
             {
-                ScrollEventArgs se = new ScrollEventArgs((ScrollEventType)scrollEvent, -displayRect.Y, curPos,
+                ScrollEventArgs se = new((ScrollEventType)scrollEvent, -displayRect.Y, curPos,
                     ScrollOrientation.VerticalScroll);
-                base.OnScroll(se);
+                this.OnScroll(se);
             }
         }
 
@@ -265,7 +271,7 @@ namespace EWSoftware.ListControls
         /// Create a custom row collection
         /// </summary>
         /// <returns>The row collection objects</returns>
-        protected override Control.ControlCollection CreateControlsInstance()
+        protected override ControlCollection CreateControlsInstance()
         {
             return new RowControlCollection(this);
         }
@@ -277,7 +283,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            DataList owner = (DataList)this.Parent;
+            DataList owner = (DataList)this.Parent!;
 
             if(owner.ListManager != null)
             {
@@ -288,13 +294,13 @@ namespace EWSoftware.ListControls
                 if(nRow < 0)
                     nRow = 0;
 
-                if(owner.CurrentRow != nRow || !this.Parent.Focused)
+                if(owner.CurrentRow != nRow || !this.Parent!.Focused)
                 {
                     // Give the selected row the focus
                     if(owner.SeparatorsVisible)
                         nRow *= 2;
 
-                    if(nRow < this.Controls.Count && (!this.Controls[nRow].ContainsFocus || !this.Parent.Focused))
+                    if(nRow < this.Controls.Count && (!this.Controls[nRow].ContainsFocus || !this.Parent!.Focused))
                         this.Controls[nRow].Focus();
                 }
             }
@@ -312,7 +318,7 @@ namespace EWSoftware.ListControls
             // If scrolling vertically, scroll one row at a time
             if(this.VScroll)
             {
-                int row = -this.DisplayRectangle.Y / ((DataList)this.Parent).RowHeight;
+                int row = -this.DisplayRectangle.Y / ((DataList)this.Parent!).RowHeight;
 
                 if(e.Delta < 0)
                     row++;
@@ -330,7 +336,7 @@ namespace EWSoftware.ListControls
                 // Bypass ScrollableControl's version and let other handlers get called
                 if(eventMouseWheel != null)
                 {
-                    ((MouseEventHandler)this.Events[eventMouseWheel])?.Invoke(this, e);
+                    ((MouseEventHandler?)this.Events[eventMouseWheel])?.Invoke(this, e);
                 }
             }
             else

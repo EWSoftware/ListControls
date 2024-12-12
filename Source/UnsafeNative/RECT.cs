@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : RECT.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/19/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
+// Updated : 12/08/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains the class that defines the rectangle object passed to the theme API
 //
@@ -17,7 +17,6 @@
 // 03/11/2005  EFW  Created the code
 //===============================================================================================================
 
-using System.Drawing;
 using System.Runtime.InteropServices;
 
 namespace EWSoftware.ListControls.UnsafeNative

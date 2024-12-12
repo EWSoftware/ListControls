@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : TemplateControl.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/11/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a template control used as the source for creating rows in the DataList control.
 // Note that this control has a small initial size to prevent it from overlapping other rows when not yet
@@ -20,11 +20,7 @@
 // 12/09/2005  EFW  Various improvements, fixes, and modifications
 //===============================================================================================================
 
-using System;
-using System.ComponentModel;
 using System.Data;
-using System.Reflection;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls
 {
@@ -37,12 +33,12 @@ namespace EWSoftware.ListControls
     /// rows when not yet initialized.  The derived control's size will take effect once the row becomes visible
     /// and is initialized and bound.</remarks>
 	[ToolboxItem(false)]
-	public class TemplateControl : System.Windows.Forms.UserControl
+	public class TemplateControl : UserControl
 	{
         #region Private data members
         //=====================================================================
 
-        private object rowSource;
+        private object? rowSource;
 
         #endregion
 
@@ -52,7 +48,7 @@ namespace EWSoftware.ListControls
         /// <summary>
         /// This is used to set or get the parent DataList internally
         /// </summary>
-        internal DataList TemplateParentInternal { get; set; }
+        internal DataList TemplateParentInternal { get; set; } = null!;
 
         /// <summary>
         /// This is used to get or set the bound state flag
@@ -81,7 +77,7 @@ namespace EWSoftware.ListControls
         /// source object is editable.
         /// </summary>
         [Browsable(false), Description("The row source to which the item is bound")]
-        public object RowSource => rowSource;
+        public object? RowSource => rowSource;
 
         /// <summary>
         /// This read-only property can be used to determine whether or not the template has been initialized
@@ -119,7 +115,7 @@ namespace EWSoftware.ListControls
         {
             get
             {
-                CancelEventArgs e = new CancelEventArgs();
+                CancelEventArgs e = new();
                 this.OnValidating(e);
 
                 if(!e.Cancel)
@@ -164,7 +160,7 @@ namespace EWSoftware.ListControls
                     // Commit any pending changes
                     this.CommitChanges();
 
-                    DataRow r;
+                    DataRow? r;
 
                     if(rowSource is DataRowView drv)
                         r = drv.Row;
@@ -193,7 +189,7 @@ namespace EWSoftware.ListControls
             // independently of each other on different rows.
             this.BindingContext = new BindingContext();
 
-            this.Size = new System.Drawing.Size(8, 8);
+            this.Size = new Size(8, 8);
         }
         #endregion
 
@@ -228,27 +224,38 @@ namespace EWSoftware.ListControls
         /// <param name="connect">True to connect, false to disconnect</param>
         internal void WirePropChangedEvents(bool connect)
         {
-            PropertyDescriptor propInfo = null;
-            FieldInfo fi;
+            PropertyDescriptor? propInfo = null;
+            FieldInfo? fi;
 
             if(rowSource != null)
             {
-                BindingsCollection bc = this.BindingContext[rowSource].Bindings;
+                BindingsCollection bc = this.BindingContext![rowSource].Bindings;
 
                 // The bindings don't expose an event or anything else that notifies us when a bound field
                 // changes.  As such, we have to hack into the mechanism using Reflection.
                 foreach(Binding b in bc)
                 {
+                    // The backing field differs in the .NET Framework
+#if NET40
                     fi = b.GetType().GetField("propInfo", BindingFlags.NonPublic | BindingFlags.Instance);
-
+#else
+                    fi = b.GetType().GetField("_propInfo", BindingFlags.NonPublic | BindingFlags.Instance);
+#endif
                     if(fi != null)
-                        propInfo = (PropertyDescriptor)fi.GetValue(b);
+                        propInfo = (PropertyDescriptor?)fi.GetValue(b);
+                    else
+                    {
+                        // See above.  If it stops here, there's a problem.
+                        Debugger.Break();
+                    }
 
                     if(propInfo != null)
+                    {
                         if(connect)
                             propInfo.AddValueChanged(b.Control, Target_PropertyChanged);
                         else
                             propInfo.RemoveValueChanged(b.Control, Target_PropertyChanged);
+                    }
                 }
             }
         }
@@ -260,7 +267,7 @@ namespace EWSoftware.ListControls
         /// <param name="e">The event arguments</param>
         /// <remarks>When a bound control on the new row changes, we can turn off the <see cref="IsNewRowInternal"/>
         /// flag so that the row will be committed when it loses the focus.</remarks>
-        private void Target_PropertyChanged(object sender, EventArgs e)
+        private void Target_PropertyChanged(object? sender, EventArgs e)
         {
             // Occasionally, this gets called again after we've already seen it and added the row.  Ignore those
             // calls.
@@ -268,7 +275,7 @@ namespace EWSoftware.ListControls
                 return;
 
             // See if the user wants to allow the addition
-            DataListCancelEventArgs ce = new DataListCancelEventArgs(-1, null);
+            DataListCancelEventArgs ce = new(-1, null);
             this.TemplateParent.OnAddingRow(ce);
 
             if(ce.Cancel)
@@ -290,7 +297,7 @@ namespace EWSoftware.ListControls
         /// <param name="rowSrc">The row to which this item is bound</param>
         /// <remarks>To save time, the item is not physically bound to the row source until it is scrolled into
         /// view.</remarks>
-        internal void SetRowSourceInternal(object rowSrc)
+        internal void SetRowSourceInternal(object? rowSrc)
         {
             rowSource = rowSrc;
 
@@ -315,7 +322,7 @@ namespace EWSoftware.ListControls
                 this.WirePropChangedEvents(true);
 
                 this.TemplateParent.OnItemDataBound(new DataListEventArgs(
-                    this.TemplateParent.ListManager.Count - 1, this));
+                    this.TemplateParent.ListManager!.Count - 1, this));
             }
         }
 
@@ -563,7 +570,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         public void DeleteRow()
         {
-            int row = this.Parent.Controls.IndexOf(this);
+            int row = this.Parent!.Controls.IndexOf(this);
 
             if(row != -1)
             {
@@ -621,7 +628,7 @@ namespace EWSoftware.ListControls
         /// parameter is true.  It will also add the specified format event handler to the binding.</remarks>
         /// <returns>The newly created data binding</returns>
         public Binding AddBinding(Control control, string controlProperty, string dataMember, bool clearBindings,
-          ConvertEventHandler formatEvent)
+          ConvertEventHandler? formatEvent)
         {
             return this.AddBinding(control, controlProperty, dataMember, clearBindings, formatEvent, null);
         }
@@ -643,12 +650,12 @@ namespace EWSoftware.ListControls
         /// <returns>The newly created data binding</returns>
         /// <exception cref="ArgumentNullException">This is thrown if the control parameter is null</exception>
         public Binding AddBinding(Control control, string controlProperty, string dataMember, bool clearBindings,
-          ConvertEventHandler formatEvent, ConvertEventHandler parseEvent)
+          ConvertEventHandler? formatEvent, ConvertEventHandler? parseEvent)
         {
             if(control == null)
                 throw new ArgumentNullException(nameof(control), LR.GetString("ExNullParameter"));
 
-            Binding b = new Binding(controlProperty, rowSource, dataMember);
+            Binding b = new(controlProperty, rowSource, dataMember);
 
             if(formatEvent != null)
                 b.Format += formatEvent;

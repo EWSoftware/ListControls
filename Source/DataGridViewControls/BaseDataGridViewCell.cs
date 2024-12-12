@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : MultiColumnComboBoxCell.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
-// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
+// Updated : 12/09/2024
+// Note    : Copyright 2007-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a base data grid view cell class that contains various common properties and methods used
 // by its derived classes.
@@ -17,10 +17,6 @@
 // ==============================================================================================================
 // 04/21/2007  EFW  Created the code
 //===============================================================================================================
-
-using System;
-using System.Drawing;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls.DataGridViewControls
 {
@@ -40,7 +36,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         {
             get
             {
-                DataGridViewColumn col = base.DataGridView.Columns.GetFirstColumn(DataGridViewElementStates.Visible);
+                DataGridViewColumn col = this.DataGridView!.Columns.GetFirstColumn(DataGridViewElementStates.Visible);
 
                 if(col == null)
                     return -1;
@@ -48,7 +44,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 if(col.Frozen)
                     return col.Index;
 
-                return base.DataGridView.FirstDisplayedScrollingColumnIndex;
+                return this.DataGridView.FirstDisplayedScrollingColumnIndex;
             }
         }
 
@@ -59,12 +55,14 @@ namespace EWSoftware.ListControls.DataGridViewControls
         {
             get
             {
-                int rowIndex = base.DataGridView.Rows.GetFirstRow(DataGridViewElementStates.Visible);
+                int rowIndex = this.DataGridView!.Rows.GetFirstRow(DataGridViewElementStates.Visible);
 
-                if(rowIndex != -1 && (base.DataGridView.Rows.GetRowState(rowIndex) &
+                if(rowIndex != -1 && (this.DataGridView.Rows.GetRowState(rowIndex) &
                   DataGridViewElementStates.Frozen) == DataGridViewElementStates.None &&
-                  base.DataGridView.FirstDisplayedScrollingRowIndex >= 0)
-                    return base.DataGridView.FirstDisplayedScrollingRowIndex;
+                  this.DataGridView.FirstDisplayedScrollingRowIndex >= 0)
+                {
+                    return this.DataGridView.FirstDisplayedScrollingRowIndex;
+                }
 
                 return rowIndex;
             }
@@ -179,9 +177,11 @@ namespace EWSoftware.ListControls.DataGridViewControls
         {
             if((flags & TextFormatFlags.SingleLine) != TextFormatFlags.GlyphOverhangPadding &&
               TextRenderer.MeasureText(text, font, new Size(Int32.MaxValue, Int32.MaxValue), flags).Width > cellBounds.Width)
+            {
                 flags |= TextFormatFlags.EndEllipsis;
+            }
 
-            Size proposedSize = new Size(cellBounds.Width, cellBounds.Height);
+            Size proposedSize = new(cellBounds.Width, cellBounds.Height);
             Size size = TextRenderer.MeasureText(text, font, proposedSize, flags);
 
             if(size.Width > proposedSize.Width)
@@ -211,10 +211,11 @@ namespace EWSoftware.ListControls.DataGridViewControls
             if(cellStyle == null)
                 throw new ArgumentNullException(nameof(cellStyle));
 
-            Point point = new Point(0, 0);
+            Point point = new(0, 0);
             DataGridViewContentAlignment alignment = cellStyle.Alignment;
 
             if((flags & TextFormatFlags.RightToLeft) != TextFormatFlags.GlyphOverhangPadding)
+            {
                 switch(alignment)
                 {
                     case DataGridViewContentAlignment.MiddleRight:
@@ -241,6 +242,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
                         alignment = DataGridViewContentAlignment.MiddleRight;
                         break;
                 }
+            }
 
             if(alignment <= DataGridViewContentAlignment.MiddleCenter)
             {
@@ -374,11 +376,13 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// </summary>
         protected void OnCommonChange()
         {
-            if(base.DataGridView != null && !base.DataGridView.IsDisposed && !base.DataGridView.Disposing)
-                if(base.RowIndex == -1)
-                    DataGridViewHelper.OnColumnCommonChange(base.DataGridView, base.ColumnIndex);
+            if(this.DataGridView != null && !this.DataGridView.IsDisposed && !this.DataGridView.Disposing)
+            {
+                if(this.RowIndex == -1)
+                    DataGridViewHelper.OnColumnCommonChange(this.DataGridView, this.ColumnIndex);
                 else
-                    DataGridViewHelper.OnCellCommonChange(base.DataGridView, base.ColumnIndex, base.RowIndex);
+                    DataGridViewHelper.OnCellCommonChange(this.DataGridView, this.ColumnIndex, this.RowIndex);
+            }
         }
 
         /// <summary>
@@ -389,9 +393,11 @@ namespace EWSoftware.ListControls.DataGridViewControls
         protected Rectangle ComputeErrorIconBounds(Rectangle cellValueBounds)
         {
             if(cellValueBounds.Width >= 20 && cellValueBounds.Height >= 19)
-                return new Rectangle(base.DataGridView.RightToLeft == RightToLeft.Yes ?
+            {
+                return new Rectangle(this.DataGridView!.RightToLeft == RightToLeft.Yes ?
                     (cellValueBounds.Left + 4) : cellValueBounds.Right - 16,
                     cellValueBounds.Y + ((cellValueBounds.Height - 11) / 2), 12, 11);
+            }
 
             return Rectangle.Empty;
         }

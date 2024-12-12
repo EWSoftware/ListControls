@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : UserControlSimple.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/19/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a combo box user control that handles the display of the user control for the user control
 // combo box in simple mode.
@@ -19,26 +19,20 @@
 // 05/01/2006  EFW  Implemented the IDropDown.Scroll method
 //===============================================================================================================
 
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Reflection;
-using System.Windows.Forms;
-
 namespace EWSoftware.ListControls
 {
-	/// <summary>
-	/// This is a user control that handles the display of the user control
+    /// <summary>
+    /// This is a user control that handles the display of the user control
     /// for the user control combo box in simple mode.
-	/// </summary>
-	[ToolboxItem(false)]
-	internal class UserControlSimple : UserControl, IDropDown
+    /// </summary>
+    [ToolboxItem(false)]
+	internal sealed class UserControlSimple : UserControl, IDropDown
 	{
         #region Private data members
         //=====================================================================
 
         private readonly UserControlComboBox owner;
-        private DropDownControl ddControl;
+        private DropDownControl? ddControl;
         private int startIndex;
         private bool isCreating, hasInitialized;
 
@@ -96,7 +90,7 @@ namespace EWSoftware.ListControls
             // Create and initialize the drop-down control
             if(owner.DropDownControl != null)
             {
-                ConstructorInfo ctor = owner.DropDownControl.GetConstructor(Type.EmptyTypes);
+                ConstructorInfo ctor = owner.DropDownControl.GetConstructor(Type.EmptyTypes)!;
                 ddControl = (DropDownControl)ctor.Invoke(null);
                 ddControl.Location = new Point(0, 0);
                 ddControl.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right;

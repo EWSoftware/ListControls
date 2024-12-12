@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : UserControlComboBoxCell.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
-// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2007-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a data grid view cell object that hosts a user control combo box
 //
@@ -16,11 +16,6 @@
 // ==============================================================================================================
 // 06/08/2007  EFW  Created the code
 //===============================================================================================================
-
-using System;
-using System.Drawing;
-using System.Globalization;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls.DataGridViewControls
 {
@@ -71,17 +66,13 @@ namespace EWSoftware.ListControls.DataGridViewControls
           DataGridViewCellStyle dataGridViewCellStyle)
         {
             UserControlComboBoxColumn owner = (UserControlComboBoxColumn)this.OwningColumn;
-            UserControlComboBoxEditingControl box;
-            string text;
 
             if(dataGridViewCellStyle == null)
                 throw new ArgumentNullException(nameof(dataGridViewCellStyle));
 
             base.InitializeEditingControl(rowIndex, initialFormattedValue, dataGridViewCellStyle);
 
-            box = this.DataGridView.EditingControl as UserControlComboBoxEditingControl;
-
-            if(box != null)
+            if(this.DataGridView?.EditingControl is UserControlComboBoxEditingControl box)
             {
                 if((this.GetInheritedState(rowIndex) & DataGridViewElementStates.Selected) ==
                   DataGridViewElementStates.Selected)
@@ -92,7 +83,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 box.DropDownStyle = ComboBoxStyle.DropDownList;
                 box.MaxDropDownItems = this.MaxDropDownItems;
                 box.DataSource = null;
-                box.DisplayMember = box.ValueMember = null;
+                box.DisplayMember = box.ValueMember = String.Empty;
                 box.Items.Clear();
 
                 // The default selection values and drop down control type are stored at the column level
@@ -105,14 +96,11 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 box.DataSource = this.DataSource;
 
                 if(this.HasItemCollection && this.DataSource == null && this.Items.Count > 0)
-                    box.Items.AddRange(this.Items.InnerList.ToArray());
+                    box.Items.AddRange(this.Items.InnerList.ToArray()!);
 
                 box.SortOrder = this.SortOrder;
                 box.FlatStyle = this.FlatStyle;
-
-                text = initialFormattedValue as string;
-
-                box.Text = text ?? String.Empty;
+                box.Text = (initialFormattedValue as string) ?? String.Empty;
 
                 if(box.SelectedIndex == -1 && box.Items.Count != 0)
                     box.SelectedIndex = 0;

@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : TOOLINFO.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/19/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains the class that defines the TOOLINFO structure for the tool tip window class
 //
@@ -17,7 +17,6 @@
 // 03/11/2005  EFW  Created the code
 //===============================================================================================================
 
-using System;
 using System.Runtime.InteropServices;
 
 namespace EWSoftware.ListControls.UnsafeNative
@@ -36,7 +35,7 @@ namespace EWSoftware.ListControls.UnsafeNative
         internal IntPtr hinst;
 
         [MarshalAs(UnmanagedType.LPTStr)]
-        internal string text;
+        internal string? text;
 
         internal IntPtr lparam;
 
@@ -50,11 +49,6 @@ namespace EWSoftware.ListControls.UnsafeNative
             cbSize = Marshal.SizeOf(typeof(TOOLINFO));
             flags = toolFlags;
             uId = handle;
-
-            // Not needed but it shuts the compiler up
-            hwnd = hinst = lparam = IntPtr.Zero;
-            rect = new RECT(0, 0, 0, 0);
-            text = null;
         }
     }
 }

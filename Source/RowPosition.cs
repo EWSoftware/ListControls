@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : RowPosition.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/30/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
+// Updated : 12/08/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains the enumerated type that defines the fixed row positions that can be used with the
 // DataList and DataNavigator MoveTo() methods.
@@ -17,8 +17,6 @@
 // ==============================================================================================================
 // 08/16/2005  EFW  Created the code
 //===============================================================================================================
-
-using System;
 
 namespace EWSoftware.ListControls
 {

@@ -2,8 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : RadioButtonListTestForm.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/06/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/02/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This is used to demonstrate the RadioButtonList control
 //
@@ -17,26 +17,20 @@
 // 04/17/2005  EFW  Created the code
 //===============================================================================================================
 
-using System;
 using System.Collections;
-using System.Data;
-using System.Data.OleDb;
-using System.Windows.Forms;
-
-using EWSoftware.ListControls;
 
 namespace ListControlDemoCS
 {
-	/// <summary>
-	/// This is used to demonstrate the RadioButtonList control
-	/// </summary>
-	public partial class RadioButtonListTestForm : Form
+    /// <summary>
+    /// This is used to demonstrate the RadioButtonList control
+    /// </summary>
+    internal sealed partial class RadioButtonListTestForm : Form
     {
         #region Private data members
         //=====================================================================
 
-        private readonly OleDbDataAdapter adapter;
-        private readonly DataSet demoData, productData;
+        private readonly List<DemoTable> demoData;
+        private readonly List<ProductInfo> productInfo;
 
         #endregion
 
@@ -46,34 +40,22 @@ namespace ListControlDemoCS
         /// <summary>
         /// Constructor
         /// </summary>
-		public RadioButtonListTestForm()
+        public RadioButtonListTestForm()
         {
-			InitializeComponent();
-
-            demoData = new DataSet();
-            productData = new DataSet();
+            InitializeComponent();
 
             try
             {
-                using(var dbConn = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\TestData.mdb"))
-                {
-                    // Load some data for the demo
-                    using(var cmd = new OleDbCommand("Select * From DemoTable Order By Label", dbConn))
-                    {
-                        cmd.CommandType = CommandType.Text;
+                using var dc = new DemoDataContext();
 
-                        adapter = new OleDbDataAdapter(cmd);
-                        adapter.Fill(demoData);
-
-                        // Use a named table for this one
-                        adapter.TableMappings.Add("Table", "ProductInfo");
-                        cmd.CommandText = "Select * From ProductInfo Order By ProductName";
-                        adapter.Fill(productData);
-                    }
-                }
+                demoData = [.. dc.DemoTable.OrderBy(d => d.Label)];
+                productInfo = [.. dc.ProductInfo.OrderBy(p => p.ProductName)];
             }
-            catch(OleDbException ex)
+            catch(SqlException ex)
             {
+                demoData = [];
+                productInfo = [];
+
                 MessageBox.Show(ex.Message);
             }
 
@@ -81,7 +63,7 @@ namespace ListControlDemoCS
 
             pgProps.SelectedObject = rblDemo;
             pgProps.Refresh();
-		}
+        }
         #endregion
 
         #region Event handlers
@@ -117,7 +99,7 @@ namespace ListControlDemoCS
             rblDemo.Items.Clear();
 
             // We must have the data
-            if(demoData.Tables.Count == 0 || productData.Tables.Count == 0)
+            if(demoData.Count == 0 || productInfo.Count == 0)
             {
                 MessageBox.Show("Database not found.  It must be located in the demo project's folder.", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Stop);
@@ -126,48 +108,42 @@ namespace ListControlDemoCS
                 return;
             }
 
+            // Data tables, views, and sets are also supported but we won't demonstrate that here
             switch(cboDataSource.SelectedIndex)
             {
-                case 0:     // Data Table
-                    rblDemo.DisplayMember = "Label";
-                    rblDemo.ValueMember = "ListKey";
-                    rblDemo.DataSource = demoData.Tables[0];
+                case 0:     // Demo data (List<DemoData>)
+                    rblDemo.DisplayMember = nameof(DemoTable.Label);
+                    rblDemo.ValueMember = nameof(DemoTable.ListKey);
+                    rblDemo.DataSource = demoData;
                     break;
 
-                case 1:     // Data View
-                    rblDemo.DisplayMember = "Label";
-                    rblDemo.ValueMember = "ListKey";
-                    rblDemo.DataSource = demoData.Tables[0].DefaultView;
+                case 1:     // Product info (List<ProductInfo>)
+                    rblDemo.DisplayMember = nameof(ProductInfo.ProductName);
+                    rblDemo.ValueMember = nameof(ProductInfo.ProductID);
+                    rblDemo.DataSource = productInfo;
                     break;
 
-                case 2:     // Data Set
-                    // Use a named table for this one
-                    rblDemo.DisplayMember = "ProductInfo.ProductName";
-                    rblDemo.ValueMember = "ProductInfo.ProductID";
-                    rblDemo.DataSource = productData;
-                    break;
+                case 2:     // Array List
+                    ArrayList al = new(100);
 
-                case 3:     // Array List
-                    ArrayList al = new ArrayList(100);
-                    foreach(DataRow dr in productData.Tables[0].Rows)
-                        al.Add(new ListItem(dr["ProductID"], (string)dr["ProductName"]));
+                    foreach(var p in productInfo)
+                        al.Add(new ListItem(p.ProductID, p.ProductName));
 
-                    rblDemo.DisplayMember = "Display";  // ListItem description
-                    rblDemo.ValueMember = "Value";      // ListItem value
+                    rblDemo.DisplayMember = nameof(ListItem.Display);
+                    rblDemo.ValueMember = nameof(ListItem.Value);
                     rblDemo.DataSource = al;
                     break;
 
-                case 4:     // Item collection strings
+                case 3:     // Item collection strings
                     // Like the above but we add the strings directly to the radio button list's Items collection
-                    foreach(DataRow dr in productData.Tables[0].Rows)
-                        rblDemo.Items.Add(dr["ProductName"]);
+                    foreach(var p in productInfo)
+                        rblDemo.Items.Add(p.ProductName);
 
                     // The item collection is the data source for this one.  It's a simple string list so there
                     // are no display or value members.
                     break;
 
                 default:
-                    // Unknown.  Won't happen but it shuts the compiler up.
                     break;
             }
 
@@ -176,28 +152,30 @@ namespace ListControlDemoCS
 
             // Load the column names
             if(rblDemo.DataSource != null)
+            {
                 if(rblDemo.DataSource is ArrayList)
                 {
-                    cboColumns.Items.Add("Display");
-                    cboColumns.Items.Add("Value");
+                    cboColumns.Items.Add(nameof(ListItem.Display));
+                    cboColumns.Items.Add(nameof(ListItem.Value));
                 }
                 else
                 {
-                    DataTable tbl;
+                    Type dataSourceType;
 
-                    if(rblDemo.DataSource is DataSet)
-                        tbl = productData.Tables[0];
+                    if(cboDataSource.SelectedIndex == 0)
+                        dataSourceType = typeof(DemoTable);
                     else
-                        tbl = demoData.Tables[0];
+                        dataSourceType = typeof(ProductInfo);
 
-                    foreach(DataColumn c in tbl.Columns)
-                        cboColumns.Items.Add(c.ColumnName);
+                    foreach(var p in dataSourceType.GetProperties())
+                        cboColumns.Items.Add(p.Name);
                 }
+            }
 
             if(cboColumns.Items.Count == 0)
-                cboColumns.Enabled = txtRowNumber.Enabled = btnGetValue.Enabled = false;
+                cboColumns.Enabled = udcRowNumber.Enabled = btnGetValue.Enabled = false;
             else
-                cboColumns.Enabled = txtRowNumber.Enabled = btnGetValue.Enabled = true;
+                cboColumns.Enabled = udcRowNumber.Enabled = btnGetValue.Enabled = true;
         }
 
         /// <summary>
@@ -210,7 +188,7 @@ namespace ListControlDemoCS
             // This can be any column from the data source regardless of whether or not it is displayed.  Note
             // that you can also use rblDemo["ColName"] to get a column value from the item indicated by the
             // SelectedIndex property.
-            txtValue.Text = $"{cboColumns.Text} = {rblDemo[(int)txtRowNumber.Value, cboColumns.Text]}";
+            txtValue.Text = $"{cboColumns.Text} = {rblDemo[(int)udcRowNumber.Value, cboColumns.Text]}";
         }
 
         /// <summary>

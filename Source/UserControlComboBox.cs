@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : UserControlComboBox.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a user control combo box control that supports all features of the standard Windows Forms
 // combo box but displays a user control for its drop-down and has some extra features such as auto-completion
@@ -21,10 +21,6 @@
 
 // Ignore Spelling: typeof
 
-using System;
-using System.ComponentModel;
-using System.Windows.Forms;
-
 namespace EWSoftware.ListControls
 {
     /// <summary>
@@ -38,7 +34,7 @@ namespace EWSoftware.ListControls
         #region Private data members
         //====================================================================
 
-        private Type dropDownControl;
+        private Type? dropDownControl;
 
         #endregion
 
@@ -63,7 +59,7 @@ namespace EWSoftware.ListControls
         /// </example>
         [Browsable(false), Description("The user control type to use for the drop-down"),
           DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public Type DropDownControl
+		public Type? DropDownControl
         {
             get => dropDownControl;
             set
@@ -90,7 +86,7 @@ namespace EWSoftware.ListControls
         /// before it is initialized and displayed.</remarks>
 		[Category("Behavior"), Description("Occurs when the drop-down control is created but before it is " +
           "initialized")]
-        public event EventHandler DropDownControlCreated;
+        public event EventHandler? DropDownControlCreated;
 
         /// <summary>
         /// This raises the <see cref="DropDownControlCreated"/> event
@@ -108,7 +104,7 @@ namespace EWSoftware.ListControls
         /// but before it is displayed.
         /// </remarks>
 		[Category("Behavior"), Description("Occurs after the drop-down control has been initialized")]
-        public event EventHandler DropDownControlInitialized;
+        public event EventHandler? DropDownControlInitialized;
 
         /// <summary>
         /// This raises the <see cref="DropDownControlInitialized"/> event
@@ -206,7 +202,7 @@ namespace EWSoftware.ListControls
                     mea.Handled = true;
             }
 
-            base.OnMouseWheel(e);
+            base.OnMouseWheel(e!);
         }
         #endregion
     }

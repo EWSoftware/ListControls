@@ -21,44 +21,43 @@ namespace ListControlDemoCS
         }
 
         #region Component Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
-            this.label1 = new System.Windows.Forms.Label();
-            this.lblTotal = new System.Windows.Forms.Label();
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            label1 = new Label();
+            lblTotal = new Label();
             this.SuspendLayout();
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(346, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(88, 23);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Demo Total";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label1.Location = new Point(384, 9);
+            label1.Name = "label1";
+            label1.Size = new Size(107, 23);
+            label1.TabIndex = 0;
+            label1.Text = "Demo Total";
+            label1.TextAlign = ContentAlignment.MiddleRight;
             // 
             // lblTotal
             // 
-            this.lblTotal.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.lblTotal.Location = new System.Drawing.Point(440, 9);
-            this.lblTotal.Name = "lblTotal";
-            this.lblTotal.Size = new System.Drawing.Size(56, 23);
-            this.lblTotal.TabIndex = 1;
-            this.lblTotal.Text = "0";
-            this.lblTotal.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            lblTotal.BorderStyle = BorderStyle.Fixed3D;
+            lblTotal.Location = new Point(497, 9);
+            lblTotal.Name = "lblTotal";
+            lblTotal.Size = new Size(56, 23);
+            lblTotal.TabIndex = 1;
+            lblTotal.Text = "0";
+            lblTotal.TextAlign = ContentAlignment.MiddleRight;
             // 
             // AddressFooter
             // 
-            this.BackColor = System.Drawing.Color.Gainsboro;
-            this.Controls.Add(this.lblTotal);
-            this.Controls.Add(this.label1);
+            this.BackColor = Color.Gainsboro;
+            this.Controls.Add(lblTotal);
+            this.Controls.Add(label1);
             this.Name = "AddressFooter";
-            this.Size = new System.Drawing.Size(504, 40);
+            this.Size = new Size(580, 40);
             this.ResumeLayout(false);
-
         }
         #endregion
 

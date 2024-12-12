@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : StringCollection.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
-// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2007-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a type-safe collection class that is used to contain string objects
 //
@@ -17,11 +17,7 @@
 // 04/23/2007  EFW  Created the code
 //===============================================================================================================
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Globalization;
 
 namespace EWSoftware.ListControls
 {
@@ -45,7 +41,7 @@ namespace EWSoftware.ListControls
         /// This event is raised when an item is added or removed from the list, when the list is cleared, and
         /// when an item is replaced in the list.
         /// </summary>
-        public event ListChangedEventHandler ListChanged;
+        public event ListChangedEventHandler? ListChanged;
 
         /// <summary>
         /// This raises the <see cref="ListChanged"/> event

@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : AutoCompleteTextBoxColumn.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/22/2014
-// Note    : Copyright 2008-2014, Eric Woodruff, All rights reserved
+// Updated : 12/09/2024
+// Note    : Copyright 2008-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a data grid view column that hosts a textbox control and exposes its auto-complete
 // features.
@@ -18,10 +18,7 @@
 // 02/07/2008  EFW  Created the code
 //===============================================================================================================
 
-using System;
-using System.ComponentModel;
 using System.Drawing.Design;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls.DataGridViewControls
 {
@@ -49,12 +46,12 @@ namespace EWSoftware.ListControls.DataGridViewControls
             get => base.CellTemplate;
             set
             {
-                AutoCompleteTextBoxCell cell = value as AutoCompleteTextBoxCell;
+                AutoCompleteTextBoxCell? cell = value as AutoCompleteTextBoxCell;
 
                 if(value != null && cell == null)
                     throw new InvalidCastException(LR.GetString("ExWrongCellTemplateType", "AutoCompleteTextBoxCell"));
 
-                base.CellTemplate = value;
+                base.CellTemplate = value!;
             }
         }
 
@@ -76,7 +73,6 @@ namespace EWSoftware.ListControls.DataGridViewControls
             set
             {
                 DataGridViewRowCollection rows;
-                AutoCompleteTextBoxCell cell;
                 int count, idx;
 
                 if(this.AutoCompleteTextBoxCellTemplate == null)
@@ -84,16 +80,14 @@ namespace EWSoftware.ListControls.DataGridViewControls
 
                 this.AutoCompleteTextBoxCellTemplate.AutoCompleteMode = value;
 
-                if(base.DataGridView != null)
+                if(this.DataGridView != null)
                 {
-                    rows = base.DataGridView.Rows;
+                    rows = this.DataGridView.Rows;
                     count = rows.Count;
 
                     for(idx = 0; idx < count; idx++)
                     {
-                        cell = rows.SharedRow(idx).Cells[base.Index] as AutoCompleteTextBoxCell;
-
-                        if(cell != null)
+                        if(rows.SharedRow(idx).Cells[this.Index] is AutoCompleteTextBoxCell cell)
                             cell.AutoCompleteMode = value;
                     }
                 }
@@ -118,7 +112,6 @@ namespace EWSoftware.ListControls.DataGridViewControls
             set
             {
                 DataGridViewRowCollection rows;
-                AutoCompleteTextBoxCell cell;
                 int count, idx;
 
                 if(this.AutoCompleteTextBoxCellTemplate == null)
@@ -126,16 +119,14 @@ namespace EWSoftware.ListControls.DataGridViewControls
 
                 this.AutoCompleteTextBoxCellTemplate.AutoCompleteSource = value;
 
-                if(base.DataGridView != null)
+                if(this.DataGridView != null)
                 {
-                    rows = base.DataGridView.Rows;
+                    rows = this.DataGridView.Rows;
                     count = rows.Count;
 
                     for(idx = 0; idx < count; idx++)
                     {
-                        cell = rows.SharedRow(idx).Cells[base.Index] as AutoCompleteTextBoxCell;
-
-                        if(cell != null)
+                        if(rows.SharedRow(idx).Cells[this.Index] is AutoCompleteTextBoxCell cell)
                             cell.AutoCompleteSource = value;
                     }
                 }
@@ -150,7 +141,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
           Editor("System.Windows.Forms.Design.ListControlStringCollectionEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor)),
           DesignerSerializationVisibility(DesignerSerializationVisibility.Content),
           EditorBrowsable(EditorBrowsableState.Always)]
-        public AutoCompleteStringCollection AutoCompleteCustomSource
+        public AutoCompleteStringCollection? AutoCompleteCustomSource
         {
             get
             {
@@ -162,7 +153,6 @@ namespace EWSoftware.ListControls.DataGridViewControls
             set
             {
                 DataGridViewRowCollection rows;
-                AutoCompleteTextBoxCell cell;
                 int count, idx;
 
                 if(this.AutoCompleteTextBoxCellTemplate == null)
@@ -170,16 +160,14 @@ namespace EWSoftware.ListControls.DataGridViewControls
 
                 this.AutoCompleteTextBoxCellTemplate.AutoCompleteCustomSource = value;
 
-                if(base.DataGridView != null)
+                if(this.DataGridView != null)
                 {
-                    rows = base.DataGridView.Rows;
+                    rows = this.DataGridView.Rows;
                     count = rows.Count;
 
                     for(idx = 0; idx < count; idx++)
                     {
-                        cell = rows.SharedRow(idx).Cells[base.Index] as AutoCompleteTextBoxCell;
-
-                        if(cell != null)
+                        if(rows.SharedRow(idx).Cells[this.Index] is AutoCompleteTextBoxCell cell)
                             cell.AutoCompleteCustomSource = value;
                     }
                 }

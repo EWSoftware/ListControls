@@ -2,8 +2,8 @@
 ' System  : EWSoftware Data List Control Demonstration Applications
 ' File    : UserControlComboBoxTestForm.vb
 ' Author  : Eric Woodruff  (Eric@EWoodruff.us)
-' Updated : 04/09/2023
-' Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
+' Updated : 12/03/2024
+' Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 '
 ' This is used to demonstrate the UserControlComboBox control
 '
@@ -17,15 +17,11 @@
 ' 10/27/2005  EFW  Created the code
 '================================================================================================================
 
-Imports System.Data
-Imports System.Data.OleDb
-
-Imports EWSoftware.ListControls
-
 Public Partial Class UserControlComboTestForm
     Inherits Form
 
-    Private demoData, productData As DataSet
+    Private ReadOnly demoData As List(Of DemoTable)
+    Private ReadOnly productInfo As List(Of ProductInfo)
 
     Public Sub New()
         MyBase.New()
@@ -36,27 +32,13 @@ Public Partial Class UserControlComboTestForm
         cboAutoComp.BindingContext = New BindingContext()
         cboUCCombo.BindingContext = New BindingContext()
 
-        demoData = New DataSet()
-        productData = New DataSet()
-
         Try
-            Using dbConn As New OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\TestData.mdb")
-                ' Load some data for the demo
-                Using cmd As New OleDbCommand("Select * From DemoTable Order By Label", dbConn)
-                    cmd.CommandType = CommandType.Text
-                    
-                    Using adapter As New OleDbDataAdapter(cmd)
-                        adapter.Fill(demoData)
-
-                        ' Use a named table for this one
-                        adapter.TableMappings.Add("Table", "ProductInfo")
-                        cmd.CommandText = "Select * From ProductInfo Order By ProductName"
-                        adapter.Fill(productData)
-                    End Using
-                End Using
+            Using dc As New DemoDataContext()
+                demoData = dc.DemoTable.OrderBy(Function (d) d.Label).ToList()
+                productInfo = dc.ProductInfo.OrderBy(Function (p) p.ProductName).ToList()
             End Using
 
-        Catch ex As OleDbException
+        Catch ex As SqlException
             MessageBox.Show(ex.Message)
 
         End Try
@@ -64,7 +46,7 @@ Public Partial Class UserControlComboTestForm
         cboUCCombo.DropDownControl = GetType(TreeViewDropDown)
 
         ' Start with the data set as it is grouped by category in the drop-down
-        cboDataSource.SelectedIndex = 2
+        cboDataSource.SelectedIndex = 1
 
         pgProps.SelectedObject = cboUCCombo
         pgProps.Refresh()
@@ -77,10 +59,9 @@ Public Partial Class UserControlComboTestForm
     ' <param name="valueMember">The variable used to receive the value member name</param>
 	Private Sub LoadData(ByRef collection As IList, ByRef dataSource As Object, ByRef displayMember As String,
       ByRef valueMember As String)
-        Dim dr As DataRow, c As DataColumn
 
         ' We must have the data
-        If demoData.Tables.Count = 0 Or productData.Tables.Count = 0 Then
+        If demoData.Count = 0 Or productInfo.Count = 0 Then
             MessageBox.Show("Database not found.  It must be located in the demo project's folder.", "Error",
                 MessageBoxButtons.OK, MessageBoxIcon.Stop)
 
@@ -91,38 +72,30 @@ Public Partial Class UserControlComboTestForm
         End If
 
         Select Case cboDataSource.SelectedIndex
-            Case 0      ' Data Table
-                dataSource = demoData.Tables(0)
-                displayMember = "Label"
-                valueMember = "ListKey"
+            Case 0      ' Demo data (List(Of DemoData))
+                dataSource = demoData
+                displayMember = NameOf(DemoTable.Label)
+                valueMember = NameOf(DemoTable.ListKey)
 
-            Case 1      ' Data View
-                dataSource = demoData.Tables(0).DefaultView
-                displayMember = "Label"
-                valueMember = "ListKey"
+            Case 1      ' Product info (List(Of ProductInfo))
+                dataSource = productInfo
+                displayMember = NameOf(Database.ProductInfo.ProductName)
+                valueMember = NameOf(Database.ProductInfo.ProductId)
 
-            Case 2      ' Data Set
-                dataSource = productData
-
-                ' Use a named table for this one
-                displayMember = "ProductInfo.ProductName"
-                valueMember = "ProductInfo.ProductID"
-
-            Case 3      ' Array List
+            Case 2      ' Array List
                 Dim al As New ArrayList(100)
-
-                For Each dr In productData.Tables(0).Rows
-                    al.Add(New ListItem(dr("ProductID"), CType(dr("ProductName"), String)))
+                For Each p In productInfo
+                    al.Add(New ListItem(p.ProductID, p.ProductName))
                 Next
 
                 dataSource = al
-                displayMember = "Display"      ' ListItem description
-                valueMember = "Value"          ' ListItem value
+                displayMember = NameOf(ListItem.Display)
+                valueMember = NameOf(ListItem.Value)
 
-            Case 4      ' Combo box strings
+            Case 3      ' Combo box strings
                 ' Like the above but we add the strings directly to the combo box's Items collection
-                For Each dr In productData.Tables(0).Rows
-                    collection.Add(dr("ProductName"))
+                For Each p In productInfo
+                    collection.Add(p.ProductName)
                 Next
 
                 ' The item collection is the data source for this one.  It's a simple string list so there are no
@@ -132,32 +105,10 @@ Public Partial Class UserControlComboTestForm
                 valueMember = String.Empty
 
             Case Else
-                ' Unknown.  Won't happen but it shuts the compiler up.
                 dataSource = Nothing
                 displayMember = String.Empty
                 valueMember = String.Empty
-
         End Select
-
-        ' Load the column names
-        If Not (dataSource Is Nothing) And cboColumns.Items.Count = 0 Then
-            If TypeOf(dataSource) Is ArrayList Then
-                cboColumns.Items.Add("Display")
-                cboColumns.Items.Add("Value")
-            Else
-                Dim tbl As DataTable
-
-                If TypeOf(dataSource) Is DataSet Then
-                    tbl = productData.Tables(0)
-                Else
-                    tbl = demoData.Tables(0)
-                End If
-
-                For Each c In tbl.Columns
-                    cboColumns.Items.Add(c.ColumnName)
-                Next
-            End If
-        End If
     End Sub
 
     ' Refresh the display and the combo box drop-down settings after they have changed
@@ -233,15 +184,32 @@ Public Partial Class UserControlComboTestForm
             cboUCCombo.DisplayMember = displayMember
             cboUCCombo.ValueMember = valueMember
             cboUCCombo.DataSource = dataSource
+
+            If TypeOf(dataSource) Is ArrayList Then
+                cboColumns.Items.Add(nameof(ListItem.Display))
+                cboColumns.Items.Add(nameof(ListItem.Value))
+            Else
+                Dim dataSourceType As Type
+
+                If cboDataSource.SelectedIndex = 0
+                    dataSourceType = GetType(DemoTable)
+                Else
+                    dataSourceType = GetType(ProductInfo)
+                End If
+
+                For Each p in dataSourceType.GetProperties()
+                    cboColumns.Items.Add(p.Name)
+                Next
+            End If
         End If
 
         If cboColumns.Items.Count = 0 Then
             cboColumns.Enabled = False
-            txtRowNumber.Enabled = False
+            udcRowNumber.Enabled = False
             btnGetValue.Enabled = False
         Else
             cboColumns.Enabled = True
-            txtRowNumber.Enabled = True
+            udcRowNumber.Enabled = True
             btnGetValue.Enabled = True
         End If
     End Sub
@@ -252,7 +220,7 @@ Public Partial Class UserControlComboTestForm
         ' This can be any column from the data source regardless of whether or not it is displayed.  Note that
         ' you can also use cboUCCombo("ColName") to get a column value from the item indicated by the
         ' SelectedIndex property.
-        txtValue.Text = $"{cboColumns.Text} = {cboUCCombo(CType(txtRowNumber.Value, Integer), cboColumns.Text)}"
+        txtValue.Text = $"{cboColumns.Text} = {cboUCCombo(CType(udcRowNumber.Value, Integer), cboColumns.Text)}"
     End Sub
 
     ' Show the current item info when the selected index changes
@@ -269,7 +237,7 @@ Public Partial Class UserControlComboTestForm
 
         Dim ddc As TreeViewDropDown = CType(sender, TreeViewDropDown)
 
-        ddc.ShowExcludeDiscontinued = (cboDataSource.SelectedIndex = 2)
+        ddc.ShowExcludeDiscontinued = (cboDataSource.SelectedIndex = 1)
     End Sub
 
     ' Draw an image for the demo.  They aren't representative of the items, they're just something to show.

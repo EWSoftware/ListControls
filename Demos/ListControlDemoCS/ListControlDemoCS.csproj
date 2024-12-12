@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net6.0-windows;net40</TargetFrameworks>
+    <TargetFrameworks>net8.0-windows;net48</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
     <GenerateAssemblyTitleAttribute>False</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyVersionAttribute>False</GenerateAssemblyVersionAttribute>
@@ -16,21 +16,53 @@
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
 		<ApplicationIcon>App.ico</ApplicationIcon>
 		<PlatformTarget>AnyCPU</PlatformTarget>
+		<!-- Using preview to gain access to the field keyword -->
+		<LangVersion>preview</LangVersion>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<!-- There's no fix for the image list binary resources so we have to turn this warning off (MSB3825) -->
+		<GenerateResourceWarnOnBinaryFormatterUse>false</GenerateResourceWarnOnBinaryFormatterUse>
   </PropertyGroup>
-  <ItemGroup>
+
+	<ItemGroup>
     <Content Include="App.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\TestData.mdb" Link="TestData.mdb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+
+	<ItemGroup>
+		<Using Include="System.ComponentModel" />
+		<Using Include="System.ComponentModel.DataAnnotations" />
+		<Using Include="System.ComponentModel.DataAnnotations.Schema" />
+		<Using Include="System.Data" />
+		<Using Include="System.Data.Common" />
+		<Using Include="System.Drawing" />
+		<Using Include="System.Diagnostics" />
+		<Using Include="System.Reflection" />
+		<Using Include="System.Windows.Forms" />
+		<Using Include="Microsoft.Data.SqlClient" />
+		<Using Include="Microsoft.EntityFrameworkCore" />
+		<Using Include="EWSoftware.ListControls" />
+		<Using Include="ListControlDemoCS.Database" />
+	</ItemGroup>
+
+	<ItemGroup>
+    <None Include="..\DemoData.mdf" Link="Database\DemoData.mdf" />
+    <None Include="..\DemoData_log.ldf" Link="Database\DemoData_log.ldf" />
   </ItemGroup>
-  <ItemGroup>
+
+		<ItemGroup>
     <ProjectReference Include="..\..\Source\EWSoftware.ListControls.csproj" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0-windows'">
-    <PackageReference Include="System.Data.OleDb">
-      <Version>7.0.0</Version>
-    </PackageReference>
-  </ItemGroup>
+
+	<ItemGroup>
+		<!-- The .NET Standard version of Entity Framework is older and has some vulnerabilities we can't address so
+		     we don't need telling about them. -->
+		<NuGetAuditSuppress Include="https://github.com/advisories/GHSA-98g6-xh36-x2p7" />
+		<NuGetAuditSuppress Include="https://github.com/advisories/GHSA-8g2p-5pqh-5jmc" />
+		<NuGetAuditSuppress Include="https://github.com/advisories/GHSA-59j7-ghrg-fj52" />
+		<NuGetAuditSuppress Include="https://github.com/advisories/GHSA-5crp-9r3c-p9vr" />
+
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.32" Condition="'$(TargetFramework)' == 'net48'" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" Condition="'$(TargetFramework)' == 'net8.0-windows'" />
+		<PackageReference Include="System.Data.OleDb" Version="7.0.0" Condition="'$(TargetFramework)' == 'net8.0-windows'" />
+	</ItemGroup>
 </Project>

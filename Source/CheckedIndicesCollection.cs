@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : CheckedIndicesCollection.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/25/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
+// Updated : 12/08/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a collection class used by the checkbox list control to return a list of indices for the
 // currently checked items.
@@ -19,7 +19,6 @@
 // 01/30/2007  EFW  Rewrote to use ReadOnlyCollection<T> as base class
 //===============================================================================================================
 
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 
@@ -47,7 +46,7 @@ namespace EWSoftware.ListControls
         /// <returns>Returns a string containing the indices separated by commas</returns>
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder(1024);
+            StringBuilder sb = new(1024);
 
             foreach(int index in this)
             {

@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : ChangePolicy.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 04/09/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains the class that keeps track of the change policy for the DataList and DataNavigator
 // controls.
@@ -18,22 +18,19 @@
 // 08/29/2005  EFW  Created the code
 //===============================================================================================================
 
-using System.ComponentModel;
-using System.Windows.Forms;
-
 namespace EWSoftware.ListControls
 {
     /// <summary>
     /// This class is used to contain the change policy for the data source in the <see cref="DataList"/> and
     /// <see cref="DataNavigator"/> controls.
     /// </summary>
-    internal class ChangePolicy
+    internal sealed class ChangePolicy
     {
         #region Private data members
         //=====================================================================
 
-        private readonly DataList dataList;
-        private readonly DataNavigator dataNav;
+        private readonly DataList? dataList;
+        private readonly DataNavigator? dataNav;
 
         #endregion
 
@@ -90,7 +87,7 @@ namespace EWSoftware.ListControls
             bool listCanAdd, listCanEdit, listCanDelete, listChangeNotify, oldAdd = this.AllowAdditions,
                 oldEdit = this.AllowEdits, oldDelete = this.AllowDeletes;
 
-            CurrencyManager listManager = (dataList != null) ? dataList.ListManager : dataNav.ListManager;
+            CurrencyManager? listManager = dataList?.ListManager ?? dataNav?.ListManager;
 
             if(listManager == null)
             {
@@ -100,9 +97,7 @@ namespace EWSoftware.ListControls
             }
             else
             {
-                IBindingList bl = (listManager.List as IBindingList);
-
-                if(bl != null)
+                if(listManager.List is IBindingList bl)
                 {
                     listCanAdd = bl.AllowNew;
                     listCanEdit = bl.AllowEdit;
@@ -138,17 +133,19 @@ namespace EWSoftware.ListControls
                 }
             }
             else
+            {
                 if(this.AllowAdditions != oldAdd || this.AllowEdits != oldEdit || this.AllowDeletes != oldDelete)
                 {
-                    dataNav.OnChangePolicyModified(new ChangePolicyEventArgs(this.AllowAdditions, this.AllowEdits,
+                    dataNav!.OnChangePolicyModified(new ChangePolicyEventArgs(this.AllowAdditions, this.AllowEdits,
                         this.AllowDeletes));
                 }
                 else
                 {
                     // Enable or disable Add and Delete based on the policy
-                    dataNav.btnAdd.Enabled = (this.AllowAdditions && listManager != null);
+                    dataNav!.btnAdd.Enabled = (this.AllowAdditions && listManager != null);
                     dataNav.btnDelete.Enabled = (this.AllowDeletes && listManager != null && listManager.Count > 0);
                 }
+            }
         }
         #endregion
     }

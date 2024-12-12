@@ -17,23 +17,21 @@
 // 04/17/2005  EFW  Created the code
 //===============================================================================================================
 
-using System.ComponentModel;
-using System.Data;
-using System.Windows.Forms;
+using System.Globalization;
 
 namespace ListControlDemoCS
 {
 	/// <summary>
 	/// This is a sample footer template control for the DataList demo
 	/// </summary>
-	public partial class AddressFooter : EWSoftware.ListControls.TemplateControl
+	public partial class AddressFooter : TemplateControl
 	{
         #region Private data members
         //=====================================================================
 
         // Used to track the current data source for totaling
-        private IBindingList bl;
-        private DataTable tblItems;
+        private BindingList<Address>? addresses;
+
         #endregion
 
         #region Constructor
@@ -59,34 +57,25 @@ namespace ListControlDemoCS
         /// </summary>
         protected override void Bind()
         {
-            // The demo uses a data set so we'll get a reference to the table through the list manager
-            CurrencyManager cm = this.TemplateParent.ListManager;
-            DataTable newSource = ((DataView)cm.List).Table;
+            // We'll get a reference to the table through the list manager
+            CurrencyManager cm = this.TemplateParent.ListManager!;
+            var newSource = (BindingList<Address>)cm.List;
 
             // Hook up the events on the data source to keep the total current
-            if(newSource != tblItems)
+            if(newSource != addresses)
             {
                 // Disconnect from the old source if necessary
-                if(tblItems != null)
-                {
-                    bl.ListChanged -= DataSource_ListChanged;
-                    tblItems.RowChanged -= DataSource_RowChgDel;
-                    tblItems.RowDeleted -= DataSource_RowChgDel;
-                }
+                if(addresses != null)
+                    addresses.ListChanged -= DataSource_ListChanged;
 
-                tblItems = newSource;
-
-                if(tblItems != null)
+                if(newSource != null)
                 {
                     // For the total, we'll sum it whenever a row is added, changed, or deleted
-                    bl = (IBindingList)cm.List;
-
-                    bl.ListChanged += DataSource_ListChanged;
-                    tblItems.RowChanged += DataSource_RowChgDel;
-                    tblItems.RowDeleted += DataSource_RowChgDel;
+                    addresses = newSource;
+                    addresses.ListChanged += DataSource_ListChanged;
 
                     // Show the initial total
-                    lblTotal.Text = tblItems.Compute("Sum(SumValue)", null).ToString();
+                    this.DataSource_ListChanged(this, new ListChangedEventArgs(ListChangedType.Reset, 0));
                 }
                 else
                     lblTotal.Text = null;
@@ -102,20 +91,9 @@ namespace ListControlDemoCS
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void DataSource_ListChanged(object sender, ListChangedEventArgs e)
+        private void DataSource_ListChanged(object? sender, ListChangedEventArgs e)
         {
-            if(e.ListChangedType == ListChangedType.ItemAdded)
-                lblTotal.Text = tblItems.Compute("Sum(SumValue)", null).ToString();
-        }
-
-        /// <summary>
-        /// Update the total when a row is changed or deleted
-        /// </summary>
-        /// <param name="sender">The sender of the event</param>
-        /// <param name="e">The event arguments</param>
-        private void DataSource_RowChgDel(object sender, DataRowChangeEventArgs e)
-        {
-            lblTotal.Text = tblItems.Compute("Sum(SumValue)", null).ToString();
+            lblTotal.Text = addresses!.Sum(a => a.SumValue ?? 0).ToString(CultureInfo.InvariantCulture);
         }
         #endregion
     }

@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : AutoCompleteComboBox.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/09/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a standard combo box control that supplies an auto-complete feature that selects the best
 // match as the user types text into it.  Auto-completion works for all combo box styles.
@@ -17,10 +17,6 @@
 // ==============================================================================================================
 // 03/14/2005  EFW  Created the code
 //===============================================================================================================
-
-using System;
-using System.ComponentModel;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls
 {
@@ -51,7 +47,7 @@ namespace EWSoftware.ListControls
         /// returns null.</value>
         /// <overloads>There are two overloads for this property</overloads>
         [Browsable(false), Description("Get the specified column from the current row")]
-        public object this[string columnName] => this[this.SelectedIndex, columnName];
+        public object? this[string columnName] => this[this.SelectedIndex, columnName];
 
         /// <summary>
         /// This can be used to get the value of the specified column in the specified row of the list control's
@@ -63,18 +59,18 @@ namespace EWSoftware.ListControls
         /// <value>Returns the entry at the specified column in the specified row.  If the row is out of bounds
         /// or if the column cannot be found, this will return null.</value>
         [Browsable(false), Description("Get the specified column from the specified row")]
-        public object this[int rowIndex, string columnName]
+        public object? this[int rowIndex, string columnName]
         {
             get
             {
                 if(rowIndex < 0 || rowIndex >= this.Items.Count || columnName == null || columnName.Length == 0)
                     return null;
 
-                object item = this.Items[rowIndex];
+                object? item = this.Items[rowIndex];
 
                 if(item != null)
                 {
-                    PropertyDescriptor pd;
+                    PropertyDescriptor? pd;
 
                     if(this.DataManager != null)
                         pd = this.DataManager.GetItemProperties().Find(columnName, true);

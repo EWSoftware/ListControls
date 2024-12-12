@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : RatingColumn.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
-// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2007-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a data grid view column object that contains RatingCell objects
 //
@@ -16,13 +16,6 @@
 // ==============================================================================================================
 // 06/04/2007  EFW  Created the code
 //===============================================================================================================
-
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Globalization;
-using System.Reflection;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls.DataGridViewControls
 {
@@ -42,12 +35,12 @@ namespace EWSoftware.ListControls.DataGridViewControls
         private static readonly ImageList ilStars;
 
         // The cell image and custom image list
-        private Bitmap cellImage;
-        private ImageList images;
+        private Bitmap? cellImage;
+        private ImageList? images;
 
         private int maxRating;
 
-        private Cursor originalCursor;
+        private Cursor? originalCursor;
 
         #endregion
 
@@ -102,7 +95,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// three images.  The first is for an empty/unused image, the second is for a filled/used image, and
         /// the third is for a hot image drawn when the mouse is over the cell images.</value>
         [Category("Behavior"), DefaultValue(null), Description("The image list to use for the column")]
-        public ImageList ImageList
+        public ImageList? ImageList
         {
             get => images;
             set
@@ -122,7 +115,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
                     cellImage?.Dispose();
                     cellImage = null;
 
-                    if(value != null)
+                    if(images != null)
                     {
                         images.RecreateHandle += recreateHandle;
                         images.Disposed += disposeList;
@@ -142,7 +135,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// This event is raised when a cell needs to map a cell value to a rating
         /// </summary>
         [Category("Behavior"), Description("Occurs when a cell needs to map a cell value to a rating")]
-        public event EventHandler<MapRatingEventArgs> MapValueToRating;
+        public event EventHandler<MapRatingEventArgs>? MapValueToRating;
 
         /// <summary>
         /// This raises the <see cref="MapValueToRating"/> event
@@ -157,7 +150,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// This event is raised when a cell needs to map a rating to a cell value
         /// </summary>
         [Category("Behavior"), Description("Occurs when a cell needs to map a rating to a cell value")]
-        public event EventHandler<MapRatingEventArgs> MapRatingToValue;
+        public event EventHandler<MapRatingEventArgs>? MapRatingToValue;
 
         /// <summary>
         /// This raises the <see cref="MapRatingToValue"/> event
@@ -181,11 +174,11 @@ namespace EWSoftware.ListControls.DataGridViewControls
 
             ilStars = new ImageList { ImageSize = new Size(14, 14) };
 
-            ilStars.Images.Add(new Bitmap(asm.GetManifestResourceStream(ResourcePath + "RatingStarEmpty.png")),
+            ilStars.Images.Add(new Bitmap(asm.GetManifestResourceStream(ResourcePath + "RatingStarEmpty.png")!),
                 Color.Magenta);
-            ilStars.Images.Add(new Bitmap(asm.GetManifestResourceStream(ResourcePath + "RatingStarFilled.png")),
+            ilStars.Images.Add(new Bitmap(asm.GetManifestResourceStream(ResourcePath + "RatingStarFilled.png")!),
                 Color.Magenta);
-            ilStars.Images.Add(new Bitmap(asm.GetManifestResourceStream(ResourcePath + "RatingStarHot.png")),
+            ilStars.Images.Add(new Bitmap(asm.GetManifestResourceStream(ResourcePath + "RatingStarHot.png")!),
                 Color.Magenta);
         }
 
@@ -198,8 +191,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
         {
             get
             {
-                if(originalCursor == null && base.DataGridView != null)
-                    originalCursor = base.DataGridView.Cursor;
+                if(originalCursor == null && this.DataGridView != null)
+                    originalCursor = this.DataGridView.Cursor;
 
                 return originalCursor ?? Cursors.Default;
             }
@@ -215,7 +208,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void ImageList_RecreateHandle(object sender, EventArgs e)
+        private void ImageList_RecreateHandle(object? sender, EventArgs e)
         {
             this.DataGridView?.InvalidateColumn(this.Index);
         }
@@ -225,7 +218,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void ImageList_Disposed(object sender, EventArgs e)
+        private void ImageList_Disposed(object? sender, EventArgs e)
         {
             this.ImageList = null;
         }
@@ -243,8 +236,8 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// event.</remarks>
         public RatingColumn()
         {
-            base.ValueType = typeof(object);
-            base.CellTemplate = new RatingCell();
+            this.ValueType = typeof(object);
+            this.CellTemplate = new RatingCell();
 
             maxRating = 5;
         }
@@ -282,15 +275,14 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="rowIndex">The cell's row index</param>
         /// <param name="mouseIndex">The index under the mouse or -1 if the mouse isn't over an index</param>
         /// <returns>The image to display or null if there is no image</returns>
-        protected internal Image DrawImage(object value, int rowIndex, int mouseIndex)
+        protected internal Image DrawImage(object? value, int rowIndex, int mouseIndex)
         {
             ImageList imageList = this.ImageListInternal;
 
             int idx, imageIdx, x = 0, cellValue = 0, width = imageList.ImageSize.Width;
 
             // Create the cell bitmap on first use
-            if(cellImage == null)
-                cellImage = new Bitmap(width * maxRating, imageList.ImageSize.Height);
+            cellImage ??= new Bitmap(width * maxRating, imageList.ImageSize.Height);
 
             if(value is int iv)
                 cellValue = iv;
@@ -301,7 +293,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
             }
 
             // Let the user map the value to a rating
-            MapRatingEventArgs mapArgs = new MapRatingEventArgs(base.Index, rowIndex, value, cellValue);
+            MapRatingEventArgs mapArgs = new(this.Index, rowIndex, value, cellValue);
             this.OnMapValueToRating(mapArgs);
             cellValue = mapArgs.Rating;
 

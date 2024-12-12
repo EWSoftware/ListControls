@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : UserControlComboBoxEditingControl.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
-// Note    : Copyright 2014-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2014-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a user control combo box control that is hosted within a data grid view cell
 //
@@ -16,11 +16,6 @@
 // ==============================================================================================================
 // 06/08/2007  EFW  Created the code
 //===============================================================================================================
-
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls.DataGridViewControls
 {
@@ -80,7 +75,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
             if(this.SelectedIndex != -1)
             {
                 this.EditingControlValueChanged = true;
-                this.EditingControlDataGridView.NotifyCurrentCellDirty(true);
+                this.EditingControlDataGridView!.NotifyCurrentCellDirty(true);
             }
         }
         #endregion
@@ -103,7 +98,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
             {
                 Color color = Color.FromArgb(0xFF, dataGridViewCellStyle.BackColor);
                 this.BackColor = color;
-                this.EditingControlDataGridView.EditingPanel.BackColor = color;
+                this.EditingControlDataGridView!.EditingPanel.BackColor = color;
             }
             else
                 this.BackColor = dataGridViewCellStyle.BackColor;
@@ -115,7 +110,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <summary>
         /// Gets or sets the data grid view that contains the owning cell.
         /// </summary>
-        public DataGridView EditingControlDataGridView { get; set; }
+        public DataGridView? EditingControlDataGridView { get; set; }
 
         /// <summary>
         /// Gets or sets the formatted value of the cell being modified by the editor

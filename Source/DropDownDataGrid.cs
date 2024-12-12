@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : DropDownDataGrid.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/07/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a custom data grid control that provides some extra features needed by the multi-column
 // combo box drop-down form.
@@ -19,11 +19,6 @@
 // 05/01/2006  EFW  Added support for the mouse tracking property
 //===============================================================================================================
 
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
-
 namespace EWSoftware.ListControls
 {
     /// <summary>
@@ -31,7 +26,7 @@ namespace EWSoftware.ListControls
     /// drop-down form.
     /// </summary>
     [ToolboxItem(false)]
-    internal class DropDownDataGrid : DataGridView
+    internal sealed class DropDownDataGrid : DataGridView
     {
         #region Private data members
         //=====================================================================
@@ -118,7 +113,7 @@ namespace EWSoftware.ListControls
         {
             base.OnMouseLeave(e);
 
-            if(!this.IsSimpleStyle && this.Parent.Visible)
+            if(!this.IsSimpleStyle && this.Parent!.Visible)
                 this.Parent.Capture = true;
         }
 

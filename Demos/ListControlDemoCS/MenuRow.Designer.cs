@@ -22,68 +22,68 @@ namespace ListControlDemoCS
 
         #region Component Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify 
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
-            this.lblDemoImage = new EWSoftware.ListControls.ClickableLabel();
-            this.lblDemoName = new EWSoftware.ListControls.ClickableLabel();
-            this.btnDemo = new System.Windows.Forms.Button();
-            this.lblDemoDesc = new EWSoftware.ListControls.ClickableLabel();
+        /// <summary>
+        /// Required method for Designer support - do not modify 
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            lblDemoImage = new ClickableLabel();
+            lblDemoName = new ClickableLabel();
+            btnDemo = new Button();
+            lblDemoDesc = new ClickableLabel();
             this.SuspendLayout();
             // 
             // lblDemoImage
             // 
-            this.lblDemoImage.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.lblDemoImage.Location = new System.Drawing.Point(6, 62);
-            this.lblDemoImage.Name = "lblDemoImage";
-            this.lblDemoImage.Size = new System.Drawing.Size(32, 32);
-            this.lblDemoImage.TabIndex = 1;
+            lblDemoImage.BackColor = SystemColors.ControlLight;
+            lblDemoImage.Location = new Point(26, 65);
+            lblDemoImage.Name = "lblDemoImage";
+            lblDemoImage.Size = new Size(32, 32);
+            lblDemoImage.TabIndex = 1;
             // 
             // lblDemoName
             // 
-            this.lblDemoName.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.lblDemoName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-            this.lblDemoName.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.lblDemoName.Location = new System.Drawing.Point(0, 0);
-            this.lblDemoName.Name = "lblDemoName";
-            this.lblDemoName.Size = new System.Drawing.Size(700, 23);
-            this.lblDemoName.TabIndex = 0;
-            this.lblDemoName.Text = "Demo Name";
-            this.lblDemoName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            lblDemoName.BackColor = SystemColors.ActiveCaption;
+            lblDemoName.Font = new Font("Microsoft Sans Serif", 8F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblDemoName.ForeColor = SystemColors.ActiveCaptionText;
+            lblDemoName.Location = new Point(0, 0);
+            lblDemoName.Name = "lblDemoName";
+            lblDemoName.Size = new Size(950, 23);
+            lblDemoName.TabIndex = 0;
+            lblDemoName.Text = "Demo Name";
+            lblDemoName.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // btnDemo
             // 
-            this.btnDemo.BackColor = System.Drawing.SystemColors.Control;
-            this.btnDemo.Location = new System.Drawing.Point(618, 62);
-            this.btnDemo.Name = "btnDemo";
-            this.btnDemo.Size = new System.Drawing.Size(75, 32);
-            this.btnDemo.TabIndex = 3;
-            this.btnDemo.Text = "&Demo";
-            this.btnDemo.Click += new System.EventHandler(this.btnDemo_Click);
+            btnDemo.BackColor = SystemColors.Control;
+            btnDemo.Location = new Point(859, 65);
+            btnDemo.Name = "btnDemo";
+            btnDemo.Size = new Size(75, 32);
+            btnDemo.TabIndex = 3;
+            btnDemo.Text = "&Demo";
+            btnDemo.UseVisualStyleBackColor = false;
+            btnDemo.Click += this.btnDemo_Click;
             // 
             // lblDemoDesc
             // 
-            this.lblDemoDesc.Location = new System.Drawing.Point(45, 25);
-            this.lblDemoDesc.Name = "lblDemoDesc";
-            this.lblDemoDesc.Size = new System.Drawing.Size(565, 112);
-            this.lblDemoDesc.TabIndex = 2;
-            this.lblDemoDesc.Text = "Demo Description";
-            this.lblDemoDesc.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            //
+            lblDemoDesc.Location = new Point(100, 25);
+            lblDemoDesc.Name = "lblDemoDesc";
+            lblDemoDesc.Size = new Size(753, 112);
+            lblDemoDesc.TabIndex = 2;
+            lblDemoDesc.Text = "Demo Description";
+            lblDemoDesc.TextAlign = ContentAlignment.MiddleLeft;
+            // 
             // MenuRow
             // 
-            this.BackColor = System.Drawing.SystemColors.Window;
-            this.Controls.Add(this.lblDemoDesc);
-            this.Controls.Add(this.btnDemo);
-            this.Controls.Add(this.lblDemoName);
-            this.Controls.Add(this.lblDemoImage);
+            this.BackColor = SystemColors.Window;
+            this.Controls.Add(lblDemoDesc);
+            this.Controls.Add(btnDemo);
+            this.Controls.Add(lblDemoName);
+            this.Controls.Add(lblDemoImage);
             this.Name = "MenuRow";
-            this.Size = new System.Drawing.Size(700, 141);
+            this.Size = new Size(950, 141);
             this.ResumeLayout(false);
-
         }
         #endregion
 

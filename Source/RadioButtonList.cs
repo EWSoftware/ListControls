@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : RadioButtonList.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a single-selection radio button list that supports data
 // binding, layout options, and data source indexers.
@@ -18,11 +18,6 @@
 // 04/17/2005  EFW  Created the code
 // 05/01/2006  EFW  Added support for UseMnemonic
 //===============================================================================================================
-
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls
 {
@@ -78,15 +73,15 @@ namespace EWSoftware.ListControls
                     // If a default selection is being enforced, use it as long as it is valid
                     if(value == -1 && this.EnforceDefaultSelection)
                     {
-                        if(this.DefaultSelection < this.Items.Count && (base.DataManager == null ||
-                          base.DataManager.Count != 0))
+                        if(this.DefaultSelection < this.Items.Count && (this.DataManager == null ||
+                          this.DataManager.Count != 0))
                         {
                             value = this.DefaultSelection;
                         }
                         else
                         {
-                            if(base.DataManager != null)
-                                value = base.DataManager.Count - 1;
+                            if(this.DataManager != null)
+                                value = this.DataManager.Count - 1;
                             else
                                 value = this.Items.Count - 1;
                         }
@@ -97,6 +92,7 @@ namespace EWSoftware.ListControls
                     base.SelectedIndex = value;
 
                     this.OnSelectedItemChanged(EventArgs.Empty);
+                    this.OnSelectedValueChanged(EventArgs.Empty);
                     this.OnSelectedIndexChanged(EventArgs.Empty);
 
                     // Give focus to the selected radio button or clear the selected radio button's checked state
@@ -178,11 +174,9 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void RadioButton_CheckedChanged(object sender, EventArgs e)
+        private void RadioButton_CheckedChanged(object? sender, EventArgs e)
         {
-            RadioButton rb = sender as RadioButton;
-
-            if(rb.Checked)
+            if(sender is RadioButton rb && rb.Checked)
                 this.SelectedIndex = this.ButtonPanel.Controls.IndexOf(rb);
         }
 
@@ -215,28 +209,28 @@ namespace EWSoftware.ListControls
                 // In .NET 2.0, we could use the UseMnemonic property but it doesn't work with FlatStyle.System
                 // so we'll modify the text which works with it and with .NET 1.1.
                 if(this.UseMnemonic)
-                    rb.Text = this.GetItemText(oItem).Replace("&&", "&");
+                    rb.Text = this.GetItemText(oItem)?.Replace("&&", "&");
                 else
-                    rb.Text = this.GetItemText(oItem).Replace("&", "&&");
+                    rb.Text = this.GetItemText(oItem)?.Replace("&", "&&");
 
-                rb.Appearance = base.Appearance;
+                rb.Appearance = this.Appearance;
                 rb.FlatStyle = this.FlatStyle;
-                rb.CheckAlign = base.CheckAlign;
-                rb.TextAlign = base.TextAlign;
-                rb.ImageAlign = base.ImageAlign;
-                rb.ImageList = base.ImageList;
+                rb.CheckAlign = this.CheckAlign;
+                rb.TextAlign = this.TextAlign;
+                rb.ImageAlign = this.ImageAlign;
+                rb.ImageList = this.ImageList;
 
                 // Don't hook up the event in design mode.  They are clickable.
                 if(!this.DesignMode)
                     rb.CheckedChanged += CheckedChanged;
 
-                if(base.ImageList != null)
+                if(this.ImageList != null)
                 {
                     rb.ImageIndex = imageIdx;
                     imageIdx++;
 
                     // Wrap the index if there are more items than images
-                    if(imageIdx == base.ImageList.Images.Count)
+                    if(imageIdx == this.ImageList.Images.Count)
                         imageIdx = 0;
                 }
 

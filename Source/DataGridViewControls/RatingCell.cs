@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : RatingCell.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
-// Note    : Copyright 2007-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2007-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a data grid view cell object that shows a set of images (stars by default) that represent
 // a rating similar to the one found in Windows Media Player.
@@ -17,10 +17,6 @@
 // ==============================================================================================================
 // 06/04/2007  EFW  Created the code
 //===============================================================================================================
-
-using System;
-using System.Drawing;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls.DataGridViewControls
 {
@@ -91,7 +87,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
             Size size;
             int widthOffset, heightOffset, freeDimension;
 
-            if(base.DataGridView == null || base.OwningColumn == null)
+            if(this.DataGridView == null || this.OwningColumn == null)
                 return new Size(-1, -1);
 
             if(cellStyle == null)
@@ -107,15 +103,15 @@ namespace EWSoftware.ListControls.DataGridViewControls
             else
                 freeDimension = 1;          // Height is free
 
-            DataGridViewAdvancedBorderStyle borderStylePlaceholder = new DataGridViewAdvancedBorderStyle();
+            DataGridViewAdvancedBorderStyle borderStylePlaceholder = new();
             DataGridViewAdvancedBorderStyle advancedBorderStyle = base.AdjustCellBorderStyle(
-                base.DataGridView.AdvancedCellBorderStyle, borderStylePlaceholder, false, false, false, false);
+                this.DataGridView.AdvancedCellBorderStyle, borderStylePlaceholder, false, false, false, false);
             Rectangle borderWidths = base.BorderWidths(advancedBorderStyle);
 
             widthOffset = (borderWidths.Left + borderWidths.Width) + cellStyle.Padding.Horizontal;
             heightOffset = (borderWidths.Top + borderWidths.Height) + cellStyle.Padding.Vertical;
 
-            RatingColumn owner = base.OwningColumn as RatingColumn;
+            var owner = (RatingColumn)this.OwningColumn;
 
             size = new Size(owner.ImageListInternal.ImageSize.Width * owner.MaximumRating,
                 owner.ImageListInternal.ImageSize.Height);
@@ -135,7 +131,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
             {
                 size.Width += widthOffset;
 
-                if(base.DataGridView.ShowCellErrors)
+                if(this.DataGridView.ShowCellErrors)
                     size.Width = Math.Max(size.Width, widthOffset + 16);
             }
 
@@ -143,7 +139,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
             {
                 size.Height += heightOffset;
 
-                if(base.DataGridView.ShowCellErrors)
+                if(this.DataGridView.ShowCellErrors)
                     size.Height = Math.Max(size.Height, heightOffset + 16);
             }
 
@@ -163,21 +159,17 @@ namespace EWSoftware.ListControls.DataGridViewControls
         protected override Rectangle GetContentBounds(Graphics graphics, DataGridViewCellStyle cellStyle,
           int rowIndex)
         {
-            RatingColumn owner;
             Rectangle r;
-            Size cellSize, imageSize;
-            int width, height;
 
-            cellSize = base.GetSize(rowIndex);
-            owner = base.OwningColumn as RatingColumn;
+            Size cellSize = base.GetSize(rowIndex);
 
-            if(owner == null)
+            if(this.OwningColumn is not RatingColumn owner)
                 r = Rectangle.Empty;
             else
             {
-                imageSize = owner.ImageListInternal.ImageSize;
-                width = imageSize.Height * owner.MaximumRating;
-                height = imageSize.Height;
+                Size imageSize = owner.ImageListInternal.ImageSize;
+                int width = imageSize.Height * owner.MaximumRating;
+                int height = imageSize.Height;
 
                 r = new Rectangle((cellSize.Width - width) / 2, (cellSize.Height - height) / 2, width, height);
             }
@@ -219,7 +211,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         protected override void OnContentClick(DataGridViewCellEventArgs e)
         {
             int rating;
-            object newValue = this.NewValue;
+            object? newValue = this.NewValue;
 
             if(keyRating != -1)
                 rating = keyRating;
@@ -235,7 +227,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
               this.OwningColumn is RatingColumn owner && rating != -1 && rating <= owner.MaximumRating)
             {
                 // Let the user map the rating to a cell value
-                MapRatingEventArgs mapArgs = new MapRatingEventArgs(e.ColumnIndex, e.RowIndex, rating, rating);
+                MapRatingEventArgs mapArgs = new(e.ColumnIndex, e.RowIndex, rating, rating);
                 owner.OnMapRatingToValue(mapArgs);
 
                 // If the value changed, use that.  If the value didn't change, use the new index value but
@@ -283,7 +275,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// keys can be used to adjust the current rating up or down by one.</remarks>
         protected override void OnKeyUp(KeyEventArgs e, int rowIndex)
         {
-            object cellValue;
+            object? cellValue;
 
             if(e != null && this.DataGridView != null && ((e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9) ||
               e.KeyCode == Keys.Add || e.KeyCode == Keys.Subtract || e.KeyCode == Keys.Oemplus ||
@@ -308,8 +300,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
                     }
 
                     // Let the user map the value to a rating
-                    MapRatingEventArgs mapArgs = new MapRatingEventArgs(this.ColumnIndex, rowIndex, cellValue,
-                        keyRating);
+                    MapRatingEventArgs mapArgs = new(this.ColumnIndex, rowIndex, cellValue, keyRating);
                     ((RatingColumn)this.OwningColumn).OnMapValueToRating(mapArgs);
 
                     if(e.KeyCode == Keys.Add || e.KeyCode == Keys.Oemplus)
@@ -318,7 +309,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
                         keyRating = mapArgs.Rating - 1;
                 }
 
-                DataGridViewCellEventArgs args = new DataGridViewCellEventArgs(this.ColumnIndex, rowIndex);
+                DataGridViewCellEventArgs args = new(this.ColumnIndex, rowIndex);
                 this.RaiseCellClick(args);
 
                 if(this.ColumnIndex < this.DataGridView.Columns.Count && rowIndex < this.DataGridView.Rows.Count)
@@ -380,14 +371,14 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="rowIndex">The row index of the cell</param>
         protected override void OnMouseLeave(int rowIndex)
         {
-            if(!this.ReadOnly && this.OwningColumn is RatingColumn owner && this.DataGridView.Cursor != owner.OriginalCursor)
+            if(!this.ReadOnly && this.OwningColumn is RatingColumn owner && this.DataGridView!.Cursor != owner.OriginalCursor)
                 this.DataGridView.Cursor = owner.OriginalCursor;
 
             this.MouseRating = -1;
             
             base.OnMouseLeave(rowIndex);
             
-            this.DataGridView.InvalidateCell(this.ColumnIndex, rowIndex);
+            this.DataGridView!.InvalidateCell(this.ColumnIndex, rowIndex);
         }
 
         /// <summary>
@@ -396,11 +387,11 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="value">The value to be use in determining the image</param>
         /// <param name="rowIndex">The index of the cell's parent row</param>
         /// <returns>The image that should be displayed in the cell</returns>
-        protected override object GetCellImage(object value, int rowIndex)
+        protected override object? GetCellImage(object? value, int rowIndex)
         {
             // If this is a shared cell, we don't want to draw hot images as they may end up in several places.
             // As such, only draw them if the mouse is in the cell being drawn.
-            Point mouseCell = DataGridViewHelper.MouseEnteredCellAddress(this.DataGridView);
+            Point mouseCell = DataGridViewHelper.MouseEnteredCellAddress(this.DataGridView!);
 
             if(this.OwningColumn is RatingColumn owner)
             {

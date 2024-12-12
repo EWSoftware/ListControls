@@ -2,8 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : AddressHeader.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 10/01/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
+// Updated : 12/06/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This is a sample header template control for the DataList demo
 //
@@ -17,19 +17,18 @@
 // 04/17/2005  EFW  Created the code
 //===============================================================================================================
 
-using System;
-
 namespace ListControlDemoCS
 {
-	/// <summary>
-	/// This is a sample header template control for the DataList demo
-	/// </summary>
-	public partial class AddressHeader : EWSoftware.ListControls.TemplateControl
-	{
+    /// <summary>
+    /// This is a sample header template control for the DataList demo
+    /// </summary>
+    public partial class AddressHeader : TemplateControl
+    {
         #region Private data members
         //=====================================================================
 
         private string lastSearch;
+
         #endregion
 
         #region Constructor
@@ -39,13 +38,13 @@ namespace ListControlDemoCS
         /// Constructor
         /// </summary>
 		public AddressHeader()
-		{
+        {
             // Since there is only one instance of the header it is created when assigned so we don't need to
             // delay initialization.
-			InitializeComponent();
+            InitializeComponent();
 
             lastSearch = String.Empty;
-		}
+        }
         #endregion
 
         #region Method overrides
@@ -58,7 +57,7 @@ namespace ListControlDemoCS
         {
             // If the DataList uses a DataSet you must use the fully qualified field name in header and footer
             // controls as they are bound to the data source as a whole.
-            this.AddBinding(lblKey, "Text", "Addresses.ID");
+            this.AddBinding(lblKey, nameof(Control.Text), nameof(Address.ID));
         }
         #endregion
 
@@ -72,14 +71,13 @@ namespace ListControlDemoCS
         /// <param name="e">The event arguments</param>
         private void txtFindName_TextChanged(object sender, EventArgs e)
         {
-            int startRow, row;
-
             if(txtFindName.Text.Length > 0)
             {
-                startRow = (txtFindName.Text.Length <= lastSearch.Length) ? -1 : this.TemplateParent.CurrentRow - 1;
+                int startRow = (txtFindName.Text.Length <= lastSearch.Length) ? -1 : this.TemplateParent.CurrentRow - 1;
 
                 lastSearch = txtFindName.Text;
-                row = this.TemplateParent.FindString("LastName", txtFindName.Text, startRow);
+                
+                int row = this.TemplateParent.FindString(nameof(Address.LastName), txtFindName.Text, startRow);
 
                 if(row != -1)
                 {

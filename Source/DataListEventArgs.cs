@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : DataListEventArgs.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/30/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
+// Updated : 12/11/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains the event argument class used for various data list events (item bound, added, deleted,
 // current, etc.).
@@ -18,8 +18,6 @@
 // 03/20/2005  EFW  Created the code
 //===============================================================================================================
 
-using System;
-
 namespace EWSoftware.ListControls
 {
 	/// <summary>
@@ -33,20 +31,20 @@ namespace EWSoftware.ListControls
         /// <remarks>This may be -1 if the item does not yet exist or if the item has been deleted.  Also be
         /// aware that this index value is for use with the control.  Due to additions and deletions, the given
         /// index may not refer to the same row indexed in the original data source.</remarks>
-        public int Index { get; private set; }
+        public int Index { get; }
 
         /// <summary>
         /// Get a reference to the item related to the event
         /// </summary>
         /// <remarks>This may be null if the item does not yet exist or if it has been deleted</remarks>
-        public TemplateControl Item { get; private set; }
+        public TemplateControl? Item { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="idx">The row index of the template item</param>
         /// <param name="templateItem">The item related to the event</param>
-		public DataListEventArgs(int idx, TemplateControl templateItem)
+		public DataListEventArgs(int idx, TemplateControl? templateItem)
 		{
             this.Index = idx;
 			this.Item = templateItem;

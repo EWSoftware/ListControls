@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : BaseComboBoxDesigner.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 04/09/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This contains a control designer for BaseComboBox that enables the display of snap lines for it
 //
@@ -18,7 +18,6 @@
 //===============================================================================================================
 
 using System.Collections;
-using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Windows.Forms.Design;
 using System.Windows.Forms.Design.Behavior;
@@ -28,7 +27,7 @@ namespace EWSoftware.ListControls.Design
     /// <summary>
     /// This is a control designer for the <see cref="BaseComboBox"/> class that enables snap lines for it
     /// </summary>
-    internal class BaseComboBoxDesigner : ControlDesigner
+    internal sealed class BaseComboBoxDesigner : ControlDesigner
     {
         /// <summary>
         /// Overrides the base implementation of the SnapLines property and this override is what allows us to
@@ -49,7 +48,7 @@ namespace EWSoftware.ListControls.Design
                 {
                     // Create a new instance of the IDesigner based off of the target textbox in the BaseComboBox
                     // user control.
-                    IDesigner designer = TypeDescriptor.CreateDesigner(control.txtValue, typeof(IDesigner));
+                    var designer = TypeDescriptor.CreateDesigner(control.txtValue, typeof(IDesigner));
 
                     if(designer != null)
                     {

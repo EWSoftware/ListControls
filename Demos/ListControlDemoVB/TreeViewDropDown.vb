@@ -2,7 +2,7 @@
 ' System  : EWSoftware Data List Control Demonstration Applications
 ' File    : TreeViewDropDown.vb
 ' Author  : Eric Woodruff  (Eric@EWoodruff.us)
-' Updated : 04/09/2023
+' Updated : 12/03/2024
 ' Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
 '
 ' This is a sample drop-down control for the UserControlComboBox demo
@@ -17,15 +17,11 @@
 ' 10/27/2005  EFW  Created the code
 '================================================================================================================
 
-Imports System.Data
-
-Imports EWSoftware.ListControls
-
 Public Partial Class TreeViewDropDown
-    Inherits EWSoftware.ListControls.DropDownControl
+    Inherits DropDownControl
 
-    Private dvItems As DataView
-    Private tblItems As DataTable
+    Private demoData As List(Of DemoTable)
+    Private productInfo As List(Of ProductInfo)
     Private excludeVisible As Boolean
 
     Public Sub New()
@@ -49,29 +45,6 @@ Public Partial Class TreeViewDropDown
         End Set
     End Property
 
-    ' This loads items from the row collection into the tree view
-    ' <param name="row">The starting row</param>
-    ' <param name="tnRoot">The root node to which items are added</param>
-    ' <returns>The index of the next row that starts a new node</returns>
-    Private Function LoadItems(row As Integer, tnRoot As TreeNode) As Integer
-        Dim tnChild As TreeNode
-
-        Do While row < dvItems.Count AndAlso CType(dvItems(row)("CategoryName"), String) = tnRoot.Text
-            tnChild = New TreeNode(CType(dvItems(row)("ProductName"), String)) With {
-                .Tag = dvItems(row)("ProductID")
-            }
-
-            If CType(dvItems(row)("Discontinued"), Boolean) = True Then
-                tnChild.Text &= " (Discontinued)"
-            End If
-
-            tnRoot.Nodes.Add(tnChild)
-            row += 1
-        Loop
-
-        Return row
-    End Function
-
     ' Clone the combo box's data source and load the tree view
     Public Overrides Sub InitializeDropDown()
         Dim tn As TreeNode, s As String, li As ListItem, idx As Integer
@@ -93,26 +66,23 @@ Public Partial Class TreeViewDropDown
                 tvItems.Nodes.Add(tn)
             Next
         Else
-            ' Data set, view, or table
-            If TypeOf(ds) is DataSet Then
-                tblItems = CType(ds, DataSet).Tables("ProductInfo")
-            ElseIf TypeOf(ds) is DataView Then
-                tblItems = CType(ds, DataView).Table
+            ' List of items
+            If TypeOf(ds) Is List(Of ProductInfo) Then
+                productInfo = CType(ds, List(Of ProductInfo))
             Else
-                tblItems = CType(ds, DataTable)
+                demoData = CType(ds, List(Of DemoTable))
             End If
 
-            dvItems = tblItems.DefaultView
-
-            If excludeVisible = True
+            If excludeVisible = True Then
                 ' Sort and load by category name
-                dvItems.Sort = "CategoryName, ProductName"
+                productInfo = productInfo.OrderBy(Function (p) p.CategoryName).ThenBy(Function (p) p.ProductName).ToList()
+
                 chkExcludeDiscontinued_CheckedChanged(Me, EventArgs.Empty)
             Else
                 ' This is the one that doesn't contain categories
-                For idx = 0 To dvItems.Count - 1
-                    tn = New TreeNode(CType(dvItems(idx)("Label"), String)) With {
-                        .Tag = dvItems(idx)("ListKey")
+                For idx = 0 To demoData.Count - 1
+                    tn = New TreeNode(demoData(idx).Label) With {
+                        .Tag = demoData(idx).ListKey
                     }
                     tvItems.Nodes.Add(tn)
                 Next idx
@@ -128,8 +98,6 @@ Public Partial Class TreeViewDropDown
 
     ' When shown, select the current product as the default row
     Public Overrides Sub ShowDropDown()
-        Dim tn, child As TreeNode
-
         If Me.ComboBox.SelectedIndex <> -1 Then
             ' If not categorized, just select by index
             If excludeVisible = False Then
@@ -137,47 +105,61 @@ Public Partial Class TreeViewDropDown
                     tvItems.SelectedNode = tvItems.Nodes(Me.ComboBox.SelectedIndex)
                 End If
             Else
-                ' There doesn't appear to be an easy way to search for a node so do it the hard way
+                ' Select the node by its key value stored in the tag
                 Dim currentValue As Object = Me.ComboBox.SelectedValue
 
-                For Each tn In tvItems.Nodes
-                    For Each child In tn.Nodes
-                        If child.Tag.Equals(currentValue) Then
-                            tvItems.SelectedNode = child
-                            Exit For
-                        End If
-                    Next
-                Next
+                Dim tne As New TreeNodeEnumerator(tvItems.Nodes(0), True)
+
+                Do While tne.MoveNext()
+                    If tne.Current.Tag IsNot Nothing AndAlso tne.Current.Tag.Equals(currentValue)
+                        tvItems.SelectedNode = tne.Current
+                        Exit Do
+                    End If
+                Loop
             End If
         End If
     End Sub
 
     ' Refresh the list based on the filter
-    Private Sub chkExcludeDiscontinued_CheckedChanged(sender As Object, e As System.EventArgs) _
+    Private Sub chkExcludeDiscontinued_CheckedChanged(sender As Object, e As EventArgs) _
         Handles chkExcludeDiscontinued.CheckedChanged
 
-        Dim tnNode As TreeNode
+        Dim root As TreeNode
         Dim row As Integer = 0
+        Dim products As List(Of ProductInfo) = productInfo
 
         If chkExcludeDiscontinued.Checked = True Then
-            dvItems.RowFilter = "Discontinued = false"
-        Else
-            dvItems.RowFilter = Nothing
+            products = products.Where(Function (p) Not p.Discontinued).ToList()
         End If
 
         tvItems.Nodes.Clear()
 
-        Do While row < dvItems.Count
-            tnNode = New TreeNode(CType(dvItems(row)("CategoryName"), String))
-            tvItems.Nodes.Add(tnNode)
-            row = LoadItems(row, tnNode)
+        Do While row < products.Count
+            root = New TreeNode(products(row).CategoryName)
+            tvItems.Nodes.Add(root)
+
+            Do While row < products.Count AndAlso products(row).CategoryName = root.Text
+                Dim child As New TreeNode(products(row).ProductName) With {
+                    .Tag = products(row).ProductID
+                }
+
+                If products(row).Discontinued Then
+                    child.Text += " (Discontinued)"
+                End If
+
+                root.Nodes.Add(child)
+                row += 1
+            Loop
         Loop
+
+        tvItems.ExpandAll()
+        tvItems.Nodes(0).EnsureVisible()
 
         btnSelect.Enabled = False
     End Sub
 
     ' Select the specified item and hide the drop-down.
-    Private Sub btnSelect_Click(sender As Object, e As System.EventArgs) _
+    Private Sub btnSelect_Click(sender As Object, e As EventArgs) _
       Handles btnSelect.Click
         If excludeVisible = False Then
             Me.CommitSelection(tvItems.Nodes.IndexOf(tvItems.SelectedNode))
@@ -187,7 +169,7 @@ Public Partial Class TreeViewDropDown
     End Sub
 
     ' Disable selection if it is a parent node
-    Private Sub tvItems_AfterSelect(sender As Object, e As System.Windows.Forms.TreeViewEventArgs) _
+    Private Sub tvItems_AfterSelect(sender As Object, e As TreeViewEventArgs) _
       Handles tvItems.AfterSelect
         btnSelect.Enabled = (tvItems.SelectedNode.Nodes.Count = 0)
 
@@ -199,7 +181,7 @@ Public Partial Class TreeViewDropDown
     End Sub
 
     ' Select the current item when double clicked if it has no children
-    Private Sub tvItems_DoubleClick(sender As Object, e As System.EventArgs) _
+    Private Sub tvItems_DoubleClick(sender As Object, e As EventArgs) _
       Handles tvItems.DoubleClick
         If tvItems.SelectedNode.Nodes.Count = 0 Then
             btnSelect_Click(sender, e)
@@ -207,7 +189,7 @@ Public Partial Class TreeViewDropDown
     End Sub
 
     ' Close the drop-down without making a selection.  Hitting Escape works too.
-    Private Sub btnCancel_Click(sender As Object, e As System.EventArgs) _
+    Private Sub btnCancel_Click(sender As Object, e As EventArgs) _
       Handles btnCancel.Click
         Me.ComboBox.DroppedDown = False
     End Sub

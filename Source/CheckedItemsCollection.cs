@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : CheckedItemsCollection.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 04/09/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a collection class used by the checkbox list control to return a list of the currently
 // checked items.
@@ -19,18 +19,16 @@
 // 01/30/2007  EFW  Rewrote to use ReadOnlyCollection<T> as base class
 //===============================================================================================================
 
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls
 {
-	/// <summary>
-	/// This is a derived <see cref="ReadOnlyCollection{T}"/> class that contains a set of items from a
+    /// <summary>
+    /// This is a derived <see cref="ReadOnlyCollection{T}"/> class that contains a set of items from a
     /// <see cref="CheckBoxList"/> control.  Each entry represents an item that has a check state of
     /// <c>Checked</c> or <c>Indeterminate</c>.
-	/// </summary>
+    /// </summary>
     /// <remarks>The collection itself cannot be modified, but the items in it can</remarks>
     public class CheckedItemsCollection : ReadOnlyCollection<object>
     {
@@ -63,6 +61,8 @@ namespace EWSoftware.ListControls
                 memberParts = owner.DisplayMember.Split('.');
                 displayMember = memberParts[memberParts.Length - 1];
             }
+            else
+                valueMember = displayMember = String.Empty;
         }
         #endregion
 
@@ -80,7 +80,7 @@ namespace EWSoftware.ListControls
         {
             // If it has a data source, return the value from the data source.  If not, return the item itself.
             if(owner.DataSource != null)
-                return owner[owner.Items.IndexOf(this[index]), valueMember];
+                return owner[owner.Items.IndexOf(this[index]), valueMember]!;
 
             return this[index];
         }
@@ -96,7 +96,7 @@ namespace EWSoftware.ListControls
         {
             // If it has a data source, return the value from the data source.  If not, return the item itself.
             if(owner.DataSource != null)
-                return owner[owner.Items.IndexOf(this[index]), displayMember];
+                return owner[owner.Items.IndexOf(this[index]), displayMember]!;
 
             return this[index];
         }
@@ -119,7 +119,7 @@ namespace EWSoftware.ListControls
         /// <see cref="BaseListControl.ValueMember">CheckBoxList.ValueMember</see> setting.</returns>
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder(1024);
+            StringBuilder sb = new(1024);
 
             for(int idx = 0; idx < this.Count; idx++)
             {
@@ -140,7 +140,7 @@ namespace EWSoftware.ListControls
         /// <see cref="BaseListControl.DisplayMember">CheckBoxList.DisplayMember</see> setting.</returns>
         public string ToDisplayTextString()
         {
-            StringBuilder sb = new StringBuilder(1024);
+            StringBuilder sb = new(1024);
 
             for(int idx = 0; idx < this.Count; idx++)
             {

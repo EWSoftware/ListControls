@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : ClickableLabel.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/25/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
+// Updated : 12/10/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // A standard label control with the ability to focus the first selectable control following it (by tab order)
 // or the parent if not.
@@ -18,9 +18,6 @@
 // 09/23/2005  EFW  Created the code
 // 12/10/2005  EFW  Made changes for use with .NET 2.0
 //===============================================================================================================
-
-using System;
-using System.ComponentModel;
 
 namespace EWSoftware.ListControls
 {
@@ -37,7 +34,7 @@ namespace EWSoftware.ListControls
     /// will cause the row to gain the focus even when there are no selectable controls in the row.</para></remarks>
     [Description("A standard label control with the ability to focus the first selectable control following " +
       "it when clicked")]
-	public class ClickableLabel : System.Windows.Forms.Label
+	public class ClickableLabel : Label
 	{
         /// <summary>
         /// This is overridden to focus the control following the label or the parent if one cannot be found
@@ -47,10 +44,11 @@ namespace EWSoftware.ListControls
         {
             int idx, tabIdx, selIdx = -1;
 
-            ControlCollection cc = this.Parent.Controls;
+            ControlCollection cc = this.Parent!.Controls;
 
             // Find the first control with a tab index greater than this one and give it the focus if possible
             for(idx = 0, tabIdx = 32767; idx < cc.Count; idx++)
+            {
                 if(cc[idx].TabStop && cc[idx].TabIndex > this.TabIndex && cc[idx].TabIndex < tabIdx)
                 {
                     tabIdx = cc[idx].TabIndex;
@@ -62,6 +60,7 @@ namespace EWSoftware.ListControls
                     else
                         selIdx = -1;
                 }
+            }
 
             if(selIdx != -1)
                 cc[selIdx].Focus();

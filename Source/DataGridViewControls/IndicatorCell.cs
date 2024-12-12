@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : IndicatorCell.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/04/2023
-// Note    : Copyright 2023, Eric Woodruff, All rights reserved
+// Updated : 12/09/2024
+// Note    : Copyright 2014-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a data grid view cell object that shows images from an image list in an on/off state based
 // on the cell value.
@@ -17,10 +17,6 @@
 // ==============================================================================================================
 // 05/11/2007  EFW  Created the code
 //===============================================================================================================
-
-using System;
-using System.Drawing;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls.DataGridViewControls
 {
@@ -111,7 +107,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
             else
                 freeDimension = 1;          // Height is free
 
-            DataGridViewAdvancedBorderStyle borderStylePlaceholder = new DataGridViewAdvancedBorderStyle();
+            DataGridViewAdvancedBorderStyle borderStylePlaceholder = new();
             DataGridViewAdvancedBorderStyle advancedBorderStyle = this.AdjustCellBorderStyle(
                 this.DataGridView.AdvancedCellBorderStyle, borderStylePlaceholder, false, false, false, false);
             Rectangle borderWidths = this.BorderWidths(advancedBorderStyle);
@@ -119,7 +115,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
             widthOffset = (borderWidths.Left + borderWidths.Width) + cellStyle.Padding.Horizontal;
             heightOffset = (borderWidths.Top + borderWidths.Height) + cellStyle.Padding.Vertical;
 
-            IndicatorColumn owner = this.OwningColumn as IndicatorColumn;
+            IndicatorColumn owner = (IndicatorColumn)this.OwningColumn;
 
             if(owner.ImageList == null)
                 size = new Size(16, 16);
@@ -170,15 +166,13 @@ namespace EWSoftware.ListControls.DataGridViewControls
         protected override Rectangle GetContentBounds(Graphics graphics, DataGridViewCellStyle cellStyle,
           int rowIndex)
         {
-            IndicatorColumn owner;
             Rectangle r;
             Size cellSize, imageSize;
             int width, height;
 
             cellSize = base.GetSize(rowIndex);
-            owner = base.OwningColumn as IndicatorColumn;
 
-            if(owner == null || owner.ImageList == null)
+            if(this.OwningColumn is not IndicatorColumn owner || owner.ImageList == null)
                 r = Rectangle.Empty;
             else
             {
@@ -224,10 +218,9 @@ namespace EWSoftware.ListControls.DataGridViewControls
         protected override void OnContentClick(DataGridViewCellEventArgs e)
         {
             if(e != null && this.IsClickable && this.DataGridView != null && this.OwningColumn is IndicatorColumn owner &&
-              this.MouseImageIndex != -1 && this.MouseImageIndex < owner.ImageList.Images.Count)
+              this.MouseImageIndex != -1 && this.MouseImageIndex < (owner.ImageList?.Images.Count ?? 0))
             {
-                IndicatorClickEventArgs clickArgs = new IndicatorClickEventArgs(e.ColumnIndex, e.RowIndex,
-                    this.MouseImageIndex, this.NewValue);
+                IndicatorClickEventArgs clickArgs = new(e.ColumnIndex, e.RowIndex, this.MouseImageIndex, this.NewValue);
 
                 owner.OnIndicatorClicked(clickArgs);
 
@@ -269,14 +262,14 @@ namespace EWSoftware.ListControls.DataGridViewControls
             if(e != null && this.DataGridView != null && e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9 && !e.Alt &&
               !e.Control && !e.Shift)
             {
-                this.MouseImageIndex = (int)(e.KeyCode - Keys.D0);
+                this.MouseImageIndex = e.KeyCode - Keys.D0;
 
                 if(this.MouseImageIndex == 0)
                     this.MouseImageIndex = 10;
                 else
                     this.MouseImageIndex--;
 
-                DataGridViewCellEventArgs args = new DataGridViewCellEventArgs(this.ColumnIndex, rowIndex);
+                DataGridViewCellEventArgs args = new(this.ColumnIndex, rowIndex);
                 this.RaiseCellClick(args);
 
                 if(this.ColumnIndex < this.DataGridView.Columns.Count && rowIndex < this.DataGridView.Rows.Count)
@@ -297,7 +290,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 throw new ArgumentNullException(nameof(e));
 
             Rectangle content = this.GetContentBounds(e.RowIndex);
-            Cursor newCursor = null;
+            Cursor? newCursor = null;
 
             int index, width, spacing, lastMouseIndex = this.MouseImageIndex;
 
@@ -333,11 +326,12 @@ namespace EWSoftware.ListControls.DataGridViewControls
                 if(this.MouseImageIndex != lastMouseIndex)
                 {
                     if(this.MouseImageIndex != -1)
+                    {
                         DataGridViewHelper.ActivateToolTip(this.DataGridView, true, this.ToolTipText,
                             e.ColumnIndex, e.RowIndex);
+                    }
                     else
-                        DataGridViewHelper.ActivateToolTip(this.DataGridView, false, null, e.ColumnIndex,
-                            e.RowIndex);
+                        DataGridViewHelper.ActivateToolTip(this.DataGridView, false, null, e.ColumnIndex, e.RowIndex);
                 }
             }
         }
@@ -349,7 +343,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         protected override void OnMouseLeave(int rowIndex)
         {
             if(this.IsClickable && this.OwningColumn is IndicatorColumn owner &&
-              this.DataGridView.Cursor != owner.OriginalCursor)
+              this.DataGridView!.Cursor != owner.OriginalCursor)
             {
                 this.DataGridView.Cursor = owner.OriginalCursor;
             }
@@ -365,7 +359,7 @@ namespace EWSoftware.ListControls.DataGridViewControls
         /// <param name="value">The value to be use in determining the image</param>
         /// <param name="rowIndex">The index of the cell's parent row</param>
         /// <returns>The image that should be displayed in the cell</returns>
-        protected override object GetCellImage(object value, int rowIndex)
+        protected override object? GetCellImage(object? value, int rowIndex)
         {
             if(this.OwningColumn is IndicatorColumn owner && owner.ImageList != null)
                 return owner.DrawImage(value, rowIndex);

@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : CheckedNodesCollection.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/25/2014
-// Note    : Copyright 2014, Eric Woodruff, All rights reserved
+// Updated : 12/08/2024
+// Note    : Copyright 2024, Eric Woodruff, All rights reserved
 //
 // This file contains a collection class used by the ExtendedTreeView control to return a list of checked nodes
 //
@@ -17,10 +17,8 @@
 // 01/17/2007  EFW  Created the code
 //===============================================================================================================
 
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls
 {
@@ -80,7 +78,7 @@ namespace EWSoftware.ListControls
         /// <returns>Returns a string containing the node names separated by commas</returns>
         public virtual string ToNameString()
         {
-            StringBuilder sb = new StringBuilder(1024);
+            StringBuilder sb = new(1024);
 
             for(int idx = 0; idx < this.Count; idx++)
             {
@@ -99,7 +97,7 @@ namespace EWSoftware.ListControls
         /// <returns>Returns a string containing the node text values separated by commas</returns>
         public virtual string ToTextValueString()
         {
-            StringBuilder sb = new StringBuilder(1024);
+            StringBuilder sb = new(1024);
 
             for(int idx = 0; idx < this.Count; idx++)
             {

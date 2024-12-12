@@ -22,59 +22,60 @@ Partial Class MenuRow
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.lblDemoDesc = New EWSoftware.ListControls.ClickableLabel
-        Me.btnDemo = New System.Windows.Forms.Button
-        Me.lblDemoName = New EWSoftware.ListControls.ClickableLabel
-        Me.lblDemoImage = New EWSoftware.ListControls.ClickableLabel
+        lblDemoDesc = New ClickableLabel()
+        btnDemo = New Button()
+        lblDemoName = New ClickableLabel()
+        lblDemoImage = New ClickableLabel()
         Me.SuspendLayout()
-        '
-        'lblDemoDesc
-        '
-        Me.lblDemoDesc.Location = New System.Drawing.Point(45, 25)
-        Me.lblDemoDesc.Name = "lblDemoDesc"
-        Me.lblDemoDesc.Size = New System.Drawing.Size(565, 112)
-        Me.lblDemoDesc.TabIndex = 2
-        Me.lblDemoDesc.Text = "Demo Description"
-        Me.lblDemoDesc.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'btnDemo
-        '
-        Me.btnDemo.BackColor = System.Drawing.SystemColors.Control
-        Me.btnDemo.Location = New System.Drawing.Point(618, 62)
-        Me.btnDemo.Name = "btnDemo"
-        Me.btnDemo.Size = New System.Drawing.Size(75, 32)
-        Me.btnDemo.TabIndex = 3
-        Me.btnDemo.Text = "&Demo"
-        '
-        'lblDemoName
-        '
-        Me.lblDemoName.BackColor = System.Drawing.SystemColors.ActiveCaption
-        Me.lblDemoName.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblDemoName.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
-        Me.lblDemoName.Location = New System.Drawing.Point(0, 0)
-        Me.lblDemoName.Name = "lblDemoName"
-        Me.lblDemoName.Size = New System.Drawing.Size(700, 23)
-        Me.lblDemoName.TabIndex = 0
-        Me.lblDemoName.Text = "Demo Name"
-        Me.lblDemoName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lblDemoImage
-        '
-        Me.lblDemoImage.BackColor = System.Drawing.SystemColors.ControlLight
-        Me.lblDemoImage.Location = New System.Drawing.Point(6, 62)
-        Me.lblDemoImage.Name = "lblDemoImage"
-        Me.lblDemoImage.Size = New System.Drawing.Size(32, 32)
-        Me.lblDemoImage.TabIndex = 1
-        '
-        'MenuRow
-        '
-        Me.BackColor = System.Drawing.SystemColors.Window
-        Me.Controls.Add(Me.lblDemoDesc)
-        Me.Controls.Add(Me.btnDemo)
-        Me.Controls.Add(Me.lblDemoName)
-        Me.Controls.Add(Me.lblDemoImage)
+        ' 
+        ' lblDemoDesc
+        ' 
+        lblDemoDesc.Location = New Point(100, 25)
+        lblDemoDesc.Name = "lblDemoDesc"
+        lblDemoDesc.Size = New Size(753, 112)
+        lblDemoDesc.TabIndex = 2
+        lblDemoDesc.Text = "Demo Description"
+        lblDemoDesc.TextAlign = ContentAlignment.MiddleLeft
+        ' 
+        ' btnDemo
+        ' 
+        btnDemo.BackColor = SystemColors.Control
+        btnDemo.Location = New Point(859, 65)
+        btnDemo.Name = "btnDemo"
+        btnDemo.Size = New Size(75, 32)
+        btnDemo.TabIndex = 3
+        btnDemo.Text = "&Demo"
+        btnDemo.UseVisualStyleBackColor = False
+        ' 
+        ' lblDemoName
+        ' 
+        lblDemoName.BackColor = SystemColors.ActiveCaption
+        lblDemoName.Font = New Font("Microsoft Sans Serif", 8F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        lblDemoName.ForeColor = SystemColors.ActiveCaptionText
+        lblDemoName.Location = New Point(0, 0)
+        lblDemoName.Name = "lblDemoName"
+        lblDemoName.Size = New Size(950, 23)
+        lblDemoName.TabIndex = 0
+        lblDemoName.Text = "Demo Name"
+        lblDemoName.TextAlign = ContentAlignment.MiddleLeft
+        ' 
+        ' lblDemoImage
+        ' 
+        lblDemoImage.BackColor = SystemColors.ControlLight
+        lblDemoImage.Location = New Point(26, 65)
+        lblDemoImage.Name = "lblDemoImage"
+        lblDemoImage.Size = New Size(32, 32)
+        lblDemoImage.TabIndex = 1
+        ' 
+        ' MenuRow
+        ' 
+        Me.BackColor = SystemColors.Window
+        Me.Controls.Add(lblDemoDesc)
+        Me.Controls.Add(btnDemo)
+        Me.Controls.Add(lblDemoName)
+        Me.Controls.Add(lblDemoImage)
         Me.Name = "MenuRow"
-        Me.Size = New System.Drawing.Size(700, 141)
+        Me.Size = New Size(950, 141)
         Me.ResumeLayout(False)
 
     End Sub

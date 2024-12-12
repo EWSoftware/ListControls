@@ -2,7 +2,7 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : MultiColumnDropDown.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 10/29/2024
+// Updated : 12/10/2024
 // Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a multi-column combo box drop-down form that handles the display of the multiple columns
@@ -19,13 +19,8 @@
 // 05/01/2006  EFW  Implemented the IDropDown.Scroll method
 //===============================================================================================================
 
-using System;
-using System.ComponentModel;
-using System.Drawing;
 using System.Globalization;
-using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 
 using EWSoftware.ListControls.UnsafeNative;
 
@@ -35,7 +30,7 @@ namespace EWSoftware.ListControls
     /// This is a drop-down list form that shows when the down arrow is clicked on the multi-column combo box
     /// </summary>
     [ToolboxItem(false)]
-    internal class MultiColumnDropDown : UserControl, IDropDown
+    internal sealed class MultiColumnDropDown : UserControl, IDropDown
     {
         #region Value item class
         //=====================================================================
@@ -45,7 +40,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <remarks>Since value types and strings do not have a property that the data grid view can use to
         /// obtain a value for display, this class acts as a surrogate for them.</remarks>
-        internal class ValueItem
+        internal sealed class ValueItem
         {
             /// <summary>
             /// This property is used to return the value
@@ -69,7 +64,7 @@ namespace EWSoftware.ListControls
         private readonly DropDownDataGrid dgDropDown;
         private readonly MultiColumnComboBox owner;
         private Point dragOffset;
-        private Cursor priorCursor;
+        private Cursor priorCursor = null!;
         private bool transferringFocus, isCreating, hasInitialized;
         private int startIndex;
 
@@ -393,7 +388,7 @@ namespace EWSoftware.ListControls
 
             // Make sure we are within the screen bounds.  Take into account the working area of all screens.
             // Note that in certain setups, the leftmost/uppermost screen(s) may have negative coordinates.
-            Rectangle workingArea, screen = new Rectangle();
+            Rectangle workingArea, screen = new();
 
             foreach(Screen s in Screen.AllScreens)
             {
@@ -412,7 +407,7 @@ namespace EWSoftware.ListControls
                     screen.Height = Math.Abs(workingArea.Y) + workingArea.Height;
             }
 
-            Point pOwner = owner.Parent.PointToScreen(owner.Location);
+            Point pOwner = owner.Parent!.PointToScreen(owner.Location);
             pOwner.Y += owner.Height;
 
             Point p = pOwner;
@@ -583,7 +578,7 @@ namespace EWSoftware.ListControls
                     return;
                 }
 
-                Rectangle r = new Rectangle(this.Size.Width - 16, this.Size.Height - 16, 16, 16);
+                Rectangle r = new(this.Size.Width - 16, this.Size.Height - 16, 16, 16);
 
                 if(e.Button == MouseButtons.Left && r.Contains(p))
                     dragOffset = new Point(this.Width - p.X, this.Height - p.Y);
@@ -639,7 +634,7 @@ namespace EWSoftware.ListControls
                     }
                 }
 
-                Rectangle r = new Rectangle(this.Size.Width - 16, this.Size.Height - 16, 16, 16);
+                Rectangle r = new(this.Size.Width - 16, this.Size.Height - 16, 16, 16);
 
                 if(r.Contains(p))
                 {
@@ -688,7 +683,7 @@ namespace EWSoftware.ListControls
         /// </summary>
         /// <param name="sender">The sender of the event</param>
         /// <param name="e">The event arguments</param>
-        private void dgDropDown_MouseUp(object sender, MouseEventArgs e)
+        private void dgDropDown_MouseUp(object? sender, MouseEventArgs e)
         {
             if(e.Button == MouseButtons.Left)
             {

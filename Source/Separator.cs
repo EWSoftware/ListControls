@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : Separator.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 09/19/2014
-// Note    : Copyright 2005-2014, Eric Woodruff, All rights reserved
+// Updated : 12/02/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a simple control used to display a separator between rows in the DataList control
 //
@@ -17,17 +17,13 @@
 // 03/20/2005  EFW  Created the code
 //===============================================================================================================
 
-using System.Drawing;
-using System.ComponentModel;
-using System.Windows.Forms;
-
 namespace EWSoftware.ListControls
 {
 	/// <summary>
 	/// This is a simple control used to display a separator between rows in the <see cref="DataList"/> control
 	/// </summary>
 	[ToolboxItem(false)]
-	internal class Separator : System.Windows.Forms.Control
+	internal sealed class Separator : System.Windows.Forms.Control
 	{
         /// <summary>
         /// Constructor

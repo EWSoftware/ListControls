@@ -2,8 +2,8 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : DataListTestForm.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/06/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/07/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This is used to demonstrate the DataList and TemplateControl controls.
 //
@@ -17,29 +17,20 @@
 // 04/17/2005  EFW  Created the code
 //===============================================================================================================
 
-using System;
-using System.ComponentModel;
-using System.Data;
-using System.Data.OleDb;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
-using EWSoftware.ListControls;
+using System.Text;
 
 namespace ListControlDemoCS
 {
-	/// <summary>
-	/// This is used to demonstrate the DataList and TemplateControl controls.
-	/// </summary>
-	public partial class DataListTestForm : System.Windows.Forms.Form
-	{
+    /// <summary>
+    /// This is used to demonstrate the DataList and TemplateControl controls.
+    /// </summary>
+    public partial class DataListTestForm : Form
+    {
         #region Private data members
         //=====================================================================
 
-        private OleDbConnection dbConn;
-        private OleDbDataAdapter daAddresses;
-        private DataSet dsAddresses;
+        private DemoDataContext dc = null!;
 
         #endregion
 
@@ -50,11 +41,8 @@ namespace ListControlDemoCS
         /// Constructor
         /// </summary>
 		public DataListTestForm()
-		{
-			InitializeComponent();
-
-            // Create the data source for the demo
-            CreateDataSource();
+        {
+            InitializeComponent();
 
             // Set the data list as the object for the property grid
             pgProps.SelectedObject = dlList;
@@ -62,93 +50,6 @@ namespace ListControlDemoCS
 
             // Load data by default
             btnLoad_Click(this, EventArgs.Empty);
-		}
-        #endregion
-
-        #region Helper methods
-        //=====================================================================
-
-        /// <summary>
-        /// Create the data source for the demo.
-        /// </summary>
-        /// <remarks>You can use the designer to create the data source and use strongly typed data sets.  For
-        /// this demo, we'll do it by hand.
-        /// </remarks>
-        private void CreateDataSource()
-        {
-            // The test database should be in the project folder
-            dbConn = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=.\TestData.mdb");
-            daAddresses = new OleDbDataAdapter();
-            dsAddresses = new DataSet();
-
-            // Set the table name
-            daAddresses.TableMappings.Add("Table", "Addresses");
-
-            // In a real application we wouldn't use literal SQL but we will for the demo
-            daAddresses.SelectCommand = new OleDbCommand("Select * From Addresses Order By LastName", dbConn);
-
-            daAddresses.DeleteCommand = new OleDbCommand("Delete From Addresses Where ID = @paramID", dbConn);
-            daAddresses.DeleteCommand.Parameters.Add(new OleDbParameter("@paramID", OleDbType.Integer, 0,
-                ParameterDirection.Input, false, 0, 0, "ID", DataRowVersion.Original, null));
-
-            daAddresses.InsertCommand = new OleDbCommand(
-                "INSERT INTO Addresses (FirstName, LastName, Address, City, State, Zip, SumValue) " +
-                "VALUES (@paramFN, @paramLN, @paramAddress, @paramCity, @paramState, @paramZip, @paramSumValue)",
-                dbConn);
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramFirstName", OleDbType.VarWChar,
-                20, "FirstName"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramLastName", OleDbType.VarWChar,30,
-                "LastName"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramAddress", OleDbType.VarWChar, 50,
-                "Address"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramCity", OleDbType.VarWChar, 20,
-                "City"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramState", OleDbType.VarWChar, 2,
-                "State"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramZip", OleDbType.VarWChar, 10,
-                "Zip"));
-            daAddresses.InsertCommand.Parameters.Add(new OleDbParameter("@paramSumValue", OleDbType.Integer, 0,
-                "SumValue"));
-
-            daAddresses.UpdateCommand = new OleDbCommand(
-                "UPDATE Addresses SET FirstName = @paramFirstName, LastName = @paramLastName, " +
-                "Address = @paramAddress, City = @paramCity, State = @paramState, Zip = @paramZip, " +
-                "SumValue = @paramSumValue WHERE ID = @paramID", dbConn);
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramFirstName", OleDbType.VarWChar,
-                20, "FirstName"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramLastName", OleDbType.VarWChar, 30,
-                "LastName"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramAddress", OleDbType.VarWChar, 50,
-                "Address"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramCity", OleDbType.VarWChar, 20,
-                "City"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramState", OleDbType.VarWChar, 2,
-                "State"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramZip", OleDbType.VarWChar, 10,
-                "Zip"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramSumValue", OleDbType.Integer, 0,
-                "SumValue"));
-            daAddresses.UpdateCommand.Parameters.Add(new OleDbParameter("@paramID", OleDbType.Integer, 0,
-                ParameterDirection.Input, false, 0, 0, "ID", System.Data.DataRowVersion.Original, null));
-
-            // Fill in the schema for auto-increment etc
-            daAddresses.FillSchema(dsAddresses, SchemaType.Mapped);
-
-            // Connect the Row Updated event so that we can retrieve the new primary key values as they are
-            // identity values.
-            daAddresses.RowUpdated += daAddresses_RowUpdated;
-
-            // Load the state codes for the row template's shared data source
-            using(var daStates = new OleDbDataAdapter("Select State, StateDesc From States", dbConn))
-            {
-                DataTable dtStates = new DataTable();
-                daStates.Fill(dtStates);
-
-                // Add a blank row to allow no selection
-                dtStates.Rows.InsertAt(dtStates.NewRow(), 0);
-
-                dlList.SharedDataSources.Add("States", dtStates.DefaultView);
-            }
         }
         #endregion
 
@@ -156,34 +57,17 @@ namespace ListControlDemoCS
         //=====================================================================
 
         /// <summary>
-        /// Get the new primary key on added rows
-        /// </summary>
-        /// <param name="sender">The sender of the event</param>
-        /// <param name="e">The event arguments</param>
-        private void daAddresses_RowUpdated(object sender, OleDbRowUpdatedEventArgs e)
-        {
-            if(e.Status == UpdateStatus.Continue && e.StatementType == StatementType.Insert)
-            {
-                using(var cmd = new OleDbCommand("Select @@Identity", dbConn))
-                {
-                    e.Row["ID"] = cmd.ExecuteScalar();
-                    e.Row.AcceptChanges();
-                }
-            }
-        }
-
-        /// <summary>
         /// Change the color of the row based on the zip code when a row is data bound
         /// </summary>
         /// <param name="s">The sender of the event</param>
         /// <param name="e">The event arguments</param>
 		private void dlList_ItemDataBound(object sender, DataListEventArgs e)
-		{
-		    if(dlList[e.Index, "Zip"].ToString() == "98122")
-                e.Item.BackColor = Color.LightSteelBlue;
+        {
+            if(dlList[e.Index, nameof(Address.Zip)]?.ToString() == "98122")
+                e.Item!.BackColor = Color.LightSteelBlue;
             else
-                e.Item.BackColor = SystemColors.Control;
-		}
+                e.Item!.BackColor = SystemColors.Control;
+        }
 
         /// <summary>
         /// Refresh the display and the data list settings after they have changed
@@ -205,7 +89,7 @@ namespace ListControlDemoCS
         {
             DialogResult dr;
 
-            if(dlList.HasChanges)
+            if(dc.ChangeTracker.HasChanges())
             {
                 dr = MessageBox.Show("Do you want to save your changes?  Click YES to save your changes, NO " +
                     "to discard them, or CANCEL to stay here and make further changes.", "DataList Test",
@@ -214,14 +98,16 @@ namespace ListControlDemoCS
                 if(dr == DialogResult.Cancel)
                     e.Cancel = true;
                 else
+                {
                     if(dr == DialogResult.Yes)
                     {
                         btnSave_Click(sender, e);
 
                         // If it didn't work, stay here
-                        if(dlList.HasChanges)
+                        if(dc.ChangeTracker.HasChanges())
                             e.Cancel = true;
                     }
+                }
             }
         }
 
@@ -231,47 +117,57 @@ namespace ListControlDemoCS
         /// <param name="s">The sender of the event</param>
         /// <param name="e">The event arguments</param>
 		private void btnLoad_Click(object sender, EventArgs e)
-		{
+        {
             DialogResult dr;
 
             try
             {
-                if(dlList.DataSource == null)
+                if(dc?.ChangeTracker.HasChanges() ?? false)
                 {
-                    // Initial load
-                    daAddresses.Fill(dsAddresses);
+                    dr = MessageBox.Show("Do you want to save your changes?  Click YES to save your " +
+                        "changes, NO to discard them, or CANCEL to stay here and make further changes.",
+                        "DataList Test", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question,
+                        MessageBoxDefaultButton.Button3);
 
-                    // We could set each property individually, but this is more efficient.  Since we are using
-                    // the DataSet as the data source, we must specify the data member as well.
-                    dlList.SetDataBinding(dsAddresses, "Addresses", typeof(AddressRow), typeof(AddressHeader),
-                        typeof(AddressFooter));
-                }
-                else
-                {
-                    if(dlList.HasChanges)
+                    if(dr == DialogResult.Cancel)
+                        return;
+
+                    if(dr == DialogResult.Yes)
                     {
-                        dr = MessageBox.Show("Do you want to save your changes?  Click YES to save your " +
-                            "changes, NO to discard them, or CANCEL to stay here and make further changes.",
-                            "DataList Test", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question,
-                            MessageBoxDefaultButton.Button3);
+                        btnSave_Click(sender, e);
 
-                        if(dr == DialogResult.Cancel)
+                        // If it didn't work, don't do anything
+                        if(dc.ChangeTracker.HasChanges())
                             return;
-
-                        if(dr == DialogResult.Yes)
-                        {
-                            btnSave_Click(sender, e);
-
-                            // If it didn't work, don't do anything
-                            if(dlList.HasChanges)
-                                return;
-                        }
                     }
-
-                    // Reload it
-                    dsAddresses.Clear();
-                    daAddresses.Fill(dsAddresses);
                 }
+
+                // Reload the data.  Create a new data context since we're reloading the information.  The
+                // old context may have changes we no longer care about.
+                dc = new DemoDataContext();
+
+                if(!dlList.SharedDataSources.ContainsKey("States"))
+                {
+                    var states = dc.StateCodes.ToList();
+
+                    states.Insert(0, new StateCode { State = String.Empty, StateDesc = String.Empty });
+
+                    dlList.SharedDataSources.Add("States", states);
+                }
+
+                // For entity framework we need to load the entities
+                dc.Addresses.Load();
+
+                // Apply a sort by last name
+                var pdc = TypeDescriptor.GetProperties(typeof(Address));
+                var pd = pdc[nameof(Address.LastName)];
+                var dataSource = dc.Addresses.Local.ToObservableCollection().ToBindingList();
+
+                ((IBindingList)dataSource).ApplySort(pd!, ListSortDirection.Ascending);
+
+                // We could set each binding property individually, but this is more efficient
+                dlList.SetDataBinding(dataSource, null, typeof(AddressRow), typeof(AddressHeader),
+                    typeof(AddressFooter));
             }
             catch(Exception ex)
             {
@@ -279,7 +175,7 @@ namespace ListControlDemoCS
             }
 
             dlList.Focus();
-		}
+        }
 
         /// <summary>
         /// Save the changes
@@ -291,13 +187,22 @@ namespace ListControlDemoCS
             if(dlList.DataSource == null)
                 btnLoad_Click(sender, e);
             else
+            {
                 if(dlList.IsValid)
                 {
                     // We must commit any pending changes
                     dlList.CommitChanges();
 
-                    daAddresses.Update(dsAddresses);
+                    // There may be a row added for the placeholder that needs removing
+                    var removeRows = dc.ChangeTracker.Entries<Address>().Select(a => a.Entity).Where(
+                        a => a.LastName == null).ToList();
+
+                    if(removeRows.Count != 0)
+                        dc.RemoveRange(removeRows);
+
+                    dc.SaveChanges();
                 }
+            }
         }
 
         /// <summary>
@@ -316,12 +221,17 @@ namespace ListControlDemoCS
                 // committed and adding a new row here puts this one ahead of it.
                 dlList.CommitChanges();
 
-                DataRow r = dsAddresses.Tables[0].NewRow();
+                var bl = (BindingList<Address>)dlList.DataSource;
 
-                r["FirstName"] = "External";
-                r["LastName"] = "Row";
+                bl.Add(new Address
+                {
+                    FirstName = "External",
+                    LastName = "Row",
+                    LastModified = BitConverter.GetBytes(DateTime.Now.Ticks)
+                });
 
-                dsAddresses.Tables[0].Rows.Add(r);
+                dlList.MoveTo(RowPosition.LastRow);
+                dlList.Focus();
             }
         }
 
@@ -338,19 +248,17 @@ namespace ListControlDemoCS
             {
                 // Use the currency manager as the data set's row collection may have been changed and the
                 // indexes won't match up to the actual rows.
-                CurrencyManager cm = dlList.ListManager;
+                CurrencyManager cm = dlList.ListManager!;
 
                 int row = (int)udcRowNumber.Value;
 
                 if(row > 0 && row <= cm.Count)
                 {
-                    DataRowView drv = (DataRowView)cm.List[row - 1];
+                    dlList.CancelChanges();
 
-                    // If it's an uncommitted new row, just cancel the changes.  Otherwise, delete the row.
-                    if(drv.IsNew)
-                        dlList.CancelChanges();
-                    else
-                        drv.Row.Delete();
+                    var bl = (BindingList<Address>)dlList.DataSource;
+
+                    bl.RemoveAt(row - 1);
                 }
                 else
                     MessageBox.Show("Not a valid row number");
@@ -373,14 +281,17 @@ namespace ListControlDemoCS
 
                 // Use the currency manager as the data set's row collection may have been changed and the
                 // indexes won't match up to the actual rows.
-                CurrencyManager cm = dlList.ListManager;
+                CurrencyManager cm = dlList.ListManager!;
 
                 int row = (int)udcRowNumber.Value;
 
                 if(row > 0 && row <= cm.Count)
                 {
-                    DataRowView drv = (DataRowView)cm.List[row - 1];
-                    drv.Row["Address"] = "Modified externally";
+                    var address = (Address)cm.List[row - 1]!;
+                    address.StreetAddress = "Modified externally";
+
+                    dlList.MoveTo(row - 1);
+                    dlList.Focus();
                 }
                 else
                     MessageBox.Show("Not a valid row number");
@@ -446,7 +357,7 @@ namespace ListControlDemoCS
         /// <param name="e">The event arguments</param>
         private void txtValue_DragEnter(object sender, DragEventArgs e)
         {
-            if(e.Data.GetDataPresent(typeof(DataListBeginDragEventArgs)))
+            if(e.Data?.GetDataPresent(typeof(DataListBeginDragEventArgs)) ?? false)
                 e.Effect = DragDropEffects.Copy;
             else
                 e.Effect = DragDropEffects.None;
@@ -459,19 +370,16 @@ namespace ListControlDemoCS
         /// <param name="e">The event arguments</param>
         private void txtValue_DragDrop(object sender, DragEventArgs e)
         {
-            DataRowView drv;
-            StringBuilder sb;
-
-            if(!e.Data.GetDataPresent(typeof(DataListBeginDragEventArgs)))
+            if(!(e.Data?.GetDataPresent(typeof(DataListBeginDragEventArgs)) ?? false))
                 return;
 
-            DataListBeginDragEventArgs dragArgs = (DataListBeginDragEventArgs)e.Data.GetData(
-                typeof(DataListBeginDragEventArgs));
+            DataListBeginDragEventArgs dragArgs = (DataListBeginDragEventArgs)e.Data!.GetData(
+                typeof(DataListBeginDragEventArgs))!;
 
-            sb = new StringBuilder("Dropped IDs: ");
+            var sb = new StringBuilder("Dropped IDs: ");
 
             // Use the data list's currency manager
-            CurrencyManager cm = dlList.ListManager;
+            CurrencyManager cm = dlList.ListManager!;
 
             // Just list the IDs of the selection
             for(int idx = dragArgs.SelectionStart; idx <= dragArgs.SelectionEnd; idx++)
@@ -479,9 +387,9 @@ namespace ListControlDemoCS
                 if(idx != dragArgs.SelectionStart)
                     sb.Append(',');
 
-                drv = (DataRowView)cm.List[idx];
+                var address = (Address)cm.List[idx]!;
 
-                sb.Append(drv["ID"]);
+                sb.Append(address.ID);
             }
 
             txtValue.Text = sb.ToString();
@@ -494,10 +402,10 @@ namespace ListControlDemoCS
         /// <param name="e">The event arguments</param>
         private void dlList_DragEnter(object sender, DragEventArgs e)
         {
-            if(!e.Data.GetDataPresent(typeof(DataListBeginDragEventArgs)))
-                e.Effect = DragDropEffects.None;
-            else
+            if(e.Data?.GetDataPresent(typeof(DataListBeginDragEventArgs)) ?? false)
                 e.Effect = DragDropEffects.Move;
+            else
+                e.Effect = DragDropEffects.None;
         }
 
         /// <summary>
@@ -507,14 +415,16 @@ namespace ListControlDemoCS
         /// <param name="e">The event arguments</param>
         private void dlList_DragOver(object sender, DragEventArgs e)
         {
-            DataListBeginDragEventArgs dragArgs = (DataListBeginDragEventArgs)e.Data.GetData(
-                typeof(DataListBeginDragEventArgs));
+            DataListBeginDragEventArgs dragArgs = (DataListBeginDragEventArgs)e.Data!.GetData(
+                typeof(DataListBeginDragEventArgs))!;
 
             DataListHitTestInfo hti = dragArgs.Source.HitTest(dlList.PointToClient(Cursor.Position));
 
             if((hti.Type & DataListHitType.RowOrHeader) != 0 && (hti.Row < dragArgs.SelectionStart ||
               hti.Row > dragArgs.SelectionEnd))
+            {
                 e.Effect = DragDropEffects.Move;
+            }
             else
                 e.Effect = DragDropEffects.None;
         }
@@ -526,11 +436,11 @@ namespace ListControlDemoCS
         /// <param name="e">The event arguments</param>
         private void dlList_DragDrop(object sender, DragEventArgs e)
         {
-            if(!e.Data.GetDataPresent(typeof(DataListBeginDragEventArgs)))
+            if(!(e.Data?.GetDataPresent(typeof(DataListBeginDragEventArgs)) ?? false))
                 return;
 
-            DataListBeginDragEventArgs dragArgs = (DataListBeginDragEventArgs)e.Data.GetData(
-                typeof(DataListBeginDragEventArgs));
+            DataListBeginDragEventArgs dragArgs = (DataListBeginDragEventArgs)e.Data!.GetData(
+                typeof(DataListBeginDragEventArgs))!;
 
             DataListHitTestInfo hti = dragArgs.Source.HitTest(dlList.PointToClient(Cursor.Position));
 

@@ -2,8 +2,8 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : NativeToolTipWindow.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 04/09/2023
-// Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+// Updated : 12/08/2024
+// Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a native tool tip window used by the DataList control as the tracking tool tip when
 // dragging its vertical scrollbar.
@@ -18,17 +18,15 @@
 // 02/20/2005  EFW  Created the code
 //===============================================================================================================
 
-using System;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
 namespace EWSoftware.ListControls.UnsafeNative
 {
-	/// <summary>
-	/// This represents a native tool tip window used by the <see cref="DataList"/> control as the tracking tool
+    /// <summary>
+    /// This represents a native tool tip window used by the <see cref="DataList"/> control as the tracking tool
     /// tip when dragging its vertical scrollbar.
-	/// </summary>
-	internal sealed class NativeToolTipWindow : NativeWindow
+    /// </summary>
+    internal sealed class NativeToolTipWindow : NativeWindow
 	{
         #region Private class constants and data members
         //=====================================================================
@@ -97,7 +95,7 @@ namespace EWSoftware.ListControls.UnsafeNative
 
             owner = window;
 
-            CreateParams cp = new CreateParams
+            CreateParams cp = new()
             {
                 Parent = owner.Handle,
                 ClassName = TOOLTIP_CLASS,
