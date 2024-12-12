@@ -2,7 +2,7 @@
 // System  : EWSoftware Data List Control Demonstration Applications
 // File    : ProductInfo.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 12/02/2024
+// Updated : 12/11/2024
 // Note    : Copyright 2024, Eric Woodruff, All rights reserved
 //
 // This is class is used to contain demo data from the test database for some of the example forms
@@ -76,6 +76,19 @@ namespace ListControlDemoCS.Database
         /// <summary>
         /// The discontinued flag
         /// </summary>
+        [DisplayName("Discontinued?")]
         public bool Discontinued { get; set; }
+
+        /// <summary>
+        /// This is just a test column use to demonstrate the Browsable(false) attribute support
+        /// </summary>
+        [Browsable(false)]
+        public bool HiddenColumn { get; set; }
+
+        /// <summary>
+        /// This is used to get or set the row time stamp (row version)
+        /// </summary>
+        [Timestamp, Browsable(false)]
+        public byte[]? LastModified { get; set; }
     }
 }

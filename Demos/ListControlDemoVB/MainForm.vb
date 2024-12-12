@@ -49,7 +49,7 @@ Public Partial Class MainForm
 
     End Sub
 
-#If NET40
+#If NET48
     ' The main entry point for the application
     <STAThread> _
     Shared Sub Main()

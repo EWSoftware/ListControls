@@ -2,7 +2,7 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : MultiColumnDropDown.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 12/10/2024
+// Updated : 12/11/2024
 // Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a multi-column combo box drop-down form that handles the display of the multiple columns
@@ -221,11 +221,36 @@ namespace EWSoftware.ListControls
             StringCollection filter = owner.ColumnFilter;
             int idx = 0;
             var sb = new StringBuilder();
-
+#if NET40
+            // .NET 4.8 doesn't automatically apply the Browsable and DisplayName attributes so we need
+            // to do it.
+            var properties = owner.DataManager?.GetItemProperties();
+#endif
             foreach(DataGridViewColumn col in dgDropDown.Columns)
             {
                 if(filter.Count == 0 || filter.Contains(col.DataPropertyName))
                 {
+#if NET40
+                    var pd = properties?.Find(col.DataPropertyName, true);
+                    string? displayName = null;
+
+                    if(pd != null)
+                    {
+                        // If not browsable, hide the column
+                        if(!pd.IsBrowsable)
+                        {
+                            col.Visible = false;
+                            continue;
+                        }
+
+                        // If a display name is specified, used it as the column header text
+                        if(!String.IsNullOrWhiteSpace(pd.DisplayName) && !pd.DisplayName.Equals(
+                          col.DataPropertyName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            displayName = pd.DisplayName;
+                        }
+                    }
+#endif
                     col.Visible = true;
                     col.SortMode = DataGridViewColumnSortMode.NotSortable;
 
@@ -265,29 +290,45 @@ namespace EWSoftware.ListControls
                             col.DefaultCellStyle.Format = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
                             break;
 
+                        case TypeCode.Object:
+                            // We can't show arrays or other complex types so just hide them
+                            col.Visible = false;
+                            continue;
+
                         default:
                             break;
                     }
 
                     if(owner.ColumnHeadersVisible)
                     {
-                        // Format the caption by inserting spaces between words
-                        sb.Clear();
-
-                        for(int charIdx = 0; charIdx < col.DataPropertyName.Length; charIdx++)
+#if NET40
+                        if(!String.IsNullOrWhiteSpace(displayName))
+                            col.HeaderText = displayName;
+                        else
                         {
-                            if(Char.IsUpper(col.DataPropertyName[charIdx]) && charIdx > 0 &&
-                              !Char.IsUpper(col.DataPropertyName[charIdx - 1]))
+#endif
+                            // Format the caption by inserting spaces between words
+                            if(col.HeaderText == col.DataPropertyName)
                             {
-                                sb.Append(' ');
+                                sb.Clear();
+
+                                for(int charIdx = 0; charIdx < col.DataPropertyName.Length; charIdx++)
+                                {
+                                    if(Char.IsUpper(col.DataPropertyName[charIdx]) && charIdx > 0 &&
+                                      !Char.IsUpper(col.DataPropertyName[charIdx - 1]))
+                                    {
+                                        sb.Append(' ');
+                                    }
+
+                                    sb.Append(col.DataPropertyName[charIdx]);
+                                }
+
+                                col.HeaderText = sb.ToString();
                             }
-
-                            sb.Append(col.DataPropertyName[charIdx]);
+#if NET40
                         }
-
-                        col.HeaderText = sb.ToString();
+#endif
                     }
-
                     // Give the user a chance to adjust the formatting before sizing the column
                     owner.OnFormatDropDownColumn(new DataGridViewColumnEventArgs(col));
 
