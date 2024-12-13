@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="ed73d559-a2b7-4822-a42a-f939a8f6ab7e" revisionNumber="1">
+	<developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+		<introduction>
+			<para>Release notes for version 2024.12.12.0</para>
+		</introduction>
+
+		<section>
+			<title>Changes in This Release</title>
+			<content>
+
+				<list class="bullet">
+					<listItem>
+						<para>Removed support for .NET 6 and added support for .NET 8 and later.</para>
+					</listItem>
+
+					<listItem>
+						<para>Enabled nullable reference types in all projects and updated the classes to support them.</para>
+					</listItem>
+
+					<listItem>
+						<para>Removed the old Access MDB demo database and replaced it with a SQL Server database.  Updated
+the demos to use Entity Framework to access the demo database to be more inline with what people are more likely
+to be using.</para>
+					</listItem>
+
+					<listItem>
+						<para>Fixed <codeInline>MultiColumnComboBox</codeInline> so that it sets the highlight properly in
+the dropdown when first shown when using a column filter.</para>
+					</listItem>
+
+					<listItem>
+						<para>Fixed some issues in the list controls related to accessing internal framework members through
+reflection due to changes in the internal member names.</para>
+					</listItem>
+
+					<listItem>
+						<para>Added support for the <codeInline>Browsable(false)</codeInline> attribute to automatically hide
+columns and the <codeInline>DisplayName</codeInline> attribute to change the header text for columns in the
+multi-column combo box dropdown in .NET 4.8 (.NET 8.0 does this by default).</para>
+					</listItem>
+
+					<listItem>
+						<para>When using the flat or popup style, the combo boxes will no longer draw a border when disabled
+when the border style is set to None and using a user-defined background color so that they blend better with
+their containing control or form.</para>
+					</listItem>
+				</list>
+
+			</content>
+		</section>
+
+		<relatedTopics>
+			<link xlink:href="4466344c-0933-476c-9743-63008a2d8659" />
+		</relatedTopics>
+
+	</developerConceptualDocument>
+</topic>

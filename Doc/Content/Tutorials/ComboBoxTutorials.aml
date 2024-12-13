@@ -230,18 +230,21 @@ not appear in the list of values.</para>
 			<title>MultiColumnComboBox Usage</title>
 			<content>
 				<para>By default, the <codeInline>MultiColumnComboBox</codeInline> will display all columns from its data
-source with some default formatting.  You can use the properties in the <codeInline>DropDown</codeInline>
-category to customize the appearance of the drop-down and the columns that are displayed in it.  A simple way to
-limit the columns displayed is to use the <codeInline>ColumnFilter</codeInline> property to let it know which
-columns should appear in the drop-down.  The columns will be auto-sized based on the longest value in each
-column.  Note that even though a column filter is in place for the drop-down you can still access any field in
-the data source using the item indexer as shown earlier.  You can set the filter at design-time by selecting the
-property and entering the column names to display one per line using the collection editor.  You can also specify
-the column filter at runtime using code similar to the following:</para>
+source with some default formatting.  Any property in the data source with a <codeInline>Browsable(false)</codeInline>
+attribute will be omitted.  Properties with a <codeInline>DisplayName</codeInline> attribute will set the header
+text to the given display name if column headers are shown in the dropdown.  You can use the properties in the
+<codeInline>DropDown</codeInline> category to customize the appearance of the drop-down and the columns that are
+displayed in it.  Another way to limit the columns displayed is to use the <codeInline>ColumnFilter</codeInline>
+property to let it know which columns should appear in the drop-down.</para>
+
+				<para>Note that even though a column filter is in place for the drop-down you can still access any field
+in the data source using the item indexer as shown earlier.  You can set the filter at design-time by selecting
+the property and entering the column names to display one per line using the collection editor.  You can also
+specify the column filter at runtime using code similar to the following:</para>
 
 <code language="cs" title="C#">
 // Limit the drop-down to the vendor name and contact name
-cboVendor.ColumnFilter.AddRange(new string[] { "VendorName", "Contact" });
+cboVendor.ColumnFilter.AddRange(new[] { "VendorName", "Contact" });
 </code>
 
 <code language="vbnet" title="VB.NET">
@@ -249,77 +252,12 @@ cboVendor.ColumnFilter.AddRange(new string[] { "VendorName", "Contact" });
 cboVendor.ColumnFilter.AddRange(New String() { "VendorName", "Contact" })
 </code>
 
-				<para>For full control over the visual style of the drop-down along with which columns are displayed,
-their order, and their individual styles, you can use the <codeInline>DropDownFormat</codeInline> property.  The
-basic properties in it allows you to specify the color and grid line settings and whether or not column and row
-headers are visible. By selecting the <codeInline>GridColumnStyles</codeInline> property of
-<codeInline>DropDownFormat</codeInline> you can also specify the columns to display in the drop-down along with
-their formatting options such as alignment, column header text, width, etc.  When specifying column definitions
-in this manner, there is no need to use the <codeInline>ColumnFilter</codeInline> property.</para>
-
-				<para>When defining grid column styles, you can use the standard text box or boolean data grid columns
-supplied with .NET or you can use custom third-party column types such as label columns, image columns, progress
-bar columns, etc (all drop-down data is read-only).  At design-time, only the standard text box and boolean
-columns are accessible.  To use third-party column types, you should add them to the
-<codeInline>DropDownFormat.GridColumnStyles</codeInline> collection using code.</para>
-
-				<para>When specifying column definitions using grid column styles, setting their <codeInline>Width</codeInline>
-property to -1 will cause the drop-down to size the column to the preferred width. Setting the width to zero will
-cause the drop-down to size the column to the longest value in the data source for the column.  Setting the width
-to any other positive value will size the column to the specified width.  As with the column filter, you can set
-the grid column styles at runtime using code.  An example is shown below.</para>
-
-<code language="cs" title="C#">
-// These can be created and set at design-time too
-DataGridTextBoxColumn dgtbItemName = new DataGridTextBoxColumn();
-DataGridTextBoxColumn dgtbExpireDate = new DataGridTextBoxColumn();
-DataGridBoolColumn dgbcInStock = new DataGridBoolColumn();
-
-// Set the column properties
-dgtbItemName.HeaderText = "Item Name";
-dgtbItemName.MappingName = "ItemName";
-dgtbItemName.Width = 0;     // Size to widest item
-
-dgtbExpireDate.Format = "MM/dd/yyyy";
-dgtbExpireDate.HeaderText = "Expiration Date";
-dgtbExpireDate.MappingName = "ExpireDate";
-dgtbExpireDate.Width = -1;  // Size to preferred width
-
-dgbcInStock.Alignment = HorizontalAlignment.Center;
-dgbcInStock.HeaderText = "In Stock";
-dgbcInStock.MappingName = "InStockYN";
-dgtbExpireDate.Width = 100; // Fixed width
-
-// Add the column definitions to the combo box control
-cboItems.DropDownFormat.GridColumnStyles.AddRange(new DataGridColumnStyle[] {
-    dgtbItemName, dgtbExpireDate, dgbcInStock });
-</code>
-
-<code language="vbnet" title="VB.NET">
-' These can be created and set at design-time too
-Dim dgtbItemName As New DataGridTextBoxColumn()
-Dim dgtbExpireDate As New DataGridTextBoxColumn()
-Dim dgbcInStock As New DataGridBoolColumn()
-
-' Set the column properties
-dgtbItemName.HeaderText = "Item Name"
-dgtbItemName.MappingName = "ItemName"
-dgtbItemName.Width = 0      ' Size to widest item
-
-dgtbExpireDate.Format = "MM/dd/yyyy";
-dgtbExpireDate.HeaderText = "Expiration Date";
-dgtbExpireDate.MappingName = "ExpireDate";
-dgtbExpireDate.Width = -1   ' Size to preferred width
-
-dgbcInStock.Alignment = HorizontalAlignment.Center;
-dgbcInStock.HeaderText = "In Stock";
-dgbcInStock.MappingName = "InStockYN";
-dgtbExpireDate.Width = 100  ' Fixed width
-
-' Add the column definitions to the combo box control
-cboItems.DropDownFormat.GridColumnStyles.AddRange(new DataGridColumnStyle() {
-    dgtbItemName, dgtbExpireDate, dgbcInStock })
-</code>
+				<para>For full control over the visual style of the columns you can use the
+<codeEntityReference qualifyHint="false">E:EWSoftware.ListControls.MultiColumnComboBox.FormatDropDownColumn</codeEntityReference>
+event.  When specifying column definitions using the event, setting their <codeInline>AutoSizeMode</codeInline>
+property to <codeInline>DataGridViewAutoSizeColumnMode.None</codeInline> will prevent the control from
+auto-resizing the column.  If set to another value, the drop-down will size the column accordingly.  If left as
+<codeInline>NotSet</codeInline>, it resizes them to the longest value in the data source for the column.</para>
 
 			</content>
 		</section>

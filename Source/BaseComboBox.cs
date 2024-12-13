@@ -2,7 +2,7 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : BaseComboBox.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 12/10/2024
+// Updated : 12/12/2024
 // Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains an abstract base class for use in creating the MultiColumnComboBox and UserControlComboBox
@@ -1607,8 +1607,13 @@ namespace EWSoftware.ListControls
                 {
                     case FlatStyle.Flat:
                     case FlatStyle.Popup:
-                        ControlPaint.DrawBorder(g, rectBorder, (this.Enabled) ? SystemColors.Window :
-                            SystemColors.ControlDark, ButtonBorderStyle.Solid);
+                        // Don't draw the border if set to none unless disabled and using the default background color
+                        if(this.BorderStyle != BorderStyle.None || (state == DrawItemState.Disabled &&
+                          backColor == SystemColors.Control))
+                        {
+                            ControlPaint.DrawBorder(g, rectBorder, this.Enabled ? SystemColors.Window :
+                                SystemColors.ControlDark, ButtonBorderStyle.Solid);
+                        }
                         break;
 
                     default:
@@ -1633,7 +1638,7 @@ namespace EWSoftware.ListControls
                             g.FillPolygon(SystemBrushes.ControlDark, arrow);
                     }
                     else
-                        ControlPaint.DrawComboButton(g, rectButton, (this.Enabled) ? ButtonState.Normal :
+                        ControlPaint.DrawComboButton(g, rectButton, this.Enabled ? ButtonState.Normal :
                             ButtonState.Inactive);
                 }
             }

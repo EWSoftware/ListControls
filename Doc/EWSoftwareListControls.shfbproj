@@ -27,7 +27,7 @@
     <FrameworkVersion>.NET Core/.NET Standard/.NET 5.0+</FrameworkVersion>
     <HelpTitle>EWSoftware.ListControls Library Documentation</HelpTitle>
     <CopyrightHref>https://github.com/EWSoftware/ListControls</CopyrightHref>
-    <CopyrightText>[v{%40HelpFileVersion}] Copyright \xA9 2005-2023, Eric Woodruff, All Rights Reserved</CopyrightText>
+    <CopyrightText>[v{%40HelpFileVersion}] Copyright \xA9 2005-2024, Eric Woodruff, All Rights Reserved</CopyrightText>
     <FeedbackEMailAddress>Eric%40EWoodruff.us</FeedbackEMailAddress>
     <PresentationStyle>Default2022</PresentationStyle>
     <SyntaxFilters>Standard</SyntaxFilters>
@@ -48,7 +48,7 @@
 
 &lt;para&gt;This namespace contains designers for the list controls.&lt;/para&gt;</NamespaceSummaryItem>
     </NamespaceSummaries>
-    <HelpFileVersion>2023.4.9.0</HelpFileVersion>
+    <HelpFileVersion>2024.12.12.0</HelpFileVersion>
     <PlugInConfigurations>
       <PlugInConfig id="Output Deployment" enabled="True">
         <configuration deleteAfterDeploy="true" verboseLogging="false">
@@ -138,6 +138,7 @@
       <Argument Key="RobotsMetadata" Value="" />
       <Argument Key="BibliographyDataFile" Value="" />
       <Argument Key="RootBreadcrumbTitleText" Value="List Controls" />
+      <Argument Key="ResizableTocColumn" Value="False" />
       <Argument Key="CollapsibleSections" Value="True" />
       <Argument Key="LogoFile" Value="" />
       <Argument Key="LogoHeight" Value="" />
@@ -150,10 +151,13 @@
       <Argument Key="DefaultLanguage" Value="cs" />
       <Argument Key="IncludeEnumValues" Value="True" />
       <Argument Key="EnumMemberSortOrder" Value="Value" />
-      <Argument Key="FlagsEnumValueFormat" Value="IntegerValue" />
+      <Argument Key="FlagsEnumValueFormat" Value="HexValue" />
       <Argument Key="FlagsEnumSeparatorSize" Value="0" />
+      <Argument Key="IncludeIntegerEnumSeparators" Value="true" />
       <Argument Key="BaseSourceCodeUrl" Value="https://github.com/EWSoftware/ListControls/blob/master/Source/" />
       <Argument Key="RequestExampleUrl" Value="https://github.com/EWSoftware/ListControls/issues/new" />
+      <Argument Key="ShowParametersOnAllMethods" Value="False" />
+      <Argument Key="AlwaysShowTopLevelAutoOutline" Value="False" />
     </TransformComponentArguments>
     <SourceCodeBasePath>..\Source\</SourceCodeBasePath>
     <WarnOnMissingSourceContext>False</WarnOnMissingSourceContext>
@@ -198,6 +202,7 @@
     <None Include="Content\VersionHistory\v2015.1.27.0.aml" />
     <None Include="Content\VersionHistory\v2020.11.25.0.aml" />
     <None Include="Content\VersionHistory\v2023.4.9.0.aml" />
+    <None Include="Content\VersionHistory\v2024.12.12.0.aml" />
     <None Include="Content\VersionHistory\VersionHistory.aml" />
     <None Include="Content\VersionHistory\v2015.1.19.0.aml" />
     <None Include="Content\Welcome.aml" />

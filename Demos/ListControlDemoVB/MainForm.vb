@@ -2,8 +2,8 @@
 ' System  : EWSoftware Data List Control Demonstration Applications
 ' File    : MainForm.vb
 ' Author  : Eric Woodruff  (Eric@EWoodruff.us)
-' Updated : 04/09/2023
-' Note    : Copyright 2005-2023, Eric Woodruff, All rights reserved
+' Updated : 12/1/2024
+' Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 '
 ' This application is used to demonstrate various features of the EWSoftware List Control classes
 '
@@ -48,15 +48,5 @@ Public Partial Class MainForm
         End Try
 
     End Sub
-
-#If NET48
-    ' The main entry point for the application
-    <STAThread> _
-    Shared Sub Main()
-        Application.EnableVisualStyles()
-        Application.SetCompatibleTextRenderingDefault(False)
-    	Application.Run(New MainForm())
-    End Sub
-#End If
 
 End Class

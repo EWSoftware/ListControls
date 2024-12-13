@@ -60,7 +60,12 @@
       <HelpKeyword index="K" term="history" />
       <HelpKeyword index="K" term="version history" />
     </HelpKeywords>
-    <Topic id="1eafc4ba-7a87-41d0-8f6d-fc4faf499bee" visible="True" isSelected="true" title="Version 2023.4.9.0">
+    <Topic id="ed73d559-a2b7-4822-a42a-f939a8f6ab7e" visible="True" isSelected="true" title="Version 2024.12.12.0">
+      <HelpKeywords>
+        <HelpKeyword index="K" term="versions, 2024.12.12.0" />
+      </HelpKeywords>
+    </Topic>
+    <Topic id="1eafc4ba-7a87-41d0-8f6d-fc4faf499bee" visible="True" title="Version 2023.4.9.0">
       <HelpKeywords>
         <HelpKeyword index="K" term="versions, 2023.4.9.0" />
       </HelpKeywords>

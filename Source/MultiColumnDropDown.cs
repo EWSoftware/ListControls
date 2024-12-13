@@ -2,7 +2,7 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : MultiColumnDropDown.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 12/11/2024
+// Updated : 12/12/2024
 // Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a multi-column combo box drop-down form that handles the display of the multiple columns
@@ -329,13 +329,18 @@ namespace EWSoftware.ListControls
                         }
 #endif
                     }
+
                     // Give the user a chance to adjust the formatting before sizing the column
                     owner.OnFormatDropDownColumn(new DataGridViewColumnEventArgs(col));
 
+                    // If not disabled, resize the column.  If not set, resize to the widest value.  Otherwise,
+                    // use the specified method.
                     if(col.AutoSizeMode != DataGridViewAutoSizeColumnMode.None)
                     {
-                        dgDropDown.AutoResizeColumn(col.Index, dgDropDown.ColumnHeadersVisible ?
-                            DataGridViewAutoSizeColumnMode.AllCells : DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                        dgDropDown.AutoResizeColumn(col.Index,
+                            col.AutoSizeMode == DataGridViewAutoSizeColumnMode.NotSet ?
+                                dgDropDown.ColumnHeadersVisible ? DataGridViewAutoSizeColumnMode.AllCells : DataGridViewAutoSizeColumnMode.AllCellsExceptHeader :
+                                col.AutoSizeMode);
                     }
 
                     totalSize += col.Width;
