@@ -60,7 +60,7 @@
       <HelpKeyword index="K" term="history" />
       <HelpKeyword index="K" term="version history" />
     </HelpKeywords>
-    <Topic id="ed73d559-a2b7-4822-a42a-f939a8f6ab7e" visible="False" isMSHVRoot="true" isSelected="true" title="Version 2024.12.18.0">
+    <Topic id="ed73d559-a2b7-4822-a42a-f939a8f6ab7e" visible="True" isSelected="true" title="Version 2024.12.18.0">
       <HelpKeywords>
         <HelpKeyword index="K" term="versions, 2024.12.18.0" />
       </HelpKeywords>
