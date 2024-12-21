@@ -10,8 +10,8 @@
 		<Title>EWSoftware Windows Forms List Controls Library</Title>
 		<Copyright>Copyright (c) 2005-2024, Eric Woodruff, All Rights Reserved</Copyright>
 		<NeutralLanguage>en</NeutralLanguage>
-		<Version>2024.12.12.0</Version>
-		<FileVersion>24.12.12.0</FileVersion>
+		<Version>2024.12.18.0</Version>
+		<FileVersion>24.12.18.0</FileVersion>
 		<Description>This library contains several Windows Forms controls: combo box controls with extra abilities, a radio button list control, a checkbox list control, a data navigator control, and a template-based data list control.  See the project website for the code, a help file, and demos.</Description>
 		<Authors>Eric Woodruff</Authors>
 		<PackageIconUrl>https://raw.githubusercontent.com/EWSoftware/ListControls/master/EWSListControls.png</PackageIconUrl>
@@ -21,7 +21,7 @@
 		<PackageTags>Windows Forms controls template data list checkbox radio button combo box radiobutton combobox</PackageTags>
 		<PackageProjectUrl>https://github.com/EWSoftware/ListControls</PackageProjectUrl>
 		<PackageLicenseExpression>MS-PL</PackageLicenseExpression>
-		<PackageReleaseNotes>Targets .NET Framework 4.0 and later and .NET 6.0 and later (Windows platform only)</PackageReleaseNotes>
+		<PackageReleaseNotes>Targets .NET Framework 4.0 and later and .NET 8.0 and later (Windows platform only)</PackageReleaseNotes>
 		<PackageReadmeFile>ReadMe.md</PackageReadmeFile>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>EWSListControls.snk</AssemblyOriginatorKeyFile>

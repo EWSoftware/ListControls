@@ -2,7 +2,7 @@
 // System  : EWSoftware Windows Forms List Controls
 // File    : MultiColumnDropDown.cs
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 12/12/2024
+// Updated : 12/17/2024
 // Note    : Copyright 2005-2024, Eric Woodruff, All rights reserved
 //
 // This file contains a multi-column combo box drop-down form that handles the display of the multiple columns
@@ -261,7 +261,7 @@ namespace EWSoftware.ListControls
                     if(colType.IsGenericType)
                         colType = colType.GetGenericArguments()[0];
 
-                    switch(Type.GetTypeCode(col.ValueType))
+                    switch(Type.GetTypeCode(colType))
                     {
                         case TypeCode.Int16:
                         case TypeCode.Int32:
