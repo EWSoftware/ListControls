@@ -50,11 +50,10 @@ Public Partial Class MenuRow
         If demoInfo.UseControlImageYN Then
             Dim asm As [Assembly] = GetType(TemplateControl).Assembly
 
-            Dim stream As Stream = asm.GetManifestResourceStream($"EWSoftware.ListControls.{demoInfo.DemoName}.bmp")
+            Dim stream As Stream = asm.GetManifestResourceStream($"EWSoftware.ListControls.{demoInfo.DemoName}.png")
 
             If stream IsNot Nothing Then
                 Dim image As new BitMap(stream)
-                image.MakeTransparent()
 
                 lblDemoImage.Image = image
             End If

@@ -10,8 +10,8 @@
 		<Title>EWSoftware Windows Forms List Controls Library</Title>
 		<Copyright>Copyright (c) 2005-2024, Eric Woodruff, All Rights Reserved</Copyright>
 		<NeutralLanguage>en</NeutralLanguage>
-		<Version>2024.12.18.0</Version>
-		<FileVersion>24.12.18.0</FileVersion>
+		<Version>2024.12.31.0</Version>
+		<FileVersion>24.12.31.0</FileVersion>
 		<Description>This library contains several Windows Forms controls: combo box controls with extra abilities, a radio button list control, a checkbox list control, a data navigator control, and a template-based data list control.  See the project website for the code, a help file, and demos.</Description>
 		<Authors>Eric Woodruff</Authors>
 		<PackageIconUrl>https://raw.githubusercontent.com/EWSoftware/ListControls/master/EWSListControls.png</PackageIconUrl>
@@ -55,17 +55,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="AutoCompleteComboBox.bmp" />
-		<EmbeddedResource Include="CheckBoxList.bmp" />
-		<EmbeddedResource Include="ClickableLabel.bmp" />
-		<EmbeddedResource Include="DataGridViewControls\ImageListColumn.bmp" />
-		<EmbeddedResource Include="DataGridViewControls\IndicatorColumn.bmp" />
-		<EmbeddedResource Include="DataGridViewControls\MultiColumnComboBoxColumn.bmp" />
-		<EmbeddedResource Include="DataGridViewControls\RatingColumn.bmp" />
-		<EmbeddedResource Include="DataGridViewControls\UserControlComboBoxColumn.bmp" />
-		<EmbeddedResource Include="DataList.bmp" />
-		<EmbeddedResource Include="DataNavigator.bmp" />
-		<EmbeddedResource Include="ExtendedTreeView.bmp" />
+		<EmbeddedResource Include="AutoCompleteComboBox.png" />
+		<EmbeddedResource Include="CheckBoxList.png" />
+		<EmbeddedResource Include="ClickableLabel.png" />
+		<EmbeddedResource Include="DataGridViewControls\AutoCompleteComboBoxColumn.png" />
+		<EmbeddedResource Include="DataGridViewControls\ImageListColumn.png" />
+		<EmbeddedResource Include="DataGridViewControls\IndicatorColumn.png" />
+		<EmbeddedResource Include="DataGridViewControls\MultiColumnComboBoxColumn.png" />
+		<EmbeddedResource Include="DataGridViewControls\RatingColumn.png" />
+		<EmbeddedResource Include="DataGridViewControls\UserControlComboBoxColumn.png" />
+		<EmbeddedResource Include="DataList.png" />
+		<EmbeddedResource Include="DataNavigator.png" />
+		<EmbeddedResource Include="ExtendedTreeView.png" />
 		<EmbeddedResource Include="Images\RatingStarEmpty.png" />
 		<EmbeddedResource Include="Images\RatingStarFilled.png" />
 		<EmbeddedResource Include="Images\RatingStarHot.png" />
@@ -79,8 +80,8 @@
 		<EmbeddedResource Include="Images\UnthemedExpand.bmp" />
 		<EmbeddedResource Include="Images\UnthemedMixed.bmp" />
 		<EmbeddedResource Include="Images\UnthemedUnchecked.bmp" />
-		<EmbeddedResource Include="MultiColumnComboBox.bmp" />
-		<EmbeddedResource Include="RadioButtonList.bmp" />
-		<EmbeddedResource Include="UserControlComboBox.bmp" />
+		<EmbeddedResource Include="MultiColumnComboBox.png" />
+		<EmbeddedResource Include="RadioButtonList.png" />
+		<EmbeddedResource Include="UserControlComboBox.png" />
 	</ItemGroup>
 </Project>

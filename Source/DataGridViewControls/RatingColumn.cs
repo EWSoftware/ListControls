@@ -22,7 +22,6 @@ namespace EWSoftware.ListControls.DataGridViewControls
     /// <summary>
     /// This data grid view column contains <see cref="RatingCell"/> objects
     /// </summary>
-    [ToolboxBitmap(typeof(RatingColumn), "RatingColumn.bmp")]
     public class RatingColumn : DataGridViewImageColumn
     {
         #region Private data members

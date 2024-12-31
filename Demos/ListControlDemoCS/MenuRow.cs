@@ -68,12 +68,11 @@ namespace ListControlDemoCS
             {
                 Assembly asm = typeof(TemplateControl).Assembly;
 
-                var stream = asm.GetManifestResourceStream($"EWSoftware.ListControls.{demoInfo.DemoName}.bmp");
+                var stream = asm.GetManifestResourceStream($"EWSoftware.ListControls.{demoInfo.DemoName}.png");
 
                 if(stream != null)
                 {
                     Bitmap image = new(stream);
-                    image.MakeTransparent();
 
                     lblDemoImage.Image = image;
                 }

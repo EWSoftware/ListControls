@@ -22,7 +22,6 @@ namespace EWSoftware.ListControls.DataGridViewControls
     /// <summary>
     /// This data grid view column contains <see cref="ImageListCell"/> objects
     /// </summary>
-    [ToolboxBitmap(typeof(ImageListColumn), "ImageListColumn.bmp")]
     public class ImageListColumn : DataGridViewImageColumn
     {
         #region Private data members

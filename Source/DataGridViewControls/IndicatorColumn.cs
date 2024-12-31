@@ -24,7 +24,6 @@ namespace EWSoftware.ListControls.DataGridViewControls
     /// <summary>
     /// This data grid view column contains <see cref="IndicatorCell"/> objects
     /// </summary>
-    [ToolboxBitmap(typeof(IndicatorColumn), "IndicatorColumn.bmp")]
     public class IndicatorColumn : DataGridViewImageColumn
     {
         #region Private data members
