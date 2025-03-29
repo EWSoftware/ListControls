@@ -100,7 +100,7 @@ Namespace Database
                 Throw New InvalidOperationException("The database location has not been set")
             End If
 
-            optionsBuilder.UseSqlServer($"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog={DatabaseLocation};Integrated Security=True")
+            optionsBuilder.UseSqlServer($"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFileName={DatabaseLocation}")
 
             MyBase.OnConfiguring(optionsBuilder)
         End Sub
