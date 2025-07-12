@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
   <PropertyGroup>
+    <!-- A target framework version is required by Visual Studio.  It can be any version with a targeting pack installed. -->
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <!-- The configuration and platform will be used to determine which
          assemblies to include from solution and project documentation
          sources -->
@@ -147,7 +149,7 @@
       <Argument Key="LogoPlacement" Value="Left" />
       <Argument Key="LogoAlignment" Value="Left" />
       <Argument Key="LogoUrl" Value="" />
-      <Argument Key="MaxVersionParts" Value="" />
+      <Argument Key="MaxVersionParts" Value="4" />
       <Argument Key="DefaultLanguage" Value="cs" />
       <Argument Key="IncludeEnumValues" Value="True" />
       <Argument Key="EnumMemberSortOrder" Value="Value" />
