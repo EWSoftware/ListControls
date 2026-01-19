@@ -31,7 +31,7 @@
     <CopyrightHref>https://github.com/EWSoftware/ListControls</CopyrightHref>
     <CopyrightText>[v{%40HelpFileVersion}] Copyright \xA9 2005-2024, Eric Woodruff, All Rights Reserved</CopyrightText>
     <FeedbackEMailAddress>Eric%40EWoodruff.us</FeedbackEMailAddress>
-    <PresentationStyle>Default2022</PresentationStyle>
+    <PresentationStyle>Themed2026</PresentationStyle>
     <SyntaxFilters>Standard</SyntaxFilters>
     <ComponentConfigurations>
     </ComponentConfigurations>
@@ -130,14 +130,12 @@
       <Argument Key="BibliographyDataFile" Value="" />
       <Argument Key="RootBreadcrumbTitleText" Value="List Controls" />
       <Argument Key="ResizableTocColumn" Value="False" />
-      <Argument Key="CollapsibleSections" Value="False" />
       <Argument Key="LogoFile" Value="" />
       <Argument Key="LogoHeight" Value="" />
       <Argument Key="LogoWidth" Value="" />
       <Argument Key="LogoAltText" Value="" />
       <Argument Key="LogoPlacement" Value="Left" />
       <Argument Key="LogoAlignment" Value="Left" />
-      <Argument Key="LogoUrl" Value="" />
       <Argument Key="MaxVersionParts" Value="4" />
       <Argument Key="DefaultLanguage" Value="cs" />
       <Argument Key="IncludeEnumValues" Value="True" />
@@ -145,6 +143,7 @@
       <Argument Key="FlagsEnumValueFormat" Value="HexValue" />
       <Argument Key="FlagsEnumSeparatorSize" Value="0" />
       <Argument Key="IncludeIntegerEnumSeparators" Value="true" />
+      <Argument Key="ProjectUrl" Value="https://github.com/EWSoftware/ListControls" />
       <Argument Key="BaseSourceCodeUrl" Value="https://github.com/EWSoftware/ListControls/blob/master/Source/" />
       <Argument Key="RequestExampleUrl" Value="https://github.com/EWSoftware/ListControls/issues/new" />
       <Argument Key="ShowParametersOnAllMethods" Value="False" />
